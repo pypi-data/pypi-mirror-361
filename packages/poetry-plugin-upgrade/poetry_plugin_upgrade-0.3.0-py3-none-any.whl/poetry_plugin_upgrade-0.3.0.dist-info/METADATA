@@ -1,0 +1,109 @@
+Metadata-Version: 2.1
+Name: poetry-plugin-upgrade
+Version: 0.3.0
+Summary: Poetry plugin that updates dependencies and bumps their versions in pyproject.toml file
+Home-page: https://github.com/apoclyps/poetry-plugin-upgrade
+License: MIT
+Keywords: packaging,dependency,poetry,update,upgrade
+Author: Kyle Harrison
+Author-email: kyle.harrison.dev@gmail.com
+Requires-Python: >=3.10,<4.0
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Requires-Dist: poetry (>=1.8.3,<3.0.0)
+Project-URL: Repository, https://github.com/apoclyps/poetry-plugin-upgrade
+Description-Content-Type: text/markdown
+
+# Poetry Plugin: upgrade
+
+![release](https://github.com/apoclyps/poetry-plugin-upgrade/actions/workflows/release.yml/badge.svg)
+![test](https://github.com/apoclyps/poetry-plugin-upgrade/actions/workflows/test.yml/badge.svg)
+[![license](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
+![python_version](https://img.shields.io/badge/Python-%3E=3.11-blue)
+![poetry_version](https://img.shields.io/badge/Poetry-%3E=1.6-blue)
+
+This package is a plugin that updates dependencies and bumps their versions in `pyproject.toml` file. The version constraints are respected, unless the `--latest` flag is passed, in which case dependencies are updated to the latest available compatible versions.
+
+This plugin provides similar features as the existing `update` command with additional features.
+
+## Installation
+
+The easiest way to install the `upgrade` plugin is via the `self add` command of Poetry.
+
+```shell
+poetry self add poetry-plugin-upgrade
+```
+
+If you used `pipx` to install Poetry you can add the plugin via the `pipx inject` command.
+
+```shell
+pipx inject poetry poetry-plugin-upgrade
+```
+
+Otherwise, if you used `pip` to install Poetry you can add the plugin packages via the `pip install` command.
+
+```shell
+pip install poetry-plugin-upgrade
+```
+
+## Usage
+
+The plugin provides an `upgrade` command to update dependencies
+
+```shell
+poetry upgrade --help
+```
+
+Update dependencies
+
+```shell
+poetry upgrade
+```
+
+Update dependencies to the latest available compatible versions
+
+```shell
+poetry upgrade --latest
+```
+
+Update the `foo` and `bar` packages
+
+```shell
+poetry upgrade foo bar
+```
+
+Update packages only in the `main` group
+
+```shell
+poetry upgrade --only main
+```
+
+Update packages but ignore the `dev` group
+
+```shell
+poetry upgrade --without dev
+```
+
+## Example Usage
+
+To Add poetry-plugin-upgrade to poetry using the latest version and to bump all your dev dependencies without modifying transitive dependencies you can run
+
+```bash
+poetry self add poetry-plugin-upgrade
+
+poetry upgrade --only=dev --latest --pinned --no-interaction --no-install
+```
+
+## Contributing
+
+Contributions are welcome! See the [Contributing Guide](https://github.com/apoclyps/poetry-plugin-upgrade/blob/master/CONTRIBUTING.md).
+
+## Issues
+
+If you encounter any problems, please file an [issue](https://github.com/apoclyps/poetry-plugin-upgrade/issues) along with a
+detailed description.
+

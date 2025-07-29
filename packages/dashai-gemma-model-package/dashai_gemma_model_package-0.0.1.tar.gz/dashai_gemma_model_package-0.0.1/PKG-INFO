@@ -1,0 +1,89 @@
+Metadata-Version: 2.4
+Name: dashai_gemma_model_package
+Version: 0.0.1
+Summary: Gemma Model for DashAI
+Project-URL: Homepage, https://github.com/DashAISoftware/DashAI
+Project-URL: Issues, https://github.com/DashAISoftware/DashAI/issues
+Author: DashAI team
+Author-email: dashaisoftware@gmail.com
+Keywords: DashAI,Model
+Requires-Python: >=3.8
+Requires-Dist: huggingface-hub>=0.29.1
+Requires-Dist: llama-cpp-python>=0.2.90
+Description-Content-Type: text/markdown
+
+# Gemma Model Plugin for DashAI
+
+This plugin integrates Google's **Gemma 3** language models into the DashAI framework using the `llama.cpp` backend. It enables efficient and flexible text generation with GGUF quantized models and supports private access using a Hugging Face API token.
+
+## Included Models
+
+### 1. Gemma 3 1B It QAT
+
+- Lightweight instruction-tuned model with 1.3B parameters
+- Quantized and optimized for local inference (`q4_0` format)
+- Based on [`google/gemma-3-1b-it-qat-q4_0-gguf`](https://huggingface.co/google/gemma-3-1b-it-qat-q4_0-gguf)
+
+### 2. Gemma 3 4B It QAT
+
+- Instruction-tuned model with 4B parameters
+- Balanced size and capability for local or cloud deployment
+- Based on [`google/gemma-3-4b-it-qat-q4_0-gguf`](https://huggingface.co/google/gemma-3-4b-it-qat-q4_0-gguf)
+
+Both models are **instruction-tuned**, designed for high-quality generation and compatibility with CPU or GPU inference using `llama.cpp`.
+
+## About Gemma
+
+Gemma is a family of lightweight, state-of-the-art open models from **Google**, developed with the same technology as the **Gemini** models.  
+Key features of **Gemma 3** models:
+
+- Multimodal: support text and image input (in general; this plugin currently handles text-only generation)
+- Large context window: up to **128K tokens**
+- Instruction-tuned variants available
+- Multilingual: over **140 languages** supported
+- Open weights with access control via Hugging Face
+
+Gemma is designed for deployment on laptops, desktops, and cloud infrastructure, making advanced AI more accessible.
+
+## Features
+
+- Text generation via chat-style prompt completion
+- GGUF format for optimized performance and memory usage
+- Configurable generation parameters:
+  - `max_tokens`: Output length
+  - `temperature`: Output randomness
+  - `frequency_penalty`: Controls repetition
+  - `context_window`: Number of tokens per forward pass
+  - `device`: `"gpu"` or `"cpu"`
+- Automatic login to Hugging Face to access gated models
+
+## Model Parameters
+
+| Parameter           | Description                                        | Default                                |
+| ------------------- | -------------------------------------------------- | -------------------------------------- |
+| `model_name`        | Model ID from Hugging Face                         | `"google/gemma-3-4b-it-qat-q4_0-gguf"` |
+| `huggingface_key`   | Hugging Face API token to access restricted models | _Required_                             |
+| `max_tokens`        | Maximum number of tokens to generate               | 100                                    |
+| `temperature`       | Sampling temperature (higher = more random)        | 0.7                                    |
+| `frequency_penalty` | Penalizes repeated tokens to encourage diversity   | 0.1                                    |
+| `context_window`    | Maximum context window (tokens in prompt)          | 512                                    |
+| `device`            | Inference device (`"gpu"` or `"cpu"`)              | `"gpu"` if available                   |
+
+## Requirements
+
+- `DashAI`
+- `llama-cpp-python`
+- Valid **Hugging Face Access Token**
+- Model files from Hugging Face:
+  - [`google/gemma-3-1b-it-qat-q4_0-gguf`](https://huggingface.co/google/gemma-3-1b-it-qat-q4_0-gguf)
+  - [`google/gemma-3-4b-it-qat-q4_0-gguf`](https://huggingface.co/google/gemma-3-4b-it-qat-q4_0-gguf)
+
+> ⚠️ **Access Notice**: You must [accept the model terms on Hugging Face](https://huggingface.co/google/gemma-3-4b-it-qat-q4_0-gguf) and use a valid Hugging Face token.  
+> This repository is publicly accessible, but gated. You need to agree to share your contact information to access the model files.
+
+## Notes
+
+This plugin uses the **GGUF** format, developed by the `llama.cpp` team for fast inference and low memory consumption.
+
+The model is **pretrained and instruction-tuned** for inference and is **not designed for fine-tuning**.  
+Currently, this plugin supports only **text generation** (not image inputs).

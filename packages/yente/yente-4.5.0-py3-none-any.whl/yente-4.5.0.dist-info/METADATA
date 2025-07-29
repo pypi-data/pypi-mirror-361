@@ -1,0 +1,112 @@
+Metadata-Version: 2.4
+Name: yente
+Version: 4.5.0
+Summary: A simple and fast API service for querying FollowTheMoney data, including OpenSanctions.
+Project-URL: Documentation, https://www.opensanctions.org/docs/yente/
+Project-URL: Repository, https://github.com/opensanctions/yente.git
+Project-URL: Issues, https://github.com/opensanctions/yente/issues
+Author-email: OpenSanctions <info@opensanctions.org>
+License: MIT License
+        
+        Copyright (c) 2022-2025 OpenSanctions Datenbanken GmbH
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+License-File: LICENSE
+Requires-Python: <=3.13,>=3.11
+Requires-Dist: aiocron==2.1
+Requires-Dist: aiocsv==1.3.2
+Requires-Dist: aiofiles==24.1.0
+Requires-Dist: aiohttp[speedups]==3.12.13
+Requires-Dist: anyio==4.9.0
+Requires-Dist: asyncstdlib==3.13.1
+Requires-Dist: boto3~=1.37
+Requires-Dist: click~=8.2.0
+Requires-Dist: countrynames==1.16.10
+Requires-Dist: cryptography==45.0.5
+Requires-Dist: elasticsearch[async]==8.17.2
+Requires-Dist: email-validator==2.2.0
+Requires-Dist: fastapi==0.116.0
+Requires-Dist: fingerprints==1.2.3
+Requires-Dist: followthemoney==3.8.4
+Requires-Dist: httpx[http2]==0.28.1
+Requires-Dist: jellyfish==1.2.0
+Requires-Dist: nomenklatura==3.17.3
+Requires-Dist: normality==2.6.1
+Requires-Dist: opensearch-py[async]==2.8.0
+Requires-Dist: orjson==3.10.18
+Requires-Dist: pantomime==0.6.1
+Requires-Dist: pydantic
+Requires-Dist: pyicu==2.15.2
+Requires-Dist: python-multipart==0.0.20
+Requires-Dist: rigour==0.13.0
+Requires-Dist: structlog==25.4.0
+Requires-Dist: text-unidecode==1.3
+Requires-Dist: uvicorn[standard]==0.35.0
+Provides-Extra: dev
+Requires-Dist: black<26.0,>=24.10; extra == 'dev'
+Requires-Dist: boto3-stubs~=1.37; extra == 'dev'
+Requires-Dist: build; extra == 'dev'
+Requires-Dist: bump2version==1.0.1; extra == 'dev'
+Requires-Dist: flake8>=2.6.0; extra == 'dev'
+Requires-Dist: mypy~=1.13; extra == 'dev'
+Requires-Dist: pip>10.0.0; extra == 'dev'
+Requires-Dist: pre-commit; extra == 'dev'
+Requires-Dist: pytest-asyncio<2.0.0,>=0.25.0; extra == 'dev'
+Requires-Dist: pytest-cov<7.0.0,>=6.0.0; extra == 'dev'
+Requires-Dist: pytest-httpx<1.0.0,==0.35.0; extra == 'dev'
+Requires-Dist: pytest==8.4.1; extra == 'dev'
+Requires-Dist: ruff<1.0.0,>=0.8.4; extra == 'dev'
+Requires-Dist: types-aiofiles<25.0,>=24.0; extra == 'dev'
+Description-Content-Type: text/markdown
+
+# yente
+
+`yente` is an open source data match-making API. The service provides several HTTP endpoints to search, retrieve or match [FollowTheMoney entities](https://www.opensanctions.org/docs/entities/), including people, companies or vessels that are subject to international sanctions.
+
+The yente API is built to provide access to [OpenSanctions data](https://www.opensanctions.org/datasets/), it can also be used to [search and match other data](https://www.opensanctions.org/docs/yente/datasets/), such as [company registries](https://www.opensanctions.org/kyb/) or [custom watchlists](https://www.opensanctions.org/docs/yente/datasets/).
+
+While `yente` is the open source core code base for the [OpenSanctions API](https://www.opensanctions.org/api/), it can also be run [on-premises as a KYC appliance](https://www.opensanctions.org/docs/self-hosted/) so that no customer data leaves your infrastructure.
+
+* [yente documentation](https://www.opensanctions.org/docs/yente/) - install, configure and use the service.
+
+## Development
+
+`yente` is implemented in asynchronous, typed Python using the FastAPI framework. We're happy to see any bug fixes, improvements or extensions from the community. For local development without Docker, install the package into a fresh virtual Python environment like this:
+
+```bash
+git clone https://github.com/opensanctions/yente.git
+cd yente
+pip install -e '.[dev]'
+# Install pre-commit hooks with useful checks
+pre-commit install
+```
+
+This will install a broad range of dependencies, including `numpy`, `scikit-learn` and `pyicu`, which are binary packages that may require a local build environment. For `pyicu` in particular, refer to the [package documentation](https://pypi.org/project/PyICU/).
+
+### Running the server
+
+Once you've set the ``YENTE_INDEX_URL`` environment variable to point to a running instance of ElasticSearch or OpenSearch, you can run the web server like this:
+
+```bash
+yente serve
+```
+
+### License and Support
+
+``yente`` is licensed according to the MIT license terms documented in ``LICENSE``. Using the service in a commercial context may require a [data license for OpenSanctions data](https://www.opensanctions.org/licensing/).

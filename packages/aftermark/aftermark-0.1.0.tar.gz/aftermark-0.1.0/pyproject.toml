@@ -1,0 +1,22 @@
+[project]
+name = "aftermark"
+version = "0.1.0"
+requires-python = ">=3.9"
+dependencies = [
+    "numpy",
+    "pillow", 
+    "matplotlib",
+    "opencv-python",
+]
+
+[project.scripts] 
+nuke = "aftermark.cli.nuke:main"
+
+[build-system]
+requires      = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where    = [""]       
+include  = ["aftermark*"] 
+exclude  = ["demo*", "lsb_lab*", "tests*"]

@@ -1,0 +1,71 @@
+exclude: ".yarn/|yarn.lock|package.json|conf/strings.js"
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-builtin-literals
+      - id: check-executables-have-shebangs
+      - id: check-merge-conflict
+      - id: check-toml
+      - id: check-yaml
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+      - id: trailing-whitespace
+      - id: file-contents-sorter
+        args: [--ignore-case, --unique]
+        files: requirements-to-freeze.txt
+  - repo: local
+    hooks:
+      - id: django-check
+        name: django check
+        entry: .venv/bin/python manage.py check
+        pass_filenames: false
+        language: system
+        always_run: true
+      - id: prettier
+        name: prettier
+        entry: npx prettier@3.6.2 --no-semi --write
+        language: system
+        types_or: [scss]
+        require_serial: true
+  - repo: https://github.com/adamchainz/django-upgrade
+    rev: 1.25.0
+    hooks:
+      - id: django-upgrade
+        args: [--target-version, "5.1"]
+  -   repo: https://github.com/adamchainz/djade-pre-commit
+      rev: "1.4.0"
+      hooks:
+      -   id: djade
+          args: [--target-version, "5.1"]
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: "v0.12.2"
+    hooks:
+      - id: ruff
+        args: [--unsafe-fixes]
+      - id: ruff-format
+  - repo: https://github.com/tox-dev/pyproject-fmt
+    rev: v2.6.0
+    hooks:
+      - id: pyproject-fmt
+  - repo: https://github.com/abravalheri/validate-pyproject
+    rev: v0.24.1
+    hooks:
+      - id: validate-pyproject
+  - repo: https://github.com/biomejs/pre-commit
+    rev: "v2.1.1"
+    hooks:
+      - id: biome-check
+        args: [--unsafe]
+        types_or: [css, javascript, json]
+        verbose: true
+  - repo: https://github.com/boidolr/pre-commit-images
+    rev: v1.9.0
+    hooks:
+      - id: optimize-avif
+      - id: optimize-jpg
+      - id: optimize-png
+      - id: optimize-svg
+      - id: optimize-webp

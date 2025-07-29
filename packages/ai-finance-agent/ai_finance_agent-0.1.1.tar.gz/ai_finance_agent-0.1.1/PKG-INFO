@@ -1,0 +1,181 @@
+Metadata-Version: 2.4
+Name: ai-finance-agent
+Version: 0.1.1
+Summary: An agentic AI library for processing financial receipts
+Author-email: Yauheniya Varabyova <yauheniya.ail@gmail.com>
+Maintainer-email: Yauheniya Varabyova <yauheniya.ail@gmail.com>
+License: MIT
+Project-URL: Homepage, https://github.com/yauheniya-ai/finance-agent
+Project-URL: Documentation, https://finance-agent.readthedocs.io/
+Project-URL: Repository, https://github.com/yauheniya-ai/finance-agent
+Project-URL: Bug Tracker, https://github.com/yauheniya-ai/finance-agent/issues
+Project-URL: Changelog, https://github.com/yauheniya-ai/finance-agent/blob/main/CHANGELOG.md
+Keywords: finance,receipts,ocr,ai,llm,agent,extraction
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Office/Business :: Financial
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Text Processing :: Indexing
+Classifier: Topic :: Multimedia :: Graphics :: Capture :: Digital Camera
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests>=2.28.0
+Requires-Dist: PyMuPDF>=1.22.0
+Requires-Dist: pytesseract>=0.3.10
+Requires-Dist: Pillow>=9.0.0
+Requires-Dist: opencv-python>=4.6.0
+Requires-Dist: numpy>=1.21.0
+Requires-Dist: python-dateutil>=2.8.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0; extra == "dev"
+Requires-Dist: black>=22.0; extra == "dev"
+Requires-Dist: flake8>=5.0; extra == "dev"
+Requires-Dist: mypy>=0.991; extra == "dev"
+Requires-Dist: pre-commit>=2.20.0; extra == "dev"
+Provides-Extra: docs
+Requires-Dist: sphinx>=5.0; extra == "docs"
+Requires-Dist: sphinx-rtd-theme>=1.0; extra == "docs"
+Requires-Dist: myst-parser>=0.18; extra == "docs"
+Provides-Extra: test
+Requires-Dist: pytest>=7.0; extra == "test"
+Requires-Dist: pytest-cov>=4.0; extra == "test"
+Requires-Dist: pytest-mock>=3.8.0; extra == "test"
+Requires-Dist: responses>=0.21.0; extra == "test"
+Dynamic: license-file
+
+# AI Finance Agent 
+
+An intelligent agentic AI library for processing financial receipts and extracting structured data.
+
+## Features
+
+- **OCR Processing**: Extract text from PDF receipts using advanced OCR
+- **LLM Integration**: Uses local Ollama models for intelligent data extraction
+- **German Receipt Support**: Specialized for German receipt formats
+- **Structured Output**: Extracts company, date, amounts, and VAT information
+- **Fallback Processing**: Rule-based extraction when LLM fails
+- **Batch Processing**: Handle multiple receipts efficiently
+
+## Installation
+
+```bash
+pip install finance-agent
+```
+
+### System Requirements
+
+- Python 3.8+
+- Tesseract OCR installed on your system
+- Ollama running locally (optional but recommended)
+
+#### Install Tesseract OCR
+
+**Ubuntu/Debian:**
+```bash
+sudo apt-get install tesseract-ocr tesseract-ocr-deu
+```
+
+**macOS:**
+```bash
+brew install tesseract tesseract-lang
+```
+
+**Windows:**
+Download from: https://github.com/UB-Mannheim/tesseract/wiki
+
+#### Install Ollama
+
+```bash
+# Install Ollama
+curl -fsSL https://ollama.ai/install.sh | sh
+
+# Pull a vision model
+ollama pull llama3.2-vision
+```
+
+## Quick Start
+
+
+```python
+from finance_agent import FinanceAgent
+
+# Initialize the agent
+agent = FinanceAgent()
+
+# Process a receipt
+result = agent.process_receipt("receipt.pdf")
+
+if result.success:
+    print(f"Company: {result.data.company}")
+    print(f"Date: {result.data.date}")
+    print(f"Amount: {result.data.amount_euro} EUR")
+    print(f"VAT: {result.data.vat_percentage}% ({result.data.vat_euro} EUR)")
+    
+    # Save as JSON
+    with open("extracted_data.json", "w") as f:
+        f.write(result.data.to_json())
+else:
+    print(f"Processing failed: {result.error_message}")
+```
+
+## Configuration
+
+```python
+from finance_agent import FinanceAgent, Config
+
+# Custom configuration
+config = Config()
+config.OLLAMA_BASE_URL = "http://localhost:11434"
+config.DEFAULT_MODEL = "llama3.2-vision"
+config.OCR_LANGUAGE = "deu+eng"
+
+agent = FinanceAgent(config=config)
+```
+
+## API Reference
+
+### FinanceAgent
+
+The main class for processing receipts.
+
+#### Methods
+
+- `process_receipt(pdf_path: Union[str, Path, bytes]) -> ExtractionResult`
+- `batch_process(pdf_paths: List[Union[str, Path]]) -> Dict[str, ExtractionResult]`
+
+### ReceiptData
+
+Data model for extracted receipt information.
+
+#### Attributes
+
+- `company: Optional[str]` - Company name
+- `date: Optional[datetime]` - Receipt date
+- `amount_euro: Optional[Decimal]` - Total amount in EUR
+- `vat_percentage: Optional[Decimal]` - VAT percentage
+- `vat_euro: Optional[Decimal]` - VAT amount in EUR
+- `confidence_score: Optional[float]` - Extraction confidence (0-1)
+- `raw_text: Optional[str]` - Original OCR text
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run tests: `pytest`
+5. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+

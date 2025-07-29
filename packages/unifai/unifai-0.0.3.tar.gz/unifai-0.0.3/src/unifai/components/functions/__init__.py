@@ -1,0 +1,1 @@
+from .default_function import Function, FunctionConfig

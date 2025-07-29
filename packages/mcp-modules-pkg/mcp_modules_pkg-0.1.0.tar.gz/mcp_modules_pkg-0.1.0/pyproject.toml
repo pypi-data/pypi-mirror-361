@@ -1,0 +1,41 @@
+pyproject_content = """
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mcp-modules-pkg"
+version = "0.1.0"
+description = "통합된 DB connector, gspread 인증 파일, MCP 모듈(base invoker, mcp loggers) 패키지"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [
+    {name = "yepark", email = "yepark@bitmango.com"},
+]
+keywords = ["database", "credentials", "mcp"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+     "llm",
+    "llm-gemini",
+    "gspread",
+    "pandas",
+    "pymongo",
+    "psycopg2-binary",
+    "sqlalchemy",
+    "cryptography"
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/mcp-modules-pkg"
+Repository = "https://github.com/yourusername/mcp-modules-pkg"
+Issues = "https://github.com/yourusername/mcp-modules-pkg/issues"
+
+[project.scripts]
+mcp-db-tool = "mcp_modules_pkg.db_connector.cli:main"
+mcp-cred-tool = "mcp_modules_pkg.credentials.cli:main"
+"""

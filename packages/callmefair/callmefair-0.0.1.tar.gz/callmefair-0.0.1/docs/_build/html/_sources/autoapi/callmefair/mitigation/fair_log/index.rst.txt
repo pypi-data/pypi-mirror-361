@@ -1,0 +1,241 @@
+callmefair.mitigation.fair_log
+==============================
+
+.. py:module:: callmefair.mitigation.fair_log
+
+.. autoapi-nested-parse::
+
+   Logging and Result Management for Bias Mitigation Experiments
+
+   This module provides comprehensive logging and result management capabilities for
+   bias mitigation experiments. It includes CSV logging functionality and result
+   aggregation tools for analyzing multiple experiments.
+
+   The module implements:
+   - CSV-based experiment logging with automatic file management
+   - Multiprocessing support for efficient result aggregation
+   - Automatic cleanup of processed files
+   - Comprehensive error handling and logging
+
+   Classes:
+       csvLogger: CSV-based logger for experiment results
+
+   Functions:
+       read_csv_file: Read a single CSV file with error handling
+       aggregate_csv_files: Aggregate multiple CSV files using multiprocessing
+
+   .. admonition:: Example
+
+      >>> from callmefair.mitigation.fair_log import csvLogger, aggregate_csv_files
+      >>>
+      >>> # Create logger for experiment
+      >>> logger = csvLogger('experiment_2024_01_15')
+      >>>
+      >>> # Log experiment results
+      >>> results = [
+      >>>     {'model': 'RandomForest', 'BM': 'baseline', 'accuracy': 0.85},
+      >>>     {'model': 'RandomForest', 'BM': 'reweighing', 'accuracy': 0.83}
+      >>> ]
+      >>> logger(results)
+      >>>
+      >>> # Aggregate results from multiple experiments
+      >>> aggregate_csv_files('./results/', './results/aggregated_results.csv')
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   callmefair.mitigation.fair_log.folder_path
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   callmefair.mitigation.fair_log.csvLogger
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   callmefair.mitigation.fair_log.aggregate_csv_files
+   callmefair.mitigation.fair_log.read_csv_file
+
+
+Module Contents
+---------------
+
+.. py:class:: csvLogger(filename, path = 'results')
+
+   CSV-based logger for experiment results.
+
+   This class provides a simple interface for logging experiment results to CSV
+   files. It automatically creates the output directory if it doesn't exist and
+   appends results to the specified file.
+
+   :ivar count: Counter for logged entries
+   :vartype count: int
+   :ivar filename: Name of the output CSV file (without extension)
+   :vartype filename: str
+   :ivar path: Directory path for storing CSV files
+
+   :vartype path: str
+
+   .. admonition:: Example
+
+      >>> logger = csvLogger('experiment_results', path='./results/')
+      >>>
+      >>> # Log a single result
+      >>> result = {'model': 'RandomForest', 'accuracy': 0.85}
+      >>> logger([result])
+      >>>
+      >>> # Log multiple results
+      >>> results = [
+      >>>     {'model': 'RandomForest', 'accuracy': 0.85},
+      >>>     {'model': 'LogisticRegression', 'accuracy': 0.82}
+      >>> ]
+      >>> logger(results)
+
+   Initialize the CSV logger.
+
+   :param filename: Name of the output CSV file (without extension)
+   :type filename: str
+   :param path: Directory path for storing CSV files. Defaults to 'results'.
+   :type path: str
+
+   .. admonition:: Example
+
+      >>> logger = csvLogger('experiment_2024_01_15', path='./experiments/')
+
+
+   .. py:method:: __call__(named_dict)
+
+      Log experiment results to CSV file.
+
+      This method takes a list of dictionaries (each representing one experiment
+      result) and appends them to the CSV file. The method automatically handles
+      DataFrame conversion and CSV writing.
+
+      :param named_dict: List of dictionaries containing experiment results.
+                         Each dictionary should have consistent keys across all entries.
+      :type named_dict: list[dict]
+
+      .. admonition:: Example
+
+         >>> logger = csvLogger('experiment_results')
+         >>>
+         >>> # Log single result
+         >>> result = {'model': 'RandomForest', 'accuracy': 0.85, 'fairness': 0.92}
+         >>> logger([result])
+         >>>
+         >>> # Log multiple results
+         >>> results = [
+         >>>     {'model': 'RandomForest', 'accuracy': 0.85, 'fairness': 0.92},
+         >>>     {'model': 'LogisticRegression', 'accuracy': 0.82, 'fairness': 0.89}
+         >>> ]
+         >>> logger(results)
+
+
+
+   .. py:method:: __check_path__()
+
+      Check and create the output directory if it doesn't exist.
+
+      This method ensures that the output directory exists before attempting
+      to write CSV files. If the directory doesn't exist, it creates it.
+
+      .. admonition:: Example
+
+         >>> logger = csvLogger('test', path='./new_directory/')
+         >>> # Directory './new_directory/' is automatically created
+
+
+
+   .. py:attribute:: count
+      :value: 1
+
+
+
+   .. py:attribute:: filename
+
+
+   .. py:attribute:: path
+      :value: 'results'
+
+
+
+.. py:function:: aggregate_csv_files(folder_path, output_file = 'aggregated_data.csv', num_processes = 10)
+
+   Aggregate multiple CSV files from a folder into a single CSV file using multiprocessing.
+
+   This function efficiently combines multiple CSV files into a single file for
+   analysis. It uses multiprocessing for improved performance on large datasets
+   and includes comprehensive error handling and logging.
+
+   The function:
+   1. Finds all CSV files in the specified folder
+   2. Reads them in parallel using multiprocessing
+   3. Combines all DataFrames into a single DataFrame
+   4. Saves the aggregated data to the output file
+   5. Optionally deletes the original files after successful aggregation
+
+   :param folder_path: Path to the folder containing CSV files to aggregate
+   :type folder_path: str
+   :param output_file: Name of the output CSV file. Defaults to 'aggregated_data.csv'
+   :type output_file: str
+   :param num_processes: Number of processes to use for parallel processing.
+                         Defaults to 10. Use None to use all available CPU cores.
+   :type num_processes: int
+
+   :raises Exception: If aggregation fails due to file system or processing errors
+
+   .. admonition:: Example
+
+      >>> # Aggregate all CSV files in the results folder
+      >>> aggregate_csv_files(
+      >>>     folder_path='./results/',
+      >>>     output_file='./results/aggregated_results.csv',
+      >>>     num_processes=8
+      >>> )
+      >>>
+      >>> # Use all available CPU cores
+      >>> aggregate_csv_files(
+      >>>     folder_path='./experiments/',
+      >>>     output_file='./experiments/all_results.csv',
+      >>>     num_processes=None
+      >>> )
+
+
+.. py:function:: read_csv_file(file_path)
+
+   Read a single CSV file and return its DataFrame.
+
+   This function provides a robust way to read CSV files with comprehensive
+   error handling. It's designed to work with the multiprocessing aggregation
+   functionality.
+
+   :param file_path: Path to the CSV file to read
+   :type file_path: str
+
+   :returns:
+
+             DataFrame containing the CSV data. Returns empty DataFrame
+                 if reading fails.
+   :rtype: pd.DataFrame
+
+   .. admonition:: Example
+
+      >>> df = read_csv_file('./results/experiment_1.csv')
+      >>> print(f"Loaded {len(df)} rows from CSV file")
+
+
+.. py:data:: folder_path
+   :value: './results/'
+
+

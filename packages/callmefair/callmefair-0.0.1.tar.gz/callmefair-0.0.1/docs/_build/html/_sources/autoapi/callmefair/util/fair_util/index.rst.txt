@@ -1,0 +1,660 @@
+callmefair.util.fair_util
+=========================
+
+.. py:module:: callmefair.util.fair_util
+
+.. autoapi-nested-parse::
+
+   Utility Functions and Interfaces for Bias Mitigation
+
+   This module provides core utility functions and interfaces for bias mitigation
+   in machine learning systems. It includes the essential `calculate_fairness_score`
+   function for aggregating multiple fairness metrics into a single score, and the
+   `BMInterface` class for managing datasets and bias mitigation operations.
+
+   The module implements:
+   - Fairness score calculation with normalization and deviation evaluation
+   - Dataset management with train/validation/test splits
+   - Binary label dataset creation and manipulation
+   - Feature scaling and transformation
+   - Comprehensive fairness metrics evaluation
+
+   Classes:
+       BMnames: Data class for bias mitigation attribute configuration
+       BMInterface: Main interface for managing datasets and bias mitigation operations
+       BMMetrics: Comprehensive fairness metrics evaluation
+
+   Functions:
+       calculate_fairness_score: Aggregate multiple fairness metrics into a single score
+
+   .. admonition:: Example
+
+      >>> from callmefair.util.fair_util import BMInterface, calculate_fairness_score
+      >>> import pandas as pd
+      >>>
+      >>> # Load your data
+      >>> train_df = pd.read_csv('train.csv')
+      >>> val_df = pd.read_csv('val.csv')
+      >>> test_df = pd.read_csv('test.csv')
+      >>>
+      >>> # Initialize the interface
+      >>> bm_interface = BMInterface(train_df, val_df, test_df, 'label', ['gender'])
+      >>>
+      >>> # Calculate fairness score
+      >>> fairness_result = calculate_fairness_score(
+      >>>     EOD=0.05, AOD=0.03, SPD=0.08, DI=0.95, TI=0.12
+      >>> )
+      >>> print(f"Overall fairness score: {fairness_result['overall_score']}")
+
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   callmefair.util.fair_util.BMInterface
+   callmefair.util.fair_util.BMMetrics
+   callmefair.util.fair_util.BMnames
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   callmefair.util.fair_util.calculate_fairness_score
+
+
+Module Contents
+---------------
+
+.. py:class:: BMInterface(df_train, df_val, df_test, label, protected)
+
+   Main interface for managing datasets and bias mitigation operations.
+
+   This class provides a unified interface for managing binary classification
+   datasets with bias mitigation capabilities. It handles dataset splitting,
+   feature scaling, and provides access to train/validation/test sets in
+   various formats required by different bias mitigation techniques.
+
+   The interface supports:
+   - Automatic dataset splitting and scaling
+   - Binary label dataset creation for AIF360 compatibility
+   - Feature scaling with train/validation/test consistency
+   - Dataset restoration and transformation modes
+
+   :ivar data_sets: List of DataFrames [train, validation, test]
+   :vartype data_sets: list
+   :ivar BM_attr: Bias mitigation attribute configuration
+   :vartype BM_attr: BMnames
+   :ivar transform: Whether to apply feature scaling
+   :vartype transform: bool
+   :ivar biLData: List of BinaryLabelDataset objects
+   :vartype biLData: list
+   :ivar trainXY: (features, labels) for training data
+   :vartype trainXY: tuple
+   :ivar valXY: (features, labels) for validation data
+   :vartype valXY: tuple
+   :ivar testXY: (features, labels) for test data
+
+   :vartype testXY: tuple
+
+   .. admonition:: Example
+
+      >>> from callmefair.util.fair_util import BMInterface
+      >>> import pandas as pd
+      >>>
+      >>> # Load your data
+      >>> train_df = pd.read_csv('train.csv')
+      >>> val_df = pd.read_csv('val.csv')
+      >>> test_df = pd.read_csv('test.csv')
+      >>>
+      >>> # Initialize interface
+      >>> bm_interface = BMInterface(
+      >>>     df_train=train_df,
+      >>>     df_val=val_df,
+      >>>     df_test=test_df,
+      >>>     label='income',
+      >>>     protected=['gender', 'race']
+      >>> )
+      >>>
+      >>> # Get data in different formats
+      >>> train_bld = bm_interface.get_train_BLD()
+      >>> X_train, y_train = bm_interface.get_train_xy()
+
+   Initialize the Bias Mitigation Interface.
+
+   :param df_train: Training dataset
+   :type df_train: pd.DataFrame
+   :param df_val: Validation dataset
+   :type df_val: pd.DataFrame
+   :param df_test: Test dataset
+   :type df_test: pd.DataFrame
+   :param label: Name of the target/label column
+   :type label: str
+   :param protected: List of protected attribute column names
+   :type protected: list
+
+   .. admonition:: Example
+
+      >>> bm_interface = BMInterface(
+      >>>     df_train=train_df,
+      >>>     df_val=val_df,
+      >>>     df_test=test_df,
+      >>>     label='income',
+      >>>     protected=['gender', 'race']
+      >>> )
+
+
+   .. py:method:: get_protected_att()
+
+      Get the list of protected attributes.
+
+      :returns: List of protected attribute column names
+      :rtype: list
+
+      .. admonition:: Example
+
+         >>> protected_attrs = bm_interface.get_protected_att()
+         >>> print(f"Protected attributes: {protected_attrs}")
+
+
+
+   .. py:method:: get_test_BLD()
+
+      Get test dataset as BinaryLabelDataset.
+
+      :returns: Test dataset in AIF360 format
+      :rtype: BinaryLabelDataset
+
+      .. admonition:: Example
+
+         >>> test_bld = bm_interface.get_test_BLD()
+         >>> print(f"Test samples: {len(test_bld.features)}")
+
+
+
+   .. py:method:: get_test_xy()
+
+      Get test data as (features, labels) tuple.
+
+      :returns: (features, labels) for test data
+      :rtype: tuple
+
+      .. admonition:: Example
+
+         >>> X_test, y_test = bm_interface.get_test_xy()
+         >>> print(f"Test features shape: {X_test.shape}")
+
+
+
+   .. py:method:: get_train_BLD()
+
+      Get training dataset as BinaryLabelDataset.
+
+      :returns: Training dataset in AIF360 format
+      :rtype: BinaryLabelDataset
+
+      .. admonition:: Example
+
+         >>> train_bld = bm_interface.get_train_BLD()
+         >>> print(f"Training samples: {len(train_bld.features)}")
+
+
+
+   .. py:method:: get_train_xy()
+
+      Get training data as (features, labels) tuple.
+
+      :returns: (features, labels) for training data
+      :rtype: tuple
+
+      .. admonition:: Example
+
+         >>> X_train, y_train = bm_interface.get_train_xy()
+         >>> print(f"Training features shape: {X_train.shape}")
+         >>> print(f"Training labels shape: {y_train.shape}")
+
+
+
+   .. py:method:: get_val_BLD()
+
+      Get validation dataset as BinaryLabelDataset.
+
+      :returns: Validation dataset in AIF360 format
+      :rtype: BinaryLabelDataset
+
+      .. admonition:: Example
+
+         >>> val_bld = bm_interface.get_val_BLD()
+         >>> print(f"Validation samples: {len(val_bld.features)}")
+
+
+
+   .. py:method:: get_val_xy()
+
+      Get validation data as (features, labels) tuple.
+
+      :returns: (features, labels) for validation data
+      :rtype: tuple
+
+      .. admonition:: Example
+
+         >>> X_val, y_val = bm_interface.get_val_xy()
+         >>> print(f"Validation features shape: {X_val.shape}")
+
+
+
+   .. py:method:: pos_bm_set(new_test_BLD)
+
+      Set new test dataset after postprocessing bias mitigation.
+
+      This method updates the test dataset with the result of postprocessing
+      bias mitigation techniques and reapplies scaling if needed.
+
+      :param new_test_BLD: New test dataset after bias mitigation
+      :type new_test_BLD: BinaryLabelDataset
+
+      .. admonition:: Example
+
+         >>> # After applying equalized odds
+         >>> modified_test_bld = eq_odds.predict(original_test_bld)
+         >>> bm_interface.pos_bm_set(modified_test_bld)
+
+
+
+   .. py:method:: pre_BM_set(new_train_BLD)
+
+      Set new training dataset after preprocessing bias mitigation.
+
+      This method updates the training dataset with the result of preprocessing
+      bias mitigation techniques and reapplies scaling if needed.
+
+      :param new_train_BLD: New training dataset after bias mitigation
+      :type new_train_BLD: BinaryLabelDataset
+
+      .. admonition:: Example
+
+         >>> # After applying reweighing
+         >>> modified_train_bld = reweighing.transform(original_train_bld)
+         >>> bm_interface.pre_BM_set(modified_train_bld)
+
+
+
+   .. py:method:: restore_BLD()
+
+      Restore BinaryLabelDataset objects to their original state.
+
+      This method regenerates the BinaryLabelDataset objects and reapplies
+      scaling if transform mode is enabled. Useful after bias mitigation
+      operations that modify the datasets.
+
+      .. admonition:: Example
+
+         >>> # After applying bias mitigation
+         >>> bm_interface.pre_BM_set(modified_train_bld)
+         >>> # Restore to original state
+         >>> bm_interface.restore_BLD()
+
+
+
+   .. py:method:: set_transform()
+
+      Enable transform mode for feature scaling.
+
+      This method enables the transform mode, which applies StandardScaler
+      to all datasets. This is useful when working with models that require
+      scaled features.
+
+      .. admonition:: Example
+
+         >>> bm_interface.set_transform()
+         >>> # All subsequent operations will use scaled features
+
+
+
+   .. py:attribute:: BM_attr
+
+
+   .. py:attribute:: data_sets
+
+
+   .. py:attribute:: transform
+      :value: False
+
+
+
+.. py:class:: BMMetrics(bmI, class_array, pred_val, pred_test, privileged_group, unprivileged_group)
+
+   Comprehensive fairness metrics evaluation for bias mitigation.
+
+   This class provides comprehensive evaluation of both classification performance
+   and fairness metrics for machine learning models. It supports both standard
+   models and in-processing bias mitigation techniques.
+
+   The class evaluates:
+   - Classification metrics: accuracy, precision, recall, F1, MCC
+   - Fairness metrics: EOD, AOD, SPD, DI, TI
+   - Optimal threshold selection based on balanced accuracy
+   - Comprehensive fairness scoring
+
+   :ivar bmI: Interface for managing datasets
+   :vartype bmI: BMInterface
+   :ivar pos_idx: Index of positive class
+   :vartype pos_idx: int
+   :ivar in_mode: Whether using in-processing bias mitigation
+   :vartype in_mode: bool
+   :ivar pred_test: Test predictions (numpy array or BinaryLabelDataset)
+   :ivar pred_val: Validation predictions (numpy array or BinaryLabelDataset)
+   :ivar privileged_group: List of privileged group definitions
+   :vartype privileged_group: list[dict]
+   :ivar unprivileged_group: List of unprivileged group definitions
+   :vartype unprivileged_group: list[dict]
+   :ivar balanced_acc: Balanced accuracy scores for different thresholds
+   :vartype balanced_acc: np.ndarray
+   :ivar class_threshold: Threshold values for evaluation
+   :vartype class_threshold: np.ndarray
+   :ivar best_class_thresh: Optimal threshold based on validation performance
+   :vartype best_class_thresh: float
+   :ivar cmetrics: AIF360 classification metrics object
+
+   :vartype cmetrics: ClassificationMetric
+
+   .. admonition:: Example
+
+      >>> from callmefair.util.fair_util import BMMetrics
+      >>> import numpy as np
+      >>>
+      >>> # Create metrics evaluator
+      >>> metrics = BMMetrics(
+      >>>     bmI=bm_interface,
+      >>>     class_array=np.array([0, 1]),
+      >>>     pred_val=val_predictions,
+      >>>     pred_test=test_predictions,
+      >>>     privileged_group=privileged_groups,
+      >>>     unprivileged_group=unprivileged_groups
+      >>> )
+      >>>
+      >>> # Get comprehensive report
+      >>> report = metrics.get_report()
+      >>> print(f"Accuracy: {report['acc']:.4f}")
+      >>> print(f"Fairness score: {report['spd']:.4f}")
+
+   Initialize the Bias Mitigation Metrics evaluator.
+
+   :param bmI: Interface for managing datasets
+   :type bmI: BMInterface
+   :param class_array: Array of class labels [0, 1]
+   :type class_array: np.ndarray
+   :param pred_val: Validation predictions (numpy array or BinaryLabelDataset)
+   :param pred_test: Test predictions (numpy array or BinaryLabelDataset)
+   :param privileged_group: List of privileged group definitions
+   :type privileged_group: list[dict]
+   :param unprivileged_group: List of unprivileged group definitions
+   :type unprivileged_group: list[dict]
+
+   .. admonition:: Example
+
+      >>> metrics = BMMetrics(
+      >>>     bmI=bm_interface,
+      >>>     class_array=np.array([0, 1]),
+      >>>     pred_val=val_pred,
+      >>>     pred_test=test_pred,
+      >>>     privileged_group=[{'gender': 1}],
+      >>>     unprivileged_group=[{'gender': 0}]
+      >>> )
+
+
+   .. py:method:: get_groups()
+
+      Get privileged and unprivileged group definitions.
+
+      :returns:
+
+                (privileged_group, unprivileged_group)
+                    - privileged_group (list[dict]): List of privileged group definitions
+                    - unprivileged_group (list[dict]): List of unprivileged group definitions
+      :rtype: tuple
+
+      .. admonition:: Example
+
+         >>> privileged, unprivileged = metrics.get_groups()
+         >>> print(f"Privileged groups: {privileged}")
+         >>> print(f"Unprivileged groups: {unprivileged}")
+
+
+
+   .. py:method:: get_pred_test()
+
+      Get test predictions.
+
+      :returns: Test predictions (numpy array or BinaryLabelDataset)
+
+      .. admonition:: Example
+
+         >>> test_pred = metrics.get_pred_test()
+         >>> print(f"Test predictions shape: {test_pred.shape}")
+
+
+
+   .. py:method:: get_report()
+
+      Get comprehensive performance and fairness report.
+
+      :returns:
+
+                Dictionary containing all classification and fairness metrics
+                    - Classification metrics: balanced_acc, acc, precision, recall, f1, mcc
+                    - Fairness metrics: eq_opp_diff, avg_odd_diff, spd, disparate_impact, theil_idx
+      :rtype: dict
+
+      .. admonition:: Example
+
+         >>> report = metrics.get_report()
+         >>> print(f"Accuracy: {report['acc']:.4f}")
+         >>> print(f"Statistical Parity Difference: {report['spd']:.4f}")
+         >>> print(f"Equal Opportunity Difference: {report['eq_opp_diff']:.4f}")
+
+
+
+   .. py:method:: get_score()
+
+      Get comprehensive fairness score using the calculate_fairness_score function.
+
+      :returns:
+
+                Fairness score evaluation with overall score and detailed breakdown
+                    - 'raw_score' (float): Unnormalized fairness score
+                    - 'overall_score' (float): Normalized fairness score (0-1, lower is better)
+                    - 'metric_evaluations' (dict): Boolean evaluation of each metric
+                    - 'deviations' (dict): Normalized deviations from optimal values
+                    - 'is_fair' (bool): Whether all metrics are within acceptable ranges
+      :rtype: dict
+
+      .. admonition:: Example
+
+         >>> score_dict = metrics.get_score()
+         >>> print(f"Overall fairness score: {score_dict['overall_score']:.3f}")
+         >>> print(f"Is fair: {score_dict['is_fair']}")
+         >>>
+         >>> # Check individual metric evaluations
+         >>> for metric, is_acceptable in score_dict['metric_evaluations'].items():
+         >>>     print(f"{metric}: {'✓' if is_acceptable else '✗'}")
+
+
+
+   .. py:method:: set_new_pred(pred_val, pred_test)
+
+      Update predictions and recalculate metrics.
+
+      This method allows updating the predictions and recalculating all
+      metrics without recreating the entire BMMetrics object.
+
+      :param pred_val: New validation predictions
+      :type pred_val: np.ndarray
+      :param pred_test: New test predictions
+      :type pred_test: np.ndarray
+
+      .. admonition:: Example
+
+         >>> # After training a new model
+         >>> new_val_pred = model.predict_proba(X_val)
+         >>> new_test_pred = model.predict_proba(X_test)
+         >>> metrics.set_new_pred(new_val_pred, new_test_pred)
+
+
+
+   .. py:method:: set_pos_pred(test_BLD_pred)
+
+      Set postprocessed predictions and update metrics.
+
+      This method is used for postprocessing bias mitigation techniques
+      that modify the test predictions directly.
+
+      :param test_BLD_pred: Postprocessed test predictions
+      :type test_BLD_pred: BinaryLabelDataset
+
+      .. admonition:: Example
+
+         >>> # After applying equalized odds
+         >>> postprocessed_pred = eq_odds.predict(test_bld)
+         >>> metrics.set_pos_pred(postprocessed_pred)
+
+
+
+   .. py:attribute:: balanced_acc
+
+
+   .. py:attribute:: bmI
+
+
+   .. py:attribute:: class_threshold
+
+
+   .. py:attribute:: in_mode
+      :value: False
+
+
+
+   .. py:attribute:: pos_idx
+
+
+   .. py:attribute:: pred_test
+
+
+   .. py:attribute:: pred_val
+
+
+   .. py:attribute:: privileged_group
+
+
+   .. py:attribute:: unprivileged_group
+
+
+.. py:class:: BMnames
+
+   Data class for bias mitigation attribute configuration.
+
+   This class stores the essential configuration parameters for bias mitigation
+   operations, including label names, protected attributes, and favorable/unfavorable
+   label values.
+
+   :ivar label_names: Name of the target/label column in the dataset
+   :vartype label_names: str
+   :ivar protected_att: List of protected attribute column names
+   :vartype protected_att: list
+   :ivar favorable_label: Value representing the favorable outcome (default: 1.0)
+   :vartype favorable_label: float
+   :ivar unfavorable_label: Value representing the unfavorable outcome (default: 0.0)
+
+   :vartype unfavorable_label: float
+
+   .. admonition:: Example
+
+      >>> bm_config = BMnames(
+      >>>     label_names='income',
+      >>>     protected_att=['gender', 'race'],
+      >>>     favorable_label=1.0,
+      >>>     unfavorable_label=0.0
+      >>> )
+
+
+   .. py:attribute:: favorable_label
+      :type:  float
+      :value: 1.0
+
+
+
+   .. py:attribute:: label_names
+      :type:  str
+
+
+   .. py:attribute:: protected_att
+      :type:  list
+
+
+   .. py:attribute:: unfavorable_label
+      :type:  float
+      :value: 0.0
+
+
+
+.. py:function:: calculate_fairness_score(EOD, AOD, SPD, DI, TI)
+
+   Calculate a comprehensive fairness score based on multiple fairness metrics.
+
+   This function aggregates five key fairness metrics into a single normalized score
+   that represents the overall fairness of a machine learning model. The function
+   evaluates each metric against predefined acceptable ranges and calculates
+   deviations from optimal values to produce a unified fairness assessment.
+
+   The function uses a weighted scoring system where:
+   - Each metric contributes up to 0.2 for being outside acceptable ranges
+   - Each metric contributes up to 0.16 based on deviation from optimal values
+   - The final score is normalized to the 0-1 range where 0 = perfect fairness
+
+   :param EOD: Equal Opportunity Difference - measures difference in true positive
+               rates between groups. Optimal value: 0.0, Acceptable range: (-0.1, 0.1)
+   :type EOD: float
+   :param AOD: Average Odds Difference - measures difference in average of
+               true positive and false positive rates between groups. Optimal value: 0.0,
+               Acceptable range: (-0.1, 0.1)
+   :type AOD: float
+   :param SPD: Statistical Parity Difference - measures difference in positive
+               prediction rates between groups. Optimal value: 0.0, Acceptable range: (-0.1, 0.1)
+   :type SPD: float
+   :param DI: Disparate Impact - ratio of positive prediction rates between
+              groups. Optimal value: 1.0, Acceptable range: (0.8, 1.2)
+   :type DI: float
+   :param TI: Theil Index - measures inequality in prediction distributions.
+              Optimal value: 0.0, Acceptable range: (0.0, 0.25)
+   :type TI: float
+
+   :returns:
+
+             Dictionary containing fairness evaluation results with keys:
+                 - 'raw_score' (float): Unnormalized fairness score
+                 - 'overall_score' (float): Normalized fairness score (0-1, lower is better)
+                 - 'metric_evaluations' (dict): Boolean evaluation of each metric
+                 - 'deviations' (dict): Normalized deviations from optimal values
+                 - 'is_fair' (bool): Whether all metrics are within acceptable ranges
+   :rtype: dict
+
+   .. admonition:: Example
+
+      >>> # Perfect fairness
+      >>> result = calculate_fairness_score(0.0, 0.0, 0.0, 1.0, 0.0)
+      >>> print(f"Score: {result['overall_score']}")  # 0.0 (perfect)
+      >>> print(f"Is fair: {result['is_fair']}")  # True
+      >>>
+      >>> # Moderate unfairness
+      >>> result = calculate_fairness_score(0.15, 0.12, 0.18, 0.7, 0.3)
+      >>> print(f"Score: {result['overall_score']}")  # ~0.6-0.8
+      >>> print(f"Is fair: {result['is_fair']}")  # False
+      >>>
+      >>> # Check individual metric evaluations
+      >>> for metric, is_acceptable in result['metric_evaluations'].items():
+      >>>     print(f"{metric}: {'✓' if is_acceptable else '✗'}")
+
+

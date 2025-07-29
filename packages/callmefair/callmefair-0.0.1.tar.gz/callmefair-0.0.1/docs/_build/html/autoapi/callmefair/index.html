@@ -1,0 +1,1837 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>callmefair &mdash; CallMeFair 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=720763da" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=720763da" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="callmefair.mitigation" href="mitigation/index.html" />
+    <link rel="prev" title="API Reference" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            CallMeFair
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/quickstart.html">Quick Start Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/grid_search_guide.html">Grid Search Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/utility_guide.html">Utility Functions Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/bias_search_guide.html">Bias Search Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">callmefair</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="mitigation/index.html">callmefair.mitigation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="search/index.html">callmefair.search</a></li>
+<li class="toctree-l4"><a class="reference internal" href="util/index.html">callmefair.util</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#classes">Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#package-contents">Package Contents</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#callmefair.BMGridSearch"><code class="docutils literal notranslate"><span class="pre">BMGridSearch</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#callmefair.BMInterface"><code class="docutils literal notranslate"><span class="pre">BMInterface</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#callmefair.BMManager"><code class="docutils literal notranslate"><span class="pre">BMManager</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#callmefair.BMMetrics"><code class="docutils literal notranslate"><span class="pre">BMMetrics</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#callmefair.BMType"><code class="docutils literal notranslate"><span class="pre">BMType</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#callmefair.BaseSearch"><code class="docutils literal notranslate"><span class="pre">BaseSearch</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#callmefair.BiasSearch"><code class="docutils literal notranslate"><span class="pre">BiasSearch</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#callmefair.CType"><code class="docutils literal notranslate"><span class="pre">CType</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#callmefair.calculate_fairness_score"><code class="docutils literal notranslate"><span class="pre">calculate_fairness_score()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#callmefair.combine_attributes"><code class="docutils literal notranslate"><span class="pre">combine_attributes()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">CallMeFair</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">API Reference</a></li>
+      <li class="breadcrumb-item active">callmefair</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/autoapi/callmefair/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-callmefair">
+<span id="callmefair"></span><h1>callmefair<a class="headerlink" href="#module-callmefair" title="Link to this heading"></a></h1>
+<p>CallMeFair: A Comprehensive Framework for Automatic Bias Mitigation in AI Systems</p>
+<p>CallMeFair provides tools and techniques to identify, measure, and reduce algorithmic bias
+in machine learning models through preprocessing, in-processing, and postprocessing methods.</p>
+<p>For more information, visit: <a class="reference external" href="https://github.com/your-repo/callmefair">https://github.com/your-repo/callmefair</a></p>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="mitigation/index.html">callmefair.mitigation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="search/index.html">callmefair.search</a></li>
+<li class="toctree-l1"><a class="reference internal" href="util/index.html">callmefair.util</a></li>
+</ul>
+</div>
+</section>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#callmefair.BMGridSearch" title="callmefair.BMGridSearch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BMGridSearch</span></code></a></p></td>
+<td><p>Grid Search for Bias Mitigation Combinations.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#callmefair.BMInterface" title="callmefair.BMInterface"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BMInterface</span></code></a></p></td>
+<td><p>Main interface for managing datasets and bias mitigation operations.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#callmefair.BMManager" title="callmefair.BMManager"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BMManager</span></code></a></p></td>
+<td><p>Bias Mitigation Manager for applying various fairness techniques.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#callmefair.BMMetrics" title="callmefair.BMMetrics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BMMetrics</span></code></a></p></td>
+<td><p>Comprehensive fairness metrics evaluation for bias mitigation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#callmefair.BMType" title="callmefair.BMType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BMType</span></code></a></p></td>
+<td><p>Enumeration of bias mitigation techniques.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#callmefair.BaseSearch" title="callmefair.BaseSearch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BaseSearch</span></code></a></p></td>
+<td><p>Base class for bias search functionality in the CallMeFair framework.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#callmefair.BiasSearch" title="callmefair.BiasSearch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BiasSearch</span></code></a></p></td>
+<td><p>Main class for bias search and evaluation in the CallMeFair framework.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#callmefair.CType" title="callmefair.CType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CType</span></code></a></p></td>
+<td><p>Enumeration of attribute combination operations for bias search.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#callmefair.calculate_fairness_score" title="callmefair.calculate_fairness_score"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_fairness_score</span></code></a>(EOD, AOD, SPD, DI, TI)</p></td>
+<td><p>Calculate a comprehensive fairness score based on multiple fairness metrics.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#callmefair.combine_attributes" title="callmefair.combine_attributes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">combine_attributes</span></code></a>(df, col1, col2, operation)</p></td>
+<td><p>Combines two binary columns in a DataFrame using a specified set operation,</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="package-contents">
+<h2>Package Contents<a class="headerlink" href="#package-contents" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="callmefair.BMGridSearch">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">callmefair.</span></span><span class="sig-name descname"><span class="pre">BMGridSearch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bmI</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bm_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">privileged_group</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unprivileged_group</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/mitigation/fair_grid.html#BMGridSearch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BMGridSearch" title="Link to this definition"></a></dt>
+<dd><p>Grid Search for Bias Mitigation Combinations.</p>
+<p>This class provides a systematic framework for evaluating different combinations
+of bias mitigation techniques. It supports preprocessing, in-processing, and
+postprocessing methods, and can work with various machine learning models.</p>
+<p>The grid search evaluates each combination of bias mitigation techniques and
+logs the results for comparison. It currently supports single sensitive
+attribute evaluation, with plans for multiple sensitive attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bmI</strong> (<a class="reference internal" href="#callmefair.BMInterface" title="callmefair.BMInterface"><em>BMInterface</em></a>) – Interface for managing binary label datasets</p></li>
+<li><p><strong>bmMR</strong> (<a class="reference internal" href="#callmefair.BMManager" title="callmefair.BMManager"><em>BMManager</em></a>) – Bias mitigation manager for applying techniques</p></li>
+<li><p><strong>model</strong> – The machine learning model to evaluate</p></li>
+<li><p><strong>bm_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference internal" href="#callmefair.BMType" title="callmefair.BMType"><em>BMType</em></a><em>]</em><em>]</em>) – List of bias mitigation combinations to test</p></li>
+<li><p><strong>privileged_group</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>]</em>) – List of dictionaries defining privileged groups</p></li>
+<li><p><strong>unprivileged_group</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>]</em>) – List of dictionaries defining unprivileged groups</p></li>
+<li><p><strong>is_model_in</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether using in-processing bias mitigation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>bmI</strong> (<a class="reference internal" href="util/fair_util/index.html#callmefair.util.fair_util.BMInterface" title="callmefair.util.fair_util.BMInterface"><em>callmefair.util.fair_util.BMInterface</em></a>)</p></li>
+<li><p><strong>bm_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference internal" href="mitigation/fair_bm/index.html#callmefair.mitigation.fair_bm.BMType" title="callmefair.mitigation.fair_bm.BMType"><em>callmefair.mitigation.fair_bm.BMType</em></a><em>]</em><em>]</em>)</p></li>
+<li><p><strong>privileged_group</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>]</em>)</p></li>
+<li><p><strong>unprivileged_group</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>]</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">callmefair.mitigation.fair_grid</span><span class="w"> </span><span class="kn">import</span> <span class="n">BMGridSearch</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">callmefair.mitigation.fair_bm</span><span class="w"> </span><span class="kn">import</span> <span class="n">BMType</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Define combinations to test</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">combinations</span> <span class="o">=</span> <span class="p">[</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="p">[</span><span class="n">BMType</span><span class="o">.</span><span class="n">preReweighing</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="p">[</span><span class="n">BMType</span><span class="o">.</span><span class="n">preDisparate</span><span class="p">,</span> <span class="n">BMType</span><span class="o">.</span><span class="n">posCEO</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="p">[</span><span class="n">BMType</span><span class="o">.</span><span class="n">inAdversarial</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create grid search</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">grid_search</span> <span class="o">=</span> <span class="n">BMGridSearch</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">bmI</span><span class="o">=</span><span class="n">bm_interface</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">model</span><span class="o">=</span><span class="n">RandomForestClassifier</span><span class="p">(),</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">bm_list</span><span class="o">=</span><span class="n">combinations</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">privileged_group</span><span class="o">=</span><span class="n">privileged_groups</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">unprivileged_group</span><span class="o">=</span><span class="n">unprivileged_groups</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Run evaluation</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">grid_search</span><span class="o">.</span><span class="n">run_single_sensitive</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<p>Initialize the Bias Mitigation Grid Search.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bmI</strong> (<a class="reference internal" href="#callmefair.BMInterface" title="callmefair.BMInterface"><em>BMInterface</em></a>) – Interface for managing binary label datasets</p></li>
+<li><p><strong>model</strong> – The machine learning model to evaluate. Can be None for
+in-processing techniques that have their own models.</p></li>
+<li><p><strong>bm_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference internal" href="#callmefair.BMType" title="callmefair.BMType"><em>BMType</em></a><em>]</em><em>]</em>) – List of bias mitigation combinations to test.
+Each inner list represents one combination of techniques.</p></li>
+<li><p><strong>privileged_group</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>]</em>) – List of dictionaries defining privileged groups.
+Each dict should contain protected attribute names and their privileged values.</p></li>
+<li><p><strong>unprivileged_group</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>]</em>) – List of dictionaries defining unprivileged groups.
+Each dict should contain protected attribute names and their unprivileged values.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bm_combinations</span> <span class="o">=</span> <span class="p">[</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="p">[</span><span class="n">BMType</span><span class="o">.</span><span class="n">preReweighing</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="p">[</span><span class="n">BMType</span><span class="o">.</span><span class="n">preDisparate</span><span class="p">,</span> <span class="n">BMType</span><span class="o">.</span><span class="n">posCEO</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="p">[</span><span class="n">BMType</span><span class="o">.</span><span class="n">inAdversarial</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">grid_search</span> <span class="o">=</span> <span class="n">BMGridSearch</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">bmI</span><span class="o">=</span><span class="n">bm_interface</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">model</span><span class="o">=</span><span class="n">RandomForestClassifier</span><span class="p">(),</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">bm_list</span><span class="o">=</span><span class="n">bm_combinations</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">privileged_group</span><span class="o">=</span><span class="p">[{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}],</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">unprivileged_group</span><span class="o">=</span><span class="p">[{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="callmefair.BMGridSearch.run_single_sensitive">
+<span class="sig-name descname"><span class="pre">run_single_sensitive</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/mitigation/fair_grid.html#BMGridSearch.run_single_sensitive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BMGridSearch.run_single_sensitive" title="Link to this definition"></a></dt>
+<dd><p>Run grid search evaluation for single sensitive attribute.</p>
+<p>This method performs a comprehensive evaluation of all bias mitigation
+combinations in the grid search. It evaluates each combination and logs
+the results for comparison. Currently supports single sensitive attribute
+evaluation, with plans for multiple sensitive attributes.</p>
+<p>The method:
+1. Validates in-processing configurations
+2. Evaluates baseline performance (no bias mitigation)
+3. Evaluates each bias mitigation combination
+4. Logs results to CSV files for analysis</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If in-processing bias mitigation is defined with a classifier model</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Define bias mitigation combinations</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">combinations</span> <span class="o">=</span> <span class="p">[</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="p">[</span><span class="n">BMType</span><span class="o">.</span><span class="n">preReweighing</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="p">[</span><span class="n">BMType</span><span class="o">.</span><span class="n">preDisparate</span><span class="p">,</span> <span class="n">BMType</span><span class="o">.</span><span class="n">posCEO</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="p">[</span><span class="n">BMType</span><span class="o">.</span><span class="n">inAdversarial</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Run grid search</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">grid_search</span><span class="o">.</span><span class="n">run_single_sensitive</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Results are logged to CSV files</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BMGridSearch.bmI">
+<span class="sig-name descname"><span class="pre">bmI</span></span><a class="headerlink" href="#callmefair.BMGridSearch.bmI" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BMGridSearch.bmMR">
+<span class="sig-name descname"><span class="pre">bmMR</span></span><a class="headerlink" href="#callmefair.BMGridSearch.bmMR" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BMGridSearch.bm_list">
+<span class="sig-name descname"><span class="pre">bm_list</span></span><a class="headerlink" href="#callmefair.BMGridSearch.bm_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BMGridSearch.is_model_in">
+<span class="sig-name descname"><span class="pre">is_model_in</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#callmefair.BMGridSearch.is_model_in" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BMGridSearch.model">
+<span class="sig-name descname"><span class="pre">model</span></span><a class="headerlink" href="#callmefair.BMGridSearch.model" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BMGridSearch.privileged_group">
+<span class="sig-name descname"><span class="pre">privileged_group</span></span><a class="headerlink" href="#callmefair.BMGridSearch.privileged_group" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BMGridSearch.unprivileged_group">
+<span class="sig-name descname"><span class="pre">unprivileged_group</span></span><a class="headerlink" href="#callmefair.BMGridSearch.unprivileged_group" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="callmefair.BMInterface">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">callmefair.</span></span><span class="sig-name descname"><span class="pre">BMInterface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protected</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/util/fair_util.html#BMInterface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BMInterface" title="Link to this definition"></a></dt>
+<dd><p>Main interface for managing datasets and bias mitigation operations.</p>
+<p>This class provides a unified interface for managing binary classification
+datasets with bias mitigation capabilities. It handles dataset splitting,
+feature scaling, and provides access to train/validation/test sets in
+various formats required by different bias mitigation techniques.</p>
+<p>The interface supports:
+- Automatic dataset splitting and scaling
+- Binary label dataset creation for AIF360 compatibility
+- Feature scaling with train/validation/test consistency
+- Dataset restoration and transformation modes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_sets</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a>) – List of DataFrames [train, validation, test]</p></li>
+<li><p><strong>BM_attr</strong> (<a class="reference internal" href="util/fair_util/index.html#callmefair.util.fair_util.BMnames" title="callmefair.util.fair_util.BMnames"><em>BMnames</em></a>) – Bias mitigation attribute configuration</p></li>
+<li><p><strong>transform</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether to apply feature scaling</p></li>
+<li><p><strong>biLData</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a>) – List of BinaryLabelDataset objects</p></li>
+<li><p><strong>trainXY</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>) – (features, labels) for training data</p></li>
+<li><p><strong>valXY</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>) – (features, labels) for validation data</p></li>
+<li><p><strong>testXY</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>) – (features, labels) for test data</p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>df_train</strong> (<a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)"><em>pandas.DataFrame</em></a>)</p></li>
+<li><p><strong>df_val</strong> (<a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)"><em>pandas.DataFrame</em></a>)</p></li>
+<li><p><strong>df_test</strong> (<a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)"><em>pandas.DataFrame</em></a>)</p></li>
+<li><p><strong>label</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>)</p></li>
+<li><p><strong>protected</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a>)</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">callmefair.util.fair_util</span><span class="w"> </span><span class="kn">import</span> <span class="n">BMInterface</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Load your data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">train_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;train.csv&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">val_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;val.csv&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">test_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;test.csv&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Initialize interface</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bm_interface</span> <span class="o">=</span> <span class="n">BMInterface</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">df_train</span><span class="o">=</span><span class="n">train_df</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">df_val</span><span class="o">=</span><span class="n">val_df</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">df_test</span><span class="o">=</span><span class="n">test_df</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">label</span><span class="o">=</span><span class="s1">&#39;income&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">protected</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;gender&#39;</span><span class="p">,</span> <span class="s1">&#39;race&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Get data in different formats</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">train_bld</span> <span class="o">=</span> <span class="n">bm_interface</span><span class="o">.</span><span class="n">get_train_BLD</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span> <span class="o">=</span> <span class="n">bm_interface</span><span class="o">.</span><span class="n">get_train_xy</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<p>Initialize the Bias Mitigation Interface.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df_train</strong> (<em>pd.DataFrame</em>) – Training dataset</p></li>
+<li><p><strong>df_val</strong> (<em>pd.DataFrame</em>) – Validation dataset</p></li>
+<li><p><strong>df_test</strong> (<em>pd.DataFrame</em>) – Test dataset</p></li>
+<li><p><strong>label</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the target/label column</p></li>
+<li><p><strong>protected</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a>) – List of protected attribute column names</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bm_interface</span> <span class="o">=</span> <span class="n">BMInterface</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">df_train</span><span class="o">=</span><span class="n">train_df</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">df_val</span><span class="o">=</span><span class="n">val_df</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">df_test</span><span class="o">=</span><span class="n">test_df</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">label</span><span class="o">=</span><span class="s1">&#39;income&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">protected</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;gender&#39;</span><span class="p">,</span> <span class="s1">&#39;race&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="callmefair.BMInterface.get_protected_att">
+<span class="sig-name descname"><span class="pre">get_protected_att</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/util/fair_util.html#BMInterface.get_protected_att"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BMInterface.get_protected_att" title="Link to this definition"></a></dt>
+<dd><p>Get the list of protected attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of protected attribute column names</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">protected_attrs</span> <span class="o">=</span> <span class="n">bm_interface</span><span class="o">.</span><span class="n">get_protected_att</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Protected attributes: </span><span class="si">{</span><span class="n">protected_attrs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="callmefair.BMInterface.get_test_BLD">
+<span class="sig-name descname"><span class="pre">get_test_BLD</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/util/fair_util.html#BMInterface.get_test_BLD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BMInterface.get_test_BLD" title="Link to this definition"></a></dt>
+<dd><p>Get test dataset as BinaryLabelDataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Test dataset in AIF360 format</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>BinaryLabelDataset</p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">test_bld</span> <span class="o">=</span> <span class="n">bm_interface</span><span class="o">.</span><span class="n">get_test_BLD</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test samples: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">test_bld</span><span class="o">.</span><span class="n">features</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="callmefair.BMInterface.get_test_xy">
+<span class="sig-name descname"><span class="pre">get_test_xy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/util/fair_util.html#BMInterface.get_test_xy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BMInterface.get_test_xy" title="Link to this definition"></a></dt>
+<dd><p>Get test data as (features, labels) tuple.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(features, labels) for test data</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a></p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">bm_interface</span><span class="o">.</span><span class="n">get_test_xy</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test features shape: </span><span class="si">{</span><span class="n">X_test</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="callmefair.BMInterface.get_train_BLD">
+<span class="sig-name descname"><span class="pre">get_train_BLD</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/util/fair_util.html#BMInterface.get_train_BLD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BMInterface.get_train_BLD" title="Link to this definition"></a></dt>
+<dd><p>Get training dataset as BinaryLabelDataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Training dataset in AIF360 format</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>BinaryLabelDataset</p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">train_bld</span> <span class="o">=</span> <span class="n">bm_interface</span><span class="o">.</span><span class="n">get_train_BLD</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Training samples: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">train_bld</span><span class="o">.</span><span class="n">features</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="callmefair.BMInterface.get_train_xy">
+<span class="sig-name descname"><span class="pre">get_train_xy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/util/fair_util.html#BMInterface.get_train_xy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BMInterface.get_train_xy" title="Link to this definition"></a></dt>
+<dd><p>Get training data as (features, labels) tuple.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(features, labels) for training data</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a></p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span> <span class="o">=</span> <span class="n">bm_interface</span><span class="o">.</span><span class="n">get_train_xy</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Training features shape: </span><span class="si">{</span><span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Training labels shape: </span><span class="si">{</span><span class="n">y_train</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="callmefair.BMInterface.get_val_BLD">
+<span class="sig-name descname"><span class="pre">get_val_BLD</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/util/fair_util.html#BMInterface.get_val_BLD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BMInterface.get_val_BLD" title="Link to this definition"></a></dt>
+<dd><p>Get validation dataset as BinaryLabelDataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Validation dataset in AIF360 format</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>BinaryLabelDataset</p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">val_bld</span> <span class="o">=</span> <span class="n">bm_interface</span><span class="o">.</span><span class="n">get_val_BLD</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Validation samples: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">val_bld</span><span class="o">.</span><span class="n">features</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="callmefair.BMInterface.get_val_xy">
+<span class="sig-name descname"><span class="pre">get_val_xy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/util/fair_util.html#BMInterface.get_val_xy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BMInterface.get_val_xy" title="Link to this definition"></a></dt>
+<dd><p>Get validation data as (features, labels) tuple.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(features, labels) for validation data</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a></p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X_val</span><span class="p">,</span> <span class="n">y_val</span> <span class="o">=</span> <span class="n">bm_interface</span><span class="o">.</span><span class="n">get_val_xy</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Validation features shape: </span><span class="si">{</span><span class="n">X_val</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="callmefair.BMInterface.pos_bm_set">
+<span class="sig-name descname"><span class="pre">pos_bm_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_test_BLD</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/util/fair_util.html#BMInterface.pos_bm_set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BMInterface.pos_bm_set" title="Link to this definition"></a></dt>
+<dd><p>Set new test dataset after postprocessing bias mitigation.</p>
+<p>This method updates the test dataset with the result of postprocessing
+bias mitigation techniques and reapplies scaling if needed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>new_test_BLD</strong> (<em>BinaryLabelDataset</em>) – New test dataset after bias mitigation</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># After applying equalized odds</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">modified_test_bld</span> <span class="o">=</span> <span class="n">eq_odds</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">original_test_bld</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bm_interface</span><span class="o">.</span><span class="n">pos_bm_set</span><span class="p">(</span><span class="n">modified_test_bld</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="callmefair.BMInterface.pre_BM_set">
+<span class="sig-name descname"><span class="pre">pre_BM_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_train_BLD</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/util/fair_util.html#BMInterface.pre_BM_set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BMInterface.pre_BM_set" title="Link to this definition"></a></dt>
+<dd><p>Set new training dataset after preprocessing bias mitigation.</p>
+<p>This method updates the training dataset with the result of preprocessing
+bias mitigation techniques and reapplies scaling if needed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>new_train_BLD</strong> (<em>BinaryLabelDataset</em>) – New training dataset after bias mitigation</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># After applying reweighing</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">modified_train_bld</span> <span class="o">=</span> <span class="n">reweighing</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">original_train_bld</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bm_interface</span><span class="o">.</span><span class="n">pre_BM_set</span><span class="p">(</span><span class="n">modified_train_bld</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="callmefair.BMInterface.restore_BLD">
+<span class="sig-name descname"><span class="pre">restore_BLD</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/util/fair_util.html#BMInterface.restore_BLD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BMInterface.restore_BLD" title="Link to this definition"></a></dt>
+<dd><p>Restore BinaryLabelDataset objects to their original state.</p>
+<p>This method regenerates the BinaryLabelDataset objects and reapplies
+scaling if transform mode is enabled. Useful after bias mitigation
+operations that modify the datasets.</p>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># After applying bias mitigation</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bm_interface</span><span class="o">.</span><span class="n">pre_BM_set</span><span class="p">(</span><span class="n">modified_train_bld</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Restore to original state</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bm_interface</span><span class="o">.</span><span class="n">restore_BLD</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="callmefair.BMInterface.set_transform">
+<span class="sig-name descname"><span class="pre">set_transform</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/util/fair_util.html#BMInterface.set_transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BMInterface.set_transform" title="Link to this definition"></a></dt>
+<dd><p>Enable transform mode for feature scaling.</p>
+<p>This method enables the transform mode, which applies StandardScaler
+to all datasets. This is useful when working with models that require
+scaled features.</p>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bm_interface</span><span class="o">.</span><span class="n">set_transform</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># All subsequent operations will use scaled features</span>
+</pre></div>
+</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BMInterface.BM_attr">
+<span class="sig-name descname"><span class="pre">BM_attr</span></span><a class="headerlink" href="#callmefair.BMInterface.BM_attr" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BMInterface.data_sets">
+<span class="sig-name descname"><span class="pre">data_sets</span></span><a class="headerlink" href="#callmefair.BMInterface.data_sets" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BMInterface.transform">
+<span class="sig-name descname"><span class="pre">transform</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#callmefair.BMInterface.transform" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="callmefair.BMManager">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">callmefair.</span></span><span class="sig-name descname"><span class="pre">BMManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bmI</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">privileged_group</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unprivileged_group</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/mitigation/fair_bm.html#BMManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BMManager" title="Link to this definition"></a></dt>
+<dd><p>Bias Mitigation Manager for applying various fairness techniques.</p>
+<p>This class provides a unified interface for applying different bias mitigation
+techniques to machine learning datasets. It supports preprocessing, in-processing,
+and postprocessing approaches to reduce algorithmic bias.</p>
+<p>The manager works with BinaryLabelDataset objects from the AIF360 library and
+provides methods for each type of bias mitigation technique.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bmI</strong> (<a class="reference internal" href="#callmefair.BMInterface" title="callmefair.BMInterface"><em>BMInterface</em></a>) – Interface for managing binary label datasets</p></li>
+<li><p><strong>privileged_group</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>]</em>) – List of dictionaries defining privileged groups</p></li>
+<li><p><strong>unprivileged_group</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>]</em>) – List of dictionaries defining unprivileged groups</p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>bmI</strong> (<a class="reference internal" href="util/fair_util/index.html#callmefair.util.fair_util.BMInterface" title="callmefair.util.fair_util.BMInterface"><em>callmefair.util.fair_util.BMInterface</em></a>)</p></li>
+<li><p><strong>privileged_group</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>]</em>)</p></li>
+<li><p><strong>unprivileged_group</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>]</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">callmefair.util.fair_util</span><span class="w"> </span><span class="kn">import</span> <span class="n">BMInterface</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">callmefair.mitigation.fair_bm</span><span class="w"> </span><span class="kn">import</span> <span class="n">BMManager</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Initialize with your data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bm_interface</span> <span class="o">=</span> <span class="n">BMInterface</span><span class="p">(</span><span class="n">train_df</span><span class="p">,</span> <span class="n">val_df</span><span class="p">,</span> <span class="n">test_df</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;protected_attr&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">privileged_groups</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;protected_attr&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">unprivileged_groups</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;protected_attr&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}]</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bm_manager</span> <span class="o">=</span> <span class="n">BMManager</span><span class="p">(</span><span class="n">bm_interface</span><span class="p">,</span> <span class="n">privileged_groups</span><span class="p">,</span> <span class="n">unprivileged_groups</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Apply preprocessing bias mitigation</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bm_manager</span><span class="o">.</span><span class="n">pre_Reweighing</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<p>Initialize the Bias Mitigation Manager.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bmI</strong> (<a class="reference internal" href="#callmefair.BMInterface" title="callmefair.BMInterface"><em>BMInterface</em></a>) – Interface for managing binary label datasets</p></li>
+<li><p><strong>privileged_group</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>]</em>) – List of dictionaries defining privileged groups.
+Each dict should contain protected attribute names and their privileged values.</p></li>
+<li><p><strong>unprivileged_group</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>]</em>) – List of dictionaries defining unprivileged groups.
+Each dict should contain protected attribute names and their unprivileged values.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">privileged_groups</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;race&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">unprivileged_groups</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;race&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bm_manager</span> <span class="o">=</span> <span class="n">BMManager</span><span class="p">(</span><span class="n">bm_interface</span><span class="p">,</span> <span class="n">privileged_groups</span><span class="p">,</span> <span class="n">unprivileged_groups</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="callmefair.BMManager.in_AD">
+<span class="sig-name descname"><span class="pre">in_AD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">debias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/mitigation/fair_bm.html#BMManager.in_AD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BMManager.in_AD" title="Link to this definition"></a></dt>
+<dd><p>Create an Adversarial Debiasing in-processing model.</p>
+<p>Adversarial Debiasing is an in-processing technique that trains a classifier
+while simultaneously training an adversary that tries to predict the sensitive
+attribute from the classifier’s predictions. This encourages the classifier
+to make predictions that are independent of the sensitive attribute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>debias</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether to apply debiasing. If True, the model will be
+trained to be fair. If False, it will be a standard classifier.
+Defaults to False.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Configured adversarial debiasing model.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>AdversarialDebiasing</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ImportError" title="(in Python v3.13)"><strong>ImportError</strong></a> – If TensorFlow is not available.</p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ad_model</span> <span class="o">=</span> <span class="n">bm_manager</span><span class="o">.</span><span class="n">in_AD</span><span class="p">(</span><span class="n">debias</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Train the model with your data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ad_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">train_labels</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="callmefair.BMManager.in_Meta">
+<span class="sig-name descname"><span class="pre">in_Meta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sensitive_attribute</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/mitigation/fair_bm.html#BMManager.in_Meta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BMManager.in_Meta" title="Link to this definition"></a></dt>
+<dd><p>Create a MetaFair Classifier in-processing model.</p>
+<p>MetaFair is an in-processing technique that uses a meta-learning approach
+to learn fair classifiers. It optimizes for both accuracy and fairness
+using a regularization term that penalizes unfairness.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sensitive_attribute</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the sensitive attribute to consider
+for fairness. This should be one of the protected attributes.</p></li>
+<li><p><strong>tau</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Fairness parameter that controls the trade-off between
+accuracy and fairness. Higher values prioritize fairness.
+Defaults to 0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Configured MetaFair classifier.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>MetaFairClassifier</p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">meta_model</span> <span class="o">=</span> <span class="n">bm_manager</span><span class="o">.</span><span class="n">in_Meta</span><span class="p">(</span><span class="s1">&#39;gender&#39;</span><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Train the model with your data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">train_labels</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="callmefair.BMManager.pos_CEO">
+<span class="sig-name descname"><span class="pre">pos_CEO</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">valid_BLD_pred</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_BLD_pred</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/mitigation/fair_bm.html#BMManager.pos_CEO"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BMManager.pos_CEO" title="Link to this definition"></a></dt>
+<dd><p>Apply Calibrated Equalized Odds (CEO) postprocessing bias mitigation.</p>
+<p>CEO is a postprocessing technique that adjusts model predictions to achieve
+equalized odds while maintaining calibration. It ensures that the true
+positive and false positive rates are equal across different groups.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>valid_BLD_pred</strong> (<em>BinaryLabelDataset</em>) – Validation dataset with model predictions</p></li>
+<li><p><strong>test_BLD_pred</strong> (<em>BinaryLabelDataset</em>) – Test dataset with model predictions</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Postprocessed test predictions with equalized odds</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>BinaryLabelDataset</p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mitigated_predictions</span> <span class="o">=</span> <span class="n">bm_manager</span><span class="o">.</span><span class="n">pos_CEO</span><span class="p">(</span><span class="n">valid_pred</span><span class="p">,</span> <span class="n">test_pred</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># The predictions now satisfy equalized odds</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="callmefair.BMManager.pos_EO">
+<span class="sig-name descname"><span class="pre">pos_EO</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">valid_BLD_pred</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_BLD_pred</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/mitigation/fair_bm.html#BMManager.pos_EO"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BMManager.pos_EO" title="Link to this definition"></a></dt>
+<dd><p>Apply Equalized Odds (EO) postprocessing bias mitigation.</p>
+<p>EO is a postprocessing technique that adjusts model predictions to achieve
+equalized odds. It ensures that the true positive and false positive rates
+are equal across different groups, without considering calibration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>valid_BLD_pred</strong> (<em>BinaryLabelDataset</em>) – Validation dataset with model predictions</p></li>
+<li><p><strong>test_BLD_pred</strong> (<em>BinaryLabelDataset</em>) – Test dataset with model predictions</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Postprocessed test predictions with equalized odds</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>BinaryLabelDataset</p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mitigated_predictions</span> <span class="o">=</span> <span class="n">bm_manager</span><span class="o">.</span><span class="n">pos_EO</span><span class="p">(</span><span class="n">valid_pred</span><span class="p">,</span> <span class="n">test_pred</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># The predictions now satisfy equalized odds</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="callmefair.BMManager.pos_ROC">
+<span class="sig-name descname"><span class="pre">pos_ROC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">valid_BLD_pred</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_BLD_pred</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/mitigation/fair_bm.html#BMManager.pos_ROC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BMManager.pos_ROC" title="Link to this definition"></a></dt>
+<dd><p>Apply Reject Option Classification (ROC) postprocessing bias mitigation.</p>
+<p>ROC is a postprocessing technique that rejects predictions for instances
+where the model is uncertain, particularly when this uncertainty is
+correlated with the sensitive attribute. This helps reduce bias by
+abstaining from making predictions on potentially unfair cases.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>valid_BLD_pred</strong> (<em>BinaryLabelDataset</em>) – Validation dataset with model predictions</p></li>
+<li><p><strong>test_BLD_pred</strong> (<em>BinaryLabelDataset</em>) – Test dataset with model predictions</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Postprocessed test predictions with reject option</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>BinaryLabelDataset</p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mitigated_predictions</span> <span class="o">=</span> <span class="n">bm_manager</span><span class="o">.</span><span class="n">pos_ROC</span><span class="p">(</span><span class="n">valid_pred</span><span class="p">,</span> <span class="n">test_pred</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Some predictions may be rejected to improve fairness</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="callmefair.BMManager.pre_DR">
+<span class="sig-name descname"><span class="pre">pre_DR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sensitive_attribute</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/mitigation/fair_bm.html#BMManager.pre_DR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BMManager.pre_DR" title="Link to this definition"></a></dt>
+<dd><p>Apply Disparate Impact Remover (DIR) preprocessing bias mitigation.</p>
+<p>DIR is a preprocessing technique that repairs the training data to remove
+disparate impact while preserving the utility of the data. It works by
+learning a repair transformation that minimizes the difference in
+conditional distributions between groups.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sensitive_attribute</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the sensitive attribute to repair.
+This should be one of the protected attributes in your dataset.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bm_manager</span><span class="o">.</span><span class="n">pre_DR</span><span class="p">(</span><span class="s1">&#39;gender&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># The training dataset is now repaired for the &#39;gender&#39; attribute</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="callmefair.BMManager.pre_LFR">
+<span class="sig-name descname"><span class="pre">pre_LFR</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/mitigation/fair_bm.html#BMManager.pre_LFR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BMManager.pre_LFR" title="Link to this definition"></a></dt>
+<dd><p>Apply Learning Fair Representations (LFR) preprocessing bias mitigation.</p>
+<p>LFR is a preprocessing technique that learns a fair representation of the
+data that removes information about the sensitive attributes while preserving
+the utility for the prediction task. It uses an adversarial approach to
+learn representations that are fair across different groups.</p>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bm_manager</span><span class="o">.</span><span class="n">pre_LFR</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># The training dataset now has fair representations</span>
+</pre></div>
+</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="callmefair.BMManager.pre_Reweighing">
+<span class="sig-name descname"><span class="pre">pre_Reweighing</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/mitigation/fair_bm.html#BMManager.pre_Reweighing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BMManager.pre_Reweighing" title="Link to this definition"></a></dt>
+<dd><p>Apply Reweighing preprocessing bias mitigation.</p>
+<p>Reweighing is a preprocessing technique that assigns different weights to
+instances based on their group membership to achieve statistical parity.
+This method modifies the training dataset by reweighting instances.</p>
+<p>The method fits the reweighing algorithm on the training data and transforms
+it to create a fairer training dataset.</p>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bm_manager</span><span class="o">.</span><span class="n">pre_Reweighing</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># The training dataset is now reweighted for fairness</span>
+</pre></div>
+</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BMManager.bmI">
+<span class="sig-name descname"><span class="pre">bmI</span></span><a class="headerlink" href="#callmefair.BMManager.bmI" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BMManager.privileged_group">
+<span class="sig-name descname"><span class="pre">privileged_group</span></span><a class="headerlink" href="#callmefair.BMManager.privileged_group" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BMManager.unprivileged_group">
+<span class="sig-name descname"><span class="pre">unprivileged_group</span></span><a class="headerlink" href="#callmefair.BMManager.unprivileged_group" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="callmefair.BMMetrics">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">callmefair.</span></span><span class="sig-name descname"><span class="pre">BMMetrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bmI</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">class_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">privileged_group</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unprivileged_group</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/util/fair_util.html#BMMetrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BMMetrics" title="Link to this definition"></a></dt>
+<dd><p>Comprehensive fairness metrics evaluation for bias mitigation.</p>
+<p>This class provides comprehensive evaluation of both classification performance
+and fairness metrics for machine learning models. It supports both standard
+models and in-processing bias mitigation techniques.</p>
+<p>The class evaluates:
+- Classification metrics: accuracy, precision, recall, F1, MCC
+- Fairness metrics: EOD, AOD, SPD, DI, TI
+- Optimal threshold selection based on balanced accuracy
+- Comprehensive fairness scoring</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bmI</strong> (<a class="reference internal" href="#callmefair.BMInterface" title="callmefair.BMInterface"><em>BMInterface</em></a>) – Interface for managing datasets</p></li>
+<li><p><strong>pos_idx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Index of positive class</p></li>
+<li><p><strong>in_mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether using in-processing bias mitigation</p></li>
+<li><p><strong>pred_test</strong> – Test predictions (numpy array or BinaryLabelDataset)</p></li>
+<li><p><strong>pred_val</strong> – Validation predictions (numpy array or BinaryLabelDataset)</p></li>
+<li><p><strong>privileged_group</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>]</em>) – List of privileged group definitions</p></li>
+<li><p><strong>unprivileged_group</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>]</em>) – List of unprivileged group definitions</p></li>
+<li><p><strong>balanced_acc</strong> (<em>np.ndarray</em>) – Balanced accuracy scores for different thresholds</p></li>
+<li><p><strong>class_threshold</strong> (<em>np.ndarray</em>) – Threshold values for evaluation</p></li>
+<li><p><strong>best_class_thresh</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Optimal threshold based on validation performance</p></li>
+<li><p><strong>cmetrics</strong> (<em>ClassificationMetric</em>) – AIF360 classification metrics object</p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>bmI</strong> (<a class="reference internal" href="#callmefair.BMInterface" title="callmefair.BMInterface"><em>BMInterface</em></a>)</p></li>
+<li><p><strong>class_array</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a>)</p></li>
+<li><p><strong>pred_val</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a><em> | </em><a class="reference external" href="https://aif360.readthedocs.io/en/latest/modules/generated/aif360.datasets.BinaryLabelDataset.html#aif360.datasets.BinaryLabelDataset" title="(in aif360 v0.6)"><em>aif360.datasets.BinaryLabelDataset</em></a>)</p></li>
+<li><p><strong>pred_test</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a><em> | </em><a class="reference external" href="https://aif360.readthedocs.io/en/latest/modules/generated/aif360.datasets.BinaryLabelDataset.html#aif360.datasets.BinaryLabelDataset" title="(in aif360 v0.6)"><em>aif360.datasets.BinaryLabelDataset</em></a>)</p></li>
+<li><p><strong>privileged_group</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>]</em>)</p></li>
+<li><p><strong>unprivileged_group</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>]</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">callmefair.util.fair_util</span><span class="w"> </span><span class="kn">import</span> <span class="n">BMMetrics</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create metrics evaluator</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metrics</span> <span class="o">=</span> <span class="n">BMMetrics</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">bmI</span><span class="o">=</span><span class="n">bm_interface</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">class_array</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">pred_val</span><span class="o">=</span><span class="n">val_predictions</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">pred_test</span><span class="o">=</span><span class="n">test_predictions</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">privileged_group</span><span class="o">=</span><span class="n">privileged_groups</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">unprivileged_group</span><span class="o">=</span><span class="n">unprivileged_groups</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Get comprehensive report</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">get_report</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Accuracy: </span><span class="si">{</span><span class="n">report</span><span class="p">[</span><span class="s1">&#39;acc&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Fairness score: </span><span class="si">{</span><span class="n">report</span><span class="p">[</span><span class="s1">&#39;spd&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Initialize the Bias Mitigation Metrics evaluator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bmI</strong> (<a class="reference internal" href="#callmefair.BMInterface" title="callmefair.BMInterface"><em>BMInterface</em></a>) – Interface for managing datasets</p></li>
+<li><p><strong>class_array</strong> (<em>np.ndarray</em>) – Array of class labels [0, 1]</p></li>
+<li><p><strong>pred_val</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a><em> | </em><a class="reference external" href="https://aif360.readthedocs.io/en/latest/modules/generated/aif360.datasets.BinaryLabelDataset.html#aif360.datasets.BinaryLabelDataset" title="(in aif360 v0.6)"><em>aif360.datasets.BinaryLabelDataset</em></a>) – Validation predictions (numpy array or BinaryLabelDataset)</p></li>
+<li><p><strong>pred_test</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a><em> | </em><a class="reference external" href="https://aif360.readthedocs.io/en/latest/modules/generated/aif360.datasets.BinaryLabelDataset.html#aif360.datasets.BinaryLabelDataset" title="(in aif360 v0.6)"><em>aif360.datasets.BinaryLabelDataset</em></a>) – Test predictions (numpy array or BinaryLabelDataset)</p></li>
+<li><p><strong>privileged_group</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>]</em>) – List of privileged group definitions</p></li>
+<li><p><strong>unprivileged_group</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>]</em>) – List of unprivileged group definitions</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metrics</span> <span class="o">=</span> <span class="n">BMMetrics</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">bmI</span><span class="o">=</span><span class="n">bm_interface</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">class_array</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">pred_val</span><span class="o">=</span><span class="n">val_pred</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">pred_test</span><span class="o">=</span><span class="n">test_pred</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">privileged_group</span><span class="o">=</span><span class="p">[{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}],</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">unprivileged_group</span><span class="o">=</span><span class="p">[{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="callmefair.BMMetrics.get_groups">
+<span class="sig-name descname"><span class="pre">get_groups</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/util/fair_util.html#BMMetrics.get_groups"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BMMetrics.get_groups" title="Link to this definition"></a></dt>
+<dd><p>Get privileged and unprivileged group definitions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>(privileged_group, unprivileged_group)</dt><dd><ul class="simple">
+<li><p>privileged_group (list[dict]): List of privileged group definitions</p></li>
+<li><p>unprivileged_group (list[dict]): List of unprivileged group definitions</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a></p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">privileged</span><span class="p">,</span> <span class="n">unprivileged</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">get_groups</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Privileged groups: </span><span class="si">{</span><span class="n">privileged</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unprivileged groups: </span><span class="si">{</span><span class="n">unprivileged</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="callmefair.BMMetrics.get_pred_test">
+<span class="sig-name descname"><span class="pre">get_pred_test</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/util/fair_util.html#BMMetrics.get_pred_test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BMMetrics.get_pred_test" title="Link to this definition"></a></dt>
+<dd><p>Get test predictions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Test predictions (numpy array or BinaryLabelDataset)</p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">test_pred</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">get_pred_test</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test predictions shape: </span><span class="si">{</span><span class="n">test_pred</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="callmefair.BMMetrics.get_report">
+<span class="sig-name descname"><span class="pre">get_report</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/util/fair_util.html#BMMetrics.get_report"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BMMetrics.get_report" title="Link to this definition"></a></dt>
+<dd><p>Get comprehensive performance and fairness report.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>Dictionary containing all classification and fairness metrics</dt><dd><ul class="simple">
+<li><p>Classification metrics: balanced_acc, acc, precision, recall, f1, mcc</p></li>
+<li><p>Fairness metrics: eq_opp_diff, avg_odd_diff, spd, disparate_impact, theil_idx</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a></p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">report</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">get_report</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Accuracy: </span><span class="si">{</span><span class="n">report</span><span class="p">[</span><span class="s1">&#39;acc&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Statistical Parity Difference: </span><span class="si">{</span><span class="n">report</span><span class="p">[</span><span class="s1">&#39;spd&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Equal Opportunity Difference: </span><span class="si">{</span><span class="n">report</span><span class="p">[</span><span class="s1">&#39;eq_opp_diff&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="callmefair.BMMetrics.get_score">
+<span class="sig-name descname"><span class="pre">get_score</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/util/fair_util.html#BMMetrics.get_score"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BMMetrics.get_score" title="Link to this definition"></a></dt>
+<dd><p>Get comprehensive fairness score using the calculate_fairness_score function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>Fairness score evaluation with overall score and detailed breakdown</dt><dd><ul class="simple">
+<li><p>’raw_score’ (float): Unnormalized fairness score</p></li>
+<li><p>’overall_score’ (float): Normalized fairness score (0-1, lower is better)</p></li>
+<li><p>’metric_evaluations’ (dict): Boolean evaluation of each metric</p></li>
+<li><p>’deviations’ (dict): Normalized deviations from optimal values</p></li>
+<li><p>’is_fair’ (bool): Whether all metrics are within acceptable ranges</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a></p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">score_dict</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">get_score</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Overall fairness score: </span><span class="si">{</span><span class="n">score_dict</span><span class="p">[</span><span class="s1">&#39;overall_score&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Is fair: </span><span class="si">{</span><span class="n">score_dict</span><span class="p">[</span><span class="s1">&#39;is_fair&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Check individual metric evaluations</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">metric</span><span class="p">,</span> <span class="n">is_acceptable</span> <span class="ow">in</span> <span class="n">score_dict</span><span class="p">[</span><span class="s1">&#39;metric_evaluations&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">metric</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="s1">&#39;✓&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">is_acceptable</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;✗&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="callmefair.BMMetrics.set_new_pred">
+<span class="sig-name descname"><span class="pre">set_new_pred</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pred_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred_test</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/util/fair_util.html#BMMetrics.set_new_pred"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BMMetrics.set_new_pred" title="Link to this definition"></a></dt>
+<dd><p>Update predictions and recalculate metrics.</p>
+<p>This method allows updating the predictions and recalculating all
+metrics without recreating the entire BMMetrics object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pred_val</strong> (<em>np.ndarray</em>) – New validation predictions</p></li>
+<li><p><strong>pred_test</strong> (<em>np.ndarray</em>) – New test predictions</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># After training a new model</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_val_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_val</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_test_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metrics</span><span class="o">.</span><span class="n">set_new_pred</span><span class="p">(</span><span class="n">new_val_pred</span><span class="p">,</span> <span class="n">new_test_pred</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="callmefair.BMMetrics.set_pos_pred">
+<span class="sig-name descname"><span class="pre">set_pos_pred</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_BLD_pred</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/util/fair_util.html#BMMetrics.set_pos_pred"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BMMetrics.set_pos_pred" title="Link to this definition"></a></dt>
+<dd><p>Set postprocessed predictions and update metrics.</p>
+<p>This method is used for postprocessing bias mitigation techniques
+that modify the test predictions directly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>test_BLD_pred</strong> (<em>BinaryLabelDataset</em>) – Postprocessed test predictions</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># After applying equalized odds</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">postprocessed_pred</span> <span class="o">=</span> <span class="n">eq_odds</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">test_bld</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metrics</span><span class="o">.</span><span class="n">set_pos_pred</span><span class="p">(</span><span class="n">postprocessed_pred</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BMMetrics.balanced_acc">
+<span class="sig-name descname"><span class="pre">balanced_acc</span></span><a class="headerlink" href="#callmefair.BMMetrics.balanced_acc" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BMMetrics.bmI">
+<span class="sig-name descname"><span class="pre">bmI</span></span><a class="headerlink" href="#callmefair.BMMetrics.bmI" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BMMetrics.class_threshold">
+<span class="sig-name descname"><span class="pre">class_threshold</span></span><a class="headerlink" href="#callmefair.BMMetrics.class_threshold" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BMMetrics.in_mode">
+<span class="sig-name descname"><span class="pre">in_mode</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#callmefair.BMMetrics.in_mode" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BMMetrics.pos_idx">
+<span class="sig-name descname"><span class="pre">pos_idx</span></span><a class="headerlink" href="#callmefair.BMMetrics.pos_idx" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BMMetrics.pred_test">
+<span class="sig-name descname"><span class="pre">pred_test</span></span><a class="headerlink" href="#callmefair.BMMetrics.pred_test" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BMMetrics.pred_val">
+<span class="sig-name descname"><span class="pre">pred_val</span></span><a class="headerlink" href="#callmefair.BMMetrics.pred_val" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BMMetrics.privileged_group">
+<span class="sig-name descname"><span class="pre">privileged_group</span></span><a class="headerlink" href="#callmefair.BMMetrics.privileged_group" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BMMetrics.unprivileged_group">
+<span class="sig-name descname"><span class="pre">unprivileged_group</span></span><a class="headerlink" href="#callmefair.BMMetrics.unprivileged_group" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="callmefair.BMType">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">callmefair.</span></span><span class="sig-name descname"><span class="pre">BMType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/mitigation/fair_bm.html#BMType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BMType" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
+<p>Enumeration of bias mitigation techniques.</p>
+<p>This enum categorizes bias mitigation methods into three main groups:
+- Preprocessing: Applied to training data before model training
+- In-processing: Applied during model training
+- Postprocessing: Applied to model predictions after training</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>preReweighing</strong> – Reweighing preprocessing technique</p></li>
+<li><p><strong>preDisparate</strong> – Disparate Impact Remover preprocessing technique</p></li>
+<li><p><strong>preLFR</strong> – Learning Fair Representations preprocessing technique</p></li>
+<li><p><strong>inAdversarial</strong> – Adversarial Debiasing in-processing technique</p></li>
+<li><p><strong>inMeta</strong> – MetaFair Classifier in-processing technique</p></li>
+<li><p><strong>posCalibrated</strong> – Calibrated Equalized Odds postprocessing technique</p></li>
+<li><p><strong>posEqqOds</strong> – Equalized Odds postprocessing technique</p></li>
+<li><p><strong>posROC</strong> – Reject Option Classification postprocessing technique</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BMType.inAdversarial">
+<span class="sig-name descname"><span class="pre">inAdversarial</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#callmefair.BMType.inAdversarial" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BMType.inMeta">
+<span class="sig-name descname"><span class="pre">inMeta</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#callmefair.BMType.inMeta" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="callmefair.BMType.is_in">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_in</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></em><a class="headerlink" href="#callmefair.BMType.is_in" title="Link to this definition"></a></dt>
+<dd><p>Check if the bias mitigation technique is an in-processing method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the technique is in-processing, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="callmefair.BMType.is_pos">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_pos</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></em><a class="headerlink" href="#callmefair.BMType.is_pos" title="Link to this definition"></a></dt>
+<dd><p>Check if the bias mitigation technique is a postprocessing method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the technique is postprocessing, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="callmefair.BMType.is_pre">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_pre</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></em><a class="headerlink" href="#callmefair.BMType.is_pre" title="Link to this definition"></a></dt>
+<dd><p>Check if the bias mitigation technique is a preprocessing method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the technique is preprocessing, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BMType.posCalibrated">
+<span class="sig-name descname"><span class="pre">posCalibrated</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6</span></em><a class="headerlink" href="#callmefair.BMType.posCalibrated" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BMType.posEqqOds">
+<span class="sig-name descname"><span class="pre">posEqqOds</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">7</span></em><a class="headerlink" href="#callmefair.BMType.posEqqOds" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BMType.posROC">
+<span class="sig-name descname"><span class="pre">posROC</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">8</span></em><a class="headerlink" href="#callmefair.BMType.posROC" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BMType.preDisparate">
+<span class="sig-name descname"><span class="pre">preDisparate</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#callmefair.BMType.preDisparate" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BMType.preLFR">
+<span class="sig-name descname"><span class="pre">preLFR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#callmefair.BMType.preLFR" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BMType.preReweighing">
+<span class="sig-name descname"><span class="pre">preReweighing</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#callmefair.BMType.preReweighing" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="callmefair.BaseSearch">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">callmefair.</span></span><span class="sig-name descname"><span class="pre">BaseSearch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/search/_search_base.html#BaseSearch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BaseSearch" title="Link to this definition"></a></dt>
+<dd><p>Base class for bias search functionality in the CallMeFair framework.</p>
+<p>This class provides the core functionality for evaluating bias in machine learning
+models with respect to sensitive attributes. It handles dataset preparation,
+model training, and fairness metric calculation using AIF360.</p>
+<p>The class supports:
+- Individual attribute bias evaluation
+- Multiple ML model types
+- Imbalanced dataset handling with NearMiss
+- Parallel processing for efficient evaluation
+- Comprehensive fairness metrics calculation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – Input dataset with features and target</p></li>
+<li><p><strong>label_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the target variable</p></li>
+<li><p><strong>scaler</strong> (<em>StandardScaler</em>) – Feature scaler for model training</p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>df</strong> (<a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)"><em>pandas.DataFrame</em></a>)</p></li>
+<li><p><strong>label_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>)</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">searcher</span> <span class="o">=</span> <span class="n">BaseSearch</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">searcher</span><span class="o">.</span><span class="n">evaluate_attribute</span><span class="p">(</span><span class="s1">&#39;gender&#39;</span><span class="p">,</span> <span class="n">iterate</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">model_name</span><span class="o">=</span><span class="s1">&#39;lr&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Initialize the BaseSearch object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – Input dataset containing features and target variable</p></li>
+<li><p><strong>label_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the target variable column</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="callmefair.BaseSearch.evaluate_attribute">
+<span class="sig-name descname"><span class="pre">evaluate_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">treat_umbalance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_new</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/search/_search_base.html#BaseSearch.evaluate_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BaseSearch.evaluate_attribute" title="Link to this definition"></a></dt>
+<dd><p>Evaluate bias for a specific attribute across multiple iterations.</p>
+<p>This method performs comprehensive bias evaluation by:
+- Running multiple iterations for statistical robustness
+- Training models with optional class balancing
+- Using parallel processing for efficiency
+- Aggregating results across iterations</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attribute</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the sensitive attribute to evaluate</p></li>
+<li><p><strong>treat_umbalance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether to apply NearMiss undersampling</p></li>
+<li><p><strong>iterate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of iterations for robust evaluation</p></li>
+<li><p><strong>model_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Type of model to use (‘lr’, ‘cat’, ‘xgb’, ‘mlp’)</p></li>
+<li><p><strong>df_new</strong> (<em>pd.DataFrame</em><em>, </em><em>optional</em>) – Alternative dataset to use</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary containing averaged fairness scores for the attribute</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a></p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">searcher</span><span class="o">.</span><span class="n">evaluate_attribute</span><span class="p">(</span><span class="s1">&#39;gender&#39;</span><span class="p">,</span> <span class="n">iterate</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">model_name</span><span class="o">=</span><span class="s1">&#39;lr&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;gender_raw&#39;</span><span class="p">],</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;gender_overall&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BaseSearch.df">
+<span class="sig-name descname"><span class="pre">df</span></span><a class="headerlink" href="#callmefair.BaseSearch.df" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BaseSearch.label_name">
+<span class="sig-name descname"><span class="pre">label_name</span></span><a class="headerlink" href="#callmefair.BaseSearch.label_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BaseSearch.scaler">
+<span class="sig-name descname"><span class="pre">scaler</span></span><a class="headerlink" href="#callmefair.BaseSearch.scaler" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="callmefair.BiasSearch">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">callmefair.</span></span><span class="sig-name descname"><span class="pre">BiasSearch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute_names</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/search/fair_search.html#BiasSearch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BiasSearch" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">callmefair.search._search_base.BaseSearch</span></code></p>
+<p>Main class for bias search and evaluation in the CallMeFair framework.</p>
+<p>This class extends BaseSearch to provide comprehensive bias evaluation
+across individual attributes and their combinations. It supports both
+individual attribute analysis and complex attribute combination evaluation
+using different set operations.</p>
+<p>The class provides methods for:
+- Individual attribute bias evaluation
+- 2-way and 3-way attribute combinations
+- Set operation comparison (union, intersection, differences)
+- Pretty table output for results
+- Comprehensive bias summarization</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – Input dataset with features and target</p></li>
+<li><p><strong>label_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the target variable</p></li>
+<li><p><strong>attribute_names</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>]</em>) – List of sensitive attributes to evaluate</p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>df</strong> (<a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)"><em>pandas.DataFrame</em></a>)</p></li>
+<li><p><strong>label_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>)</p></li>
+<li><p><strong>attribute_names</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>]</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">searcher</span> <span class="o">=</span> <span class="n">BiasSearch</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;gender&#39;</span><span class="p">,</span> <span class="s1">&#39;race&#39;</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="p">,</span> <span class="n">printable</span> <span class="o">=</span> <span class="n">searcher</span><span class="o">.</span><span class="n">evaluate_average</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">printable</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Initialize the BiasSearch object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – Input dataset containing features and target variable</p></li>
+<li><p><strong>label_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the target variable column</p></li>
+<li><p><strong>attribute_names</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>]</em>) – List of sensitive attributes to evaluate</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="callmefair.BiasSearch.evaluate_average">
+<span class="sig-name descname"><span class="pre">evaluate_average</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">treat_umbalance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lr'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/search/fair_search.html#BiasSearch.evaluate_average"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BiasSearch.evaluate_average" title="Link to this definition"></a></dt>
+<dd><p>Evaluate bias for all individual attributes and return averaged results.</p>
+<p>This method evaluates bias for each individual sensitive attribute
+and returns both raw and normalized fairness scores. The results
+are formatted into a pretty table for easy visualization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>treat_umbalance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether to apply NearMiss undersampling</p></li>
+<li><p><strong>iterate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of iterations for robust evaluation</p></li>
+<li><p><strong>model_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Type of model to use (‘lr’, ‘cat’, ‘xgb’, ‘mlp’)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>(table_data, pretty_table) - Raw data and formatted table</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a></p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="p">,</span> <span class="n">printable</span> <span class="o">=</span> <span class="n">searcher</span><span class="o">.</span><span class="n">evaluate_average</span><span class="p">(</span><span class="n">iterate</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">printable</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="callmefair.BiasSearch.evaluate_combination_average">
+<span class="sig-name descname"><span class="pre">evaluate_combination_average</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">col_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">treat_umbalance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lr'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/search/fair_search.html#BiasSearch.evaluate_combination_average"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BiasSearch.evaluate_combination_average" title="Link to this definition"></a></dt>
+<dd><p>Evaluate bias for all set operations between two attributes.</p>
+<p>This method compares all possible set operations (union, intersection,
+differences, symmetric difference) between two attributes and evaluates
+bias for each combination. This helps understand how different ways of
+combining attributes affect bias.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>col_1</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the first attribute</p></li>
+<li><p><strong>col_2</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the second attribute</p></li>
+<li><p><strong>treat_umbalance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether to apply NearMiss undersampling</p></li>
+<li><p><strong>iterate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of iterations for robust evaluation</p></li>
+<li><p><strong>model_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Type of model to use (‘lr’, ‘cat’, ‘xgb’, ‘mlp’)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>(table_data, pretty_table) - Raw data and formatted table</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a></p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="p">,</span> <span class="n">printable</span> <span class="o">=</span> <span class="n">searcher</span><span class="o">.</span><span class="n">evaluate_combination_average</span><span class="p">(</span><span class="s1">&#39;gender&#39;</span><span class="p">,</span> <span class="s1">&#39;race&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">printable</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="callmefair.BiasSearch.evaluate_combinations">
+<span class="sig-name descname"><span class="pre">evaluate_combinations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">treat_umbalance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lr'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/search/fair_search.html#BiasSearch.evaluate_combinations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.BiasSearch.evaluate_combinations" title="Link to this definition"></a></dt>
+<dd><p>Evaluate bias for all 2-way and 3-way attribute combinations.</p>
+<p>This method creates combinations of sensitive attributes using intersection
+operations and evaluates bias for each combination. It generates both
+2-way combinations (e.g., gender_race) and 3-way combinations
+(e.g., gender_race_age).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>treat_umbalance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether to apply NearMiss undersampling</p></li>
+<li><p><strong>iterate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of iterations for robust evaluation</p></li>
+<li><p><strong>model_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Type of model to use (‘lr’, ‘cat’, ‘xgb’, ‘mlp’)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>(table_data, pretty_table) - Raw data and formatted table</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a></p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="p">,</span> <span class="n">printable</span> <span class="o">=</span> <span class="n">searcher</span><span class="o">.</span><span class="n">evaluate_combinations</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">printable</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.BiasSearch.attribute_names">
+<span class="sig-name descname"><span class="pre">attribute_names</span></span><a class="headerlink" href="#callmefair.BiasSearch.attribute_names" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="callmefair.CType">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">callmefair.</span></span><span class="sig-name descname"><span class="pre">CType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/search/_search_base.html#CType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.CType" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
+<p>Enumeration of attribute combination operations for bias search.</p>
+<p>This enum defines the set operations that can be performed when combining
+two binary sensitive attributes to create composite protected groups.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>union</strong> – Logical OR operation (either attribute is 1)</p></li>
+<li><p><strong>intersection</strong> – Logical AND operation (both attributes are 1)</p></li>
+<li><p><strong>difference_1_minus_2</strong> – Set difference (attribute1=1 AND attribute2=0)</p></li>
+<li><p><strong>difference_2_minus_1</strong> – Set difference (attribute2=1 AND attribute1=0)</p></li>
+<li><p><strong>symmetric_difference</strong> – XOR operation (exactly one attribute is 1)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="callmefair.CType.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/search/_search_base.html#CType.__str__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.CType.__str__" title="Link to this definition"></a></dt>
+<dd><p>Return string representation of the operation type.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.CType.difference_1_minus_2">
+<span class="sig-name descname"><span class="pre">difference_1_minus_2</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#callmefair.CType.difference_1_minus_2" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.CType.difference_2_minus_1">
+<span class="sig-name descname"><span class="pre">difference_2_minus_1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#callmefair.CType.difference_2_minus_1" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.CType.intersection">
+<span class="sig-name descname"><span class="pre">intersection</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#callmefair.CType.intersection" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.CType.symmetric_difference">
+<span class="sig-name descname"><span class="pre">symmetric_difference</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#callmefair.CType.symmetric_difference" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="callmefair.CType.union">
+<span class="sig-name descname"><span class="pre">union</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#callmefair.CType.union" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="callmefair.calculate_fairness_score">
+<span class="sig-prename descclassname"><span class="pre">callmefair.</span></span><span class="sig-name descname"><span class="pre">calculate_fairness_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">EOD</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">AOD</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SPD</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DI</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">TI</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/util/fair_util.html#calculate_fairness_score"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.calculate_fairness_score" title="Link to this definition"></a></dt>
+<dd><p>Calculate a comprehensive fairness score based on multiple fairness metrics.</p>
+<p>This function aggregates five key fairness metrics into a single normalized score
+that represents the overall fairness of a machine learning model. The function
+evaluates each metric against predefined acceptable ranges and calculates
+deviations from optimal values to produce a unified fairness assessment.</p>
+<p>The function uses a weighted scoring system where:
+- Each metric contributes up to 0.2 for being outside acceptable ranges
+- Each metric contributes up to 0.16 based on deviation from optimal values
+- The final score is normalized to the 0-1 range where 0 = perfect fairness</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>EOD</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Equal Opportunity Difference - measures difference in true positive
+rates between groups. Optimal value: 0.0, Acceptable range: (-0.1, 0.1)</p></li>
+<li><p><strong>AOD</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Average Odds Difference - measures difference in average of
+true positive and false positive rates between groups. Optimal value: 0.0,
+Acceptable range: (-0.1, 0.1)</p></li>
+<li><p><strong>SPD</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Statistical Parity Difference - measures difference in positive
+prediction rates between groups. Optimal value: 0.0, Acceptable range: (-0.1, 0.1)</p></li>
+<li><p><strong>DI</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Disparate Impact - ratio of positive prediction rates between
+groups. Optimal value: 1.0, Acceptable range: (0.8, 1.2)</p></li>
+<li><p><strong>TI</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Theil Index - measures inequality in prediction distributions.
+Optimal value: 0.0, Acceptable range: (0.0, 0.25)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Dictionary containing fairness evaluation results with keys:</dt><dd><ul class="simple">
+<li><p>’raw_score’ (float): Unnormalized fairness score</p></li>
+<li><p>’overall_score’ (float): Normalized fairness score (0-1, lower is better)</p></li>
+<li><p>’metric_evaluations’ (dict): Boolean evaluation of each metric</p></li>
+<li><p>’deviations’ (dict): Normalized deviations from optimal values</p></li>
+<li><p>’is_fair’ (bool): Whether all metrics are within acceptable ranges</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a></p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Perfect fairness</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">calculate_fairness_score</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Score: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;overall_score&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># 0.0 (perfect)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Is fair: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;is_fair&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># True</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Moderate unfairness</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">calculate_fairness_score</span><span class="p">(</span><span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.12</span><span class="p">,</span> <span class="mf">0.18</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Score: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;overall_score&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># ~0.6-0.8</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Is fair: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;is_fair&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># False</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Check individual metric evaluations</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">metric</span><span class="p">,</span> <span class="n">is_acceptable</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;metric_evaluations&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">metric</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="s1">&#39;✓&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">is_acceptable</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;✗&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="callmefair.combine_attributes">
+<span class="sig-prename descclassname"><span class="pre">callmefair.</span></span><span class="sig-name descname"><span class="pre">combine_attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/callmefair/search/_search_base.html#combine_attributes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#callmefair.combine_attributes" title="Link to this definition"></a></dt>
+<dd><p>Combines two binary columns in a DataFrame using a specified set operation,
+replacing the original columns with a single combined column.</p>
+<p>This function creates composite protected groups by combining two binary
+sensitive attributes using set operations. The resulting combined attribute
+can be used for more sophisticated bias analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – Input DataFrame containing the binary columns</p></li>
+<li><p><strong>col1</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the first binary column (e.g., ‘gender’)</p></li>
+<li><p><strong>col2</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the second binary column (e.g., ‘race’)</p></li>
+<li><p><strong>operation</strong> (<a class="reference internal" href="#callmefair.CType" title="callmefair.CType"><em>CType</em></a>) – Set operation to apply (‘union’, ‘intersection’,
+‘difference_1_minus_2’, ‘difference_2_minus_1’,
+‘symmetric_difference’)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New DataFrame with original columns replaced by combined column</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If columns are not binary (contain values other than 0 or 1)</p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;race&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">combine_attributes</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;gender&#39;</span><span class="p">,</span> <span class="s1">&#39;race&#39;</span><span class="p">,</span> <span class="n">CType</span><span class="o">.</span><span class="n">intersection</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+<span class="go">[&#39;gender_race&#39;]</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="API Reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="mitigation/index.html" class="btn btn-neutral float-right" title="callmefair.mitigation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, CallMeFair Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

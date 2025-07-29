@@ -1,0 +1,203 @@
+callmefair.search.fair_search
+=============================
+
+.. py:module:: callmefair.search.fair_search
+
+.. autoapi-nested-parse::
+
+   Fair Search Module
+
+   This module provides high-level bias search functionality for the CallMeFair framework.
+   It implements comprehensive bias evaluation across individual attributes and their
+   combinations, with support for different set operations and result visualization.
+
+   The module extends BaseSearch to provide:
+   - Individual attribute bias evaluation
+   - Attribute combination analysis (2-way and 3-way)
+   - Set operation comparison (union, intersection, differences)
+   - Pretty table output for results
+   - Comprehensive bias summarization
+
+   Classes:
+       BiasSearch: Main class for bias search and evaluation
+
+   Functions:
+       pretty_print: Format results into pretty tables
+
+   .. admonition:: Example
+
+      >>> from callmefair.search.fair_search import BiasSearch
+      >>> searcher = BiasSearch(df, 'target', ['gender', 'race'])
+      >>> table, printable = searcher.evaluate_average()
+
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   callmefair.search.fair_search.BiasSearch
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   callmefair.search.fair_search.pretty_print
+
+
+Module Contents
+---------------
+
+.. py:class:: BiasSearch(df, label_name, attribute_names)
+
+   Bases: :py:obj:`callmefair.search._search_base.BaseSearch`
+
+
+   Main class for bias search and evaluation in the CallMeFair framework.
+
+   This class extends BaseSearch to provide comprehensive bias evaluation
+   across individual attributes and their combinations. It supports both
+   individual attribute analysis and complex attribute combination evaluation
+   using different set operations.
+
+   The class provides methods for:
+   - Individual attribute bias evaluation
+   - 2-way and 3-way attribute combinations
+   - Set operation comparison (union, intersection, differences)
+   - Pretty table output for results
+   - Comprehensive bias summarization
+
+   :ivar df: Input dataset with features and target
+   :vartype df: pd.DataFrame
+   :ivar label_name: Name of the target variable
+   :vartype label_name: str
+   :ivar attribute_names: List of sensitive attributes to evaluate
+
+   :vartype attribute_names: list[str]
+
+   .. admonition:: Example
+
+      >>> searcher = BiasSearch(df, 'target', ['gender', 'race', 'age'])
+      >>> table, printable = searcher.evaluate_average()
+      >>> print(printable)
+
+   Initialize the BiasSearch object.
+
+   :param df: Input dataset containing features and target variable
+   :type df: pd.DataFrame
+   :param label_name: Name of the target variable column
+   :type label_name: str
+   :param attribute_names: List of sensitive attributes to evaluate
+   :type attribute_names: list[str]
+
+
+   .. py:method:: evaluate_average(treat_umbalance=False, iterate=10, model_name = 'lr')
+
+      Evaluate bias for all individual attributes and return averaged results.
+
+      This method evaluates bias for each individual sensitive attribute
+      and returns both raw and normalized fairness scores. The results
+      are formatted into a pretty table for easy visualization.
+
+      :param treat_umbalance: Whether to apply NearMiss undersampling
+      :type treat_umbalance: bool
+      :param iterate: Number of iterations for robust evaluation
+      :type iterate: int
+      :param model_name: Type of model to use ('lr', 'cat', 'xgb', 'mlp')
+      :type model_name: str
+
+      :returns: (table_data, pretty_table) - Raw data and formatted table
+      :rtype: tuple
+
+      .. admonition:: Example
+
+         >>> table, printable = searcher.evaluate_average(iterate=5)
+         >>> print(printable)
+
+
+
+   .. py:method:: evaluate_combination_average(col_1, col_2, treat_umbalance=False, iterate=10, model_name = 'lr')
+
+      Evaluate bias for all set operations between two attributes.
+
+      This method compares all possible set operations (union, intersection,
+      differences, symmetric difference) between two attributes and evaluates
+      bias for each combination. This helps understand how different ways of
+      combining attributes affect bias.
+
+      :param col_1: Name of the first attribute
+      :type col_1: str
+      :param col_2: Name of the second attribute
+      :type col_2: str
+      :param treat_umbalance: Whether to apply NearMiss undersampling
+      :type treat_umbalance: bool
+      :param iterate: Number of iterations for robust evaluation
+      :type iterate: int
+      :param model_name: Type of model to use ('lr', 'cat', 'xgb', 'mlp')
+      :type model_name: str
+
+      :returns: (table_data, pretty_table) - Raw data and formatted table
+      :rtype: tuple
+
+      .. admonition:: Example
+
+         >>> table, printable = searcher.evaluate_combination_average('gender', 'race')
+         >>> print(printable)
+
+
+
+   .. py:method:: evaluate_combinations(treat_umbalance=False, iterate=10, model_name = 'lr')
+
+      Evaluate bias for all 2-way and 3-way attribute combinations.
+
+      This method creates combinations of sensitive attributes using intersection
+      operations and evaluates bias for each combination. It generates both
+      2-way combinations (e.g., gender_race) and 3-way combinations
+      (e.g., gender_race_age).
+
+      :param treat_umbalance: Whether to apply NearMiss undersampling
+      :type treat_umbalance: bool
+      :param iterate: Number of iterations for robust evaluation
+      :type iterate: int
+      :param model_name: Type of model to use ('lr', 'cat', 'xgb', 'mlp')
+      :type model_name: str
+
+      :returns: (table_data, pretty_table) - Raw data and formatted table
+      :rtype: tuple
+
+      .. admonition:: Example
+
+         >>> table, printable = searcher.evaluate_combinations()
+         >>> print(printable)
+
+
+
+   .. py:attribute:: attribute_names
+
+
+.. py:function:: pretty_print(table, order_key = 1)
+
+   Format a list of results into a pretty table for display.
+
+   This function takes a list of results and formats them into a PrettyTable
+   object for better visualization. The results are sorted by the specified
+   column in descending order.
+
+   :param table: List of results where first element is header row
+   :type table: list
+   :param order_key: Column index to sort by (default: 1 for fairness score)
+   :type order_key: int
+
+   :returns: Formatted table ready for display
+   :rtype: PrettyTable
+
+   .. admonition:: Example
+
+      >>> results = [['Attribute', 'Score'], ['gender', 0.85], ['race', 0.72]]
+      >>> table = pretty_print(results)
+      >>> print(table)
+
+

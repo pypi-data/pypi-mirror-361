@@ -1,0 +1,595 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>callmefair.mitigation.fair_bm &mdash; CallMeFair 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=720763da" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=720763da" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            CallMeFair
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/quickstart.html">Quick Start Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/grid_search_guide.html">Grid Search Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/utility_guide.html">Utility Functions Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/bias_search_guide.html">Bias Search Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../autoapi/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">CallMeFair</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">callmefair.mitigation.fair_bm</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for callmefair.mitigation.fair_bm</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Bias Mitigation (BM) Manager Module</span>
+
+<span class="sd">This module provides a comprehensive framework for applying various bias mitigation techniques</span>
+<span class="sd">in machine learning models. It supports preprocessing, in-processing, and postprocessing</span>
+<span class="sd">approaches to reduce algorithmic bias and promote fairness in AI systems.</span>
+
+<span class="sd">The module implements multiple bias mitigation algorithms from the AIF360 library:</span>
+<span class="sd">- Preprocessing: Reweighing, Disparate Impact Remover (DIR), Learning Fair Representations (LFR)</span>
+<span class="sd">- In-processing: Adversarial Debiasing, MetaFair Classifier</span>
+<span class="sd">- Postprocessing: Calibrated Equalized Odds, Equalized Odds, Reject Option Classification</span>
+
+<span class="sd">Classes:</span>
+<span class="sd">    BMType: Enumeration of available bias mitigation techniques</span>
+<span class="sd">    BMManager: Main class for applying bias mitigation methods to datasets</span>
+
+<span class="sd">Example:</span>
+<span class="sd">    &gt;&gt;&gt; from callmefair.mitigation.fair_bm import BMManager, BMType</span>
+<span class="sd">    &gt;&gt;&gt; from callmefair.util.fair_util import BMInterface</span>
+<span class="sd">    &gt;&gt;&gt; </span>
+<span class="sd">    &gt;&gt;&gt; # Initialize with your data</span>
+<span class="sd">    &gt;&gt;&gt; bm_manager = BMManager(bm_interface, privileged_groups, unprivileged_groups)</span>
+<span class="sd">    &gt;&gt;&gt; </span>
+<span class="sd">    &gt;&gt;&gt; # Apply preprocessing bias mitigation</span>
+<span class="sd">    &gt;&gt;&gt; bm_manager.pre_Reweighing()</span>
+<span class="sd">    &gt;&gt;&gt; </span>
+<span class="sd">    &gt;&gt;&gt; # Apply in-processing bias mitigation</span>
+<span class="sd">    &gt;&gt;&gt; ad_model = bm_manager.in_AD(debias=True)</span>
+<span class="sd">    &gt;&gt;&gt; </span>
+<span class="sd">    &gt;&gt;&gt; # Apply postprocessing bias mitigation</span>
+<span class="sd">    &gt;&gt;&gt; mitigated_predictions = bm_manager.pos_CEO(valid_pred, test_pred)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">callmefair.util.fair_util</span><span class="w"> </span><span class="kn">import</span> <span class="n">BMInterface</span>
+<span class="c1"># Fairness Dataset</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">aif360.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">BinaryLabelDataset</span>
+<span class="c1"># Bias mitigation techniques</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">aif360.algorithms.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Reweighing</span><span class="p">,</span> <span class="n">DisparateImpactRemover</span><span class="p">,</span> <span class="n">LFR</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">aif360.algorithms.inprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">AdversarialDebiasing</span><span class="p">,</span> <span class="n">MetaFairClassifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">aif360.algorithms.postprocessing.calibrated_eq_odds_postprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">CalibratedEqOddsPostprocessing</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">aif360.algorithms.postprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">EqOddsPostprocessing</span><span class="p">,</span> <span class="n">RejectOptionClassification</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">aif360.algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">Transformer</span>
+<span class="c1"># ML/Models</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">tensorflow.compat.v1</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tf</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+<div class="viewcode-block" id="tf">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_bm/index.html#callmefair.tf">[docs]</a>
+    <span class="n">tf</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">string</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+
+<div class="viewcode-block" id="get_random_string">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_bm/index.html#callmefair.get_random_string">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_random_string</span><span class="p">(</span><span class="n">N</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">7</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a random string of specified length.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        N (int): Length of the random string to generate. Defaults to 7.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Random string containing uppercase and lowercase letters.</span>
+<span class="sd">        </span>
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; get_random_string(5)</span>
+<span class="sd">        &#39;AxK9m&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choices</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">ascii_lowercase</span> <span class="o">+</span>
+                             <span class="n">string</span><span class="o">.</span><span class="n">ascii_uppercase</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">N</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="BMType">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_bm/index.html#callmefair.BMType">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BMType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Enumeration of bias mitigation techniques.</span>
+<span class="sd">    </span>
+<span class="sd">    This enum categorizes bias mitigation methods into three main groups:</span>
+<span class="sd">    - Preprocessing: Applied to training data before model training</span>
+<span class="sd">    - In-processing: Applied during model training</span>
+<span class="sd">    - Postprocessing: Applied to model predictions after training</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        preReweighing: Reweighing preprocessing technique</span>
+<span class="sd">        preDisparate: Disparate Impact Remover preprocessing technique</span>
+<span class="sd">        preLFR: Learning Fair Representations preprocessing technique</span>
+<span class="sd">        inAdversarial: Adversarial Debiasing in-processing technique</span>
+<span class="sd">        inMeta: MetaFair Classifier in-processing technique</span>
+<span class="sd">        posCalibrated: Calibrated Equalized Odds postprocessing technique</span>
+<span class="sd">        posEqqOds: Equalized Odds postprocessing technique</span>
+<span class="sd">        posROC: Reject Option Classification postprocessing technique</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="BMType.preReweighing">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_bm/index.html#callmefair.BMType.preReweighing">[docs]</a>
+    <span class="n">preReweighing</span> <span class="o">=</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="BMType.preDisparate">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_bm/index.html#callmefair.BMType.preDisparate">[docs]</a>
+    <span class="n">preDisparate</span> <span class="o">=</span> <span class="mi">2</span></div>
+
+<div class="viewcode-block" id="BMType.preLFR">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_bm/index.html#callmefair.BMType.preLFR">[docs]</a>
+    <span class="n">preLFR</span> <span class="o">=</span> <span class="mi">3</span></div>
+
+<div class="viewcode-block" id="BMType.inAdversarial">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_bm/index.html#callmefair.BMType.inAdversarial">[docs]</a>
+    <span class="n">inAdversarial</span> <span class="o">=</span> <span class="mi">4</span></div>
+
+<div class="viewcode-block" id="BMType.inMeta">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_bm/index.html#callmefair.BMType.inMeta">[docs]</a>
+    <span class="n">inMeta</span> <span class="o">=</span> <span class="mi">5</span></div>
+
+<div class="viewcode-block" id="BMType.posCalibrated">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_bm/index.html#callmefair.BMType.posCalibrated">[docs]</a>
+    <span class="n">posCalibrated</span> <span class="o">=</span> <span class="mi">6</span></div>
+
+<div class="viewcode-block" id="BMType.posEqqOds">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_bm/index.html#callmefair.BMType.posEqqOds">[docs]</a>
+    <span class="n">posEqqOds</span> <span class="o">=</span> <span class="mi">7</span></div>
+
+<div class="viewcode-block" id="BMType.posROC">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_bm/index.html#callmefair.BMType.posROC">[docs]</a>
+    <span class="n">posROC</span> <span class="o">=</span> <span class="mi">8</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="BMType.is_pre">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_bm/index.html#callmefair.BMType.is_pre">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_pre</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if the bias mitigation technique is a preprocessing method.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if the technique is preprocessing, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="ow">in</span> <span class="nb">frozenset</span><span class="p">((</span><span class="n">BMType</span><span class="o">.</span><span class="n">preDisparate</span><span class="p">,</span> <span class="n">BMType</span><span class="o">.</span><span class="n">preReweighing</span><span class="p">,</span> <span class="n">BMType</span><span class="o">.</span><span class="n">preLFR</span><span class="p">))</span></div>
+
+    
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="BMType.is_in">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_bm/index.html#callmefair.BMType.is_in">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_in</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if the bias mitigation technique is an in-processing method.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if the technique is in-processing, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="ow">in</span> <span class="nb">frozenset</span><span class="p">((</span><span class="n">BMType</span><span class="o">.</span><span class="n">inAdversarial</span><span class="p">,</span> <span class="n">BMType</span><span class="o">.</span><span class="n">inMeta</span><span class="p">))</span></div>
+
+    
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="BMType.is_pos">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_bm/index.html#callmefair.BMType.is_pos">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if the bias mitigation technique is a postprocessing method.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if the technique is postprocessing, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="ow">in</span> <span class="nb">frozenset</span><span class="p">((</span><span class="n">BMType</span><span class="o">.</span><span class="n">posCalibrated</span><span class="p">,</span> <span class="n">BMType</span><span class="o">.</span><span class="n">posEqqOds</span><span class="p">,</span> <span class="n">BMType</span><span class="o">.</span><span class="n">posROC</span><span class="p">))</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="BMManager">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_bm/index.html#callmefair.BMManager">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BMManager</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Bias Mitigation Manager for applying various fairness techniques.</span>
+<span class="sd">    </span>
+<span class="sd">    This class provides a unified interface for applying different bias mitigation</span>
+<span class="sd">    techniques to machine learning datasets. It supports preprocessing, in-processing,</span>
+<span class="sd">    and postprocessing approaches to reduce algorithmic bias.</span>
+<span class="sd">    </span>
+<span class="sd">    The manager works with BinaryLabelDataset objects from the AIF360 library and</span>
+<span class="sd">    provides methods for each type of bias mitigation technique.</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        bmI (BMInterface): Interface for managing binary label datasets</span>
+<span class="sd">        privileged_group (list[dict]): List of dictionaries defining privileged groups</span>
+<span class="sd">        unprivileged_group (list[dict]): List of dictionaries defining unprivileged groups</span>
+<span class="sd">    </span>
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; from callmefair.util.fair_util import BMInterface</span>
+<span class="sd">        &gt;&gt;&gt; from callmefair.mitigation.fair_bm import BMManager</span>
+<span class="sd">        &gt;&gt;&gt; </span>
+<span class="sd">        &gt;&gt;&gt; # Initialize with your data</span>
+<span class="sd">        &gt;&gt;&gt; bm_interface = BMInterface(train_df, val_df, test_df, &#39;label&#39;, [&#39;protected_attr&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; privileged_groups = [{&#39;protected_attr&#39;: 1}]</span>
+<span class="sd">        &gt;&gt;&gt; unprivileged_groups = [{&#39;protected_attr&#39;: 0}]</span>
+<span class="sd">        &gt;&gt;&gt; </span>
+<span class="sd">        &gt;&gt;&gt; bm_manager = BMManager(bm_interface, privileged_groups, unprivileged_groups)</span>
+<span class="sd">        &gt;&gt;&gt; </span>
+<span class="sd">        &gt;&gt;&gt; # Apply preprocessing bias mitigation</span>
+<span class="sd">        &gt;&gt;&gt; bm_manager.pre_Reweighing()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bmI</span><span class="p">:</span> <span class="n">BMInterface</span><span class="p">,</span> <span class="n">privileged_group</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">unprivileged_group</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the Bias Mitigation Manager.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            bmI (BMInterface): Interface for managing binary label datasets</span>
+<span class="sd">            privileged_group (list[dict]): List of dictionaries defining privileged groups.</span>
+<span class="sd">                Each dict should contain protected attribute names and their privileged values.</span>
+<span class="sd">            unprivileged_group (list[dict]): List of dictionaries defining unprivileged groups.</span>
+<span class="sd">                Each dict should contain protected attribute names and their unprivileged values.</span>
+<span class="sd">                </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; privileged_groups = [{&#39;gender&#39;: 1, &#39;race&#39;: 1}]</span>
+<span class="sd">            &gt;&gt;&gt; unprivileged_groups = [{&#39;gender&#39;: 0, &#39;race&#39;: 0}]</span>
+<span class="sd">            &gt;&gt;&gt; bm_manager = BMManager(bm_interface, privileged_groups, unprivileged_groups)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="BMManager.bmI">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_bm/index.html#callmefair.BMManager.bmI">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bmI</span> <span class="o">=</span> <span class="n">bmI</span></div>
+
+<div class="viewcode-block" id="BMManager.privileged_group">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_bm/index.html#callmefair.BMManager.privileged_group">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">privileged_group</span> <span class="o">=</span> <span class="n">privileged_group</span></div>
+
+<div class="viewcode-block" id="BMManager.unprivileged_group">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_bm/index.html#callmefair.BMManager.unprivileged_group">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unprivileged_group</span> <span class="o">=</span> <span class="n">unprivileged_group</span></div>
+
+
+<div class="viewcode-block" id="BMManager.pre_Reweighing">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_bm/index.html#callmefair.BMManager.pre_Reweighing">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pre_Reweighing</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply Reweighing preprocessing bias mitigation.</span>
+<span class="sd">        </span>
+<span class="sd">        Reweighing is a preprocessing technique that assigns different weights to</span>
+<span class="sd">        instances based on their group membership to achieve statistical parity.</span>
+<span class="sd">        This method modifies the training dataset by reweighting instances.</span>
+<span class="sd">        </span>
+<span class="sd">        The method fits the reweighing algorithm on the training data and transforms</span>
+<span class="sd">        it to create a fairer training dataset.</span>
+<span class="sd">        </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; bm_manager.pre_Reweighing()</span>
+<span class="sd">            &gt;&gt;&gt; # The training dataset is now reweighted for fairness</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rw</span> <span class="o">=</span> <span class="n">Reweighing</span><span class="p">(</span><span class="n">unprivileged_groups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unprivileged_group</span><span class="p">,</span>
+                        <span class="n">privileged_groups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">privileged_group</span><span class="p">)</span>
+
+        <span class="n">rw</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="o">.</span><span class="n">get_train_BLD</span><span class="p">())</span>
+        <span class="n">train_BLD_rw</span> <span class="o">=</span> <span class="n">rw</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="o">.</span><span class="n">get_train_BLD</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="o">.</span><span class="n">pre_BM_set</span><span class="p">(</span><span class="n">train_BLD_rw</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BMManager.pre_DR">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_bm/index.html#callmefair.BMManager.pre_DR">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pre_DR</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sensitive_attribute</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply Disparate Impact Remover (DIR) preprocessing bias mitigation.</span>
+<span class="sd">        </span>
+<span class="sd">        DIR is a preprocessing technique that repairs the training data to remove</span>
+<span class="sd">        disparate impact while preserving the utility of the data. It works by</span>
+<span class="sd">        learning a repair transformation that minimizes the difference in</span>
+<span class="sd">        conditional distributions between groups.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            sensitive_attribute (str): Name of the sensitive attribute to repair.</span>
+<span class="sd">                This should be one of the protected attributes in your dataset.</span>
+<span class="sd">                </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; bm_manager.pre_DR(&#39;gender&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; # The training dataset is now repaired for the &#39;gender&#39; attribute</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">di</span> <span class="o">=</span> <span class="n">DisparateImpactRemover</span><span class="p">(</span><span class="n">repair_level</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+                                    <span class="n">sensitive_attribute</span><span class="o">=</span><span class="n">sensitive_attribute</span><span class="p">)</span>
+
+        <span class="n">train_BLD_di</span> <span class="o">=</span> <span class="n">di</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="o">.</span><span class="n">get_train_BLD</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="o">.</span><span class="n">pre_BM_set</span><span class="p">(</span><span class="n">train_BLD_di</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BMManager.pre_LFR">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_bm/index.html#callmefair.BMManager.pre_LFR">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pre_LFR</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply Learning Fair Representations (LFR) preprocessing bias mitigation.</span>
+<span class="sd">        </span>
+<span class="sd">        LFR is a preprocessing technique that learns a fair representation of the</span>
+<span class="sd">        data that removes information about the sensitive attributes while preserving</span>
+<span class="sd">        the utility for the prediction task. It uses an adversarial approach to</span>
+<span class="sd">        learn representations that are fair across different groups.</span>
+<span class="sd">        </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; bm_manager.pre_LFR()</span>
+<span class="sd">            &gt;&gt;&gt; # The training dataset now has fair representations</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lfr</span> <span class="o">=</span> <span class="n">LFR</span><span class="p">(</span><span class="n">unprivileged_groups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unprivileged_group</span><span class="p">,</span> <span class="n">privileged_groups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">privileged_group</span><span class="p">)</span>
+        <span class="n">train_BLD_lfr</span> <span class="o">=</span> <span class="n">lfr</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="o">.</span><span class="n">get_train_BLD</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="o">.</span><span class="n">pre_BM_set</span><span class="p">(</span><span class="n">train_BLD_lfr</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BMManager.in_AD">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_bm/index.html#callmefair.BMManager.in_AD">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">in_AD</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">debias</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AdversarialDebiasing</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create an Adversarial Debiasing in-processing model.</span>
+<span class="sd">        </span>
+<span class="sd">        Adversarial Debiasing is an in-processing technique that trains a classifier</span>
+<span class="sd">        while simultaneously training an adversary that tries to predict the sensitive</span>
+<span class="sd">        attribute from the classifier&#39;s predictions. This encourages the classifier</span>
+<span class="sd">        to make predictions that are independent of the sensitive attribute.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            debias (bool): Whether to apply debiasing. If True, the model will be</span>
+<span class="sd">                trained to be fair. If False, it will be a standard classifier.</span>
+<span class="sd">                Defaults to False.</span>
+<span class="sd">                </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            AdversarialDebiasing: Configured adversarial debiasing model.</span>
+<span class="sd">            </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            ImportError: If TensorFlow is not available.</span>
+<span class="sd">            </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; ad_model = bm_manager.in_AD(debias=True)</span>
+<span class="sd">            &gt;&gt;&gt; # Train the model with your data</span>
+<span class="sd">            &gt;&gt;&gt; ad_model.fit(train_data, train_labels)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">tf</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;TensorFlow is required for Adversarial Debiasing&quot;</span><span class="p">)</span>
+            
+        <span class="n">sess</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">compat</span><span class="o">.</span><span class="n">v1</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+
+        <span class="n">ad</span> <span class="o">=</span> <span class="n">AdversarialDebiasing</span><span class="p">(</span><span class="n">privileged_groups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">privileged_group</span><span class="p">,</span>
+                                    <span class="n">unprivileged_groups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unprivileged_group</span><span class="p">,</span>
+                                    <span class="n">scope_name</span><span class="o">=</span><span class="n">get_random_string</span><span class="p">(),</span>
+                                    <span class="n">debias</span><span class="o">=</span><span class="n">debias</span><span class="p">,</span>
+                                    <span class="n">sess</span><span class="o">=</span><span class="n">sess</span><span class="p">,</span>
+                                    <span class="n">adversary_loss_weight</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span>
+                                    <span class="n">batch_size</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ad</span></div>
+
+    
+<div class="viewcode-block" id="BMManager.in_Meta">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_bm/index.html#callmefair.BMManager.in_Meta">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">in_Meta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sensitive_attribute</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tau</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MetaFairClassifier</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a MetaFair Classifier in-processing model.</span>
+<span class="sd">        </span>
+<span class="sd">        MetaFair is an in-processing technique that uses a meta-learning approach</span>
+<span class="sd">        to learn fair classifiers. It optimizes for both accuracy and fairness</span>
+<span class="sd">        using a regularization term that penalizes unfairness.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            sensitive_attribute (str): Name of the sensitive attribute to consider</span>
+<span class="sd">                for fairness. This should be one of the protected attributes.</span>
+<span class="sd">            tau (float): Fairness parameter that controls the trade-off between</span>
+<span class="sd">                accuracy and fairness. Higher values prioritize fairness.</span>
+<span class="sd">                Defaults to 0.</span>
+<span class="sd">                </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            MetaFairClassifier: Configured MetaFair classifier.</span>
+<span class="sd">            </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; meta_model = bm_manager.in_Meta(&#39;gender&#39;, tau=0.1)</span>
+<span class="sd">            &gt;&gt;&gt; # Train the model with your data</span>
+<span class="sd">            &gt;&gt;&gt; meta_model.fit(train_data, train_labels)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">meta</span> <span class="o">=</span> <span class="n">MetaFairClassifier</span><span class="p">(</span><span class="n">tau</span><span class="o">=</span><span class="n">tau</span><span class="p">,</span> <span class="n">sensitive_attr</span><span class="o">=</span><span class="n">sensitive_attribute</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;fdr&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">meta</span></div>
+
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">__pos_abstract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos_classifier</span><span class="p">:</span> <span class="n">Transformer</span><span class="p">,</span> <span class="n">valid_BLD_pred</span><span class="p">:</span> <span class="n">BinaryLabelDataset</span><span class="p">,</span>
+                        <span class="n">test_BLD_pred</span><span class="p">:</span> <span class="n">BinaryLabelDataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BinaryLabelDataset</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Abstract method for applying postprocessing bias mitigation.</span>
+<span class="sd">        </span>
+<span class="sd">        This is a helper method that provides common functionality for all</span>
+<span class="sd">        postprocessing techniques. It fits the postprocessing classifier on</span>
+<span class="sd">        validation data and predictions, then applies it to test predictions.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            pos_classifier (Transformer): The postprocessing classifier to apply</span>
+<span class="sd">            valid_BLD_pred (BinaryLabelDataset): Validation dataset with predictions</span>
+<span class="sd">            test_BLD_pred (BinaryLabelDataset): Test dataset with predictions</span>
+<span class="sd">                </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            BinaryLabelDataset: Postprocessed test predictions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pos_classifier</span> <span class="o">=</span> <span class="n">pos_classifier</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="o">.</span><span class="n">get_val_BLD</span><span class="p">(),</span> <span class="n">valid_BLD_pred</span><span class="p">)</span>
+        <span class="n">test_pos_pred</span> <span class="o">=</span> <span class="n">pos_classifier</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">test_BLD_pred</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="o">.</span><span class="n">pos_bm_set</span><span class="p">(</span><span class="n">test_pos_pred</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">test_pos_pred</span>
+
+<div class="viewcode-block" id="BMManager.pos_CEO">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_bm/index.html#callmefair.BMManager.pos_CEO">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pos_CEO</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">valid_BLD_pred</span><span class="p">:</span> <span class="n">BinaryLabelDataset</span><span class="p">,</span> <span class="n">test_BLD_pred</span><span class="p">:</span> <span class="n">BinaryLabelDataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BinaryLabelDataset</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply Calibrated Equalized Odds (CEO) postprocessing bias mitigation.</span>
+<span class="sd">        </span>
+<span class="sd">        CEO is a postprocessing technique that adjusts model predictions to achieve</span>
+<span class="sd">        equalized odds while maintaining calibration. It ensures that the true</span>
+<span class="sd">        positive and false positive rates are equal across different groups.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            valid_BLD_pred (BinaryLabelDataset): Validation dataset with model predictions</span>
+<span class="sd">            test_BLD_pred (BinaryLabelDataset): Test dataset with model predictions</span>
+<span class="sd">                </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            BinaryLabelDataset: Postprocessed test predictions with equalized odds</span>
+<span class="sd">            </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; mitigated_predictions = bm_manager.pos_CEO(valid_pred, test_pred)</span>
+<span class="sd">            &gt;&gt;&gt; # The predictions now satisfy equalized odds</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cost_constraint</span> <span class="o">=</span> <span class="s2">&quot;fpr&quot;</span>
+
+        <span class="n">CEO</span> <span class="o">=</span> <span class="n">CalibratedEqOddsPostprocessing</span><span class="p">(</span><span class="n">unprivileged_groups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unprivileged_group</span><span class="p">,</span>
+                                            <span class="n">privileged_groups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">privileged_group</span><span class="p">,</span>
+                                            <span class="n">cost_constraint</span><span class="o">=</span><span class="n">cost_constraint</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__pos_abstract</span><span class="p">(</span><span class="n">CEO</span><span class="p">,</span> <span class="n">valid_BLD_pred</span><span class="p">,</span> <span class="n">test_BLD_pred</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BMManager.pos_EO">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_bm/index.html#callmefair.BMManager.pos_EO">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pos_EO</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">valid_BLD_pred</span><span class="p">:</span> <span class="n">BinaryLabelDataset</span><span class="p">,</span> <span class="n">test_BLD_pred</span><span class="p">:</span> <span class="n">BinaryLabelDataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BinaryLabelDataset</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply Equalized Odds (EO) postprocessing bias mitigation.</span>
+<span class="sd">        </span>
+<span class="sd">        EO is a postprocessing technique that adjusts model predictions to achieve</span>
+<span class="sd">        equalized odds. It ensures that the true positive and false positive rates</span>
+<span class="sd">        are equal across different groups, without considering calibration.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            valid_BLD_pred (BinaryLabelDataset): Validation dataset with model predictions</span>
+<span class="sd">            test_BLD_pred (BinaryLabelDataset): Test dataset with model predictions</span>
+<span class="sd">                </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            BinaryLabelDataset: Postprocessed test predictions with equalized odds</span>
+<span class="sd">            </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; mitigated_predictions = bm_manager.pos_EO(valid_pred, test_pred)</span>
+<span class="sd">            &gt;&gt;&gt; # The predictions now satisfy equalized odds</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">EO</span> <span class="o">=</span> <span class="n">EqOddsPostprocessing</span><span class="p">(</span><span class="n">unprivileged_groups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unprivileged_group</span><span class="p">,</span> 
+                                 <span class="n">privileged_groups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">privileged_group</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__pos_abstract</span><span class="p">(</span><span class="n">EO</span><span class="p">,</span> <span class="n">valid_BLD_pred</span><span class="p">,</span> <span class="n">test_BLD_pred</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BMManager.pos_ROC">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_bm/index.html#callmefair.BMManager.pos_ROC">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pos_ROC</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">valid_BLD_pred</span><span class="p">:</span> <span class="n">BinaryLabelDataset</span><span class="p">,</span> <span class="n">test_BLD_pred</span><span class="p">:</span> <span class="n">BinaryLabelDataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BinaryLabelDataset</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply Reject Option Classification (ROC) postprocessing bias mitigation.</span>
+<span class="sd">        </span>
+<span class="sd">        ROC is a postprocessing technique that rejects predictions for instances</span>
+<span class="sd">        where the model is uncertain, particularly when this uncertainty is</span>
+<span class="sd">        correlated with the sensitive attribute. This helps reduce bias by</span>
+<span class="sd">        abstaining from making predictions on potentially unfair cases.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            valid_BLD_pred (BinaryLabelDataset): Validation dataset with model predictions</span>
+<span class="sd">            test_BLD_pred (BinaryLabelDataset): Test dataset with model predictions</span>
+<span class="sd">                </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            BinaryLabelDataset: Postprocessed test predictions with reject option</span>
+<span class="sd">            </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; mitigated_predictions = bm_manager.pos_ROC(valid_pred, test_pred)</span>
+<span class="sd">            &gt;&gt;&gt; # Some predictions may be rejected to improve fairness</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ROC</span> <span class="o">=</span> <span class="n">RejectOptionClassification</span><span class="p">(</span><span class="n">unprivileged_groups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unprivileged_group</span><span class="p">,</span>
+                                         <span class="n">privileged_groups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">privileged_group</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__pos_abstract</span><span class="p">(</span><span class="n">ROC</span><span class="p">,</span> <span class="n">valid_BLD_pred</span><span class="p">,</span> <span class="n">test_BLD_pred</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, CallMeFair Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

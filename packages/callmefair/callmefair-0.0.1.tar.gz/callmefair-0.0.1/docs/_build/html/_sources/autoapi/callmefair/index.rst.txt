@@ -1,0 +1,1351 @@
+callmefair
+==========
+
+.. py:module:: callmefair
+
+.. autoapi-nested-parse::
+
+   CallMeFair: A Comprehensive Framework for Automatic Bias Mitigation in AI Systems
+
+   CallMeFair provides tools and techniques to identify, measure, and reduce algorithmic bias
+   in machine learning models through preprocessing, in-processing, and postprocessing methods.
+
+   For more information, visit: https://github.com/your-repo/callmefair
+
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/callmefair/mitigation/index
+   /autoapi/callmefair/search/index
+   /autoapi/callmefair/util/index
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   callmefair.BMGridSearch
+   callmefair.BMInterface
+   callmefair.BMManager
+   callmefair.BMMetrics
+   callmefair.BMType
+   callmefair.BaseSearch
+   callmefair.BiasSearch
+   callmefair.CType
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   callmefair.calculate_fairness_score
+   callmefair.combine_attributes
+
+
+Package Contents
+----------------
+
+.. py:class:: BMGridSearch(bmI, model, bm_list, privileged_group, unprivileged_group)
+
+   Grid Search for Bias Mitigation Combinations.
+
+   This class provides a systematic framework for evaluating different combinations
+   of bias mitigation techniques. It supports preprocessing, in-processing, and
+   postprocessing methods, and can work with various machine learning models.
+
+   The grid search evaluates each combination of bias mitigation techniques and
+   logs the results for comparison. It currently supports single sensitive
+   attribute evaluation, with plans for multiple sensitive attributes.
+
+   :ivar bmI: Interface for managing binary label datasets
+   :vartype bmI: BMInterface
+   :ivar bmMR: Bias mitigation manager for applying techniques
+   :vartype bmMR: BMManager
+   :ivar model: The machine learning model to evaluate
+   :ivar bm_list: List of bias mitigation combinations to test
+   :vartype bm_list: list[list[BMType]]
+   :ivar privileged_group: List of dictionaries defining privileged groups
+   :vartype privileged_group: list[dict]
+   :ivar unprivileged_group: List of dictionaries defining unprivileged groups
+   :vartype unprivileged_group: list[dict]
+   :ivar is_model_in: Whether using in-processing bias mitigation
+
+   :vartype is_model_in: bool
+
+   .. admonition:: Example
+
+      >>> from callmefair.mitigation.fair_grid import BMGridSearch
+      >>> from callmefair.mitigation.fair_bm import BMType
+      >>>
+      >>> # Define combinations to test
+      >>> combinations = [
+      >>>     [BMType.preReweighing],
+      >>>     [BMType.preDisparate, BMType.posCEO],
+      >>>     [BMType.inAdversarial]
+      >>> ]
+      >>>
+      >>> # Create grid search
+      >>> grid_search = BMGridSearch(
+      >>>     bmI=bm_interface,
+      >>>     model=RandomForestClassifier(),
+      >>>     bm_list=combinations,
+      >>>     privileged_group=privileged_groups,
+      >>>     unprivileged_group=unprivileged_groups
+      >>> )
+      >>>
+      >>> # Run evaluation
+      >>> grid_search.run_single_sensitive()
+
+   Initialize the Bias Mitigation Grid Search.
+
+   :param bmI: Interface for managing binary label datasets
+   :type bmI: BMInterface
+   :param model: The machine learning model to evaluate. Can be None for
+                 in-processing techniques that have their own models.
+   :param bm_list: List of bias mitigation combinations to test.
+                   Each inner list represents one combination of techniques.
+   :type bm_list: list[list[BMType]]
+   :param privileged_group: List of dictionaries defining privileged groups.
+                            Each dict should contain protected attribute names and their privileged values.
+   :type privileged_group: list[dict]
+   :param unprivileged_group: List of dictionaries defining unprivileged groups.
+                              Each dict should contain protected attribute names and their unprivileged values.
+   :type unprivileged_group: list[dict]
+
+   .. admonition:: Example
+
+      >>> bm_combinations = [
+      >>>     [BMType.preReweighing],
+      >>>     [BMType.preDisparate, BMType.posCEO],
+      >>>     [BMType.inAdversarial]
+      >>> ]
+      >>>
+      >>> grid_search = BMGridSearch(
+      >>>     bmI=bm_interface,
+      >>>     model=RandomForestClassifier(),
+      >>>     bm_list=bm_combinations,
+      >>>     privileged_group=[{'gender': 1}],
+      >>>     unprivileged_group=[{'gender': 0}]
+      >>> )
+
+
+   .. py:method:: run_single_sensitive()
+
+      Run grid search evaluation for single sensitive attribute.
+
+      This method performs a comprehensive evaluation of all bias mitigation
+      combinations in the grid search. It evaluates each combination and logs
+      the results for comparison. Currently supports single sensitive attribute
+      evaluation, with plans for multiple sensitive attributes.
+
+      The method:
+      1. Validates in-processing configurations
+      2. Evaluates baseline performance (no bias mitigation)
+      3. Evaluates each bias mitigation combination
+      4. Logs results to CSV files for analysis
+
+      :raises ValueError: If in-processing bias mitigation is defined with a classifier model
+
+      .. admonition:: Example
+
+         >>> # Define bias mitigation combinations
+         >>> combinations = [
+         >>>     [BMType.preReweighing],
+         >>>     [BMType.preDisparate, BMType.posCEO],
+         >>>     [BMType.inAdversarial]
+         >>> ]
+         >>>
+         >>> # Run grid search
+         >>> grid_search.run_single_sensitive()
+         >>> # Results are logged to CSV files
+
+
+
+   .. py:attribute:: bmI
+
+
+   .. py:attribute:: bmMR
+
+
+   .. py:attribute:: bm_list
+
+
+   .. py:attribute:: is_model_in
+      :value: False
+
+
+
+   .. py:attribute:: model
+
+
+   .. py:attribute:: privileged_group
+
+
+   .. py:attribute:: unprivileged_group
+
+
+.. py:class:: BMInterface(df_train, df_val, df_test, label, protected)
+
+   Main interface for managing datasets and bias mitigation operations.
+
+   This class provides a unified interface for managing binary classification
+   datasets with bias mitigation capabilities. It handles dataset splitting,
+   feature scaling, and provides access to train/validation/test sets in
+   various formats required by different bias mitigation techniques.
+
+   The interface supports:
+   - Automatic dataset splitting and scaling
+   - Binary label dataset creation for AIF360 compatibility
+   - Feature scaling with train/validation/test consistency
+   - Dataset restoration and transformation modes
+
+   :ivar data_sets: List of DataFrames [train, validation, test]
+   :vartype data_sets: list
+   :ivar BM_attr: Bias mitigation attribute configuration
+   :vartype BM_attr: BMnames
+   :ivar transform: Whether to apply feature scaling
+   :vartype transform: bool
+   :ivar biLData: List of BinaryLabelDataset objects
+   :vartype biLData: list
+   :ivar trainXY: (features, labels) for training data
+   :vartype trainXY: tuple
+   :ivar valXY: (features, labels) for validation data
+   :vartype valXY: tuple
+   :ivar testXY: (features, labels) for test data
+
+   :vartype testXY: tuple
+
+   .. admonition:: Example
+
+      >>> from callmefair.util.fair_util import BMInterface
+      >>> import pandas as pd
+      >>>
+      >>> # Load your data
+      >>> train_df = pd.read_csv('train.csv')
+      >>> val_df = pd.read_csv('val.csv')
+      >>> test_df = pd.read_csv('test.csv')
+      >>>
+      >>> # Initialize interface
+      >>> bm_interface = BMInterface(
+      >>>     df_train=train_df,
+      >>>     df_val=val_df,
+      >>>     df_test=test_df,
+      >>>     label='income',
+      >>>     protected=['gender', 'race']
+      >>> )
+      >>>
+      >>> # Get data in different formats
+      >>> train_bld = bm_interface.get_train_BLD()
+      >>> X_train, y_train = bm_interface.get_train_xy()
+
+   Initialize the Bias Mitigation Interface.
+
+   :param df_train: Training dataset
+   :type df_train: pd.DataFrame
+   :param df_val: Validation dataset
+   :type df_val: pd.DataFrame
+   :param df_test: Test dataset
+   :type df_test: pd.DataFrame
+   :param label: Name of the target/label column
+   :type label: str
+   :param protected: List of protected attribute column names
+   :type protected: list
+
+   .. admonition:: Example
+
+      >>> bm_interface = BMInterface(
+      >>>     df_train=train_df,
+      >>>     df_val=val_df,
+      >>>     df_test=test_df,
+      >>>     label='income',
+      >>>     protected=['gender', 'race']
+      >>> )
+
+
+   .. py:method:: get_protected_att()
+
+      Get the list of protected attributes.
+
+      :returns: List of protected attribute column names
+      :rtype: list
+
+      .. admonition:: Example
+
+         >>> protected_attrs = bm_interface.get_protected_att()
+         >>> print(f"Protected attributes: {protected_attrs}")
+
+
+
+   .. py:method:: get_test_BLD()
+
+      Get test dataset as BinaryLabelDataset.
+
+      :returns: Test dataset in AIF360 format
+      :rtype: BinaryLabelDataset
+
+      .. admonition:: Example
+
+         >>> test_bld = bm_interface.get_test_BLD()
+         >>> print(f"Test samples: {len(test_bld.features)}")
+
+
+
+   .. py:method:: get_test_xy()
+
+      Get test data as (features, labels) tuple.
+
+      :returns: (features, labels) for test data
+      :rtype: tuple
+
+      .. admonition:: Example
+
+         >>> X_test, y_test = bm_interface.get_test_xy()
+         >>> print(f"Test features shape: {X_test.shape}")
+
+
+
+   .. py:method:: get_train_BLD()
+
+      Get training dataset as BinaryLabelDataset.
+
+      :returns: Training dataset in AIF360 format
+      :rtype: BinaryLabelDataset
+
+      .. admonition:: Example
+
+         >>> train_bld = bm_interface.get_train_BLD()
+         >>> print(f"Training samples: {len(train_bld.features)}")
+
+
+
+   .. py:method:: get_train_xy()
+
+      Get training data as (features, labels) tuple.
+
+      :returns: (features, labels) for training data
+      :rtype: tuple
+
+      .. admonition:: Example
+
+         >>> X_train, y_train = bm_interface.get_train_xy()
+         >>> print(f"Training features shape: {X_train.shape}")
+         >>> print(f"Training labels shape: {y_train.shape}")
+
+
+
+   .. py:method:: get_val_BLD()
+
+      Get validation dataset as BinaryLabelDataset.
+
+      :returns: Validation dataset in AIF360 format
+      :rtype: BinaryLabelDataset
+
+      .. admonition:: Example
+
+         >>> val_bld = bm_interface.get_val_BLD()
+         >>> print(f"Validation samples: {len(val_bld.features)}")
+
+
+
+   .. py:method:: get_val_xy()
+
+      Get validation data as (features, labels) tuple.
+
+      :returns: (features, labels) for validation data
+      :rtype: tuple
+
+      .. admonition:: Example
+
+         >>> X_val, y_val = bm_interface.get_val_xy()
+         >>> print(f"Validation features shape: {X_val.shape}")
+
+
+
+   .. py:method:: pos_bm_set(new_test_BLD)
+
+      Set new test dataset after postprocessing bias mitigation.
+
+      This method updates the test dataset with the result of postprocessing
+      bias mitigation techniques and reapplies scaling if needed.
+
+      :param new_test_BLD: New test dataset after bias mitigation
+      :type new_test_BLD: BinaryLabelDataset
+
+      .. admonition:: Example
+
+         >>> # After applying equalized odds
+         >>> modified_test_bld = eq_odds.predict(original_test_bld)
+         >>> bm_interface.pos_bm_set(modified_test_bld)
+
+
+
+   .. py:method:: pre_BM_set(new_train_BLD)
+
+      Set new training dataset after preprocessing bias mitigation.
+
+      This method updates the training dataset with the result of preprocessing
+      bias mitigation techniques and reapplies scaling if needed.
+
+      :param new_train_BLD: New training dataset after bias mitigation
+      :type new_train_BLD: BinaryLabelDataset
+
+      .. admonition:: Example
+
+         >>> # After applying reweighing
+         >>> modified_train_bld = reweighing.transform(original_train_bld)
+         >>> bm_interface.pre_BM_set(modified_train_bld)
+
+
+
+   .. py:method:: restore_BLD()
+
+      Restore BinaryLabelDataset objects to their original state.
+
+      This method regenerates the BinaryLabelDataset objects and reapplies
+      scaling if transform mode is enabled. Useful after bias mitigation
+      operations that modify the datasets.
+
+      .. admonition:: Example
+
+         >>> # After applying bias mitigation
+         >>> bm_interface.pre_BM_set(modified_train_bld)
+         >>> # Restore to original state
+         >>> bm_interface.restore_BLD()
+
+
+
+   .. py:method:: set_transform()
+
+      Enable transform mode for feature scaling.
+
+      This method enables the transform mode, which applies StandardScaler
+      to all datasets. This is useful when working with models that require
+      scaled features.
+
+      .. admonition:: Example
+
+         >>> bm_interface.set_transform()
+         >>> # All subsequent operations will use scaled features
+
+
+
+   .. py:attribute:: BM_attr
+
+
+   .. py:attribute:: data_sets
+
+
+   .. py:attribute:: transform
+      :value: False
+
+
+
+.. py:class:: BMManager(bmI, privileged_group, unprivileged_group)
+
+   Bias Mitigation Manager for applying various fairness techniques.
+
+   This class provides a unified interface for applying different bias mitigation
+   techniques to machine learning datasets. It supports preprocessing, in-processing,
+   and postprocessing approaches to reduce algorithmic bias.
+
+   The manager works with BinaryLabelDataset objects from the AIF360 library and
+   provides methods for each type of bias mitigation technique.
+
+   :ivar bmI: Interface for managing binary label datasets
+   :vartype bmI: BMInterface
+   :ivar privileged_group: List of dictionaries defining privileged groups
+   :vartype privileged_group: list[dict]
+   :ivar unprivileged_group: List of dictionaries defining unprivileged groups
+
+   :vartype unprivileged_group: list[dict]
+
+   .. admonition:: Example
+
+      >>> from callmefair.util.fair_util import BMInterface
+      >>> from callmefair.mitigation.fair_bm import BMManager
+      >>>
+      >>> # Initialize with your data
+      >>> bm_interface = BMInterface(train_df, val_df, test_df, 'label', ['protected_attr'])
+      >>> privileged_groups = [{'protected_attr': 1}]
+      >>> unprivileged_groups = [{'protected_attr': 0}]
+      >>>
+      >>> bm_manager = BMManager(bm_interface, privileged_groups, unprivileged_groups)
+      >>>
+      >>> # Apply preprocessing bias mitigation
+      >>> bm_manager.pre_Reweighing()
+
+   Initialize the Bias Mitigation Manager.
+
+   :param bmI: Interface for managing binary label datasets
+   :type bmI: BMInterface
+   :param privileged_group: List of dictionaries defining privileged groups.
+                            Each dict should contain protected attribute names and their privileged values.
+   :type privileged_group: list[dict]
+   :param unprivileged_group: List of dictionaries defining unprivileged groups.
+                              Each dict should contain protected attribute names and their unprivileged values.
+   :type unprivileged_group: list[dict]
+
+   .. admonition:: Example
+
+      >>> privileged_groups = [{'gender': 1, 'race': 1}]
+      >>> unprivileged_groups = [{'gender': 0, 'race': 0}]
+      >>> bm_manager = BMManager(bm_interface, privileged_groups, unprivileged_groups)
+
+
+   .. py:method:: in_AD(debias = False)
+
+      Create an Adversarial Debiasing in-processing model.
+
+      Adversarial Debiasing is an in-processing technique that trains a classifier
+      while simultaneously training an adversary that tries to predict the sensitive
+      attribute from the classifier's predictions. This encourages the classifier
+      to make predictions that are independent of the sensitive attribute.
+
+      :param debias: Whether to apply debiasing. If True, the model will be
+                     trained to be fair. If False, it will be a standard classifier.
+                     Defaults to False.
+      :type debias: bool
+
+      :returns: Configured adversarial debiasing model.
+      :rtype: AdversarialDebiasing
+
+      :raises ImportError: If TensorFlow is not available.
+
+      .. admonition:: Example
+
+         >>> ad_model = bm_manager.in_AD(debias=True)
+         >>> # Train the model with your data
+         >>> ad_model.fit(train_data, train_labels)
+
+
+
+   .. py:method:: in_Meta(sensitive_attribute, tau = 0)
+
+      Create a MetaFair Classifier in-processing model.
+
+      MetaFair is an in-processing technique that uses a meta-learning approach
+      to learn fair classifiers. It optimizes for both accuracy and fairness
+      using a regularization term that penalizes unfairness.
+
+      :param sensitive_attribute: Name of the sensitive attribute to consider
+                                  for fairness. This should be one of the protected attributes.
+      :type sensitive_attribute: str
+      :param tau: Fairness parameter that controls the trade-off between
+                  accuracy and fairness. Higher values prioritize fairness.
+                  Defaults to 0.
+      :type tau: float
+
+      :returns: Configured MetaFair classifier.
+      :rtype: MetaFairClassifier
+
+      .. admonition:: Example
+
+         >>> meta_model = bm_manager.in_Meta('gender', tau=0.1)
+         >>> # Train the model with your data
+         >>> meta_model.fit(train_data, train_labels)
+
+
+
+   .. py:method:: pos_CEO(valid_BLD_pred, test_BLD_pred)
+
+      Apply Calibrated Equalized Odds (CEO) postprocessing bias mitigation.
+
+      CEO is a postprocessing technique that adjusts model predictions to achieve
+      equalized odds while maintaining calibration. It ensures that the true
+      positive and false positive rates are equal across different groups.
+
+      :param valid_BLD_pred: Validation dataset with model predictions
+      :type valid_BLD_pred: BinaryLabelDataset
+      :param test_BLD_pred: Test dataset with model predictions
+      :type test_BLD_pred: BinaryLabelDataset
+
+      :returns: Postprocessed test predictions with equalized odds
+      :rtype: BinaryLabelDataset
+
+      .. admonition:: Example
+
+         >>> mitigated_predictions = bm_manager.pos_CEO(valid_pred, test_pred)
+         >>> # The predictions now satisfy equalized odds
+
+
+
+   .. py:method:: pos_EO(valid_BLD_pred, test_BLD_pred)
+
+      Apply Equalized Odds (EO) postprocessing bias mitigation.
+
+      EO is a postprocessing technique that adjusts model predictions to achieve
+      equalized odds. It ensures that the true positive and false positive rates
+      are equal across different groups, without considering calibration.
+
+      :param valid_BLD_pred: Validation dataset with model predictions
+      :type valid_BLD_pred: BinaryLabelDataset
+      :param test_BLD_pred: Test dataset with model predictions
+      :type test_BLD_pred: BinaryLabelDataset
+
+      :returns: Postprocessed test predictions with equalized odds
+      :rtype: BinaryLabelDataset
+
+      .. admonition:: Example
+
+         >>> mitigated_predictions = bm_manager.pos_EO(valid_pred, test_pred)
+         >>> # The predictions now satisfy equalized odds
+
+
+
+   .. py:method:: pos_ROC(valid_BLD_pred, test_BLD_pred)
+
+      Apply Reject Option Classification (ROC) postprocessing bias mitigation.
+
+      ROC is a postprocessing technique that rejects predictions for instances
+      where the model is uncertain, particularly when this uncertainty is
+      correlated with the sensitive attribute. This helps reduce bias by
+      abstaining from making predictions on potentially unfair cases.
+
+      :param valid_BLD_pred: Validation dataset with model predictions
+      :type valid_BLD_pred: BinaryLabelDataset
+      :param test_BLD_pred: Test dataset with model predictions
+      :type test_BLD_pred: BinaryLabelDataset
+
+      :returns: Postprocessed test predictions with reject option
+      :rtype: BinaryLabelDataset
+
+      .. admonition:: Example
+
+         >>> mitigated_predictions = bm_manager.pos_ROC(valid_pred, test_pred)
+         >>> # Some predictions may be rejected to improve fairness
+
+
+
+   .. py:method:: pre_DR(sensitive_attribute)
+
+      Apply Disparate Impact Remover (DIR) preprocessing bias mitigation.
+
+      DIR is a preprocessing technique that repairs the training data to remove
+      disparate impact while preserving the utility of the data. It works by
+      learning a repair transformation that minimizes the difference in
+      conditional distributions between groups.
+
+      :param sensitive_attribute: Name of the sensitive attribute to repair.
+                                  This should be one of the protected attributes in your dataset.
+      :type sensitive_attribute: str
+
+      .. admonition:: Example
+
+         >>> bm_manager.pre_DR('gender')
+         >>> # The training dataset is now repaired for the 'gender' attribute
+
+
+
+   .. py:method:: pre_LFR()
+
+      Apply Learning Fair Representations (LFR) preprocessing bias mitigation.
+
+      LFR is a preprocessing technique that learns a fair representation of the
+      data that removes information about the sensitive attributes while preserving
+      the utility for the prediction task. It uses an adversarial approach to
+      learn representations that are fair across different groups.
+
+      .. admonition:: Example
+
+         >>> bm_manager.pre_LFR()
+         >>> # The training dataset now has fair representations
+
+
+
+   .. py:method:: pre_Reweighing()
+
+      Apply Reweighing preprocessing bias mitigation.
+
+      Reweighing is a preprocessing technique that assigns different weights to
+      instances based on their group membership to achieve statistical parity.
+      This method modifies the training dataset by reweighting instances.
+
+      The method fits the reweighing algorithm on the training data and transforms
+      it to create a fairer training dataset.
+
+      .. admonition:: Example
+
+         >>> bm_manager.pre_Reweighing()
+         >>> # The training dataset is now reweighted for fairness
+
+
+
+   .. py:attribute:: bmI
+
+
+   .. py:attribute:: privileged_group
+
+
+   .. py:attribute:: unprivileged_group
+
+
+.. py:class:: BMMetrics(bmI, class_array, pred_val, pred_test, privileged_group, unprivileged_group)
+
+   Comprehensive fairness metrics evaluation for bias mitigation.
+
+   This class provides comprehensive evaluation of both classification performance
+   and fairness metrics for machine learning models. It supports both standard
+   models and in-processing bias mitigation techniques.
+
+   The class evaluates:
+   - Classification metrics: accuracy, precision, recall, F1, MCC
+   - Fairness metrics: EOD, AOD, SPD, DI, TI
+   - Optimal threshold selection based on balanced accuracy
+   - Comprehensive fairness scoring
+
+   :ivar bmI: Interface for managing datasets
+   :vartype bmI: BMInterface
+   :ivar pos_idx: Index of positive class
+   :vartype pos_idx: int
+   :ivar in_mode: Whether using in-processing bias mitigation
+   :vartype in_mode: bool
+   :ivar pred_test: Test predictions (numpy array or BinaryLabelDataset)
+   :ivar pred_val: Validation predictions (numpy array or BinaryLabelDataset)
+   :ivar privileged_group: List of privileged group definitions
+   :vartype privileged_group: list[dict]
+   :ivar unprivileged_group: List of unprivileged group definitions
+   :vartype unprivileged_group: list[dict]
+   :ivar balanced_acc: Balanced accuracy scores for different thresholds
+   :vartype balanced_acc: np.ndarray
+   :ivar class_threshold: Threshold values for evaluation
+   :vartype class_threshold: np.ndarray
+   :ivar best_class_thresh: Optimal threshold based on validation performance
+   :vartype best_class_thresh: float
+   :ivar cmetrics: AIF360 classification metrics object
+
+   :vartype cmetrics: ClassificationMetric
+
+   .. admonition:: Example
+
+      >>> from callmefair.util.fair_util import BMMetrics
+      >>> import numpy as np
+      >>>
+      >>> # Create metrics evaluator
+      >>> metrics = BMMetrics(
+      >>>     bmI=bm_interface,
+      >>>     class_array=np.array([0, 1]),
+      >>>     pred_val=val_predictions,
+      >>>     pred_test=test_predictions,
+      >>>     privileged_group=privileged_groups,
+      >>>     unprivileged_group=unprivileged_groups
+      >>> )
+      >>>
+      >>> # Get comprehensive report
+      >>> report = metrics.get_report()
+      >>> print(f"Accuracy: {report['acc']:.4f}")
+      >>> print(f"Fairness score: {report['spd']:.4f}")
+
+   Initialize the Bias Mitigation Metrics evaluator.
+
+   :param bmI: Interface for managing datasets
+   :type bmI: BMInterface
+   :param class_array: Array of class labels [0, 1]
+   :type class_array: np.ndarray
+   :param pred_val: Validation predictions (numpy array or BinaryLabelDataset)
+   :param pred_test: Test predictions (numpy array or BinaryLabelDataset)
+   :param privileged_group: List of privileged group definitions
+   :type privileged_group: list[dict]
+   :param unprivileged_group: List of unprivileged group definitions
+   :type unprivileged_group: list[dict]
+
+   .. admonition:: Example
+
+      >>> metrics = BMMetrics(
+      >>>     bmI=bm_interface,
+      >>>     class_array=np.array([0, 1]),
+      >>>     pred_val=val_pred,
+      >>>     pred_test=test_pred,
+      >>>     privileged_group=[{'gender': 1}],
+      >>>     unprivileged_group=[{'gender': 0}]
+      >>> )
+
+
+   .. py:method:: get_groups()
+
+      Get privileged and unprivileged group definitions.
+
+      :returns:
+
+                (privileged_group, unprivileged_group)
+                    - privileged_group (list[dict]): List of privileged group definitions
+                    - unprivileged_group (list[dict]): List of unprivileged group definitions
+      :rtype: tuple
+
+      .. admonition:: Example
+
+         >>> privileged, unprivileged = metrics.get_groups()
+         >>> print(f"Privileged groups: {privileged}")
+         >>> print(f"Unprivileged groups: {unprivileged}")
+
+
+
+   .. py:method:: get_pred_test()
+
+      Get test predictions.
+
+      :returns: Test predictions (numpy array or BinaryLabelDataset)
+
+      .. admonition:: Example
+
+         >>> test_pred = metrics.get_pred_test()
+         >>> print(f"Test predictions shape: {test_pred.shape}")
+
+
+
+   .. py:method:: get_report()
+
+      Get comprehensive performance and fairness report.
+
+      :returns:
+
+                Dictionary containing all classification and fairness metrics
+                    - Classification metrics: balanced_acc, acc, precision, recall, f1, mcc
+                    - Fairness metrics: eq_opp_diff, avg_odd_diff, spd, disparate_impact, theil_idx
+      :rtype: dict
+
+      .. admonition:: Example
+
+         >>> report = metrics.get_report()
+         >>> print(f"Accuracy: {report['acc']:.4f}")
+         >>> print(f"Statistical Parity Difference: {report['spd']:.4f}")
+         >>> print(f"Equal Opportunity Difference: {report['eq_opp_diff']:.4f}")
+
+
+
+   .. py:method:: get_score()
+
+      Get comprehensive fairness score using the calculate_fairness_score function.
+
+      :returns:
+
+                Fairness score evaluation with overall score and detailed breakdown
+                    - 'raw_score' (float): Unnormalized fairness score
+                    - 'overall_score' (float): Normalized fairness score (0-1, lower is better)
+                    - 'metric_evaluations' (dict): Boolean evaluation of each metric
+                    - 'deviations' (dict): Normalized deviations from optimal values
+                    - 'is_fair' (bool): Whether all metrics are within acceptable ranges
+      :rtype: dict
+
+      .. admonition:: Example
+
+         >>> score_dict = metrics.get_score()
+         >>> print(f"Overall fairness score: {score_dict['overall_score']:.3f}")
+         >>> print(f"Is fair: {score_dict['is_fair']}")
+         >>>
+         >>> # Check individual metric evaluations
+         >>> for metric, is_acceptable in score_dict['metric_evaluations'].items():
+         >>>     print(f"{metric}: {'✓' if is_acceptable else '✗'}")
+
+
+
+   .. py:method:: set_new_pred(pred_val, pred_test)
+
+      Update predictions and recalculate metrics.
+
+      This method allows updating the predictions and recalculating all
+      metrics without recreating the entire BMMetrics object.
+
+      :param pred_val: New validation predictions
+      :type pred_val: np.ndarray
+      :param pred_test: New test predictions
+      :type pred_test: np.ndarray
+
+      .. admonition:: Example
+
+         >>> # After training a new model
+         >>> new_val_pred = model.predict_proba(X_val)
+         >>> new_test_pred = model.predict_proba(X_test)
+         >>> metrics.set_new_pred(new_val_pred, new_test_pred)
+
+
+
+   .. py:method:: set_pos_pred(test_BLD_pred)
+
+      Set postprocessed predictions and update metrics.
+
+      This method is used for postprocessing bias mitigation techniques
+      that modify the test predictions directly.
+
+      :param test_BLD_pred: Postprocessed test predictions
+      :type test_BLD_pred: BinaryLabelDataset
+
+      .. admonition:: Example
+
+         >>> # After applying equalized odds
+         >>> postprocessed_pred = eq_odds.predict(test_bld)
+         >>> metrics.set_pos_pred(postprocessed_pred)
+
+
+
+   .. py:attribute:: balanced_acc
+
+
+   .. py:attribute:: bmI
+
+
+   .. py:attribute:: class_threshold
+
+
+   .. py:attribute:: in_mode
+      :value: False
+
+
+
+   .. py:attribute:: pos_idx
+
+
+   .. py:attribute:: pred_test
+
+
+   .. py:attribute:: pred_val
+
+
+   .. py:attribute:: privileged_group
+
+
+   .. py:attribute:: unprivileged_group
+
+
+.. py:class:: BMType(*args, **kwds)
+
+   Bases: :py:obj:`enum.Enum`
+
+
+   Enumeration of bias mitigation techniques.
+
+   This enum categorizes bias mitigation methods into three main groups:
+   - Preprocessing: Applied to training data before model training
+   - In-processing: Applied during model training
+   - Postprocessing: Applied to model predictions after training
+
+   :ivar preReweighing: Reweighing preprocessing technique
+   :ivar preDisparate: Disparate Impact Remover preprocessing technique
+   :ivar preLFR: Learning Fair Representations preprocessing technique
+   :ivar inAdversarial: Adversarial Debiasing in-processing technique
+   :ivar inMeta: MetaFair Classifier in-processing technique
+   :ivar posCalibrated: Calibrated Equalized Odds postprocessing technique
+   :ivar posEqqOds: Equalized Odds postprocessing technique
+   :ivar posROC: Reject Option Classification postprocessing technique
+
+
+
+   .. py:attribute:: inAdversarial
+      :value: 4
+
+
+
+   .. py:attribute:: inMeta
+      :value: 5
+
+
+
+   .. py:property:: is_in
+      :type: bool
+
+
+      Check if the bias mitigation technique is an in-processing method.
+
+      :returns: True if the technique is in-processing, False otherwise.
+      :rtype: bool
+
+
+   .. py:property:: is_pos
+      :type: bool
+
+
+      Check if the bias mitigation technique is a postprocessing method.
+
+      :returns: True if the technique is postprocessing, False otherwise.
+      :rtype: bool
+
+
+   .. py:property:: is_pre
+      :type: bool
+
+
+      Check if the bias mitigation technique is a preprocessing method.
+
+      :returns: True if the technique is preprocessing, False otherwise.
+      :rtype: bool
+
+
+   .. py:attribute:: posCalibrated
+      :value: 6
+
+
+
+   .. py:attribute:: posEqqOds
+      :value: 7
+
+
+
+   .. py:attribute:: posROC
+      :value: 8
+
+
+
+   .. py:attribute:: preDisparate
+      :value: 2
+
+
+
+   .. py:attribute:: preLFR
+      :value: 3
+
+
+
+   .. py:attribute:: preReweighing
+      :value: 1
+
+
+
+.. py:class:: BaseSearch(df, label_name)
+
+   Base class for bias search functionality in the CallMeFair framework.
+
+   This class provides the core functionality for evaluating bias in machine learning
+   models with respect to sensitive attributes. It handles dataset preparation,
+   model training, and fairness metric calculation using AIF360.
+
+   The class supports:
+   - Individual attribute bias evaluation
+   - Multiple ML model types
+   - Imbalanced dataset handling with NearMiss
+   - Parallel processing for efficient evaluation
+   - Comprehensive fairness metrics calculation
+
+   :ivar df: Input dataset with features and target
+   :vartype df: pd.DataFrame
+   :ivar label_name: Name of the target variable
+   :vartype label_name: str
+   :ivar scaler: Feature scaler for model training
+
+   :vartype scaler: StandardScaler
+
+   .. admonition:: Example
+
+      >>> searcher = BaseSearch(df, 'target')
+      >>> results = searcher.evaluate_attribute('gender', iterate=10, model_name='lr')
+
+   Initialize the BaseSearch object.
+
+   :param df: Input dataset containing features and target variable
+   :type df: pd.DataFrame
+   :param label_name: Name of the target variable column
+   :type label_name: str
+
+
+   .. py:method:: evaluate_attribute(attribute, treat_umbalance=False, iterate=10, model_name = 'lr', df_new=None)
+
+      Evaluate bias for a specific attribute across multiple iterations.
+
+      This method performs comprehensive bias evaluation by:
+      - Running multiple iterations for statistical robustness
+      - Training models with optional class balancing
+      - Using parallel processing for efficiency
+      - Aggregating results across iterations
+
+      :param attribute: Name of the sensitive attribute to evaluate
+      :type attribute: str
+      :param treat_umbalance: Whether to apply NearMiss undersampling
+      :type treat_umbalance: bool
+      :param iterate: Number of iterations for robust evaluation
+      :type iterate: int
+      :param model_name: Type of model to use ('lr', 'cat', 'xgb', 'mlp')
+      :type model_name: str
+      :param df_new: Alternative dataset to use
+      :type df_new: pd.DataFrame, optional
+
+      :returns: Dictionary containing averaged fairness scores for the attribute
+      :rtype: dict
+
+      .. admonition:: Example
+
+         >>> results = searcher.evaluate_attribute('gender', iterate=5, model_name='lr')
+         >>> print(results['gender_raw'], results['gender_overall'])
+
+
+
+   .. py:attribute:: df
+
+
+   .. py:attribute:: label_name
+
+
+   .. py:attribute:: scaler
+
+
+.. py:class:: BiasSearch(df, label_name, attribute_names)
+
+   Bases: :py:obj:`callmefair.search._search_base.BaseSearch`
+
+
+   Main class for bias search and evaluation in the CallMeFair framework.
+
+   This class extends BaseSearch to provide comprehensive bias evaluation
+   across individual attributes and their combinations. It supports both
+   individual attribute analysis and complex attribute combination evaluation
+   using different set operations.
+
+   The class provides methods for:
+   - Individual attribute bias evaluation
+   - 2-way and 3-way attribute combinations
+   - Set operation comparison (union, intersection, differences)
+   - Pretty table output for results
+   - Comprehensive bias summarization
+
+   :ivar df: Input dataset with features and target
+   :vartype df: pd.DataFrame
+   :ivar label_name: Name of the target variable
+   :vartype label_name: str
+   :ivar attribute_names: List of sensitive attributes to evaluate
+
+   :vartype attribute_names: list[str]
+
+   .. admonition:: Example
+
+      >>> searcher = BiasSearch(df, 'target', ['gender', 'race', 'age'])
+      >>> table, printable = searcher.evaluate_average()
+      >>> print(printable)
+
+   Initialize the BiasSearch object.
+
+   :param df: Input dataset containing features and target variable
+   :type df: pd.DataFrame
+   :param label_name: Name of the target variable column
+   :type label_name: str
+   :param attribute_names: List of sensitive attributes to evaluate
+   :type attribute_names: list[str]
+
+
+   .. py:method:: evaluate_average(treat_umbalance=False, iterate=10, model_name = 'lr')
+
+      Evaluate bias for all individual attributes and return averaged results.
+
+      This method evaluates bias for each individual sensitive attribute
+      and returns both raw and normalized fairness scores. The results
+      are formatted into a pretty table for easy visualization.
+
+      :param treat_umbalance: Whether to apply NearMiss undersampling
+      :type treat_umbalance: bool
+      :param iterate: Number of iterations for robust evaluation
+      :type iterate: int
+      :param model_name: Type of model to use ('lr', 'cat', 'xgb', 'mlp')
+      :type model_name: str
+
+      :returns: (table_data, pretty_table) - Raw data and formatted table
+      :rtype: tuple
+
+      .. admonition:: Example
+
+         >>> table, printable = searcher.evaluate_average(iterate=5)
+         >>> print(printable)
+
+
+
+   .. py:method:: evaluate_combination_average(col_1, col_2, treat_umbalance=False, iterate=10, model_name = 'lr')
+
+      Evaluate bias for all set operations between two attributes.
+
+      This method compares all possible set operations (union, intersection,
+      differences, symmetric difference) between two attributes and evaluates
+      bias for each combination. This helps understand how different ways of
+      combining attributes affect bias.
+
+      :param col_1: Name of the first attribute
+      :type col_1: str
+      :param col_2: Name of the second attribute
+      :type col_2: str
+      :param treat_umbalance: Whether to apply NearMiss undersampling
+      :type treat_umbalance: bool
+      :param iterate: Number of iterations for robust evaluation
+      :type iterate: int
+      :param model_name: Type of model to use ('lr', 'cat', 'xgb', 'mlp')
+      :type model_name: str
+
+      :returns: (table_data, pretty_table) - Raw data and formatted table
+      :rtype: tuple
+
+      .. admonition:: Example
+
+         >>> table, printable = searcher.evaluate_combination_average('gender', 'race')
+         >>> print(printable)
+
+
+
+   .. py:method:: evaluate_combinations(treat_umbalance=False, iterate=10, model_name = 'lr')
+
+      Evaluate bias for all 2-way and 3-way attribute combinations.
+
+      This method creates combinations of sensitive attributes using intersection
+      operations and evaluates bias for each combination. It generates both
+      2-way combinations (e.g., gender_race) and 3-way combinations
+      (e.g., gender_race_age).
+
+      :param treat_umbalance: Whether to apply NearMiss undersampling
+      :type treat_umbalance: bool
+      :param iterate: Number of iterations for robust evaluation
+      :type iterate: int
+      :param model_name: Type of model to use ('lr', 'cat', 'xgb', 'mlp')
+      :type model_name: str
+
+      :returns: (table_data, pretty_table) - Raw data and formatted table
+      :rtype: tuple
+
+      .. admonition:: Example
+
+         >>> table, printable = searcher.evaluate_combinations()
+         >>> print(printable)
+
+
+
+   .. py:attribute:: attribute_names
+
+
+.. py:class:: CType(*args, **kwds)
+
+   Bases: :py:obj:`enum.Enum`
+
+
+   Enumeration of attribute combination operations for bias search.
+
+   This enum defines the set operations that can be performed when combining
+   two binary sensitive attributes to create composite protected groups.
+
+   :ivar union: Logical OR operation (either attribute is 1)
+   :ivar intersection: Logical AND operation (both attributes are 1)
+   :ivar difference_1_minus_2: Set difference (attribute1=1 AND attribute2=0)
+   :ivar difference_2_minus_1: Set difference (attribute2=1 AND attribute1=0)
+   :ivar symmetric_difference: XOR operation (exactly one attribute is 1)
+
+
+
+   .. py:method:: __str__()
+
+      Return string representation of the operation type.
+
+
+
+   .. py:attribute:: difference_1_minus_2
+      :value: 3
+
+
+
+   .. py:attribute:: difference_2_minus_1
+      :value: 4
+
+
+
+   .. py:attribute:: intersection
+      :value: 2
+
+
+
+   .. py:attribute:: symmetric_difference
+      :value: 5
+
+
+
+   .. py:attribute:: union
+      :value: 1
+
+
+
+.. py:function:: calculate_fairness_score(EOD, AOD, SPD, DI, TI)
+
+   Calculate a comprehensive fairness score based on multiple fairness metrics.
+
+   This function aggregates five key fairness metrics into a single normalized score
+   that represents the overall fairness of a machine learning model. The function
+   evaluates each metric against predefined acceptable ranges and calculates
+   deviations from optimal values to produce a unified fairness assessment.
+
+   The function uses a weighted scoring system where:
+   - Each metric contributes up to 0.2 for being outside acceptable ranges
+   - Each metric contributes up to 0.16 based on deviation from optimal values
+   - The final score is normalized to the 0-1 range where 0 = perfect fairness
+
+   :param EOD: Equal Opportunity Difference - measures difference in true positive
+               rates between groups. Optimal value: 0.0, Acceptable range: (-0.1, 0.1)
+   :type EOD: float
+   :param AOD: Average Odds Difference - measures difference in average of
+               true positive and false positive rates between groups. Optimal value: 0.0,
+               Acceptable range: (-0.1, 0.1)
+   :type AOD: float
+   :param SPD: Statistical Parity Difference - measures difference in positive
+               prediction rates between groups. Optimal value: 0.0, Acceptable range: (-0.1, 0.1)
+   :type SPD: float
+   :param DI: Disparate Impact - ratio of positive prediction rates between
+              groups. Optimal value: 1.0, Acceptable range: (0.8, 1.2)
+   :type DI: float
+   :param TI: Theil Index - measures inequality in prediction distributions.
+              Optimal value: 0.0, Acceptable range: (0.0, 0.25)
+   :type TI: float
+
+   :returns:
+
+             Dictionary containing fairness evaluation results with keys:
+                 - 'raw_score' (float): Unnormalized fairness score
+                 - 'overall_score' (float): Normalized fairness score (0-1, lower is better)
+                 - 'metric_evaluations' (dict): Boolean evaluation of each metric
+                 - 'deviations' (dict): Normalized deviations from optimal values
+                 - 'is_fair' (bool): Whether all metrics are within acceptable ranges
+   :rtype: dict
+
+   .. admonition:: Example
+
+      >>> # Perfect fairness
+      >>> result = calculate_fairness_score(0.0, 0.0, 0.0, 1.0, 0.0)
+      >>> print(f"Score: {result['overall_score']}")  # 0.0 (perfect)
+      >>> print(f"Is fair: {result['is_fair']}")  # True
+      >>>
+      >>> # Moderate unfairness
+      >>> result = calculate_fairness_score(0.15, 0.12, 0.18, 0.7, 0.3)
+      >>> print(f"Score: {result['overall_score']}")  # ~0.6-0.8
+      >>> print(f"Is fair: {result['is_fair']}")  # False
+      >>>
+      >>> # Check individual metric evaluations
+      >>> for metric, is_acceptable in result['metric_evaluations'].items():
+      >>>     print(f"{metric}: {'✓' if is_acceptable else '✗'}")
+
+
+.. py:function:: combine_attributes(df, col1, col2, operation)
+
+   Combines two binary columns in a DataFrame using a specified set operation,
+   replacing the original columns with a single combined column.
+
+   This function creates composite protected groups by combining two binary
+   sensitive attributes using set operations. The resulting combined attribute
+   can be used for more sophisticated bias analysis.
+
+   :param df: Input DataFrame containing the binary columns
+   :type df: pd.DataFrame
+   :param col1: Name of the first binary column (e.g., 'gender')
+   :type col1: str
+   :param col2: Name of the second binary column (e.g., 'race')
+   :type col2: str
+   :param operation: Set operation to apply ('union', 'intersection',
+                     'difference_1_minus_2', 'difference_2_minus_1',
+                     'symmetric_difference')
+   :type operation: CType
+
+   :returns: New DataFrame with original columns replaced by combined column
+   :rtype: pd.DataFrame
+
+   :raises ValueError: If columns are not binary (contain values other than 0 or 1)
+
+   .. admonition:: Example
+
+      >>> df = pd.DataFrame({'gender': [1, 0, 1, 0], 'race': [1, 1, 0, 0]})
+      >>> result = combine_attributes(df, 'gender', 'race', CType.intersection)
+      >>> print(result.columns)
+      ['gender_race']
+
+

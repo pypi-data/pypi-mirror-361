@@ -1,0 +1,271 @@
+callmefair.mitigation.fair_grid
+===============================
+
+.. py:module:: callmefair.mitigation.fair_grid
+
+.. autoapi-nested-parse::
+
+   Grid Search for Bias Mitigation Combinations
+
+   This module provides a comprehensive grid search framework for evaluating different
+   combinations of bias mitigation techniques. It supports systematic evaluation of
+   preprocessing, in-processing, and postprocessing bias mitigation methods across
+   various machine learning models.
+
+   The module implements:
+   - Automatic model adaptation for different ML frameworks
+   - Systematic evaluation of bias mitigation combinations
+   - Comprehensive logging and result aggregation
+   - Support for single sensitive attribute evaluation (extensible to multiple)
+
+   Classes:
+       dummy_model: Dummy model class for compatibility
+       BMGridSearch: Main grid search class for bias mitigation evaluation
+
+   Functions:
+       get_model_proba: Adapts different ML models for probability prediction
+
+   .. admonition:: Example
+
+      >>> from callmefair.mitigation.fair_grid import BMGridSearch
+      >>> from callmefair.mitigation.fair_bm import BMType
+      >>> from sklearn.ensemble import RandomForestClassifier
+      >>>
+      >>> # Define bias mitigation combinations to test
+      >>> bm_combinations = [
+      >>>     [BMType.preReweighing],
+      >>>     [BMType.preDisparate],
+      >>>     [BMType.preReweighing, BMType.posCEO],
+      >>>     [BMType.inAdversarial]
+      >>> ]
+      >>>
+      >>> # Initialize grid search
+      >>> grid_search = BMGridSearch(
+      >>>     bmI=bm_interface,
+      >>>     model=RandomForestClassifier(),
+      >>>     bm_list=bm_combinations,
+      >>>     privileged_group=privileged_groups,
+      >>>     unprivileged_group=unprivileged_groups
+      >>> )
+      >>>
+      >>> # Run grid search
+      >>> grid_search.run_single_sensitive()
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   callmefair.mitigation.fair_grid.tf
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   callmefair.mitigation.fair_grid.BMGridSearch
+   callmefair.mitigation.fair_grid.dummy_model
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   callmefair.mitigation.fair_grid.get_model_proba
+
+
+Module Contents
+---------------
+
+.. py:class:: BMGridSearch(bmI, model, bm_list, privileged_group, unprivileged_group)
+
+   Grid Search for Bias Mitigation Combinations.
+
+   This class provides a systematic framework for evaluating different combinations
+   of bias mitigation techniques. It supports preprocessing, in-processing, and
+   postprocessing methods, and can work with various machine learning models.
+
+   The grid search evaluates each combination of bias mitigation techniques and
+   logs the results for comparison. It currently supports single sensitive
+   attribute evaluation, with plans for multiple sensitive attributes.
+
+   :ivar bmI: Interface for managing binary label datasets
+   :vartype bmI: BMInterface
+   :ivar bmMR: Bias mitigation manager for applying techniques
+   :vartype bmMR: BMManager
+   :ivar model: The machine learning model to evaluate
+   :ivar bm_list: List of bias mitigation combinations to test
+   :vartype bm_list: list[list[BMType]]
+   :ivar privileged_group: List of dictionaries defining privileged groups
+   :vartype privileged_group: list[dict]
+   :ivar unprivileged_group: List of dictionaries defining unprivileged groups
+   :vartype unprivileged_group: list[dict]
+   :ivar is_model_in: Whether using in-processing bias mitigation
+
+   :vartype is_model_in: bool
+
+   .. admonition:: Example
+
+      >>> from callmefair.mitigation.fair_grid import BMGridSearch
+      >>> from callmefair.mitigation.fair_bm import BMType
+      >>>
+      >>> # Define combinations to test
+      >>> combinations = [
+      >>>     [BMType.preReweighing],
+      >>>     [BMType.preDisparate, BMType.posCEO],
+      >>>     [BMType.inAdversarial]
+      >>> ]
+      >>>
+      >>> # Create grid search
+      >>> grid_search = BMGridSearch(
+      >>>     bmI=bm_interface,
+      >>>     model=RandomForestClassifier(),
+      >>>     bm_list=combinations,
+      >>>     privileged_group=privileged_groups,
+      >>>     unprivileged_group=unprivileged_groups
+      >>> )
+      >>>
+      >>> # Run evaluation
+      >>> grid_search.run_single_sensitive()
+
+   Initialize the Bias Mitigation Grid Search.
+
+   :param bmI: Interface for managing binary label datasets
+   :type bmI: BMInterface
+   :param model: The machine learning model to evaluate. Can be None for
+                 in-processing techniques that have their own models.
+   :param bm_list: List of bias mitigation combinations to test.
+                   Each inner list represents one combination of techniques.
+   :type bm_list: list[list[BMType]]
+   :param privileged_group: List of dictionaries defining privileged groups.
+                            Each dict should contain protected attribute names and their privileged values.
+   :type privileged_group: list[dict]
+   :param unprivileged_group: List of dictionaries defining unprivileged groups.
+                              Each dict should contain protected attribute names and their unprivileged values.
+   :type unprivileged_group: list[dict]
+
+   .. admonition:: Example
+
+      >>> bm_combinations = [
+      >>>     [BMType.preReweighing],
+      >>>     [BMType.preDisparate, BMType.posCEO],
+      >>>     [BMType.inAdversarial]
+      >>> ]
+      >>>
+      >>> grid_search = BMGridSearch(
+      >>>     bmI=bm_interface,
+      >>>     model=RandomForestClassifier(),
+      >>>     bm_list=bm_combinations,
+      >>>     privileged_group=[{'gender': 1}],
+      >>>     unprivileged_group=[{'gender': 0}]
+      >>> )
+
+
+   .. py:method:: run_single_sensitive()
+
+      Run grid search evaluation for single sensitive attribute.
+
+      This method performs a comprehensive evaluation of all bias mitigation
+      combinations in the grid search. It evaluates each combination and logs
+      the results for comparison. Currently supports single sensitive attribute
+      evaluation, with plans for multiple sensitive attributes.
+
+      The method:
+      1. Validates in-processing configurations
+      2. Evaluates baseline performance (no bias mitigation)
+      3. Evaluates each bias mitigation combination
+      4. Logs results to CSV files for analysis
+
+      :raises ValueError: If in-processing bias mitigation is defined with a classifier model
+
+      .. admonition:: Example
+
+         >>> # Define bias mitigation combinations
+         >>> combinations = [
+         >>>     [BMType.preReweighing],
+         >>>     [BMType.preDisparate, BMType.posCEO],
+         >>>     [BMType.inAdversarial]
+         >>> ]
+         >>>
+         >>> # Run grid search
+         >>> grid_search.run_single_sensitive()
+         >>> # Results are logged to CSV files
+
+
+
+   .. py:attribute:: bmI
+
+
+   .. py:attribute:: bmMR
+
+
+   .. py:attribute:: bm_list
+
+
+   .. py:attribute:: is_model_in
+      :value: False
+
+
+
+   .. py:attribute:: model
+
+
+   .. py:attribute:: privileged_group
+
+
+   .. py:attribute:: unprivileged_group
+
+
+.. py:class:: dummy_model
+
+   Dummy model class for compatibility with bias mitigation metrics.
+
+   This class provides a minimal interface required by the BMMetrics class
+   for evaluating bias mitigation techniques when no specific model is used
+   (e.g., for in-processing techniques that have their own models).
+
+   :ivar classes_: Array of class labels [0, 1]
+
+   :vartype classes_: np.ndarray
+
+
+   .. py:attribute:: classes_
+
+
+.. py:function:: get_model_proba(model, bmI)
+
+   Adapt different ML models for probability prediction.
+
+   This function provides a unified interface for training models and obtaining
+   probability predictions across different ML frameworks. It handles various
+   model types including scikit-learn, XGBoost, TabNet, and others.
+
+   :param model: The machine learning model to train and evaluate
+   :param bmI: Interface for managing binary label datasets
+   :type bmI: BMInterface
+
+   :returns:
+
+             Tuple containing (validation_predictions, test_predictions)
+                 Both arrays contain probability predictions for the positive class.
+   :rtype: tuple[np.ndarray]
+
+   :raises ValueError: If the model type is not supported
+
+   .. admonition:: Example
+
+      >>> from sklearn.ensemble import RandomForestClassifier
+      >>> model = RandomForestClassifier()
+      >>> val_pred, test_pred = get_model_proba(model, bm_interface)
+      >>> print(f"Validation predictions shape: {val_pred.shape}")
+      >>> print(f"Test predictions shape: {test_pred.shape}")
+
+
+.. py:data:: tf
+   :value: None
+
+

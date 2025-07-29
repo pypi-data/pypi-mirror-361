@@ -1,0 +1,549 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>callmefair.mitigation.fair_grid &mdash; CallMeFair 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=720763da" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=720763da" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            CallMeFair
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/quickstart.html">Quick Start Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/grid_search_guide.html">Grid Search Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/utility_guide.html">Utility Functions Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/bias_search_guide.html">Bias Search Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../autoapi/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">CallMeFair</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">callmefair.mitigation.fair_grid</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for callmefair.mitigation.fair_grid</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Grid Search for Bias Mitigation Combinations</span>
+
+<span class="sd">This module provides a comprehensive grid search framework for evaluating different</span>
+<span class="sd">combinations of bias mitigation techniques. It supports systematic evaluation of</span>
+<span class="sd">preprocessing, in-processing, and postprocessing bias mitigation methods across</span>
+<span class="sd">various machine learning models.</span>
+
+<span class="sd">The module implements:</span>
+<span class="sd">- Automatic model adaptation for different ML frameworks</span>
+<span class="sd">- Systematic evaluation of bias mitigation combinations</span>
+<span class="sd">- Comprehensive logging and result aggregation</span>
+<span class="sd">- Support for single sensitive attribute evaluation (extensible to multiple)</span>
+
+<span class="sd">Classes:</span>
+<span class="sd">    dummy_model: Dummy model class for compatibility</span>
+<span class="sd">    BMGridSearch: Main grid search class for bias mitigation evaluation</span>
+
+<span class="sd">Functions:</span>
+<span class="sd">    get_model_proba: Adapts different ML models for probability prediction</span>
+
+<span class="sd">Example:</span>
+<span class="sd">    &gt;&gt;&gt; from callmefair.mitigation.fair_grid import BMGridSearch</span>
+<span class="sd">    &gt;&gt;&gt; from callmefair.mitigation.fair_bm import BMType</span>
+<span class="sd">    &gt;&gt;&gt; from sklearn.ensemble import RandomForestClassifier</span>
+<span class="sd">    &gt;&gt;&gt; </span>
+<span class="sd">    &gt;&gt;&gt; # Define bias mitigation combinations to test</span>
+<span class="sd">    &gt;&gt;&gt; bm_combinations = [</span>
+<span class="sd">    &gt;&gt;&gt;     [BMType.preReweighing],</span>
+<span class="sd">    &gt;&gt;&gt;     [BMType.preDisparate],</span>
+<span class="sd">    &gt;&gt;&gt;     [BMType.preReweighing, BMType.posCEO],</span>
+<span class="sd">    &gt;&gt;&gt;     [BMType.inAdversarial]</span>
+<span class="sd">    &gt;&gt;&gt; ]</span>
+<span class="sd">    &gt;&gt;&gt; </span>
+<span class="sd">    &gt;&gt;&gt; # Initialize grid search</span>
+<span class="sd">    &gt;&gt;&gt; grid_search = BMGridSearch(</span>
+<span class="sd">    &gt;&gt;&gt;     bmI=bm_interface,</span>
+<span class="sd">    &gt;&gt;&gt;     model=RandomForestClassifier(),</span>
+<span class="sd">    &gt;&gt;&gt;     bm_list=bm_combinations,</span>
+<span class="sd">    &gt;&gt;&gt;     privileged_group=privileged_groups,</span>
+<span class="sd">    &gt;&gt;&gt;     unprivileged_group=unprivileged_groups</span>
+<span class="sd">    &gt;&gt;&gt; )</span>
+<span class="sd">    &gt;&gt;&gt; </span>
+<span class="sd">    &gt;&gt;&gt; # Run grid search</span>
+<span class="sd">    &gt;&gt;&gt; grid_search.run_single_sensitive()</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">callmefair.util.fair_util</span><span class="w"> </span><span class="kn">import</span> <span class="n">BMInterface</span><span class="p">,</span> <span class="n">BMMetrics</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">callmefair.mitigation.fair_bm</span><span class="w"> </span><span class="kn">import</span> <span class="n">BMManager</span><span class="p">,</span> <span class="n">BMType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">callmefair.mitigation.fair_log</span><span class="w"> </span><span class="kn">import</span> <span class="n">csvLogger</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>   
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">tensorflow.compat.v1</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tf</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">disable_eager_execution</span><span class="p">()</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+<div class="viewcode-block" id="tf">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_grid/index.html#callmefair.tf">[docs]</a>
+    <span class="n">tf</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<span class="c1">#TODO adapt model fit and predict probabilites to an abstract interface</span>
+
+<div class="viewcode-block" id="get_model_proba">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_grid/index.html#callmefair.get_model_proba">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_model_proba</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">bmI</span><span class="p">:</span> <span class="n">BMInterface</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adapt different ML models for probability prediction.</span>
+<span class="sd">    </span>
+<span class="sd">    This function provides a unified interface for training models and obtaining</span>
+<span class="sd">    probability predictions across different ML frameworks. It handles various</span>
+<span class="sd">    model types including scikit-learn, XGBoost, TabNet, and others.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        model: The machine learning model to train and evaluate</span>
+<span class="sd">        bmI (BMInterface): Interface for managing binary label datasets</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple[np.ndarray]: Tuple containing (validation_predictions, test_predictions)</span>
+<span class="sd">            Both arrays contain probability predictions for the positive class.</span>
+<span class="sd">            </span>
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If the model type is not supported</span>
+<span class="sd">        </span>
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; from sklearn.ensemble import RandomForestClassifier</span>
+<span class="sd">        &gt;&gt;&gt; model = RandomForestClassifier()</span>
+<span class="sd">        &gt;&gt;&gt; val_pred, test_pred = get_model_proba(model, bm_interface)</span>
+<span class="sd">        &gt;&gt;&gt; print(f&quot;Validation predictions shape: {val_pred.shape}&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; print(f&quot;Test predictions shape: {test_pred.shape}&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span> <span class="o">=</span> <span class="n">bmI</span><span class="o">.</span><span class="n">get_train_xy</span><span class="p">()</span> 
+    <span class="n">x_val</span> <span class="p">,</span> <span class="n">y_val</span> <span class="o">=</span> <span class="n">bmI</span><span class="o">.</span><span class="n">get_val_xy</span><span class="p">()</span>
+    <span class="n">x_test</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">bmI</span><span class="o">.</span><span class="n">get_test_xy</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;LogisticRegression&#39;</span><span class="p">):</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="n">bmI</span><span class="o">.</span><span class="n">get_train_BLD</span><span class="p">()</span><span class="o">.</span><span class="n">instance_weights</span><span class="p">)</span>
+        <span class="n">y_val_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x_val</span><span class="p">)</span>
+        <span class="n">y_test_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x_test</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="nb">any</span><span class="p">([</span><span class="n">model</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;XGBClassifier&#39;</span><span class="p">,</span> <span class="s1">&#39;MLP&#39;</span><span class="p">)]):</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+        <span class="n">y_val_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x_val</span><span class="p">)</span>
+        <span class="n">y_test_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x_test</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">model</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;TabNet&#39;</span><span class="p">):</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span>
+                 <span class="n">eval_set</span><span class="o">=</span><span class="p">[(</span><span class="n">x_val</span><span class="p">,</span> <span class="n">y_val</span><span class="p">)]</span>
+                <span class="p">)</span>
+        <span class="n">y_val_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x_val</span><span class="p">)</span>
+        <span class="n">y_test_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x_test</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">eval_set</span><span class="o">=</span><span class="p">[(</span><span class="n">x_val</span> <span class="p">,</span> <span class="n">y_val</span><span class="p">)])</span>
+        <span class="n">y_val_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x_val</span><span class="p">)</span>
+        <span class="n">y_test_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x_test</span><span class="p">)</span>
+        
+    <span class="k">return</span> <span class="p">(</span><span class="n">y_val_pred</span><span class="p">,</span> <span class="n">y_test_pred</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@dataclass</span>
+<div class="viewcode-block" id="dummy_model">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_grid/index.html#callmefair.dummy_model">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">dummy_model</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Dummy model class for compatibility with bias mitigation metrics.</span>
+<span class="sd">    </span>
+<span class="sd">    This class provides a minimal interface required by the BMMetrics class</span>
+<span class="sd">    for evaluating bias mitigation techniques when no specific model is used</span>
+<span class="sd">    (e.g., for in-processing techniques that have their own models).</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        classes_ (np.ndarray): Array of class labels [0, 1]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="dummy_model.classes_">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_grid/index.html#callmefair.dummy_model.classes_">[docs]</a>
+    <span class="n">classes_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span></div>
+</div>
+
+
+<div class="viewcode-block" id="BMGridSearch">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_grid/index.html#callmefair.BMGridSearch">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BMGridSearch</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Grid Search for Bias Mitigation Combinations.</span>
+<span class="sd">    </span>
+<span class="sd">    This class provides a systematic framework for evaluating different combinations</span>
+<span class="sd">    of bias mitigation techniques. It supports preprocessing, in-processing, and</span>
+<span class="sd">    postprocessing methods, and can work with various machine learning models.</span>
+<span class="sd">    </span>
+<span class="sd">    The grid search evaluates each combination of bias mitigation techniques and</span>
+<span class="sd">    logs the results for comparison. It currently supports single sensitive</span>
+<span class="sd">    attribute evaluation, with plans for multiple sensitive attributes.</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        bmI (BMInterface): Interface for managing binary label datasets</span>
+<span class="sd">        bmMR (BMManager): Bias mitigation manager for applying techniques</span>
+<span class="sd">        model: The machine learning model to evaluate</span>
+<span class="sd">        bm_list (list[list[BMType]]): List of bias mitigation combinations to test</span>
+<span class="sd">        privileged_group (list[dict]): List of dictionaries defining privileged groups</span>
+<span class="sd">        unprivileged_group (list[dict]): List of dictionaries defining unprivileged groups</span>
+<span class="sd">        is_model_in (bool): Whether using in-processing bias mitigation</span>
+<span class="sd">        </span>
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; from callmefair.mitigation.fair_grid import BMGridSearch</span>
+<span class="sd">        &gt;&gt;&gt; from callmefair.mitigation.fair_bm import BMType</span>
+<span class="sd">        &gt;&gt;&gt; </span>
+<span class="sd">        &gt;&gt;&gt; # Define combinations to test</span>
+<span class="sd">        &gt;&gt;&gt; combinations = [</span>
+<span class="sd">        &gt;&gt;&gt;     [BMType.preReweighing],</span>
+<span class="sd">        &gt;&gt;&gt;     [BMType.preDisparate, BMType.posCEO],</span>
+<span class="sd">        &gt;&gt;&gt;     [BMType.inAdversarial]</span>
+<span class="sd">        &gt;&gt;&gt; ]</span>
+<span class="sd">        &gt;&gt;&gt; </span>
+<span class="sd">        &gt;&gt;&gt; # Create grid search</span>
+<span class="sd">        &gt;&gt;&gt; grid_search = BMGridSearch(</span>
+<span class="sd">        &gt;&gt;&gt;     bmI=bm_interface,</span>
+<span class="sd">        &gt;&gt;&gt;     model=RandomForestClassifier(),</span>
+<span class="sd">        &gt;&gt;&gt;     bm_list=combinations,</span>
+<span class="sd">        &gt;&gt;&gt;     privileged_group=privileged_groups,</span>
+<span class="sd">        &gt;&gt;&gt;     unprivileged_group=unprivileged_groups</span>
+<span class="sd">        &gt;&gt;&gt; )</span>
+<span class="sd">        &gt;&gt;&gt; </span>
+<span class="sd">        &gt;&gt;&gt; # Run evaluation</span>
+<span class="sd">        &gt;&gt;&gt; grid_search.run_single_sensitive()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bmI</span><span class="p">:</span> <span class="n">BMInterface</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">bm_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">BMType</span><span class="p">]],</span> 
+                 <span class="n">privileged_group</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">unprivileged_group</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the Bias Mitigation Grid Search.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            bmI (BMInterface): Interface for managing binary label datasets</span>
+<span class="sd">            model: The machine learning model to evaluate. Can be None for</span>
+<span class="sd">                in-processing techniques that have their own models.</span>
+<span class="sd">            bm_list (list[list[BMType]]): List of bias mitigation combinations to test.</span>
+<span class="sd">                Each inner list represents one combination of techniques.</span>
+<span class="sd">            privileged_group (list[dict]): List of dictionaries defining privileged groups.</span>
+<span class="sd">                Each dict should contain protected attribute names and their privileged values.</span>
+<span class="sd">            unprivileged_group (list[dict]): List of dictionaries defining unprivileged groups.</span>
+<span class="sd">                Each dict should contain protected attribute names and their unprivileged values.</span>
+<span class="sd">                </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; bm_combinations = [</span>
+<span class="sd">            &gt;&gt;&gt;     [BMType.preReweighing],</span>
+<span class="sd">            &gt;&gt;&gt;     [BMType.preDisparate, BMType.posCEO],</span>
+<span class="sd">            &gt;&gt;&gt;     [BMType.inAdversarial]</span>
+<span class="sd">            &gt;&gt;&gt; ]</span>
+<span class="sd">            &gt;&gt;&gt; </span>
+<span class="sd">            &gt;&gt;&gt; grid_search = BMGridSearch(</span>
+<span class="sd">            &gt;&gt;&gt;     bmI=bm_interface,</span>
+<span class="sd">            &gt;&gt;&gt;     model=RandomForestClassifier(),</span>
+<span class="sd">            &gt;&gt;&gt;     bm_list=bm_combinations,</span>
+<span class="sd">            &gt;&gt;&gt;     privileged_group=[{&#39;gender&#39;: 1}],</span>
+<span class="sd">            &gt;&gt;&gt;     unprivileged_group=[{&#39;gender&#39;: 0}]</span>
+<span class="sd">            &gt;&gt;&gt; )</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="BMGridSearch.bmI">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_grid/index.html#callmefair.BMGridSearch.bmI">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bmI</span> <span class="o">=</span> <span class="n">bmI</span></div>
+
+<div class="viewcode-block" id="BMGridSearch.bmMR">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_grid/index.html#callmefair.BMGridSearch.bmMR">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bmMR</span> <span class="o">=</span> <span class="n">BMManager</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="p">,</span> <span class="n">privileged_group</span><span class="p">,</span> <span class="n">unprivileged_group</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BMGridSearch.model">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_grid/index.html#callmefair.BMGridSearch.model">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span></div>
+
+        <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># prepare BMI to deal with transform classifier (scaler)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="o">.</span><span class="n">set_transform</span><span class="p">()</span>
+            
+<div class="viewcode-block" id="BMGridSearch.bm_list">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_grid/index.html#callmefair.BMGridSearch.bm_list">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bm_list</span> <span class="o">=</span> <span class="n">bm_list</span></div>
+
+<div class="viewcode-block" id="BMGridSearch.privileged_group">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_grid/index.html#callmefair.BMGridSearch.privileged_group">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">privileged_group</span> <span class="o">=</span> <span class="n">privileged_group</span></div>
+
+<div class="viewcode-block" id="BMGridSearch.unprivileged_group">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_grid/index.html#callmefair.BMGridSearch.unprivileged_group">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unprivileged_group</span> <span class="o">=</span> <span class="n">unprivileged_group</span></div>
+
+<div class="viewcode-block" id="BMGridSearch.is_model_in">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_grid/index.html#callmefair.BMGridSearch.is_model_in">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_model_in</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__in_model_run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run in-processing model training and prediction.</span>
+<span class="sd">        </span>
+<span class="sd">        This method handles the special case of in-processing bias mitigation</span>
+<span class="sd">        techniques that have their own training procedures.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: Tuple containing (trained_model, validation_predictions, test_predictions)</span>
+<span class="sd">            </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; model, val_pred, test_pred = self.__in_model_run()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">infer_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="o">.</span><span class="n">get_train_BLD</span><span class="p">())</span>
+        <span class="n">y_val_pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="o">.</span><span class="n">get_val_BLD</span><span class="p">())</span>
+        <span class="n">y_test_pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="o">.</span><span class="n">get_test_BLD</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="n">infer_model</span><span class="p">,</span> <span class="n">y_val_pred</span><span class="p">,</span> <span class="n">y_test_pred</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__warmup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the bias mitigation metrics evaluator.</span>
+<span class="sd">        </span>
+<span class="sd">        This method sets up the BMMetrics object for evaluating fairness metrics</span>
+<span class="sd">        across all bias mitigation combinations. It handles both standard models</span>
+<span class="sd">        and in-processing models.</span>
+<span class="sd">        </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; self.__warmup()</span>
+<span class="sd">            &gt;&gt;&gt; # BMMetrics object is now ready for evaluation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_model_in</span><span class="p">:</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">y_val_pred</span><span class="p">,</span> <span class="n">y_test_pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__in_model_run</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">y_val_pred</span><span class="p">,</span> <span class="n">y_test_pred</span> <span class="o">=</span> <span class="n">get_model_proba</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">bmM</span> <span class="o">=</span> <span class="n">BMMetrics</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="p">,</span> <span class="n">dummy_model</span><span class="o">.</span><span class="n">classes_</span><span class="p">,</span> <span class="n">y_val_pred</span><span class="p">,</span> <span class="n">y_test_pred</span><span class="p">,</span> 
+                             <span class="bp">self</span><span class="o">.</span><span class="n">privileged_group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unprivileged_group</span><span class="p">)</span>
+        
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__is_valid_in_processing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_set</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="n">BMType</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">BMType</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if in-processing bias mitigation is valid in the current combination.</span>
+<span class="sd">        </span>
+<span class="sd">        This method validates that in-processing techniques are properly configured</span>
+<span class="sd">        and returns the specific in-processing type if found.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            in_set (list[set[BMType]]): List of bias mitigation combinations to check</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple[bool, BMType]: Tuple containing (is_valid, in_processing_type)</span>
+<span class="sd">                is_valid: Whether in-processing is valid in the combination</span>
+<span class="sd">                in_processing_type: The specific in-processing technique found, or None</span>
+<span class="sd">                </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; is_valid, in_type = self.__is_valid_in_processing(bm_combinations)</span>
+<span class="sd">            &gt;&gt;&gt; if is_valid:</span>
+<span class="sd">            &gt;&gt;&gt;     print(f&quot;Found in-processing technique: {in_type}&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">in_type</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">enum_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">current_set</span> <span class="ow">in</span> <span class="n">in_set</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">current_set</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">is_in</span><span class="p">:</span>
+                    <span class="n">enum_count</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">in_type</span> <span class="o">=</span> <span class="n">item</span>
+        <span class="k">if</span> <span class="n">enum_count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">in_type</span>
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">in_type</span>
+
+<div class="viewcode-block" id="BMGridSearch.run_single_sensitive">
+<a class="viewcode-back" href="../../../autoapi/callmefair/mitigation/fair_grid/index.html#callmefair.BMGridSearch.run_single_sensitive">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run_single_sensitive</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run grid search evaluation for single sensitive attribute.</span>
+<span class="sd">        </span>
+<span class="sd">        This method performs a comprehensive evaluation of all bias mitigation</span>
+<span class="sd">        combinations in the grid search. It evaluates each combination and logs</span>
+<span class="sd">        the results for comparison. Currently supports single sensitive attribute</span>
+<span class="sd">        evaluation, with plans for multiple sensitive attributes.</span>
+<span class="sd">        </span>
+<span class="sd">        The method:</span>
+<span class="sd">        1. Validates in-processing configurations</span>
+<span class="sd">        2. Evaluates baseline performance (no bias mitigation)</span>
+<span class="sd">        3. Evaluates each bias mitigation combination</span>
+<span class="sd">        4. Logs results to CSV files for analysis</span>
+<span class="sd">        </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If in-processing bias mitigation is defined with a classifier model</span>
+<span class="sd">            </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; # Define bias mitigation combinations</span>
+<span class="sd">            &gt;&gt;&gt; combinations = [</span>
+<span class="sd">            &gt;&gt;&gt;     [BMType.preReweighing],</span>
+<span class="sd">            &gt;&gt;&gt;     [BMType.preDisparate, BMType.posCEO],</span>
+<span class="sd">            &gt;&gt;&gt;     [BMType.inAdversarial]</span>
+<span class="sd">            &gt;&gt;&gt; ]</span>
+<span class="sd">            &gt;&gt;&gt; </span>
+<span class="sd">            &gt;&gt;&gt; # Run grid search</span>
+<span class="sd">            &gt;&gt;&gt; grid_search.run_single_sensitive()</span>
+<span class="sd">            &gt;&gt;&gt; # Results are logged to CSV files</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># check if in processing is possible</span>
+        <span class="n">is_in</span><span class="p">,</span> <span class="n">in_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__is_valid_in_processing</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bm_list</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">is_in</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;In processing BM defined. Combination with classifier is invalid.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">is_in</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_model_in</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="n">in_type</span> <span class="o">==</span> <span class="n">BMType</span><span class="o">.</span><span class="n">inAdversarial</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bmMR</span><span class="o">.</span><span class="n">in_AD</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">in_type</span> <span class="o">==</span> <span class="n">BMType</span><span class="o">.</span><span class="n">inMeta</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bmMR</span><span class="o">.</span><span class="n">in_Meta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="o">.</span><span class="n">get_protected_att</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="c1"># create BMMetric object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__warmup</span><span class="p">()</span>
+
+        <span class="n">logger</span> <span class="o">=</span> <span class="n">csvLogger</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;experiment_(</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y_%m_</span><span class="si">%d</span><span class="s2">-%I_%M_%S_%p&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+        <span class="n">experiment_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;model&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;(&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;BM&#39;</span><span class="p">:</span><span class="s1">&#39;baseline&#39;</span><span class="p">}</span>
+        <span class="n">experiment_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bmM</span><span class="o">.</span><span class="n">get_report</span><span class="p">())</span>
+        <span class="n">experiment_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;fair_score&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">bmM</span><span class="o">.</span><span class="n">get_score</span><span class="p">()})</span>
+
+        <span class="n">exp_data_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">experiment_dict</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">c_set</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bm_list</span><span class="p">:</span>
+            <span class="n">bm_name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">pre_in_set</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">c_set</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">is_pre</span><span class="p">]</span>
+            <span class="n">in_in_set</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">c_set</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">is_in</span><span class="p">]</span>
+            <span class="n">pos_in_set</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">c_set</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">is_pos</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">pre_in_set</span><span class="p">:</span>
+                <span class="n">bm_name</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="n">BMType</span><span class="o">.</span><span class="n">preReweighing</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">bmMR</span><span class="o">.</span><span class="n">pre_Reweighing</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="n">BMType</span><span class="o">.</span><span class="n">preDisparate</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">bmMR</span><span class="o">.</span><span class="n">pre_DR</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="o">.</span><span class="n">get_protected_att</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="n">BMType</span><span class="o">.</span><span class="n">preLFR</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">bmMR</span><span class="o">.</span><span class="n">pre_LFR</span><span class="p">()</span>
+
+            <span class="c1"># check if in-processing is in bm_list</span>
+            <span class="k">if</span> <span class="n">is_in</span><span class="p">:</span>
+                <span class="c1"># clear memory on AD</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="s1">&#39;sess&#39;</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">close</span><span class="p">()</span> 
+                <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">in_in_set</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">in_type</span> <span class="o">==</span> <span class="n">BMType</span><span class="o">.</span><span class="n">inAdversarial</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bmMR</span><span class="o">.</span><span class="n">in_AD</span><span class="p">(</span><span class="n">debias</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                        <span class="n">bm_name</span> <span class="o">+=</span> <span class="s1">&#39; inAD&#39;</span>
+                    <span class="k">elif</span> <span class="n">in_type</span> <span class="o">==</span> <span class="n">BMType</span><span class="o">.</span><span class="n">inMeta</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bmMR</span><span class="o">.</span><span class="n">in_Meta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="o">.</span><span class="n">get_protected_att</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span> <span class="n">tau</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">in_type</span> <span class="o">==</span> <span class="n">BMType</span><span class="o">.</span><span class="n">inAdversarial</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bmMR</span><span class="o">.</span><span class="n">in_AD</span><span class="p">()</span>
+                <span class="n">_</span><span class="p">,</span> <span class="n">y_val_pred</span><span class="p">,</span> <span class="n">y_test_pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__in_model_run</span><span class="p">()</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">y_val_pred</span><span class="p">,</span> <span class="n">y_test_pred</span> <span class="o">=</span> <span class="n">get_model_proba</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="p">)</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">bmM</span><span class="o">.</span><span class="n">set_new_pred</span><span class="p">(</span><span class="n">y_val_pred</span><span class="p">,</span> <span class="n">y_test_pred</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">pos_in_set</span><span class="p">:</span>
+                <span class="n">bm_name</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="n">BMType</span><span class="o">.</span><span class="n">posCalibrated</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">bmMR</span><span class="o">.</span><span class="n">pos_CEO</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="o">.</span><span class="n">get_val_BLD</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="o">.</span><span class="n">get_test_BLD</span><span class="p">())</span>
+                <span class="k">elif</span> <span class="n">c</span> <span class="o">==</span> <span class="n">BMType</span><span class="o">.</span><span class="n">posEqqOds</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">bmMR</span><span class="o">.</span><span class="n">pos_EO</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="o">.</span><span class="n">get_val_BLD</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="o">.</span><span class="n">get_test_BLD</span><span class="p">())</span>
+                <span class="k">elif</span> <span class="n">c</span> <span class="o">==</span> <span class="n">BMType</span><span class="o">.</span><span class="n">posROC</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">bmMR</span><span class="o">.</span><span class="n">pos_ROC</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="o">.</span><span class="n">get_val_BLD</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="o">.</span><span class="n">get_test_BLD</span><span class="p">())</span>
+
+            <span class="n">new_exp_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;model&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;(&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;BM&#39;</span><span class="p">:</span><span class="n">bm_name</span><span class="p">[</span><span class="mi">1</span><span class="p">:]}</span>
+            <span class="n">new_exp_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bmM</span><span class="o">.</span><span class="n">get_report</span><span class="p">())</span>
+            <span class="n">new_exp_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;fair_score&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">bmM</span><span class="o">.</span><span class="n">get_score</span><span class="p">()})</span>
+            <span class="n">exp_data_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_exp_dict</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="o">.</span><span class="n">restore_BLD</span><span class="p">()</span>
+
+        <span class="n">logger</span><span class="p">(</span><span class="n">exp_data_list</span><span class="p">)</span></div>
+</div>
+
+        <span class="c1">#aggregate_csv_files(&#39;./results/&#39;, f&#39;./results/experiment_{datetime.now().strftime(&quot;%Y_%m_%d-%I_%M_%S_%p&quot;)}.csv&#39;)</span>
+                
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, CallMeFair Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

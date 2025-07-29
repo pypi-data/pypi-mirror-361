@@ -1,0 +1,1058 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>callmefair.util.fair_util &mdash; CallMeFair 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=720763da" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=720763da" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            CallMeFair
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/quickstart.html">Quick Start Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/grid_search_guide.html">Grid Search Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/utility_guide.html">Utility Functions Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/bias_search_guide.html">Bias Search Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../autoapi/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">CallMeFair</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">callmefair.util.fair_util</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for callmefair.util.fair_util</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Utility Functions and Interfaces for Bias Mitigation</span>
+
+<span class="sd">This module provides core utility functions and interfaces for bias mitigation</span>
+<span class="sd">in machine learning systems. It includes the essential `calculate_fairness_score`</span>
+<span class="sd">function for aggregating multiple fairness metrics into a single score, and the</span>
+<span class="sd">`BMInterface` class for managing datasets and bias mitigation operations.</span>
+
+<span class="sd">The module implements:</span>
+<span class="sd">- Fairness score calculation with normalization and deviation evaluation</span>
+<span class="sd">- Dataset management with train/validation/test splits</span>
+<span class="sd">- Binary label dataset creation and manipulation</span>
+<span class="sd">- Feature scaling and transformation</span>
+<span class="sd">- Comprehensive fairness metrics evaluation</span>
+
+<span class="sd">Classes:</span>
+<span class="sd">    BMnames: Data class for bias mitigation attribute configuration</span>
+<span class="sd">    BMInterface: Main interface for managing datasets and bias mitigation operations</span>
+<span class="sd">    BMMetrics: Comprehensive fairness metrics evaluation</span>
+
+<span class="sd">Functions:</span>
+<span class="sd">    calculate_fairness_score: Aggregate multiple fairness metrics into a single score</span>
+
+<span class="sd">Example:</span>
+<span class="sd">    &gt;&gt;&gt; from callmefair.util.fair_util import BMInterface, calculate_fairness_score</span>
+<span class="sd">    &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">    &gt;&gt;&gt; </span>
+<span class="sd">    &gt;&gt;&gt; # Load your data</span>
+<span class="sd">    &gt;&gt;&gt; train_df = pd.read_csv(&#39;train.csv&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; val_df = pd.read_csv(&#39;val.csv&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; test_df = pd.read_csv(&#39;test.csv&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; </span>
+<span class="sd">    &gt;&gt;&gt; # Initialize the interface</span>
+<span class="sd">    &gt;&gt;&gt; bm_interface = BMInterface(train_df, val_df, test_df, &#39;label&#39;, [&#39;gender&#39;])</span>
+<span class="sd">    &gt;&gt;&gt; </span>
+<span class="sd">    &gt;&gt;&gt; # Calculate fairness score</span>
+<span class="sd">    &gt;&gt;&gt; fairness_result = calculate_fairness_score(</span>
+<span class="sd">    &gt;&gt;&gt;     EOD=0.05, AOD=0.03, SPD=0.08, DI=0.95, TI=0.12</span>
+<span class="sd">    &gt;&gt;&gt; )</span>
+<span class="sd">    &gt;&gt;&gt; print(f&quot;Overall fairness score: {fairness_result[&#39;overall_score&#39;]}&quot;)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="c1"># Fairness Dataset</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">aif360.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">BinaryLabelDataset</span>
+<span class="c1"># Fairness metrics</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">aif360.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClassificationMetric</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<div class="viewcode-block" id="calculate_fairness_score">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.calculate_fairness_score">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_fairness_score</span><span class="p">(</span><span class="n">EOD</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">AOD</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">SPD</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">DI</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">TI</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate a comprehensive fairness score based on multiple fairness metrics.</span>
+<span class="sd">    </span>
+<span class="sd">    This function aggregates five key fairness metrics into a single normalized score</span>
+<span class="sd">    that represents the overall fairness of a machine learning model. The function</span>
+<span class="sd">    evaluates each metric against predefined acceptable ranges and calculates</span>
+<span class="sd">    deviations from optimal values to produce a unified fairness assessment.</span>
+<span class="sd">    </span>
+<span class="sd">    The function uses a weighted scoring system where:</span>
+<span class="sd">    - Each metric contributes up to 0.2 for being outside acceptable ranges</span>
+<span class="sd">    - Each metric contributes up to 0.16 based on deviation from optimal values</span>
+<span class="sd">    - The final score is normalized to the 0-1 range where 0 = perfect fairness</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        EOD (float): Equal Opportunity Difference - measures difference in true positive</span>
+<span class="sd">            rates between groups. Optimal value: 0.0, Acceptable range: (-0.1, 0.1)</span>
+<span class="sd">        AOD (float): Average Odds Difference - measures difference in average of</span>
+<span class="sd">            true positive and false positive rates between groups. Optimal value: 0.0,</span>
+<span class="sd">            Acceptable range: (-0.1, 0.1)</span>
+<span class="sd">        SPD (float): Statistical Parity Difference - measures difference in positive</span>
+<span class="sd">            prediction rates between groups. Optimal value: 0.0, Acceptable range: (-0.1, 0.1)</span>
+<span class="sd">        DI (float): Disparate Impact - ratio of positive prediction rates between</span>
+<span class="sd">            groups. Optimal value: 1.0, Acceptable range: (0.8, 1.2)</span>
+<span class="sd">        TI (float): Theil Index - measures inequality in prediction distributions.</span>
+<span class="sd">            Optimal value: 0.0, Acceptable range: (0.0, 0.25)</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: Dictionary containing fairness evaluation results with keys:</span>
+<span class="sd">            - &#39;raw_score&#39; (float): Unnormalized fairness score</span>
+<span class="sd">            - &#39;overall_score&#39; (float): Normalized fairness score (0-1, lower is better)</span>
+<span class="sd">            - &#39;metric_evaluations&#39; (dict): Boolean evaluation of each metric</span>
+<span class="sd">            - &#39;deviations&#39; (dict): Normalized deviations from optimal values</span>
+<span class="sd">            - &#39;is_fair&#39; (bool): Whether all metrics are within acceptable ranges</span>
+<span class="sd">            </span>
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; # Perfect fairness</span>
+<span class="sd">        &gt;&gt;&gt; result = calculate_fairness_score(0.0, 0.0, 0.0, 1.0, 0.0)</span>
+<span class="sd">        &gt;&gt;&gt; print(f&quot;Score: {result[&#39;overall_score&#39;]}&quot;)  # 0.0 (perfect)</span>
+<span class="sd">        &gt;&gt;&gt; print(f&quot;Is fair: {result[&#39;is_fair&#39;]}&quot;)  # True</span>
+<span class="sd">        &gt;&gt;&gt; </span>
+<span class="sd">        &gt;&gt;&gt; # Moderate unfairness</span>
+<span class="sd">        &gt;&gt;&gt; result = calculate_fairness_score(0.15, 0.12, 0.18, 0.7, 0.3)</span>
+<span class="sd">        &gt;&gt;&gt; print(f&quot;Score: {result[&#39;overall_score&#39;]}&quot;)  # ~0.6-0.8</span>
+<span class="sd">        &gt;&gt;&gt; print(f&quot;Is fair: {result[&#39;is_fair&#39;]}&quot;)  # False</span>
+<span class="sd">        &gt;&gt;&gt; </span>
+<span class="sd">        &gt;&gt;&gt; # Check individual metric evaluations</span>
+<span class="sd">        &gt;&gt;&gt; for metric, is_acceptable in result[&#39;metric_evaluations&#39;].items():</span>
+<span class="sd">        &gt;&gt;&gt;     print(f&quot;{metric}: {&#39;✓&#39; if is_acceptable else &#39;✗&#39;}&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Define optimal values for each fairness metric</span>
+    <span class="n">optimal_values</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;EOD&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>  <span class="c1"># Equal Opportunity Difference</span>
+        <span class="s1">&#39;AOD&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>  <span class="c1"># Average Odds Difference</span>
+        <span class="s1">&#39;SPD&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>  <span class="c1"># Statistical Parity Difference</span>
+        <span class="s1">&#39;DI&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>   <span class="c1"># Disparate Impact</span>
+        <span class="s1">&#39;TI&#39;</span><span class="p">:</span> <span class="mf">0.0</span>    <span class="c1"># Theil Index</span>
+    <span class="p">}</span>
+    
+    <span class="c1"># Define acceptable ranges for each metric</span>
+    <span class="n">ranges</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;EOD&#39;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span>   <span class="c1"># ±10% difference acceptable</span>
+        <span class="s1">&#39;AOD&#39;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span>   <span class="c1"># ±10% difference acceptable</span>
+        <span class="s1">&#39;SPD&#39;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span>   <span class="c1"># ±10% difference acceptable</span>
+        <span class="s1">&#39;DI&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">),</span>     <span class="c1"># 80-120% ratio acceptable</span>
+        <span class="s1">&#39;TI&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">)</span>     <span class="c1"># Up to 25% inequality acceptable</span>
+    <span class="p">}</span>
+    
+    <span class="c1"># Check if each metric is within its acceptable range</span>
+    <span class="n">evaluations</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;EOD&#39;</span><span class="p">:</span> <span class="n">ranges</span><span class="p">[</span><span class="s1">&#39;EOD&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">EOD</span> <span class="o">&lt;=</span> <span class="n">ranges</span><span class="p">[</span><span class="s1">&#39;EOD&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+        <span class="s1">&#39;AOD&#39;</span><span class="p">:</span> <span class="n">ranges</span><span class="p">[</span><span class="s1">&#39;AOD&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">AOD</span> <span class="o">&lt;=</span> <span class="n">ranges</span><span class="p">[</span><span class="s1">&#39;AOD&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+        <span class="s1">&#39;SPD&#39;</span><span class="p">:</span> <span class="n">ranges</span><span class="p">[</span><span class="s1">&#39;SPD&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">SPD</span> <span class="o">&lt;=</span> <span class="n">ranges</span><span class="p">[</span><span class="s1">&#39;SPD&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+        <span class="s1">&#39;DI&#39;</span><span class="p">:</span> <span class="n">ranges</span><span class="p">[</span><span class="s1">&#39;DI&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">DI</span> <span class="o">&lt;=</span> <span class="n">ranges</span><span class="p">[</span><span class="s1">&#39;DI&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+        <span class="s1">&#39;TI&#39;</span><span class="p">:</span> <span class="n">ranges</span><span class="p">[</span><span class="s1">&#39;TI&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">TI</span> <span class="o">&lt;=</span> <span class="n">ranges</span><span class="p">[</span><span class="s1">&#39;TI&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+    <span class="p">}</span>
+    
+    <span class="c1"># Calculate deviation from optimal values (normalized by range size)</span>
+    <span class="n">deviations</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;EOD&#39;</span><span class="p">:</span> <span class="nb">abs</span><span class="p">(</span><span class="n">EOD</span> <span class="o">-</span> <span class="n">optimal_values</span><span class="p">[</span><span class="s1">&#39;EOD&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="mf">0.1</span><span class="p">,</span>  <span class="c1"># normalized by range size</span>
+        <span class="s1">&#39;AOD&#39;</span><span class="p">:</span> <span class="nb">abs</span><span class="p">(</span><span class="n">AOD</span> <span class="o">-</span> <span class="n">optimal_values</span><span class="p">[</span><span class="s1">&#39;AOD&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="mf">0.1</span><span class="p">,</span>
+        <span class="s1">&#39;SPD&#39;</span><span class="p">:</span> <span class="nb">abs</span><span class="p">(</span><span class="n">SPD</span> <span class="o">-</span> <span class="n">optimal_values</span><span class="p">[</span><span class="s1">&#39;SPD&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="mf">0.1</span><span class="p">,</span>
+        <span class="s1">&#39;DI&#39;</span><span class="p">:</span> <span class="nb">abs</span><span class="p">(</span><span class="n">DI</span> <span class="o">-</span> <span class="n">optimal_values</span><span class="p">[</span><span class="s1">&#39;DI&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="mf">0.2</span><span class="p">,</span>     <span class="c1"># normalized by range size</span>
+        <span class="s1">&#39;TI&#39;</span><span class="p">:</span> <span class="nb">abs</span><span class="p">(</span><span class="n">TI</span> <span class="o">-</span> <span class="n">optimal_values</span><span class="p">[</span><span class="s1">&#39;TI&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="mf">0.25</span>
+    <span class="p">}</span>
+    
+    <span class="c1"># Calculate raw unfairness score</span>
+    <span class="n">raw_score</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">max_possible_score</span> <span class="o">=</span> <span class="mf">0.0</span>
+    
+    <span class="c1"># Each metric contributes up to 0.2 to the score for being out of range</span>
+    <span class="c1"># and up to 0.8 based on its deviation (0.16 * 5 = 0.8 total possible from deviations)</span>
+    <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">evaluations</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">evaluations</span><span class="p">[</span><span class="n">metric</span><span class="p">]:</span>
+            <span class="n">raw_score</span> <span class="o">+=</span> <span class="mf">0.2</span>  <span class="c1"># Penalty for being outside acceptable range</span>
+        <span class="n">raw_score</span> <span class="o">+=</span> <span class="n">deviations</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.16</span>  <span class="c1"># Contribution based on deviation</span>
+        <span class="n">max_possible_score</span> <span class="o">+=</span> <span class="mf">0.2</span> <span class="o">+</span> <span class="mf">0.16</span>  <span class="c1"># Maximum possible contribution from each metric</span>
+    
+    <span class="c1"># Normalize score to 0-1 range</span>
+    <span class="n">normalized_score</span> <span class="o">=</span> <span class="n">raw_score</span> <span class="o">/</span> <span class="n">max_possible_score</span>
+    <span class="n">final_score</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">normalized_score</span><span class="p">))</span>
+    
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;raw_score&#39;</span><span class="p">:</span> <span class="n">raw_score</span><span class="p">,</span>
+        <span class="s1">&#39;overall_score&#39;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">final_score</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+        <span class="s1">&#39;metric_evaluations&#39;</span><span class="p">:</span> <span class="n">evaluations</span><span class="p">,</span>
+        <span class="s1">&#39;deviations&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">deviations</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
+        <span class="s1">&#39;is_fair&#39;</span><span class="p">:</span> <span class="nb">all</span><span class="p">(</span><span class="n">evaluations</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+    <span class="p">}</span></div>
+
+
+<span class="nd">@dataclass</span>
+<div class="viewcode-block" id="BMnames">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMnames">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BMnames</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Data class for bias mitigation attribute configuration.</span>
+<span class="sd">    </span>
+<span class="sd">    This class stores the essential configuration parameters for bias mitigation</span>
+<span class="sd">    operations, including label names, protected attributes, and favorable/unfavorable</span>
+<span class="sd">    label values.</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        label_names (str): Name of the target/label column in the dataset</span>
+<span class="sd">        protected_att (list): List of protected attribute column names</span>
+<span class="sd">        favorable_label (float): Value representing the favorable outcome (default: 1.0)</span>
+<span class="sd">        unfavorable_label (float): Value representing the unfavorable outcome (default: 0.0)</span>
+<span class="sd">        </span>
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; bm_config = BMnames(</span>
+<span class="sd">        &gt;&gt;&gt;     label_names=&#39;income&#39;,</span>
+<span class="sd">        &gt;&gt;&gt;     protected_att=[&#39;gender&#39;, &#39;race&#39;],</span>
+<span class="sd">        &gt;&gt;&gt;     favorable_label=1.0,</span>
+<span class="sd">        &gt;&gt;&gt;     unfavorable_label=0.0</span>
+<span class="sd">        &gt;&gt;&gt; )</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="BMnames.label_names">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMnames.label_names">[docs]</a>
+    <span class="n">label_names</span><span class="p">:</span> <span class="nb">str</span></div>
+
+<div class="viewcode-block" id="BMnames.protected_att">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMnames.protected_att">[docs]</a>
+    <span class="n">protected_att</span><span class="p">:</span> <span class="nb">list</span></div>
+
+<div class="viewcode-block" id="BMnames.favorable_label">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMnames.favorable_label">[docs]</a>
+    <span class="n">favorable_label</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span></div>
+
+<div class="viewcode-block" id="BMnames.unfavorable_label">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMnames.unfavorable_label">[docs]</a>
+    <span class="n">unfavorable_label</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="BMInterface">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMInterface">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BMInterface</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Main interface for managing datasets and bias mitigation operations.</span>
+<span class="sd">    </span>
+<span class="sd">    This class provides a unified interface for managing binary classification</span>
+<span class="sd">    datasets with bias mitigation capabilities. It handles dataset splitting,</span>
+<span class="sd">    feature scaling, and provides access to train/validation/test sets in</span>
+<span class="sd">    various formats required by different bias mitigation techniques.</span>
+<span class="sd">    </span>
+<span class="sd">    The interface supports:</span>
+<span class="sd">    - Automatic dataset splitting and scaling</span>
+<span class="sd">    - Binary label dataset creation for AIF360 compatibility</span>
+<span class="sd">    - Feature scaling with train/validation/test consistency</span>
+<span class="sd">    - Dataset restoration and transformation modes</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        data_sets (list): List of DataFrames [train, validation, test]</span>
+<span class="sd">        BM_attr (BMnames): Bias mitigation attribute configuration</span>
+<span class="sd">        transform (bool): Whether to apply feature scaling</span>
+<span class="sd">        biLData (list): List of BinaryLabelDataset objects</span>
+<span class="sd">        trainXY (tuple): (features, labels) for training data</span>
+<span class="sd">        valXY (tuple): (features, labels) for validation data</span>
+<span class="sd">        testXY (tuple): (features, labels) for test data</span>
+<span class="sd">        </span>
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; from callmefair.util.fair_util import BMInterface</span>
+<span class="sd">        &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">        &gt;&gt;&gt; </span>
+<span class="sd">        &gt;&gt;&gt; # Load your data</span>
+<span class="sd">        &gt;&gt;&gt; train_df = pd.read_csv(&#39;train.csv&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; val_df = pd.read_csv(&#39;val.csv&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; test_df = pd.read_csv(&#39;test.csv&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; </span>
+<span class="sd">        &gt;&gt;&gt; # Initialize interface</span>
+<span class="sd">        &gt;&gt;&gt; bm_interface = BMInterface(</span>
+<span class="sd">        &gt;&gt;&gt;     df_train=train_df,</span>
+<span class="sd">        &gt;&gt;&gt;     df_val=val_df,</span>
+<span class="sd">        &gt;&gt;&gt;     df_test=test_df,</span>
+<span class="sd">        &gt;&gt;&gt;     label=&#39;income&#39;,</span>
+<span class="sd">        &gt;&gt;&gt;     protected=[&#39;gender&#39;, &#39;race&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; )</span>
+<span class="sd">        &gt;&gt;&gt; </span>
+<span class="sd">        &gt;&gt;&gt; # Get data in different formats</span>
+<span class="sd">        &gt;&gt;&gt; train_bld = bm_interface.get_train_BLD()</span>
+<span class="sd">        &gt;&gt;&gt; X_train, y_train = bm_interface.get_train_xy()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df_train</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">df_val</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">df_test</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> 
+                 <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">protected</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the Bias Mitigation Interface.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            df_train (pd.DataFrame): Training dataset</span>
+<span class="sd">            df_val (pd.DataFrame): Validation dataset</span>
+<span class="sd">            df_test (pd.DataFrame): Test dataset</span>
+<span class="sd">            label (str): Name of the target/label column</span>
+<span class="sd">            protected (list): List of protected attribute column names</span>
+<span class="sd">                </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; bm_interface = BMInterface(</span>
+<span class="sd">            &gt;&gt;&gt;     df_train=train_df,</span>
+<span class="sd">            &gt;&gt;&gt;     df_val=val_df,</span>
+<span class="sd">            &gt;&gt;&gt;     df_test=test_df,</span>
+<span class="sd">            &gt;&gt;&gt;     label=&#39;income&#39;,</span>
+<span class="sd">            &gt;&gt;&gt;     protected=[&#39;gender&#39;, &#39;race&#39;]</span>
+<span class="sd">            &gt;&gt;&gt; )</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Assuming train, val, test as default order</span>
+<div class="viewcode-block" id="BMInterface.data_sets">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMInterface.data_sets">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_sets</span> <span class="o">=</span> <span class="p">[</span><span class="n">df_train</span><span class="p">,</span> <span class="n">df_val</span><span class="p">,</span> <span class="n">df_test</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="BMInterface.BM_attr">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMInterface.BM_attr">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">BM_attr</span> <span class="o">=</span> <span class="n">BMnames</span><span class="p">(</span><span class="n">label_names</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">protected_att</span><span class="o">=</span><span class="n">protected</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BMInterface.transform">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMInterface.transform">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__generate_sets</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__scale_split</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__generate_sets</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate BinaryLabelDataset objects for all datasets.</span>
+<span class="sd">        </span>
+<span class="sd">        This method creates BinaryLabelDataset objects from the input DataFrames,</span>
+<span class="sd">        which are required for AIF360 bias mitigation operations.</span>
+<span class="sd">        </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; # Called automatically during initialization</span>
+<span class="sd">            &gt;&gt;&gt; bm_interface = BMInterface(...)</span>
+<span class="sd">            &gt;&gt;&gt; # BinaryLabelDataset objects are now available</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">biLData</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_sets</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">biLData</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BinaryLabelDataset</span><span class="p">(</span>
+                <span class="n">df</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+                <span class="n">label_names</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">BM_attr</span><span class="o">.</span><span class="n">label_names</span><span class="p">],</span>
+                <span class="n">protected_attribute_names</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">BM_attr</span><span class="o">.</span><span class="n">protected_att</span><span class="p">,</span>
+                <span class="n">favorable_label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">BM_attr</span><span class="o">.</span><span class="n">favorable_label</span><span class="p">,</span>
+                <span class="n">unfavorable_label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">BM_attr</span><span class="o">.</span><span class="n">unfavorable_label</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__scale_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply feature scaling in transform mode.</span>
+<span class="sd">        </span>
+<span class="sd">        This method applies StandardScaler to all datasets using the training</span>
+<span class="sd">        data&#39;s scaling parameters to ensure consistency across train/validation/test.</span>
+<span class="sd">        </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; bm_interface.set_transform()</span>
+<span class="sd">            &gt;&gt;&gt; # Features are now scaled consistently</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">scaler</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">biLData</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="n">scaler</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">biLData</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">features</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">biLData</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="n">scaler</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">biLData</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">features</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">biLData</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="n">scaler</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">biLData</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">features</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__scale_split</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create scaled feature-label pairs for all datasets.</span>
+<span class="sd">        </span>
+<span class="sd">        This method creates (features, labels) tuples for all datasets with</span>
+<span class="sd">        consistent scaling applied to features.</span>
+<span class="sd">        </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; # Called automatically during initialization</span>
+<span class="sd">            &gt;&gt;&gt; X_train, y_train = bm_interface.get_train_xy()</span>
+<span class="sd">            &gt;&gt;&gt; # Features are scaled, labels are original</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">scaler</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>
+        <span class="n">scaler</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">biLData</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">features</span><span class="p">)</span>
+        <span class="n">xy_tmp</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">biLData</span><span class="p">:</span>
+            <span class="n">xy_tmp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">scaler</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">features</span><span class="p">),</span>
+                 <span class="n">i</span><span class="o">.</span><span class="n">labels</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trainXY</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">valXY</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">testXY</span> <span class="o">=</span> <span class="n">xy_tmp</span>
+
+<div class="viewcode-block" id="BMInterface.set_transform">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMInterface.set_transform">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Enable transform mode for feature scaling.</span>
+<span class="sd">        </span>
+<span class="sd">        This method enables the transform mode, which applies StandardScaler</span>
+<span class="sd">        to all datasets. This is useful when working with models that require</span>
+<span class="sd">        scaled features.</span>
+<span class="sd">        </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; bm_interface.set_transform()</span>
+<span class="sd">            &gt;&gt;&gt; # All subsequent operations will use scaled features</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__scale_transform</span><span class="p">()</span></div>
+
+    
+<div class="viewcode-block" id="BMInterface.get_protected_att">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMInterface.get_protected_att">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_protected_att</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the list of protected attributes.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            list: List of protected attribute column names</span>
+<span class="sd">            </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; protected_attrs = bm_interface.get_protected_att()</span>
+<span class="sd">            &gt;&gt;&gt; print(f&quot;Protected attributes: {protected_attrs}&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">BM_attr</span><span class="o">.</span><span class="n">protected_att</span></div>
+
+
+<div class="viewcode-block" id="BMInterface.restore_BLD">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMInterface.restore_BLD">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">restore_BLD</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Restore BinaryLabelDataset objects to their original state.</span>
+<span class="sd">        </span>
+<span class="sd">        This method regenerates the BinaryLabelDataset objects and reapplies</span>
+<span class="sd">        scaling if transform mode is enabled. Useful after bias mitigation</span>
+<span class="sd">        operations that modify the datasets.</span>
+<span class="sd">        </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; # After applying bias mitigation</span>
+<span class="sd">            &gt;&gt;&gt; bm_interface.pre_BM_set(modified_train_bld)</span>
+<span class="sd">            &gt;&gt;&gt; # Restore to original state</span>
+<span class="sd">            &gt;&gt;&gt; bm_interface.restore_BLD()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__generate_sets</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__scale_transform</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__scale_split</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="BMInterface.get_train_BLD">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMInterface.get_train_BLD">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_train_BLD</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BinaryLabelDataset</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get training dataset as BinaryLabelDataset.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            BinaryLabelDataset: Training dataset in AIF360 format</span>
+<span class="sd">            </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; train_bld = bm_interface.get_train_BLD()</span>
+<span class="sd">            &gt;&gt;&gt; print(f&quot;Training samples: {len(train_bld.features)}&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">biLData</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="BMInterface.get_val_BLD">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMInterface.get_val_BLD">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_val_BLD</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BinaryLabelDataset</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get validation dataset as BinaryLabelDataset.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            BinaryLabelDataset: Validation dataset in AIF360 format</span>
+<span class="sd">            </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; val_bld = bm_interface.get_val_BLD()</span>
+<span class="sd">            &gt;&gt;&gt; print(f&quot;Validation samples: {len(val_bld.features)}&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">biLData</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="BMInterface.get_test_BLD">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMInterface.get_test_BLD">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_test_BLD</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BinaryLabelDataset</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get test dataset as BinaryLabelDataset.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            BinaryLabelDataset: Test dataset in AIF360 format</span>
+<span class="sd">            </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; test_bld = bm_interface.get_test_BLD()</span>
+<span class="sd">            &gt;&gt;&gt; print(f&quot;Test samples: {len(test_bld.features)}&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">biLData</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BMInterface.get_train_xy">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMInterface.get_train_xy">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_train_xy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get training data as (features, labels) tuple.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: (features, labels) for training data</span>
+<span class="sd">            </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; X_train, y_train = bm_interface.get_train_xy()</span>
+<span class="sd">            &gt;&gt;&gt; print(f&quot;Training features shape: {X_train.shape}&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; print(f&quot;Training labels shape: {y_train.shape}&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainXY</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainXY</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
+
+    
+<div class="viewcode-block" id="BMInterface.get_test_xy">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMInterface.get_test_xy">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_test_xy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get test data as (features, labels) tuple.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: (features, labels) for test data</span>
+<span class="sd">            </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; X_test, y_test = bm_interface.get_test_xy()</span>
+<span class="sd">            &gt;&gt;&gt; print(f&quot;Test features shape: {X_test.shape}&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">testXY</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">testXY</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
+
+    
+<div class="viewcode-block" id="BMInterface.get_val_xy">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMInterface.get_val_xy">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_val_xy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get validation data as (features, labels) tuple.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: (features, labels) for validation data</span>
+<span class="sd">            </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; X_val, y_val = bm_interface.get_val_xy()</span>
+<span class="sd">            &gt;&gt;&gt; print(f&quot;Validation features shape: {X_val.shape}&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">valXY</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">valXY</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
+
+    
+<div class="viewcode-block" id="BMInterface.pre_BM_set">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMInterface.pre_BM_set">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pre_BM_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_train_BLD</span><span class="p">:</span> <span class="n">BinaryLabelDataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set new training dataset after preprocessing bias mitigation.</span>
+<span class="sd">        </span>
+<span class="sd">        This method updates the training dataset with the result of preprocessing</span>
+<span class="sd">        bias mitigation techniques and reapplies scaling if needed.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            new_train_BLD (BinaryLabelDataset): New training dataset after bias mitigation</span>
+<span class="sd">            </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; # After applying reweighing</span>
+<span class="sd">            &gt;&gt;&gt; modified_train_bld = reweighing.transform(original_train_bld)</span>
+<span class="sd">            &gt;&gt;&gt; bm_interface.pre_BM_set(modified_train_bld)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">biLData</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_train_BLD</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__scale_transform</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__scale_split</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="BMInterface.pos_bm_set">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMInterface.pos_bm_set">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pos_bm_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_test_BLD</span><span class="p">:</span> <span class="n">BinaryLabelDataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set new test dataset after postprocessing bias mitigation.</span>
+<span class="sd">        </span>
+<span class="sd">        This method updates the test dataset with the result of postprocessing</span>
+<span class="sd">        bias mitigation techniques and reapplies scaling if needed.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            new_test_BLD (BinaryLabelDataset): New test dataset after bias mitigation</span>
+<span class="sd">            </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; # After applying equalized odds</span>
+<span class="sd">            &gt;&gt;&gt; modified_test_bld = eq_odds.predict(original_test_bld)</span>
+<span class="sd">            &gt;&gt;&gt; bm_interface.pos_bm_set(modified_test_bld)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">biLData</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_test_BLD</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__scale_transform</span><span class="p">()</span></div>
+</div>
+
+
+<div class="viewcode-block" id="BMMetrics">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMMetrics">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BMMetrics</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Comprehensive fairness metrics evaluation for bias mitigation.</span>
+<span class="sd">    </span>
+<span class="sd">    This class provides comprehensive evaluation of both classification performance</span>
+<span class="sd">    and fairness metrics for machine learning models. It supports both standard</span>
+<span class="sd">    models and in-processing bias mitigation techniques.</span>
+<span class="sd">    </span>
+<span class="sd">    The class evaluates:</span>
+<span class="sd">    - Classification metrics: accuracy, precision, recall, F1, MCC</span>
+<span class="sd">    - Fairness metrics: EOD, AOD, SPD, DI, TI</span>
+<span class="sd">    - Optimal threshold selection based on balanced accuracy</span>
+<span class="sd">    - Comprehensive fairness scoring</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        bmI (BMInterface): Interface for managing datasets</span>
+<span class="sd">        pos_idx (int): Index of positive class</span>
+<span class="sd">        in_mode (bool): Whether using in-processing bias mitigation</span>
+<span class="sd">        pred_test: Test predictions (numpy array or BinaryLabelDataset)</span>
+<span class="sd">        pred_val: Validation predictions (numpy array or BinaryLabelDataset)</span>
+<span class="sd">        privileged_group (list[dict]): List of privileged group definitions</span>
+<span class="sd">        unprivileged_group (list[dict]): List of unprivileged group definitions</span>
+<span class="sd">        balanced_acc (np.ndarray): Balanced accuracy scores for different thresholds</span>
+<span class="sd">        class_threshold (np.ndarray): Threshold values for evaluation</span>
+<span class="sd">        best_class_thresh (float): Optimal threshold based on validation performance</span>
+<span class="sd">        cmetrics (ClassificationMetric): AIF360 classification metrics object</span>
+<span class="sd">        </span>
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; from callmefair.util.fair_util import BMMetrics</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; </span>
+<span class="sd">        &gt;&gt;&gt; # Create metrics evaluator</span>
+<span class="sd">        &gt;&gt;&gt; metrics = BMMetrics(</span>
+<span class="sd">        &gt;&gt;&gt;     bmI=bm_interface,</span>
+<span class="sd">        &gt;&gt;&gt;     class_array=np.array([0, 1]),</span>
+<span class="sd">        &gt;&gt;&gt;     pred_val=val_predictions,</span>
+<span class="sd">        &gt;&gt;&gt;     pred_test=test_predictions,</span>
+<span class="sd">        &gt;&gt;&gt;     privileged_group=privileged_groups,</span>
+<span class="sd">        &gt;&gt;&gt;     unprivileged_group=unprivileged_groups</span>
+<span class="sd">        &gt;&gt;&gt; )</span>
+<span class="sd">        &gt;&gt;&gt; </span>
+<span class="sd">        &gt;&gt;&gt; # Get comprehensive report</span>
+<span class="sd">        &gt;&gt;&gt; report = metrics.get_report()</span>
+<span class="sd">        &gt;&gt;&gt; print(f&quot;Accuracy: {report[&#39;acc&#39;]:.4f}&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; print(f&quot;Fairness score: {report[&#39;spd&#39;]:.4f}&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bmI</span><span class="p">:</span> <span class="n">BMInterface</span><span class="p">,</span> <span class="n">class_array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> 
+                 <span class="n">pred_val</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="n">BinaryLabelDataset</span><span class="p">,</span>
+                 <span class="n">pred_test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="n">BinaryLabelDataset</span><span class="p">,</span> 
+                 <span class="n">privileged_group</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">unprivileged_group</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the Bias Mitigation Metrics evaluator.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            bmI (BMInterface): Interface for managing datasets</span>
+<span class="sd">            class_array (np.ndarray): Array of class labels [0, 1]</span>
+<span class="sd">            pred_val: Validation predictions (numpy array or BinaryLabelDataset)</span>
+<span class="sd">            pred_test: Test predictions (numpy array or BinaryLabelDataset)</span>
+<span class="sd">            privileged_group (list[dict]): List of privileged group definitions</span>
+<span class="sd">            unprivileged_group (list[dict]): List of unprivileged group definitions</span>
+<span class="sd">                </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; metrics = BMMetrics(</span>
+<span class="sd">            &gt;&gt;&gt;     bmI=bm_interface,</span>
+<span class="sd">            &gt;&gt;&gt;     class_array=np.array([0, 1]),</span>
+<span class="sd">            &gt;&gt;&gt;     pred_val=val_pred,</span>
+<span class="sd">            &gt;&gt;&gt;     pred_test=test_pred,</span>
+<span class="sd">            &gt;&gt;&gt;     privileged_group=[{&#39;gender&#39;: 1}],</span>
+<span class="sd">            &gt;&gt;&gt;     unprivileged_group=[{&#39;gender&#39;: 0}]</span>
+<span class="sd">            &gt;&gt;&gt; )</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="BMMetrics.bmI">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMMetrics.bmI">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bmI</span> <span class="o">=</span> <span class="n">bmI</span></div>
+
+        <span class="c1"># positive class index</span>
+<div class="viewcode-block" id="BMMetrics.pos_idx">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMMetrics.pos_idx">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pos_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">class_array</span> <span class="o">==</span> <span class="n">bmI</span><span class="o">.</span><span class="n">get_train_BLD</span><span class="p">()</span><span class="o">.</span><span class="n">favorable_label</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span></div>
+
+        <span class="c1"># deal with transform mode</span>
+<div class="viewcode-block" id="BMMetrics.in_mode">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMMetrics.in_mode">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_mode</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pred_val</span><span class="p">,</span> <span class="n">BinaryLabelDataset</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">in_mode</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="BMMetrics.pred_test">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMMetrics.pred_test">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pred_test</span> <span class="o">=</span> <span class="n">pred_test</span></div>
+
+<div class="viewcode-block" id="BMMetrics.pred_val">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMMetrics.pred_val">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pred_val</span> <span class="o">=</span> <span class="n">pred_val</span></div>
+
+        
+<div class="viewcode-block" id="BMMetrics.privileged_group">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMMetrics.privileged_group">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">privileged_group</span> <span class="o">=</span> <span class="n">privileged_group</span></div>
+
+<div class="viewcode-block" id="BMMetrics.unprivileged_group">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMMetrics.unprivileged_group">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unprivileged_group</span> <span class="o">=</span> <span class="n">unprivileged_group</span></div>
+
+
+        <span class="n">num_thresh</span> <span class="o">=</span> <span class="mi">100</span>
+<div class="viewcode-block" id="BMMetrics.balanced_acc">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMMetrics.balanced_acc">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">balanced_acc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_thresh</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BMMetrics.class_threshold">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMMetrics.class_threshold">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">class_threshold</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">,</span> <span class="n">num_thresh</span><span class="p">)</span></div>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__get_thresould</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__set_pred_BLD</span><span class="p">()</span>
+
+<div class="viewcode-block" id="BMMetrics.set_new_pred">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMMetrics.set_new_pred">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_new_pred</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pred_val</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">pred_test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update predictions and recalculate metrics.</span>
+<span class="sd">        </span>
+<span class="sd">        This method allows updating the predictions and recalculating all</span>
+<span class="sd">        metrics without recreating the entire BMMetrics object.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            pred_val (np.ndarray): New validation predictions</span>
+<span class="sd">            pred_test (np.ndarray): New test predictions</span>
+<span class="sd">            </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; # After training a new model</span>
+<span class="sd">            &gt;&gt;&gt; new_val_pred = model.predict_proba(X_val)</span>
+<span class="sd">            &gt;&gt;&gt; new_test_pred = model.predict_proba(X_test)</span>
+<span class="sd">            &gt;&gt;&gt; metrics.set_new_pred(new_val_pred, new_test_pred)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pred_val</span> <span class="o">=</span> <span class="n">pred_val</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pred_test</span> <span class="o">=</span> <span class="n">pred_test</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__get_thresould</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__set_pred_BLD</span><span class="p">()</span></div>
+
+        
+<div class="viewcode-block" id="BMMetrics.set_pos_pred">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMMetrics.set_pos_pred">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_pos_pred</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">test_BLD_pred</span><span class="p">:</span> <span class="n">BinaryLabelDataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set postprocessed predictions and update metrics.</span>
+<span class="sd">        </span>
+<span class="sd">        This method is used for postprocessing bias mitigation techniques</span>
+<span class="sd">        that modify the test predictions directly.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            test_BLD_pred (BinaryLabelDataset): Postprocessed test predictions</span>
+<span class="sd">            </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; # After applying equalized odds</span>
+<span class="sd">            &gt;&gt;&gt; postprocessed_pred = eq_odds.predict(test_bld)</span>
+<span class="sd">            &gt;&gt;&gt; metrics.set_pos_pred(postprocessed_pred)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fav_inds</span> <span class="o">=</span> <span class="n">test_BLD_pred</span><span class="o">.</span><span class="n">scores</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">best_class_thresh</span>
+        <span class="n">test_BLD_pred</span><span class="o">.</span><span class="n">labels</span><span class="p">[</span><span class="n">fav_inds</span><span class="p">]</span> <span class="o">=</span> <span class="n">test_BLD_pred</span><span class="o">.</span><span class="n">favorable_label</span>
+        <span class="n">test_BLD_pred</span><span class="o">.</span><span class="n">labels</span><span class="p">[</span><span class="o">~</span><span class="n">fav_inds</span><span class="p">]</span> <span class="o">=</span> <span class="n">test_BLD_pred</span><span class="o">.</span><span class="n">unfavorable_label</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmetrics</span> <span class="o">=</span> <span class="n">ClassificationMetric</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="o">.</span><span class="n">get_test_BLD</span><span class="p">(),</span> 
+                                                <span class="n">test_BLD_pred</span><span class="p">,</span> 
+                                                <span class="n">unprivileged_groups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unprivileged_group</span><span class="p">,</span> 
+                                                <span class="n">privileged_groups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">privileged_group</span>
+                                            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BMMetrics.get_pred_test">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMMetrics.get_pred_test">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_pred_test</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get test predictions.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Test predictions (numpy array or BinaryLabelDataset)</span>
+<span class="sd">            </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; test_pred = metrics.get_pred_test()</span>
+<span class="sd">            &gt;&gt;&gt; print(f&quot;Test predictions shape: {test_pred.shape}&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pred_test</span></div>
+
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">__set_pred_BLD</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set up BinaryLabelDataset for test predictions evaluation.</span>
+<span class="sd">        </span>
+<span class="sd">        This method prepares the test predictions for evaluation by creating</span>
+<span class="sd">        BinaryLabelDataset objects and applying the optimal threshold.</span>
+<span class="sd">        </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; # Called automatically during initialization</span>
+<span class="sd">            &gt;&gt;&gt; metrics = BMMetrics(...)</span>
+<span class="sd">            &gt;&gt;&gt; # Test predictions are now ready for evaluation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_mode</span><span class="p">:</span>   
+            <span class="n">pred_BLD</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="o">.</span><span class="n">get_test_BLD</span><span class="p">()</span>
+            <span class="n">pred_BLD</span><span class="o">.</span><span class="n">scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pred_test</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos_idx</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">thresh</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_threshold</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_mode</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pred_test</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pred_test</span><span class="o">.</span><span class="n">scores</span> <span class="o">&gt;=</span> <span class="n">thresh</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+                <span class="n">pred_BLD</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pred_test</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">fav_idx</span> <span class="o">=</span> <span class="n">pred_BLD</span><span class="o">.</span><span class="n">scores</span> <span class="o">&gt;</span> <span class="n">thresh</span> 
+                <span class="n">pred_BLD</span><span class="o">.</span><span class="n">labels</span><span class="p">[</span><span class="n">fav_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">pred_BLD</span><span class="o">.</span><span class="n">favorable_label</span>
+                <span class="n">pred_BLD</span><span class="o">.</span><span class="n">labels</span><span class="p">[</span><span class="o">~</span><span class="n">fav_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">pred_BLD</span><span class="o">.</span><span class="n">unfavorable_label</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">cmetrics</span> <span class="o">=</span> <span class="n">ClassificationMetric</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="o">.</span><span class="n">get_test_BLD</span><span class="p">(),</span> 
+                                                <span class="n">pred_BLD</span><span class="p">,</span> 
+                                                <span class="n">unprivileged_groups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unprivileged_group</span><span class="p">,</span> 
+                                                <span class="n">privileged_groups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">privileged_group</span>
+                                                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">thresh</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">best_class_thresh</span><span class="p">:</span>
+                <span class="k">break</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__get_thresould</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find optimal classification threshold based on validation performance.</span>
+<span class="sd">        </span>
+<span class="sd">        This method evaluates different classification thresholds on validation</span>
+<span class="sd">        data and selects the threshold that maximizes balanced accuracy.</span>
+<span class="sd">        </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; # Called automatically during initialization</span>
+<span class="sd">            &gt;&gt;&gt; metrics = BMMetrics(...)</span>
+<span class="sd">            &gt;&gt;&gt; print(f&quot;Optimal threshold: {metrics.best_class_thresh:.3f}&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_mode</span><span class="p">:</span>
+            <span class="n">pred_val_BLD</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="o">.</span><span class="n">get_val_BLD</span><span class="p">()</span>
+            <span class="n">pred_val_BLD</span><span class="o">.</span><span class="n">scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pred_val</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos_idx</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">class_thresh</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_threshold</span><span class="p">):</span>
+    
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_mode</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pred_val</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pred_val</span><span class="o">.</span><span class="n">scores</span> <span class="o">&gt;=</span> <span class="n">class_thresh</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+                <span class="n">pred_val_BLD</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pred_val</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">fav_idx</span> <span class="o">=</span> <span class="n">pred_val_BLD</span><span class="o">.</span><span class="n">scores</span> <span class="o">&gt;</span> <span class="n">class_thresh</span> 
+                <span class="n">pred_val_BLD</span><span class="o">.</span><span class="n">labels</span><span class="p">[</span><span class="n">fav_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">pred_val_BLD</span><span class="o">.</span><span class="n">favorable_label</span>
+                <span class="n">pred_val_BLD</span><span class="o">.</span><span class="n">labels</span><span class="p">[</span><span class="o">~</span><span class="n">fav_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">pred_val_BLD</span><span class="o">.</span><span class="n">unfavorable_label</span>
+            
+            <span class="c1"># computing metrics based on two BinaryLabelDatasets: a dataset containing groud-truth labels and a dataset containing predictions</span>
+            <span class="n">cm</span> <span class="o">=</span> <span class="n">ClassificationMetric</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bmI</span><span class="o">.</span><span class="n">get_val_BLD</span><span class="p">(),</span>     
+                                      <span class="n">pred_val_BLD</span><span class="p">,</span>  
+                                      <span class="n">unprivileged_groups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unprivileged_group</span><span class="p">,</span>
+                                      <span class="n">privileged_groups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">privileged_group</span>
+                                    <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">balanced_acc</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">true_positive_rate</span><span class="p">()</span> <span class="o">+</span> <span class="n">cm</span><span class="o">.</span><span class="n">true_negative_rate</span><span class="p">())</span>
+
+        <span class="n">best_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">balanced_acc</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">balanced_acc</span><span class="p">))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">best_class_thresh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_threshold</span><span class="p">[</span><span class="n">best_idx</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__get_classification_metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate comprehensive classification performance metrics.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: (balanced_acc, acc, precision, recall, f1, mcc)</span>
+<span class="sd">                - balanced_acc (float): Balanced accuracy</span>
+<span class="sd">                - acc (float): Overall accuracy</span>
+<span class="sd">                - precision (float): Precision score</span>
+<span class="sd">                - recall (float): Recall score</span>
+<span class="sd">                - f1 (float): F1 score</span>
+<span class="sd">                - mcc (float): Matthews Correlation Coefficient</span>
+<span class="sd">                </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; balanced_acc, acc, precision, recall, f1, mcc = metrics.__get_classification_metrics()</span>
+<span class="sd">            &gt;&gt;&gt; print(f&quot;Balanced accuracy: {balanced_acc:.4f}&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">balanced_acc</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmetrics</span><span class="o">.</span><span class="n">true_positive_rate</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmetrics</span><span class="o">.</span><span class="n">true_negative_rate</span><span class="p">())</span>
+        <span class="n">acc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmetrics</span><span class="o">.</span><span class="n">accuracy</span><span class="p">()</span>
+        <span class="n">precision</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmetrics</span><span class="o">.</span><span class="n">precision</span><span class="p">()</span>
+        <span class="n">recall</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmetrics</span><span class="o">.</span><span class="n">recall</span><span class="p">()</span>
+        <span class="n">f1</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">((</span><span class="n">precision</span> <span class="o">*</span> <span class="n">recall</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">precision</span> <span class="o">+</span> <span class="n">recall</span><span class="p">))</span>
+        <span class="n">gb_cm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmetrics</span><span class="o">.</span><span class="n">generalized_binary_confusion_matrix</span><span class="p">()</span>
+        <span class="n">GTP</span><span class="p">,</span> <span class="n">GFP</span><span class="p">,</span> <span class="n">GTN</span><span class="p">,</span> <span class="n">GFN</span> <span class="o">=</span> <span class="n">gb_cm</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+        <span class="n">mcc</span> <span class="o">=</span> <span class="p">(</span><span class="n">GTP</span><span class="o">*</span><span class="n">GTN</span> <span class="o">-</span> <span class="n">GFP</span><span class="o">*</span><span class="n">GFN</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">GTP</span><span class="o">+</span><span class="n">GFP</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">GTP</span><span class="o">+</span><span class="n">GFN</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">GTN</span><span class="o">+</span><span class="n">GFP</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">GTN</span><span class="o">+</span><span class="n">GFN</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">balanced_acc</span><span class="p">,</span> <span class="n">acc</span><span class="p">,</span> <span class="n">precision</span><span class="p">,</span> <span class="n">recall</span><span class="p">,</span> <span class="n">f1</span><span class="p">,</span> <span class="n">mcc</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__get_fair_metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate comprehensive fairness metrics.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: (eq_opp_diff, avg_odd_diff, spd, disparate_impact, theil_idx)</span>
+<span class="sd">                - eq_opp_diff (float): Equal Opportunity Difference</span>
+<span class="sd">                - avg_odd_diff (float): Average Odds Difference</span>
+<span class="sd">                - spd (float): Statistical Parity Difference</span>
+<span class="sd">                - disparate_impact (float): Disparate Impact</span>
+<span class="sd">                - theil_idx (float): Theil Index</span>
+<span class="sd">                </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; eod, aod, spd, di, ti = metrics.__get_fair_metrics()</span>
+<span class="sd">            &gt;&gt;&gt; print(f&quot;Equal Opportunity Difference: {eod:.4f}&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">eq_opp_diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmetrics</span><span class="o">.</span><span class="n">equal_opportunity_difference</span><span class="p">()</span>
+        <span class="n">avg_odd_diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmetrics</span><span class="o">.</span><span class="n">average_odds_difference</span><span class="p">()</span>
+        <span class="n">spd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmetrics</span><span class="o">.</span><span class="n">statistical_parity_difference</span><span class="p">()</span>
+        <span class="n">disparate_impact</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmetrics</span><span class="o">.</span><span class="n">disparate_impact</span><span class="p">()</span>
+        <span class="n">theil_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmetrics</span><span class="o">.</span><span class="n">theil_index</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">eq_opp_diff</span><span class="p">,</span> <span class="n">avg_odd_diff</span><span class="p">,</span> <span class="n">spd</span><span class="p">,</span> <span class="n">disparate_impact</span><span class="p">,</span> <span class="n">theil_idx</span>
+
+<div class="viewcode-block" id="BMMetrics.get_report">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMMetrics.get_report">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_report</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get comprehensive performance and fairness report.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Dictionary containing all classification and fairness metrics</span>
+<span class="sd">                - Classification metrics: balanced_acc, acc, precision, recall, f1, mcc</span>
+<span class="sd">                - Fairness metrics: eq_opp_diff, avg_odd_diff, spd, disparate_impact, theil_idx</span>
+<span class="sd">                </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; report = metrics.get_report()</span>
+<span class="sd">            &gt;&gt;&gt; print(f&quot;Accuracy: {report[&#39;acc&#39;]:.4f}&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; print(f&quot;Statistical Parity Difference: {report[&#39;spd&#39;]:.4f}&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; print(f&quot;Equal Opportunity Difference: {report[&#39;eq_opp_diff&#39;]:.4f}&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">eq_opp_diff</span><span class="p">,</span> <span class="n">avg_odd_diff</span><span class="p">,</span> <span class="n">spd</span><span class="p">,</span> <span class="n">disparate_impact</span><span class="p">,</span> <span class="n">theil_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_fair_metrics</span><span class="p">()</span>
+        <span class="n">balanced_acc</span><span class="p">,</span> <span class="n">acc</span><span class="p">,</span> <span class="n">precision</span><span class="p">,</span> <span class="n">recall</span><span class="p">,</span> <span class="n">f1</span><span class="p">,</span> <span class="n">mcc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_classification_metrics</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;balanced_acc&#39;</span><span class="p">:</span> <span class="n">balanced_acc</span><span class="p">,</span> <span class="s1">&#39;acc&#39;</span><span class="p">:</span> <span class="n">acc</span><span class="p">,</span> <span class="s1">&#39;precision&#39;</span><span class="p">:</span> <span class="n">precision</span><span class="p">,</span> <span class="s1">&#39;recall&#39;</span><span class="p">:</span> <span class="n">recall</span><span class="p">,</span> <span class="s1">&#39;f1&#39;</span><span class="p">:</span> <span class="n">f1</span><span class="p">,</span>
+                <span class="s1">&#39;mcc&#39;</span><span class="p">:</span> <span class="n">mcc</span><span class="p">,</span> <span class="s1">&#39;eq_opp_diff&#39;</span><span class="p">:</span> <span class="n">eq_opp_diff</span><span class="p">,</span> <span class="s1">&#39;avg_odd_diff&#39;</span><span class="p">:</span> <span class="n">avg_odd_diff</span><span class="p">,</span> <span class="s1">&#39;spd&#39;</span><span class="p">:</span> <span class="n">spd</span><span class="p">,</span>
+                <span class="s1">&#39;disparate_impact&#39;</span><span class="p">:</span> <span class="n">disparate_impact</span><span class="p">,</span> <span class="s1">&#39;theil_idx&#39;</span><span class="p">:</span> <span class="n">theil_idx</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="BMMetrics.get_score">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMMetrics.get_score">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_score</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get comprehensive fairness score using the calculate_fairness_score function.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Fairness score evaluation with overall score and detailed breakdown</span>
+<span class="sd">                - &#39;raw_score&#39; (float): Unnormalized fairness score</span>
+<span class="sd">                - &#39;overall_score&#39; (float): Normalized fairness score (0-1, lower is better)</span>
+<span class="sd">                - &#39;metric_evaluations&#39; (dict): Boolean evaluation of each metric</span>
+<span class="sd">                - &#39;deviations&#39; (dict): Normalized deviations from optimal values</span>
+<span class="sd">                - &#39;is_fair&#39; (bool): Whether all metrics are within acceptable ranges</span>
+<span class="sd">                </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; score_dict = metrics.get_score()</span>
+<span class="sd">            &gt;&gt;&gt; print(f&quot;Overall fairness score: {score_dict[&#39;overall_score&#39;]:.3f}&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; print(f&quot;Is fair: {score_dict[&#39;is_fair&#39;]}&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; </span>
+<span class="sd">            &gt;&gt;&gt; # Check individual metric evaluations</span>
+<span class="sd">            &gt;&gt;&gt; for metric, is_acceptable in score_dict[&#39;metric_evaluations&#39;].items():</span>
+<span class="sd">            &gt;&gt;&gt;     print(f&quot;{metric}: {&#39;✓&#39; if is_acceptable else &#39;✗&#39;}&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">eq_opp_diff</span><span class="p">,</span> <span class="n">avg_odd_diff</span><span class="p">,</span> <span class="n">spd</span><span class="p">,</span> <span class="n">disparate_impact</span><span class="p">,</span> <span class="n">theil_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_fair_metrics</span><span class="p">()</span>
+        <span class="n">score_dict</span> <span class="o">=</span> <span class="n">calculate_fairness_score</span><span class="p">(</span><span class="n">eq_opp_diff</span><span class="p">,</span> <span class="n">avg_odd_diff</span><span class="p">,</span> <span class="n">spd</span><span class="p">,</span> <span class="n">disparate_impact</span><span class="p">,</span> <span class="n">theil_idx</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">score_dict</span></div>
+
+
+<div class="viewcode-block" id="BMMetrics.get_groups">
+<a class="viewcode-back" href="../../../autoapi/callmefair/util/fair_util/index.html#callmefair.BMMetrics.get_groups">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get privileged and unprivileged group definitions.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: (privileged_group, unprivileged_group)</span>
+<span class="sd">                - privileged_group (list[dict]): List of privileged group definitions</span>
+<span class="sd">                - unprivileged_group (list[dict]): List of unprivileged group definitions</span>
+<span class="sd">                </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; privileged, unprivileged = metrics.get_groups()</span>
+<span class="sd">            &gt;&gt;&gt; print(f&quot;Privileged groups: {privileged}&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; print(f&quot;Unprivileged groups: {unprivileged}&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">privileged_group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unprivileged_group</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, CallMeFair Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

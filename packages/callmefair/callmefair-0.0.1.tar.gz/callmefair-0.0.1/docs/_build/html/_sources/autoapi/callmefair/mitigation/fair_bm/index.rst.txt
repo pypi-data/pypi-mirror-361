@@ -1,0 +1,421 @@
+callmefair.mitigation.fair_bm
+=============================
+
+.. py:module:: callmefair.mitigation.fair_bm
+
+.. autoapi-nested-parse::
+
+   Bias Mitigation (BM) Manager Module
+
+   This module provides a comprehensive framework for applying various bias mitigation techniques
+   in machine learning models. It supports preprocessing, in-processing, and postprocessing
+   approaches to reduce algorithmic bias and promote fairness in AI systems.
+
+   The module implements multiple bias mitigation algorithms from the AIF360 library:
+   - Preprocessing: Reweighing, Disparate Impact Remover (DIR), Learning Fair Representations (LFR)
+   - In-processing: Adversarial Debiasing, MetaFair Classifier
+   - Postprocessing: Calibrated Equalized Odds, Equalized Odds, Reject Option Classification
+
+   Classes:
+       BMType: Enumeration of available bias mitigation techniques
+       BMManager: Main class for applying bias mitigation methods to datasets
+
+   .. admonition:: Example
+
+      >>> from callmefair.mitigation.fair_bm import BMManager, BMType
+      >>> from callmefair.util.fair_util import BMInterface
+      >>>
+      >>> # Initialize with your data
+      >>> bm_manager = BMManager(bm_interface, privileged_groups, unprivileged_groups)
+      >>>
+      >>> # Apply preprocessing bias mitigation
+      >>> bm_manager.pre_Reweighing()
+      >>>
+      >>> # Apply in-processing bias mitigation
+      >>> ad_model = bm_manager.in_AD(debias=True)
+      >>>
+      >>> # Apply postprocessing bias mitigation
+      >>> mitigated_predictions = bm_manager.pos_CEO(valid_pred, test_pred)
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   callmefair.mitigation.fair_bm.tf
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   callmefair.mitigation.fair_bm.BMManager
+   callmefair.mitigation.fair_bm.BMType
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   callmefair.mitigation.fair_bm.get_random_string
+
+
+Module Contents
+---------------
+
+.. py:class:: BMManager(bmI, privileged_group, unprivileged_group)
+
+   Bias Mitigation Manager for applying various fairness techniques.
+
+   This class provides a unified interface for applying different bias mitigation
+   techniques to machine learning datasets. It supports preprocessing, in-processing,
+   and postprocessing approaches to reduce algorithmic bias.
+
+   The manager works with BinaryLabelDataset objects from the AIF360 library and
+   provides methods for each type of bias mitigation technique.
+
+   :ivar bmI: Interface for managing binary label datasets
+   :vartype bmI: BMInterface
+   :ivar privileged_group: List of dictionaries defining privileged groups
+   :vartype privileged_group: list[dict]
+   :ivar unprivileged_group: List of dictionaries defining unprivileged groups
+
+   :vartype unprivileged_group: list[dict]
+
+   .. admonition:: Example
+
+      >>> from callmefair.util.fair_util import BMInterface
+      >>> from callmefair.mitigation.fair_bm import BMManager
+      >>>
+      >>> # Initialize with your data
+      >>> bm_interface = BMInterface(train_df, val_df, test_df, 'label', ['protected_attr'])
+      >>> privileged_groups = [{'protected_attr': 1}]
+      >>> unprivileged_groups = [{'protected_attr': 0}]
+      >>>
+      >>> bm_manager = BMManager(bm_interface, privileged_groups, unprivileged_groups)
+      >>>
+      >>> # Apply preprocessing bias mitigation
+      >>> bm_manager.pre_Reweighing()
+
+   Initialize the Bias Mitigation Manager.
+
+   :param bmI: Interface for managing binary label datasets
+   :type bmI: BMInterface
+   :param privileged_group: List of dictionaries defining privileged groups.
+                            Each dict should contain protected attribute names and their privileged values.
+   :type privileged_group: list[dict]
+   :param unprivileged_group: List of dictionaries defining unprivileged groups.
+                              Each dict should contain protected attribute names and their unprivileged values.
+   :type unprivileged_group: list[dict]
+
+   .. admonition:: Example
+
+      >>> privileged_groups = [{'gender': 1, 'race': 1}]
+      >>> unprivileged_groups = [{'gender': 0, 'race': 0}]
+      >>> bm_manager = BMManager(bm_interface, privileged_groups, unprivileged_groups)
+
+
+   .. py:method:: in_AD(debias = False)
+
+      Create an Adversarial Debiasing in-processing model.
+
+      Adversarial Debiasing is an in-processing technique that trains a classifier
+      while simultaneously training an adversary that tries to predict the sensitive
+      attribute from the classifier's predictions. This encourages the classifier
+      to make predictions that are independent of the sensitive attribute.
+
+      :param debias: Whether to apply debiasing. If True, the model will be
+                     trained to be fair. If False, it will be a standard classifier.
+                     Defaults to False.
+      :type debias: bool
+
+      :returns: Configured adversarial debiasing model.
+      :rtype: AdversarialDebiasing
+
+      :raises ImportError: If TensorFlow is not available.
+
+      .. admonition:: Example
+
+         >>> ad_model = bm_manager.in_AD(debias=True)
+         >>> # Train the model with your data
+         >>> ad_model.fit(train_data, train_labels)
+
+
+
+   .. py:method:: in_Meta(sensitive_attribute, tau = 0)
+
+      Create a MetaFair Classifier in-processing model.
+
+      MetaFair is an in-processing technique that uses a meta-learning approach
+      to learn fair classifiers. It optimizes for both accuracy and fairness
+      using a regularization term that penalizes unfairness.
+
+      :param sensitive_attribute: Name of the sensitive attribute to consider
+                                  for fairness. This should be one of the protected attributes.
+      :type sensitive_attribute: str
+      :param tau: Fairness parameter that controls the trade-off between
+                  accuracy and fairness. Higher values prioritize fairness.
+                  Defaults to 0.
+      :type tau: float
+
+      :returns: Configured MetaFair classifier.
+      :rtype: MetaFairClassifier
+
+      .. admonition:: Example
+
+         >>> meta_model = bm_manager.in_Meta('gender', tau=0.1)
+         >>> # Train the model with your data
+         >>> meta_model.fit(train_data, train_labels)
+
+
+
+   .. py:method:: pos_CEO(valid_BLD_pred, test_BLD_pred)
+
+      Apply Calibrated Equalized Odds (CEO) postprocessing bias mitigation.
+
+      CEO is a postprocessing technique that adjusts model predictions to achieve
+      equalized odds while maintaining calibration. It ensures that the true
+      positive and false positive rates are equal across different groups.
+
+      :param valid_BLD_pred: Validation dataset with model predictions
+      :type valid_BLD_pred: BinaryLabelDataset
+      :param test_BLD_pred: Test dataset with model predictions
+      :type test_BLD_pred: BinaryLabelDataset
+
+      :returns: Postprocessed test predictions with equalized odds
+      :rtype: BinaryLabelDataset
+
+      .. admonition:: Example
+
+         >>> mitigated_predictions = bm_manager.pos_CEO(valid_pred, test_pred)
+         >>> # The predictions now satisfy equalized odds
+
+
+
+   .. py:method:: pos_EO(valid_BLD_pred, test_BLD_pred)
+
+      Apply Equalized Odds (EO) postprocessing bias mitigation.
+
+      EO is a postprocessing technique that adjusts model predictions to achieve
+      equalized odds. It ensures that the true positive and false positive rates
+      are equal across different groups, without considering calibration.
+
+      :param valid_BLD_pred: Validation dataset with model predictions
+      :type valid_BLD_pred: BinaryLabelDataset
+      :param test_BLD_pred: Test dataset with model predictions
+      :type test_BLD_pred: BinaryLabelDataset
+
+      :returns: Postprocessed test predictions with equalized odds
+      :rtype: BinaryLabelDataset
+
+      .. admonition:: Example
+
+         >>> mitigated_predictions = bm_manager.pos_EO(valid_pred, test_pred)
+         >>> # The predictions now satisfy equalized odds
+
+
+
+   .. py:method:: pos_ROC(valid_BLD_pred, test_BLD_pred)
+
+      Apply Reject Option Classification (ROC) postprocessing bias mitigation.
+
+      ROC is a postprocessing technique that rejects predictions for instances
+      where the model is uncertain, particularly when this uncertainty is
+      correlated with the sensitive attribute. This helps reduce bias by
+      abstaining from making predictions on potentially unfair cases.
+
+      :param valid_BLD_pred: Validation dataset with model predictions
+      :type valid_BLD_pred: BinaryLabelDataset
+      :param test_BLD_pred: Test dataset with model predictions
+      :type test_BLD_pred: BinaryLabelDataset
+
+      :returns: Postprocessed test predictions with reject option
+      :rtype: BinaryLabelDataset
+
+      .. admonition:: Example
+
+         >>> mitigated_predictions = bm_manager.pos_ROC(valid_pred, test_pred)
+         >>> # Some predictions may be rejected to improve fairness
+
+
+
+   .. py:method:: pre_DR(sensitive_attribute)
+
+      Apply Disparate Impact Remover (DIR) preprocessing bias mitigation.
+
+      DIR is a preprocessing technique that repairs the training data to remove
+      disparate impact while preserving the utility of the data. It works by
+      learning a repair transformation that minimizes the difference in
+      conditional distributions between groups.
+
+      :param sensitive_attribute: Name of the sensitive attribute to repair.
+                                  This should be one of the protected attributes in your dataset.
+      :type sensitive_attribute: str
+
+      .. admonition:: Example
+
+         >>> bm_manager.pre_DR('gender')
+         >>> # The training dataset is now repaired for the 'gender' attribute
+
+
+
+   .. py:method:: pre_LFR()
+
+      Apply Learning Fair Representations (LFR) preprocessing bias mitigation.
+
+      LFR is a preprocessing technique that learns a fair representation of the
+      data that removes information about the sensitive attributes while preserving
+      the utility for the prediction task. It uses an adversarial approach to
+      learn representations that are fair across different groups.
+
+      .. admonition:: Example
+
+         >>> bm_manager.pre_LFR()
+         >>> # The training dataset now has fair representations
+
+
+
+   .. py:method:: pre_Reweighing()
+
+      Apply Reweighing preprocessing bias mitigation.
+
+      Reweighing is a preprocessing technique that assigns different weights to
+      instances based on their group membership to achieve statistical parity.
+      This method modifies the training dataset by reweighting instances.
+
+      The method fits the reweighing algorithm on the training data and transforms
+      it to create a fairer training dataset.
+
+      .. admonition:: Example
+
+         >>> bm_manager.pre_Reweighing()
+         >>> # The training dataset is now reweighted for fairness
+
+
+
+   .. py:attribute:: bmI
+
+
+   .. py:attribute:: privileged_group
+
+
+   .. py:attribute:: unprivileged_group
+
+
+.. py:class:: BMType(*args, **kwds)
+
+   Bases: :py:obj:`enum.Enum`
+
+
+   Enumeration of bias mitigation techniques.
+
+   This enum categorizes bias mitigation methods into three main groups:
+   - Preprocessing: Applied to training data before model training
+   - In-processing: Applied during model training
+   - Postprocessing: Applied to model predictions after training
+
+   :ivar preReweighing: Reweighing preprocessing technique
+   :ivar preDisparate: Disparate Impact Remover preprocessing technique
+   :ivar preLFR: Learning Fair Representations preprocessing technique
+   :ivar inAdversarial: Adversarial Debiasing in-processing technique
+   :ivar inMeta: MetaFair Classifier in-processing technique
+   :ivar posCalibrated: Calibrated Equalized Odds postprocessing technique
+   :ivar posEqqOds: Equalized Odds postprocessing technique
+   :ivar posROC: Reject Option Classification postprocessing technique
+
+
+
+   .. py:attribute:: inAdversarial
+      :value: 4
+
+
+
+   .. py:attribute:: inMeta
+      :value: 5
+
+
+
+   .. py:property:: is_in
+      :type: bool
+
+
+      Check if the bias mitigation technique is an in-processing method.
+
+      :returns: True if the technique is in-processing, False otherwise.
+      :rtype: bool
+
+
+   .. py:property:: is_pos
+      :type: bool
+
+
+      Check if the bias mitigation technique is a postprocessing method.
+
+      :returns: True if the technique is postprocessing, False otherwise.
+      :rtype: bool
+
+
+   .. py:property:: is_pre
+      :type: bool
+
+
+      Check if the bias mitigation technique is a preprocessing method.
+
+      :returns: True if the technique is preprocessing, False otherwise.
+      :rtype: bool
+
+
+   .. py:attribute:: posCalibrated
+      :value: 6
+
+
+
+   .. py:attribute:: posEqqOds
+      :value: 7
+
+
+
+   .. py:attribute:: posROC
+      :value: 8
+
+
+
+   .. py:attribute:: preDisparate
+      :value: 2
+
+
+
+   .. py:attribute:: preLFR
+      :value: 3
+
+
+
+   .. py:attribute:: preReweighing
+      :value: 1
+
+
+
+.. py:function:: get_random_string(N = 7)
+
+   Generate a random string of specified length.
+
+   :param N: Length of the random string to generate. Defaults to 7.
+   :type N: int
+
+   :returns: Random string containing uppercase and lowercase letters.
+   :rtype: str
+
+   .. admonition:: Example
+
+      >>> get_random_string(5)
+      'AxK9m'
+
+
+.. py:data:: tf
+   :value: None
+
+

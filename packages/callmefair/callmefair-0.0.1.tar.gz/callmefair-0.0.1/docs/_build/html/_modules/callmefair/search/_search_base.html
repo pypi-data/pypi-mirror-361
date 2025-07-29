@@ -1,0 +1,595 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>callmefair.search._search_base &mdash; CallMeFair 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=720763da" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=720763da" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            CallMeFair
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/quickstart.html">Quick Start Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/grid_search_guide.html">Grid Search Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/utility_guide.html">Utility Functions Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/bias_search_guide.html">Bias Search Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../autoapi/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">CallMeFair</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">callmefair.search._search_base</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for callmefair.search._search_base</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Bias Search Base Module</span>
+
+<span class="sd">This module provides the foundational classes and utilities for bias search functionality</span>
+<span class="sd">in the CallMeFair framework. It implements attribute-based bias evaluation, model training,</span>
+<span class="sd">and fairness metric calculation for individual and combined sensitive attributes.</span>
+
+<span class="sd">The module supports:</span>
+<span class="sd">- Individual attribute bias evaluation</span>
+<span class="sd">- Attribute combination operations (union, intersection, differences)</span>
+<span class="sd">- Multiple ML model training (Logistic Regression, CatBoost, XGBoost, MLP)</span>
+<span class="sd">- Fairness metric calculation using AIF360</span>
+<span class="sd">- Parallel processing for efficient evaluation</span>
+
+<span class="sd">Classes:</span>
+<span class="sd">    CType: Enumeration of attribute combination operations</span>
+<span class="sd">    BaseSearch: Base class for bias search functionality</span>
+
+<span class="sd">Functions:</span>
+<span class="sd">    combine_attributes: Combine two binary columns using set operations</span>
+<span class="sd">    wrapper_training: Train ML models for bias evaluation</span>
+<span class="sd">    wrapper: Multiprocessing wrapper for model training</span>
+
+<span class="sd">Example:</span>
+<span class="sd">    &gt;&gt;&gt; from callmefair.search._search_base import BaseSearch</span>
+<span class="sd">    &gt;&gt;&gt; searcher = BaseSearch(df, &#39;target&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; results = searcher.evaluate_attribute(&#39;gender&#39;, iterate=5)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">callmefair.util.fair_util</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_fairness_score</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">aif360.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">BinaryLabelDataset</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">aif360.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClassificationMetric</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">imblearn.under_sampling</span><span class="w"> </span><span class="kn">import</span> <span class="n">NearMiss</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
+<span class="c1"># Multiprocessing</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">multiprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pool</span>
+<span class="c1"># Suppress FutureWarning messages</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">FutureWarning</span><span class="p">)</span>
+<span class="c1"># Classifiers</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">catboost</span><span class="w"> </span><span class="kn">import</span> <span class="n">CatBoostClassifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">xgboost</span><span class="w"> </span><span class="kn">import</span> <span class="n">XGBClassifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">catboost</span><span class="w"> </span><span class="kn">import</span> <span class="n">CatBoostClassifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.neural_network</span><span class="w"> </span><span class="kn">import</span> <span class="n">MLPClassifier</span>
+
+
+<div class="viewcode-block" id="CType">
+<a class="viewcode-back" href="../../../autoapi/callmefair/index.html#callmefair.CType">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Enumeration of attribute combination operations for bias search.</span>
+<span class="sd">    </span>
+<span class="sd">    This enum defines the set operations that can be performed when combining</span>
+<span class="sd">    two binary sensitive attributes to create composite protected groups.</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        union: Logical OR operation (either attribute is 1)</span>
+<span class="sd">        intersection: Logical AND operation (both attributes are 1)</span>
+<span class="sd">        difference_1_minus_2: Set difference (attribute1=1 AND attribute2=0)</span>
+<span class="sd">        difference_2_minus_1: Set difference (attribute2=1 AND attribute1=0)</span>
+<span class="sd">        symmetric_difference: XOR operation (exactly one attribute is 1)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">union</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">intersection</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">difference_1_minus_2</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">difference_2_minus_1</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">symmetric_difference</span> <span class="o">=</span> <span class="mi">5</span>
+
+<div class="viewcode-block" id="CType.__str__">
+<a class="viewcode-back" href="../../../autoapi/callmefair/index.html#callmefair.CType.__str__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return string representation of the operation type.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span></div>
+</div>
+
+
+<div class="viewcode-block" id="combine_attributes">
+<a class="viewcode-back" href="../../../autoapi/callmefair/index.html#callmefair.combine_attributes">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">combine_attributes</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span><span class="p">,</span> <span class="n">operation</span><span class="p">:</span> <span class="n">CType</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Combines two binary columns in a DataFrame using a specified set operation,</span>
+<span class="sd">    replacing the original columns with a single combined column.</span>
+
+<span class="sd">    This function creates composite protected groups by combining two binary</span>
+<span class="sd">    sensitive attributes using set operations. The resulting combined attribute</span>
+<span class="sd">    can be used for more sophisticated bias analysis.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        df (pd.DataFrame): Input DataFrame containing the binary columns</span>
+<span class="sd">        col1 (str): Name of the first binary column (e.g., &#39;gender&#39;)</span>
+<span class="sd">        col2 (str): Name of the second binary column (e.g., &#39;race&#39;)</span>
+<span class="sd">        operation (CType): Set operation to apply (&#39;union&#39;, &#39;intersection&#39;, </span>
+<span class="sd">                          &#39;difference_1_minus_2&#39;, &#39;difference_2_minus_1&#39;, </span>
+<span class="sd">                          &#39;symmetric_difference&#39;)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        pd.DataFrame: New DataFrame with original columns replaced by combined column</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If columns are not binary (contain values other than 0 or 1)</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; df = pd.DataFrame({&#39;gender&#39;: [1, 0, 1, 0], &#39;race&#39;: [1, 1, 0, 0]})</span>
+<span class="sd">        &gt;&gt;&gt; result = combine_attributes(df, &#39;gender&#39;, &#39;race&#39;, CType.intersection)</span>
+<span class="sd">        &gt;&gt;&gt; print(result.columns)</span>
+<span class="sd">        [&#39;gender_race&#39;]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Check if columns are binary (0 or 1)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="p">[</span><span class="n">col1</span><span class="p">,</span> <span class="n">col2</span><span class="p">]):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Columns must contain only binary values (0 or 1).&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Compute the combined column based on the operation</span>
+    <span class="k">if</span> <span class="n">operation</span> <span class="o">==</span> <span class="n">CType</span><span class="o">.</span><span class="n">union</span><span class="p">:</span>                   <span class="c1"># and</span>
+        <span class="n">combined</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col1</span><span class="p">]</span> <span class="o">|</span> <span class="n">df</span><span class="p">[</span><span class="n">col2</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">operation</span> <span class="o">==</span> <span class="n">CType</span><span class="o">.</span><span class="n">intersection</span><span class="p">:</span>          <span class="c1"># or</span>
+        <span class="n">combined</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col1</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">df</span><span class="p">[</span><span class="n">col2</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">operation</span> <span class="o">==</span> <span class="n">CType</span><span class="o">.</span><span class="n">difference_1_minus_2</span><span class="p">:</span>  <span class="c1"># col1 - col2</span>
+        <span class="n">combined</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col1</span><span class="p">]</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">df</span><span class="p">[</span><span class="n">col2</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">operation</span> <span class="o">==</span> <span class="n">CType</span><span class="o">.</span><span class="n">difference_2_minus_1</span><span class="p">:</span>  <span class="c1"># col2 - col1</span>
+        <span class="n">combined</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col2</span><span class="p">]</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">df</span><span class="p">[</span><span class="n">col1</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">operation</span> <span class="o">==</span> <span class="n">CType</span><span class="o">.</span><span class="n">symmetric_difference</span><span class="p">:</span>  <span class="c1"># xor</span>
+        <span class="n">combined</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col1</span><span class="p">]</span> <span class="o">^</span> <span class="n">df</span><span class="p">[</span><span class="n">col2</span><span class="p">]</span>
+
+    <span class="c1"># Create a new DataFrame, dropping original columns and adding the combined column</span>
+    <span class="n">new_col_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">col1</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">col2</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">df_new</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="n">col1</span><span class="p">,</span> <span class="n">col2</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">new_col_name</span><span class="p">:</span> <span class="n">combined</span><span class="p">})</span>
+
+    <span class="k">return</span> <span class="n">df_new</span></div>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">wrapper_training</span><span class="p">(</span><span class="n">train_bld</span><span class="p">:</span><span class="n">BinaryLabelDataset</span><span class="p">,</span>
+                     <span class="n">val_bld</span><span class="p">:</span> <span class="n">BinaryLabelDataset</span><span class="p">,</span>
+                     <span class="n">test_bld</span><span class="p">:</span><span class="n">BinaryLabelDataset</span><span class="p">,</span>
+                     <span class="n">attribute</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">model_name</span><span class="p">:</span><span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;lr&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Train a machine learning model for bias evaluation on a specific attribute.</span>
+<span class="sd">    </span>
+<span class="sd">    This function handles the training of different ML models for bias evaluation.</span>
+<span class="sd">    It supports multiple model types with optimized hyperparameters for fairness</span>
+<span class="sd">    analysis. The function is designed to work with the multiprocessing wrapper</span>
+<span class="sd">    for parallel training.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        train_bld (BinaryLabelDataset): Training dataset with protected attributes</span>
+<span class="sd">        val_bld (BinaryLabelDataset): Validation dataset for threshold optimization</span>
+<span class="sd">        test_bld (BinaryLabelDataset): Test dataset for final evaluation</span>
+<span class="sd">        attribute (str): Name of the sensitive attribute being evaluated</span>
+<span class="sd">        model_name (str): Type of model to train (&#39;lr&#39;, &#39;cat&#39;, &#39;xgb&#39;, &#39;mlp&#39;)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple: (attribute_name, trained_model)</span>
+
+<span class="sd">    Supported Models:</span>
+<span class="sd">        - &#39;lr&#39;: Logistic Regression with liblinear solver</span>
+<span class="sd">        - &#39;cat&#39;: CatBoost with optimized parameters for fairness</span>
+<span class="sd">        - &#39;xgb&#39;: XGBoost with balanced parameters</span>
+<span class="sd">        - &#39;mlp&#39;: Multi-layer Perceptron with adaptive learning</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; result = wrapper_training(train_bld, val_bld, test_bld, &#39;gender&#39;, &#39;lr&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; attribute, model = result</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">scaler</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>
+    <span class="n">scaler</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_bld</span><span class="o">.</span><span class="n">features</span><span class="p">)</span>
+
+    <span class="n">x_train</span> <span class="o">=</span> <span class="n">scaler</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">train_bld</span><span class="o">.</span><span class="n">features</span><span class="p">)</span>
+    <span class="n">y_train</span> <span class="o">=</span> <span class="n">train_bld</span><span class="o">.</span><span class="n">labels</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">model_name</span> <span class="o">==</span> <span class="s1">&#39;lr&#39;</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s1">&#39;liblinear&#39;</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="n">train_bld</span><span class="o">.</span><span class="n">instance_weights</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">model_name</span> <span class="o">==</span> <span class="s1">&#39;cat&#39;</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">CatBoostClassifier</span><span class="p">(</span><span class="n">eval_metric</span><span class="o">=</span><span class="s1">&#39;Accuracy&#39;</span><span class="p">,</span>
+                         <span class="n">depth</span> <span class="o">=</span>  <span class="mi">4</span><span class="p">,</span>
+                         <span class="n">learning_rate</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span>
+                         <span class="n">iterations</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+                         <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">model_name</span> <span class="o">==</span> <span class="s1">&#39;xgb&#39;</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span>  <span class="n">XGBClassifier</span><span class="p">(</span>
+            <span class="n">max_depth</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+            <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+            <span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.25</span><span class="p">,</span>
+            <span class="n">n_estimators</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span>
+            <span class="n">subsample</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">,</span>
+            <span class="n">colsample_bytree</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span>
+            <span class="n">n_jobs</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">model_name</span> <span class="o">==</span> <span class="s1">&#39;mlp&#39;</span><span class="p">:</span>
+        <span class="n">model</span><span class="o">=</span> <span class="n">MLPClassifier</span><span class="p">(</span>
+            <span class="n">max_iter</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+            <span class="n">hidden_layer_sizes</span> <span class="o">=</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">),</span>
+            <span class="n">activation</span> <span class="o">=</span> <span class="s1">&#39;logistic&#39;</span><span class="p">,</span>
+            <span class="n">solver</span> <span class="o">=</span> <span class="s1">&#39;adam&#39;</span><span class="p">,</span>
+            <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span>
+            <span class="n">learning_rate</span> <span class="o">=</span> <span class="s1">&#39;adaptive&#39;</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">model</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Multiprocessing wrapper for model training.</span>
+<span class="sd">    </span>
+<span class="sd">    This function is used by multiprocessing.Pool to parallelize model training</span>
+<span class="sd">    across multiple processes. It unpacks the arguments and calls wrapper_training.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        args (tuple): Packed arguments for wrapper_training</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple: Result from wrapper_training</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">wrapper_training</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BaseSearch">
+<a class="viewcode-back" href="../../../autoapi/callmefair/index.html#callmefair.BaseSearch">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BaseSearch</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for bias search functionality in the CallMeFair framework.</span>
+<span class="sd">    </span>
+<span class="sd">    This class provides the core functionality for evaluating bias in machine learning</span>
+<span class="sd">    models with respect to sensitive attributes. It handles dataset preparation,</span>
+<span class="sd">    model training, and fairness metric calculation using AIF360.</span>
+
+<span class="sd">    The class supports:</span>
+<span class="sd">    - Individual attribute bias evaluation</span>
+<span class="sd">    - Multiple ML model types</span>
+<span class="sd">    - Imbalanced dataset handling with NearMiss</span>
+<span class="sd">    - Parallel processing for efficient evaluation</span>
+<span class="sd">    - Comprehensive fairness metrics calculation</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        df (pd.DataFrame): Input dataset with features and target</span>
+<span class="sd">        label_name (str): Name of the target variable</span>
+<span class="sd">        scaler (StandardScaler): Feature scaler for model training</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; searcher = BaseSearch(df, &#39;target&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; results = searcher.evaluate_attribute(&#39;gender&#39;, iterate=10, model_name=&#39;lr&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">label_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the BaseSearch object.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            df (pd.DataFrame): Input dataset containing features and target variable</span>
+<span class="sd">            label_name (str): Name of the target variable column</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label_name</span> <span class="o">=</span> <span class="n">label_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scaler</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__pre_attribute_bias</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">apply_nearmiss</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">df_new</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prepare datasets for bias evaluation on a specific attribute.</span>
+<span class="sd">        </span>
+<span class="sd">        This method handles the data preprocessing pipeline for bias evaluation:</span>
+<span class="sd">        - Splits data into train/validation/test sets with stratification</span>
+<span class="sd">        - Applies NearMiss undersampling if requested</span>
+<span class="sd">        - Converts to AIF360 BinaryLabelDataset format</span>
+<span class="sd">        - Sets up protected attribute groups</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            attribute (str): Name of the sensitive attribute to evaluate</span>
+<span class="sd">            apply_nearmiss (bool): Whether to apply NearMiss undersampling</span>
+<span class="sd">            df_new (pd.DataFrame, optional): Alternative dataset to use</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: (train_bld, val_bld, test_bld) - AIF360 datasets for training</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">df_new</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">df_new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span>
+
+        <span class="n">sensitive_attribute</span> <span class="o">=</span> <span class="p">[</span><span class="n">attribute</span><span class="p">]</span>
+
+        <span class="n">df_train</span><span class="p">,</span> <span class="n">df_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+            <span class="n">df_new</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> 
+            <span class="n">stratify</span> <span class="o">=</span> <span class="n">df_new</span><span class="p">[[</span><span class="n">attribute</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_name</span><span class="p">]],</span>
+            <span class="n">random_state</span> <span class="o">=</span> <span class="mi">42</span>
+        <span class="p">)</span>
+        
+        <span class="n">df_test</span><span class="p">,</span> <span class="n">df_val</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+            <span class="n">df_test</span><span class="p">,</span> <span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+            <span class="n">stratify</span> <span class="o">=</span> <span class="n">df_test</span><span class="p">[[</span><span class="n">attribute</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_name</span><span class="p">]]</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">apply_nearmiss</span><span class="p">:</span>
+            <span class="n">nm</span> <span class="o">=</span> <span class="n">NearMiss</span><span class="p">()</span>
+            <span class="n">X_nearmiss</span><span class="p">,</span> <span class="n">y_nearmiss</span> <span class="o">=</span> <span class="n">nm</span><span class="o">.</span><span class="n">fit_resample</span><span class="p">(</span>
+                <span class="n">df_train</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label_name</span><span class="p">]),</span> <span class="n">df_train</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label_name</span><span class="p">])</span>
+            <span class="n">df_train</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                <span class="n">X_nearmiss</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">df_train</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label_name</span><span class="p">])</span><span class="o">.</span><span class="n">columns</span>
+                <span class="p">)</span>
+            <span class="n">df_train</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_nearmiss</span>
+
+        <span class="n">train_bld</span> <span class="o">=</span> <span class="n">BinaryLabelDataset</span><span class="p">(</span>
+            <span class="n">df</span><span class="o">=</span><span class="n">df_train</span><span class="p">,</span> <span class="n">label_names</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label_name</span><span class="p">],</span>
+            <span class="n">protected_attribute_names</span><span class="o">=</span><span class="n">sensitive_attribute</span><span class="p">,</span>
+            <span class="n">favorable_label</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">unfavorable_label</span><span class="o">=</span><span class="mi">0</span>
+        <span class="p">)</span>
+        <span class="n">val_bld</span> <span class="o">=</span> <span class="n">BinaryLabelDataset</span><span class="p">(</span>
+            <span class="n">df</span><span class="o">=</span><span class="n">df_val</span><span class="p">,</span> <span class="n">label_names</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label_name</span><span class="p">],</span>
+            <span class="n">protected_attribute_names</span><span class="o">=</span><span class="n">sensitive_attribute</span><span class="p">,</span>
+            <span class="n">favorable_label</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">unfavorable_label</span><span class="o">=</span><span class="mi">0</span>
+        <span class="p">)</span>
+        <span class="n">test_bld</span> <span class="o">=</span> <span class="n">BinaryLabelDataset</span><span class="p">(</span>
+            <span class="n">df</span><span class="o">=</span><span class="n">df_test</span><span class="p">,</span> <span class="n">label_names</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label_name</span><span class="p">],</span> 
+            <span class="n">protected_attribute_names</span><span class="o">=</span><span class="n">sensitive_attribute</span><span class="p">,</span>
+            <span class="n">favorable_label</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">unfavorable_label</span><span class="o">=</span><span class="mi">0</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">train_bld</span><span class="p">,</span> <span class="n">val_bld</span><span class="p">,</span> <span class="n">test_bld</span>
+
+        
+    <span class="k">def</span><span class="w"> </span><span class="nf">__predict_attribute_bias</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">train_bld</span><span class="p">:</span><span class="n">BinaryLabelDataset</span><span class="p">,</span>
+                                    <span class="n">val_bld</span><span class="p">:</span> <span class="n">BinaryLabelDataset</span><span class="p">,</span>
+                                    <span class="n">test_bld</span><span class="p">:</span><span class="n">BinaryLabelDataset</span><span class="p">,</span>
+                                    <span class="n">model</span><span class="p">,</span>
+                                    <span class="n">attribute</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Evaluate bias metrics for a trained model on a specific attribute.</span>
+<span class="sd">        </span>
+<span class="sd">        This method performs comprehensive bias evaluation by:</span>
+<span class="sd">        - Optimizing classification threshold on validation set</span>
+<span class="sd">        - Computing fairness metrics on test set</span>
+<span class="sd">        - Calculating multiple fairness measures (SPD, DI, EOD, AOD, Theil)</span>
+<span class="sd">        - Returning aggregated fairness scores</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            train_bld (BinaryLabelDataset): Training dataset</span>
+<span class="sd">            val_bld (BinaryLabelDataset): Validation dataset for threshold optimization</span>
+<span class="sd">            test_bld (BinaryLabelDataset): Test dataset for final evaluation</span>
+<span class="sd">            model: Trained machine learning model</span>
+<span class="sd">            attribute (str): Name of the sensitive attribute</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Dictionary containing raw and overall fairness scores</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scaler</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_bld</span><span class="o">.</span><span class="n">features</span><span class="p">)</span>
+
+        <span class="n">privileged_group</span> <span class="o">=</span> <span class="p">[{</span><span class="n">attribute</span><span class="p">:</span> <span class="mi">1</span><span class="p">}]</span>
+        <span class="n">unprivileged_group</span> <span class="o">=</span> <span class="p">[{</span><span class="n">attribute</span><span class="p">:</span> <span class="mi">0</span><span class="p">}]</span>
+
+        <span class="n">x_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaler</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">val_bld</span><span class="o">.</span><span class="n">features</span><span class="p">)</span>
+        <span class="n">x_test</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaler</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">test_bld</span><span class="o">.</span><span class="n">features</span><span class="p">)</span>
+
+        <span class="n">pos_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">classes_</span> <span class="o">==</span> <span class="n">train_bld</span><span class="o">.</span><span class="n">favorable_label</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">valid_bld_pred</span> <span class="o">=</span> <span class="n">val_bld</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">valid_bld_pred</span><span class="o">.</span><span class="n">scores</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x_val</span><span class="p">)[:,</span> <span class="n">pos_idx</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">num_thresh</span> <span class="o">=</span> <span class="mi">100</span>
+        <span class="n">balanced_acc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_thresh</span><span class="p">)</span>
+        <span class="n">class_threshold</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">,</span> <span class="n">num_thresh</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">class_thresh</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">class_threshold</span><span class="p">):</span>
+
+            <span class="n">fav_idx</span> <span class="o">=</span> <span class="n">valid_bld_pred</span><span class="o">.</span><span class="n">scores</span> <span class="o">&gt;</span> <span class="n">class_thresh</span>
+            <span class="n">valid_bld_pred</span><span class="o">.</span><span class="n">labels</span><span class="p">[</span><span class="n">fav_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">valid_bld_pred</span><span class="o">.</span><span class="n">favorable_label</span>
+            <span class="n">valid_bld_pred</span><span class="o">.</span><span class="n">labels</span><span class="p">[</span><span class="o">~</span><span class="n">fav_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">valid_bld_pred</span><span class="o">.</span><span class="n">unfavorable_label</span>
+
+            <span class="c1"># computing metrics based on two BinaryLabelDatasets: a dataset containing groud-truth labels and a dataset containing predictions</span>
+            <span class="n">classified_metric_orig_valid</span> <span class="o">=</span> <span class="n">ClassificationMetric</span><span class="p">(</span><span class="n">val_bld</span><span class="p">,</span>
+                                                                <span class="n">valid_bld_pred</span><span class="p">,</span>
+                                                                <span class="n">unprivileged_groups</span><span class="o">=</span><span class="n">unprivileged_group</span><span class="p">,</span>
+                                                                <span class="n">privileged_groups</span><span class="o">=</span><span class="n">privileged_group</span><span class="p">)</span>
+
+            <span class="n">balanced_acc</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">classified_metric_orig_valid</span><span class="o">.</span><span class="n">true_positive_rate</span><span class="p">()</span> <span class="o">+</span> <span class="n">classified_metric_orig_valid</span><span class="o">.</span><span class="n">true_negative_rate</span><span class="p">())</span>
+
+        <span class="n">best_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">balanced_acc</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">balanced_acc</span><span class="p">))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">best_class_thresh</span> <span class="o">=</span> <span class="n">class_threshold</span><span class="p">[</span><span class="n">best_idx</span><span class="p">]</span>
+
+        <span class="n">test_bld_pred</span> <span class="o">=</span> <span class="n">test_bld</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">test_bld_pred</span><span class="o">.</span><span class="n">scores</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x_test</span><span class="p">)[:,</span> <span class="n">pos_idx</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">thresh</span> <span class="ow">in</span> <span class="n">class_threshold</span><span class="p">:</span>
+
+            <span class="n">fav_idx</span> <span class="o">=</span> <span class="n">test_bld_pred</span><span class="o">.</span><span class="n">scores</span> <span class="o">&gt;</span> <span class="n">thresh</span>
+            <span class="n">test_bld_pred</span><span class="o">.</span><span class="n">labels</span><span class="p">[</span><span class="n">fav_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">test_bld_pred</span><span class="o">.</span><span class="n">favorable_label</span>
+            <span class="n">test_bld_pred</span><span class="o">.</span><span class="n">labels</span><span class="p">[</span><span class="o">~</span><span class="n">fav_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">test_bld_pred</span><span class="o">.</span><span class="n">unfavorable_label</span>
+
+            <span class="n">classification_metric_orig_test</span> <span class="o">=</span> <span class="n">ClassificationMetric</span><span class="p">(</span><span class="n">test_bld</span><span class="p">,</span>
+                                                                <span class="n">test_bld_pred</span><span class="p">,</span>
+                                                                <span class="n">unprivileged_groups</span><span class="o">=</span><span class="n">unprivileged_group</span><span class="p">,</span>
+                                                                <span class="n">privileged_groups</span><span class="o">=</span><span class="n">privileged_group</span><span class="p">)</span>
+
+            <span class="n">spd</span> <span class="o">=</span> <span class="n">classification_metric_orig_test</span><span class="o">.</span><span class="n">statistical_parity_difference</span><span class="p">()</span>
+            <span class="n">disparate_impact</span> <span class="o">=</span> <span class="n">classification_metric_orig_test</span><span class="o">.</span><span class="n">disparate_impact</span><span class="p">()</span>
+            <span class="n">eq_opp_diff</span> <span class="o">=</span> <span class="n">classification_metric_orig_test</span><span class="o">.</span><span class="n">equal_opportunity_difference</span><span class="p">()</span>
+            <span class="n">avg_odd_diff</span> <span class="o">=</span> <span class="n">classification_metric_orig_test</span><span class="o">.</span><span class="n">average_odds_difference</span><span class="p">()</span>
+            <span class="n">theil_idx</span> <span class="o">=</span> <span class="n">classification_metric_orig_test</span><span class="o">.</span><span class="n">theil_index</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">thresh</span> <span class="o">==</span> <span class="n">best_class_thresh</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">calculate_fairness_score</span><span class="p">(</span><span class="n">eq_opp_diff</span><span class="p">,</span> <span class="n">avg_odd_diff</span><span class="p">,</span> <span class="n">spd</span><span class="p">,</span> <span class="n">disparate_impact</span><span class="p">,</span> <span class="n">theil_idx</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="BaseSearch.evaluate_attribute">
+<a class="viewcode-back" href="../../../autoapi/callmefair/index.html#callmefair.BaseSearch.evaluate_attribute">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+                             <span class="n">attribute</span><span class="p">,</span>
+                             <span class="n">treat_umbalance</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                             <span class="n">iterate</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                             <span class="n">model_name</span><span class="p">:</span><span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;lr&#39;</span><span class="p">,</span>
+                             <span class="n">df_new</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Evaluate bias for a specific attribute across multiple iterations.</span>
+<span class="sd">        </span>
+<span class="sd">        This method performs comprehensive bias evaluation by:</span>
+<span class="sd">        - Running multiple iterations for statistical robustness</span>
+<span class="sd">        - Training models with optional class balancing</span>
+<span class="sd">        - Using parallel processing for efficiency</span>
+<span class="sd">        - Aggregating results across iterations</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            attribute (str): Name of the sensitive attribute to evaluate</span>
+<span class="sd">            treat_umbalance (bool): Whether to apply NearMiss undersampling</span>
+<span class="sd">            iterate (int): Number of iterations for robust evaluation</span>
+<span class="sd">            model_name (str): Type of model to use (&#39;lr&#39;, &#39;cat&#39;, &#39;xgb&#39;, &#39;mlp&#39;)</span>
+<span class="sd">            df_new (pd.DataFrame, optional): Alternative dataset to use</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Dictionary containing averaged fairness scores for the attribute</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; results = searcher.evaluate_attribute(&#39;gender&#39;, iterate=5, model_name=&#39;lr&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; print(results[&#39;gender_raw&#39;], results[&#39;gender_overall&#39;])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">df_new</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">df_new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span>
+
+        <span class="n">bld_list</span><span class="p">,</span> <span class="n">wrp_out</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iterate</span><span class="p">):</span>
+            <span class="n">train_bld</span><span class="p">,</span> <span class="n">val_bld</span><span class="p">,</span> <span class="n">test_bld</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__pre_attribute_bias</span><span class="p">(</span>
+                <span class="n">attribute</span><span class="p">,</span>
+                <span class="n">apply_nearmiss</span><span class="o">=</span><span class="n">treat_umbalance</span><span class="p">,</span>
+                <span class="n">df_new</span><span class="o">=</span><span class="n">df_new</span><span class="p">)</span>
+            <span class="n">bld_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">train_bld</span><span class="p">,</span> <span class="n">val_bld</span><span class="p">,</span> <span class="n">test_bld</span><span class="p">,</span> <span class="n">attribute</span><span class="p">])</span>
+
+        <span class="p">[</span><span class="n">bld</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model_name</span><span class="p">)</span> <span class="k">for</span> <span class="n">bld</span> <span class="ow">in</span> <span class="n">bld_list</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">model_name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;lr&#39;</span><span class="p">,</span> <span class="s1">&#39;mlp&#39;</span><span class="p">):</span> 
+            <span class="c1"># Use multiprocessing.Pool to parallelize training</span>
+            <span class="k">with</span> <span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
+                <span class="c1"># Pass each model&#39;s task to a separate process</span>
+                 <span class="n">wrp_out</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+                     <span class="n">tqdm</span><span class="p">(</span>
+                         <span class="n">pool</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">wrapper</span><span class="p">,</span> <span class="n">bld_list</span><span class="p">),</span>
+                         <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">bld_list</span><span class="p">)</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">bld</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bld_list</span><span class="p">,</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bld_list</span><span class="p">)))):</span>
+                <span class="n">wrp_out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wrapper_training</span><span class="p">(</span><span class="o">*</span><span class="n">bld</span><span class="p">))</span>
+
+        <span class="n">att_dic</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">bld</span><span class="p">,</span> <span class="n">wrp</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bld_list</span><span class="p">,</span> <span class="n">wrp_out</span><span class="p">):</span>
+            <span class="n">train_bld</span><span class="p">,</span> <span class="n">val_bld</span><span class="p">,</span> <span class="n">test_bld</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">bld</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">model</span> <span class="o">=</span> <span class="n">wrp</span>
+            <span class="n">fair_results_dic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__predict_attribute_bias</span><span class="p">(</span><span class="n">train_bld</span><span class="p">,</span> <span class="n">val_bld</span><span class="p">,</span> <span class="n">test_bld</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span>
+            <span class="n">att_dic</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">attribute</span><span class="si">}</span><span class="s1">_raw&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">fair_results_dic</span><span class="p">[</span><span class="s1">&#39;raw_score&#39;</span><span class="p">]</span>
+            <span class="n">att_dic</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">attribute</span><span class="si">}</span><span class="s1">_overall&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">fair_results_dic</span><span class="p">[</span><span class="s1">&#39;overall_score&#39;</span><span class="p">]</span>
+        
+        <span class="n">att_dic</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">attribute</span><span class="si">}</span><span class="s1">_raw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">att_dic</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">attribute</span><span class="si">}</span><span class="s1">_raw&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">iterate</span>
+        <span class="n">att_dic</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">attribute</span><span class="si">}</span><span class="s1">_overall&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">att_dic</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">attribute</span><span class="si">}</span><span class="s1">_overall&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">iterate</span>
+
+        <span class="k">return</span> <span class="n">att_dic</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, CallMeFair Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

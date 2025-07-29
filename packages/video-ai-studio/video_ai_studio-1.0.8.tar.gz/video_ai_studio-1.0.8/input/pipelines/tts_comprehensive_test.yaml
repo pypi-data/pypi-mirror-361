@@ -1,0 +1,105 @@
+name: "tts_comprehensive_test"
+description: "Comprehensive text-to-speech test covering single and multi-voice scenarios"
+prompt: "Welcome to our advanced AI content creation platform. This demonstration showcases our integrated text-to-speech capabilities with multiple voice options and customizable parameters for professional audio production."
+
+steps:
+  # Simple single voice test
+  - type: "text_to_speech"
+    model: "elevenlabs"
+    params:
+      voice: "rachel"
+      speed: 1.0
+      stability: 0.5
+      similarity_boost: 0.8
+      style: 0.2
+      output_file: "tts_rachel_main.mp3"
+
+  # Professional voice test
+  - type: "text_to_speech"
+    model: "elevenlabs"
+    params:
+      voice: "drew"
+      speed: 1.1
+      stability: 0.7
+      similarity_boost: 0.9
+      style: 0.1
+      output_file: "tts_drew_professional.mp3"
+      text_override: "This is Drew speaking with professional settings optimized for business presentations and corporate communications."
+
+  # Creative voice test
+  - type: "text_to_speech"
+    model: "elevenlabs"
+    params:
+      voice: "bella"
+      speed: 0.9
+      stability: 0.3
+      similarity_boost: 0.6
+      style: 0.8
+      output_file: "tts_bella_creative.mp3"
+      text_override: "Hello! This is Bella with a creative and expressive voice style perfect for storytelling and engaging content creation."
+
+  # Quick test with simple prompt
+  - type: "text_to_speech"
+    model: "elevenlabs"
+    params:
+      voice: "rachel"
+      speed: 1.0
+      stability: 0.5
+      similarity_boost: 0.8
+      style: 0.2
+      output_file: "tts_rachel_simple.mp3"
+      text_override: "Hello world, this is a simple text-to-speech test."
+
+# TTS Configuration
+tts_config:
+  supported_voices:
+    - "rachel"      # Versatile, clear female voice
+    - "drew"        # Warm, professional male voice
+    - "bella"       # Friendly, expressive female voice
+    - "antoni"      # Deep, authoritative male voice
+    - "elli"        # Young, energetic female voice
+    - "josh"        # Casual, conversational male voice
+    - "arnold"      # Strong, confident male voice
+    - "adam"        # Neutral, reliable male voice
+    - "sam"         # Smooth, professional male voice
+    - "clyde"       # Mature, distinguished male voice
+    
+  default_settings:
+    voice: "rachel"
+    speed: 1.0
+    stability: 0.5
+    similarity_boost: 0.8
+    style: 0.2
+    output_format: "mp3"
+    
+  cost_estimates:
+    elevenlabs: 0.05  # Per generation (varies by text length)
+    
+  processing_time_estimates:
+    elevenlabs: 10    # Seconds for typical text length
+
+# Output configuration
+output_dir: "output"
+temp_dir: "temp"
+cleanup_temp: true
+save_intermediates: true
+
+# Expected outputs
+expected_outputs:
+  - "tts_rachel_main.mp3"
+  - "tts_drew_professional.mp3"
+  - "tts_bella_creative.mp3"
+  - "tts_rachel_simple.mp3"
+
+# Testing metadata
+test_metadata:
+  purpose: "Comprehensive TTS testing covering single and multi-voice scenarios"
+  test_type: "functionality"
+  expected_duration: 120  # seconds
+  api_calls_required: true
+  cost_estimate: 0.20   # USD for 4 TTS generations
+  covers_scenarios:
+    - "Simple single voice"
+    - "Professional voice settings"
+    - "Creative voice styling"
+    - "Multi-voice comparison"

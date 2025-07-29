@@ -1,0 +1,49 @@
+# NPyUtils
+
+`NPyUtils`는 간단한 Util 기능을 제공하는 Python 패키지입니다.
+
+# NPyUtils
+```
+putin(string, count, sel, front) 
+
+# string에 어떤 문자를 넣을 지, 
+# count에 몇개의 문자를 넣을 지,
+# sel에 어떤 문자에 넣을 지,
+# front 'True'시 앞, 'False'시 뒤에 넣음
+```
+
+# LstUtils
+```
+#(index 0부터)
+
+gop(value) # 리스트의 있는 수를 모두 곱함
+nanu(value) # 리스트의 있는 수를 모두 나눔
+minus(value) # 리스트의 있는 수를 모두 뺌
+plus(value) # 리스트의 있는 수를 모두 더함
+```
+
+# NCaptcha
+간단한 캡챠
+```
+captcha_b1(way) 
+# way에 ["number", "string", "all"] 중 하나 선택
+# number: 숫자만
+# string: 영어 대소문자만
+# all: 전체
+
+# return 값은 문자열로 ex: "123456", "exQjde", "ie67Ex"
+# 길이는 6
+```
+## ⚠️ 주의사항:
+``위 NCaptcha [b1]에 해당``
+
+- 이 코드는 단일 사용자 기준으로 작동합니다.  
+- 여러 사용자가 동시에 사용하거나, 웹 서버 등에서 공유 변수(cap)를 사용할 경우 예상치 못한 동작이 발생할 수 있습니다.
+
+
+- 사용자마다 개별 `var` 값을 생성/저장하여 처리해야 하며, 웹 기반에서 사용할 경우 세션 또는 사용자 고유한 식별자를 사용해 관리해야 합니다.
+
+## 설치
+
+```bash
+pip install NPyUtils

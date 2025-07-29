@@ -1,0 +1,418 @@
+diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
+index 8d1acba..6393ee5 100644
+--- a/CONTRIBUTING.md
++++ b/CONTRIBUTING.md
+@@ -504,8 +504,7 @@ pytest tests/jpl/slim/cli/test_best_practice_commands.py
+ # Test with coverage
+ pytest --cov=jpl.slim
+ 
+-# Set test mode to prevent real API calls
+-SLIM_TEST_MODE=true pytest
++# Run tests (no special environment variable needed)
+ ```
+ 
+ **4. Manual Testing**:
+diff --git a/src/jpl/slim/best_practices/docs_website.py b/src/jpl/slim/best_practices/docs_website.py
+index 8eb9ddb..a1cd9b0 100644
+--- a/src/jpl/slim/best_practices/docs_website.py
++++ b/src/jpl/slim/best_practices/docs_website.py
+@@ -22,8 +22,6 @@ from rich.progress import Progress, SpinnerColumn, TextColumn
+ from jpl.slim.best_practices.standard import StandardPractice
+ from jpl.slim.best_practices.docs_website_impl.generator import SlimDocGenerator
+ 
+-# Check if we're in test mode
+-SLIM_TEST_MODE = os.environ.get('SLIM_TEST_MODE', 'False').lower() in ('true', '1', 't')
+ 
+ 
+ class DocsWebsiteBestPractice(StandardPractice):
+@@ -111,10 +109,6 @@ class DocsWebsiteBestPractice(StandardPractice):
+         # Use the actual repository path from setup_repository
+         repo_path = actual_repo_path
+             
+-        # In test mode, simulate success without making actual changes
+-        if SLIM_TEST_MODE:
+-            logging.debug(f"TEST MODE: Simulating applying best practice {self.best_practice_id}")
+-            return repo_path
+         
+         # Use the integrated documentation generator
+         try:
+diff --git a/src/jpl/slim/best_practices/secrets_detection.py b/src/jpl/slim/best_practices/secrets_detection.py
+index bf76925..8a48fcb 100644
+--- a/src/jpl/slim/best_practices/secrets_detection.py
++++ b/src/jpl/slim/best_practices/secrets_detection.py
+@@ -16,8 +16,6 @@ from jpl.slim.best_practices.standard import StandardPractice
+ from jpl.slim.utils.io_utils import download_and_place_file
+ from jpl.slim.utils.cli_utils import spinner_safe_input
+ 
+-# Check if we're in test mode
+-SLIM_TEST_MODE = os.environ.get('SLIM_TEST_MODE', 'False').lower() in ('true', '1', 't')
+ 
+ 
+ class SecretsDetection(StandardPractice):
+@@ -47,10 +45,6 @@ class SecretsDetection(StandardPractice):
+         """
+         logging.debug(f"Applying best practice {self.best_practice_id} to repository: {repo_path}")
+ 
+-        # In test mode, we can use the parent's fast path for tests with local repos
+-        if SLIM_TEST_MODE and not repo_url:
+-            logging.debug(f"TEST MODE: Simulating applying best practice {self.best_practice_id}")
+-            return super().apply(repo_path, use_ai, model, repo_url, target_dir_to_clone_to, branch, no_prompt)
+ 
+         # Setup repository using the parent class method
+         git_repo, git_branch, target_dir = self.setup_repository(repo_path, repo_url, target_dir_to_clone_to, branch)
+@@ -69,32 +63,31 @@ class SecretsDetection(StandardPractice):
+             if applied_file_path:
+                 logging.debug(f"Applied best practice {self.best_practice_id} to local repo {git_repo.working_tree_dir} and branch '{git_branch.name}'")
+ 
+-                # Install detect-secrets if not in test mode
+-                if not SLIM_TEST_MODE:
+-                    if no_prompt:
+-                        # Skip confirmation if --no-prompt flag is used
++                # Install detect-secrets
++                if no_prompt:
++                    # Skip confirmation if --no-prompt flag is used
++                    self._install_detect_secrets()
++                    # Run scan and check for unverified secrets
++                    if not self._run_detect_secrets_scan(git_repo):
++                        logging.error("Detection of unverified secrets failed. Aborting application of best practice.")
++                        return None
++                else:
++                    # Prompt for confirmation before installing
++                    confirmation = spinner_safe_input("\nThe detect-secrets tool (https://github.com/Yelp/detect-secrets) is needed to support this best practice. Do you want me to install/re-install detect-secrets? (y/n): ")
++                    if confirmation.lower() in ['y', 'yes']:
+                         self._install_detect_secrets()
+-                        # Run scan and check for unverified secrets
+-                        if not self._run_detect_secrets_scan(git_repo):
++                    else:
++                        logging.warning("Not installing detect-secrets. Assuming it is already installed.")
++
++                    # Prompt for confirmation before installing
++                    confirmation = spinner_safe_input("\nDo you want me to run an initial scan with detect-secrets (will overwrite an existing `.secrets-baseline` file)? (y/n): ")
++                    if confirmation.lower() in ['y', 'yes']:
++                        scan_result = self._run_detect_secrets_scan(git_repo)
++                        if not scan_result:
+                             logging.error("Detection of unverified secrets failed. Aborting application of best practice.")
+                             return None
+                     else:
+-                        # Prompt for confirmation before installing
+-                        confirmation = spinner_safe_input("\nThe detect-secrets tool (https://github.com/Yelp/detect-secrets) is needed to support this best practice. Do you want me to install/re-install detect-secrets? (y/n): ")
+-                        if confirmation.lower() in ['y', 'yes']:
+-                            self._install_detect_secrets()
+-                        else:
+-                            logging.warning("Not installing detect-secrets. Assuming it is already installed.")
+-
+-                        # Prompt for confirmation before installing
+-                        confirmation = spinner_safe_input("\nDo you want me to run an initial scan with detect-secrets (will overwrite an existing `.secrets-baseline` file)? (y/n): ")
+-                        if confirmation.lower() in ['y', 'yes']:
+-                            scan_result = self._run_detect_secrets_scan(git_repo)
+-                            if not scan_result:
+-                                logging.error("Detection of unverified secrets failed. Aborting application of best practice.")
+-                                return None
+-                        else:
+-                            logging.warning("Not running detect-secrets scan. Assuming you have a `.secrets-baseline` file present in your repo already.")
++                        logging.warning("Not running detect-secrets scan. Assuming you have a `.secrets-baseline` file present in your repo already.")
+ 
+                 print(f"✅ Successfully applied best practice '{self.best_practice_id}' to repository")
+                 print(f"   📁 Repository: {git_repo.working_dir}")
+@@ -106,26 +99,25 @@ class SecretsDetection(StandardPractice):
+                 return None
+ 
+         elif self.best_practice_id == 'secrets-precommit':
+-            # Install pre-commit if not in test mode
+-            if not SLIM_TEST_MODE:
+-                if no_prompt:
+-                    # Skip confirmation if --no-prompt flag is used
++            # Install pre-commit
++            if no_prompt:
++                # Skip confirmation if --no-prompt flag is used
++                self._install_detect_secrets()
++                self._install_pre_commit()
++            else:
++                # Prompt for confirmation before installing
++                confirmation = spinner_safe_input("\nThe detect-secrets tool (https://github.com/Yelp/detect-secrets) is needed to support this best practice. Do you want me to install/re-install detect-secrets? (y/n): ")
++                if confirmation.lower() in ['y', 'yes']:
+                     self._install_detect_secrets()
+-                    self._install_pre_commit()
+                 else:
+-                    # Prompt for confirmation before installing
+-                    confirmation = spinner_safe_input("\nThe detect-secrets tool (https://github.com/Yelp/detect-secrets) is needed to support this best practice. Do you want me to install/re-install detect-secrets? (y/n): ")
+-                    if confirmation.lower() in ['y', 'yes']:
+-                        self._install_detect_secrets()
+-                    else:
+-                        logging.warning("Not installing detect-secrets. Assuming it is already installed.")
++                    logging.warning("Not installing detect-secrets. Assuming it is already installed.")
+ 
+-                    # Prompt for confirmation before installing
+-                    confirmation = spinner_safe_input("\nThe pre-commit tool (https://pre-commit.com) is needed to support this best practice. Do you want to install/re-install pre-commit? (y/n): ")
+-                    if confirmation.lower() in ['y', 'yes']:
+-                        self._install_pre_commit()
+-                    else:
+-                        logging.warning("Not installing pre-commit tool. Assuming it is already installed.")
++                # Prompt for confirmation before installing
++                confirmation = spinner_safe_input("\nThe pre-commit tool (https://pre-commit.com) is needed to support this best practice. Do you want to install/re-install pre-commit? (y/n): ")
++                if confirmation.lower() in ['y', 'yes']:
++                    self._install_pre_commit()
++                else:
++                    logging.warning("Not installing pre-commit tool. Assuming it is already installed.")
+ 
+             # Download and place the pre-commit config file
+             applied_file_path = download_and_place_file(git_repo, self.uri, '.pre-commit-config.yaml')
+@@ -133,39 +125,38 @@ class SecretsDetection(StandardPractice):
+             if applied_file_path:
+                 logging.debug(f"Applied best practice {self.best_practice_id} to local repo {git_repo.working_tree_dir} and branch '{git_branch.name}'")
+ 
+-                # Initialize pre-commit hooks if not in test mode
+-                if not SLIM_TEST_MODE:
+-                    if no_prompt:
+-                        # Skip confirmation if --no-prompt flag is used
++                # Initialize pre-commit hooks
++                if no_prompt:
++                    # Skip confirmation if --no-prompt flag is used
++                    self._install_pre_commit_hooks(git_repo)
++                    
++                    # Check if .secrets.baseline file exists and run detect-secrets scan if it doesn't
++                    baseline_file = os.path.join(git_repo.working_dir, '.secrets.baseline')
++                    if not os.path.exists(baseline_file):
++                        logging.debug("No existing .secrets.baseline file found. Running detect-secrets scan...")
++                        if not self._run_detect_secrets_scan(git_repo):
++                            logging.error("Detection of unverified secrets failed. Aborting application of best practice.")
++                            return None
++                else:
++                    # Prompt for confirmation before installing hooks
++                    confirmation = spinner_safe_input("\nInstallation of the new pre-commit hook is needed via `pre-commit install`. Do you want to install the pre-commit hook for you? (y/n): ")
++                    if confirmation.lower() in ['y', 'yes']:
+                         self._install_pre_commit_hooks(git_repo)
+-                        
+-                        # Check if .secrets.baseline file exists and run detect-secrets scan if it doesn't
+-                        baseline_file = os.path.join(git_repo.working_dir, '.secrets.baseline')
+-                        if not os.path.exists(baseline_file):
+-                            logging.debug("No existing .secrets.baseline file found. Running detect-secrets scan...")
+-                            if not self._run_detect_secrets_scan(git_repo):
+-                                logging.error("Detection of unverified secrets failed. Aborting application of best practice.")
+-                                return None
++                    
++                    # Check if .secrets.baseline file exists and prompt user
++                    baseline_file = os.path.join(git_repo.working_dir, '.secrets.baseline')
++                    if os.path.exists(baseline_file):
++                        confirmation = spinner_safe_input("\nA .secrets.baseline file already exists. Do you want to run detect-secrets scan again (this will overwrite the existing file)? (y/n): ")
+                     else:
+-                        # Prompt for confirmation before installing hooks
+-                        confirmation = spinner_safe_input("\nInstallation of the new pre-commit hook is needed via `pre-commit install`. Do you want to install the pre-commit hook for you? (y/n): ")
+-                        if confirmation.lower() in ['y', 'yes']:
+-                            self._install_pre_commit_hooks(git_repo)
+-                        
+-                        # Check if .secrets.baseline file exists and prompt user
+-                        baseline_file = os.path.join(git_repo.working_dir, '.secrets.baseline')
+-                        if os.path.exists(baseline_file):
+-                            confirmation = spinner_safe_input("\nA .secrets.baseline file already exists. Do you want to run detect-secrets scan again (this will overwrite the existing file)? (y/n): ")
+-                        else:
+-                            confirmation = spinner_safe_input("\nDo you want to run an initial scan with detect-secrets to create a .secrets.baseline file? (y/n): ")
+-                        
+-                        if confirmation.lower() in ['y', 'yes']:
+-                            scan_result = self._run_detect_secrets_scan(git_repo)
+-                            if not scan_result:
+-                                logging.error("Detection of unverified secrets failed. Aborting application of best practice.")
+-                                return None
+-                        elif not os.path.exists(baseline_file):
+-                            logging.warning("Not running detect-secrets scan. No .secrets.baseline file is present in your repo.")
++                        confirmation = spinner_safe_input("\nDo you want to run an initial scan with detect-secrets to create a .secrets.baseline file? (y/n): ")
++                    
++                    if confirmation.lower() in ['y', 'yes']:
++                        scan_result = self._run_detect_secrets_scan(git_repo)
++                        if not scan_result:
++                            logging.error("Detection of unverified secrets failed. Aborting application of best practice.")
++                            return None
++                    elif not os.path.exists(baseline_file):
++                        logging.warning("Not running detect-secrets scan. No .secrets.baseline file is present in your repo.")
+ 
+                 print(f"✅ Successfully applied best practice '{self.best_practice_id}' to repository")
+                 print(f"   📁 Repository: {git_repo.working_dir}")
+diff --git a/src/jpl/slim/best_practices/standard.py b/src/jpl/slim/best_practices/standard.py
+index 9963bd2..1ca57dc 100644
+--- a/src/jpl/slim/best_practices/standard.py
++++ b/src/jpl/slim/best_practices/standard.py
+@@ -23,8 +23,6 @@ from jpl.slim.utils.git_utils import create_repo_temp_dir
+ # Import the constant directly to avoid circular imports
+ GIT_BRANCH_NAME_FOR_MULTIPLE_COMMITS = 'slim-best-practices'
+ 
+-# Check if we're in test mode
+-SLIM_TEST_MODE = os.environ.get('SLIM_TEST_MODE', 'False').lower() in ('true', '1', 't')
+ 
+ 
+ class StandardPractice(BestPractice):
+@@ -52,18 +50,6 @@ class StandardPractice(BestPractice):
+         git_repo = None
+         git_branch = None
+ 
+-        # In test mode, simulate success without making actual API calls
+-        if SLIM_TEST_MODE:
+-            logging.debug(f"TEST MODE: Simulating applying best practice {self.best_practice_id}")
+-            # Create a mock repo object for testing
+-            mock_repo = git.Repo.init(target_dir_to_clone_to or tempfile.mkdtemp())
+-            # Create a mock branch
+-            branch_name = branch or self.best_practice_id
+-            if not hasattr(mock_repo.heads, branch_name):
+-                mock_repo.create_head(branch_name)
+-            mock_repo.head.reference = getattr(mock_repo.heads, branch_name)
+-            logging.debug(f"TEST MODE: Successfully applied best practice {self.best_practice_id} to mock repository")
+-            return mock_repo, mock_repo.head.reference, mock_repo.working_dir
+ 
+         try:
+             # Handle repository setup
+@@ -88,12 +74,7 @@ class StandardPractice(BestPractice):
+                 logging.debug(f"Repository folder ({target_dir_to_clone_to}) exists already. Using existing directory.")
+             except Exception as e:
+                 logging.debug(f"Repository folder ({target_dir_to_clone_to}) not a git repository yet already. Cloning repo {repo_url} contents into folder.")
+-                if SLIM_TEST_MODE:
+-                    # In test mode, just initialize a new repo instead of cloning
+-                    git_repo = git.Repo.init(target_dir_to_clone_to)
+-                    logging.debug(f"TEST MODE: Initialized new git repository at {target_dir_to_clone_to}")
+-                else:
+-                    git_repo = git.Repo.clone_from(repo_url, target_dir_to_clone_to)
++                git_repo = git.Repo.clone_from(repo_url, target_dir_to_clone_to)
+ 
+             # Note: We don't change the working directory to avoid global state issues
+             # Git operations work with absolute paths from git_repo object
+@@ -169,18 +150,6 @@ class StandardPractice(BestPractice):
+         """
+         logging.debug(f"Applying best practice {self.best_practice_id} to repository: {repo_path}")
+ 
+-        # In test mode with direct return path
+-        if SLIM_TEST_MODE and not repo_url:  # Special fast path for tests with local repos
+-            logging.debug(f"TEST MODE: Simulating applying best practice {self.best_practice_id}")
+-            # Create a mock repo object for testing
+-            mock_repo = git.Repo.init(target_dir_to_clone_to or tempfile.mkdtemp())
+-            # Create a mock branch
+-            branch_name = branch or self.best_practice_id
+-            if not hasattr(mock_repo.heads, branch_name):
+-                mock_repo.create_head(branch_name)
+-            mock_repo.head.reference = getattr(mock_repo.heads, branch_name)
+-            logging.debug(f"TEST MODE: Successfully applied best practice {self.best_practice_id} to mock repository")
+-            return mock_repo
+ 
+         applied_file_path = None  # default return value is invalid applied best practice
+         
+diff --git a/src/jpl/slim/cli.py b/src/jpl/slim/cli.py
+index d835453..68c5c57 100644
+--- a/src/jpl/slim/cli.py
++++ b/src/jpl/slim/cli.py
+@@ -41,8 +41,6 @@ except ImportError:
+ 
+ VERSION = open(os.path.join(os.path.dirname(__file__), 'VERSION.txt')).read().strip()
+ 
+-# Set up test mode detection
+-SLIM_TEST_MODE = os.environ.get('SLIM_TEST_MODE', 'False').lower() in ('true', '1', 't')
+ 
+ # CLI-level arguments that should never be passed to commands
+ CLI_ONLY_ARGS = {
+@@ -208,11 +206,11 @@ def main_callback(
+     setup_logging(log_level)
+     
+     # Print startup banner for interactive use (only if a command is being run)
+-    if not SLIM_TEST_MODE and len(sys.argv) > 1 and ctx.invoked_subcommand is not None:
++    if len(sys.argv) > 1 and ctx.invoked_subcommand is not None:
+         print_startup_banner()
+     
+-    # Check LiteLLM availability if not in test mode
+-    if not SLIM_TEST_MODE and ctx.invoked_subcommand is not None:
++    # Check LiteLLM availability
++    if ctx.invoked_subcommand is not None:
+         check_litellm_availability()
+ 
+ 
+diff --git a/src/jpl/slim/commands/apply_command.py b/src/jpl/slim/commands/apply_command.py
+index 7030bfd..e63f3b3 100644
+--- a/src/jpl/slim/commands/apply_command.py
++++ b/src/jpl/slim/commands/apply_command.py
+@@ -18,8 +18,6 @@ from rich.console import Console
+ from rich.progress import Progress, SpinnerColumn, TextColumn
+ import git
+ 
+-# Check if we're in test mode
+-SLIM_TEST_MODE = os.environ.get('SLIM_TEST_MODE', 'False').lower() in ('true', '1', 't')
+ 
+ from jpl.slim.utils.io_utils import (
+     fetch_best_practices,
+@@ -362,18 +360,6 @@ def apply_best_practice(best_practice_id, use_ai_flag, model, repo_url=None, exi
+     if kwargs:
+         logging.debug(f"Additional parameters: {kwargs}")
+ 
+-    # In test mode, simulate success without making actual API calls
+-    if SLIM_TEST_MODE:
+-        logging.info(f"TEST MODE: Simulating applying best practice {best_practice_id}")
+-        # Create a mock repo object for testing
+-        mock_repo = git.Repo.init(target_dir_to_clone_to or tempfile.mkdtemp())
+-        # Create a mock branch
+-        branch_name = branch or best_practice_id
+-        if not hasattr(mock_repo.heads, branch_name):
+-            mock_repo.create_head(branch_name)
+-        mock_repo.head.reference = getattr(mock_repo.heads, branch_name)
+-        logging.info(f"TEST MODE: Successfully applied best practice {best_practice_id} to mock repository")
+-        return mock_repo
+ 
+     # Fetch best practices information
+     practices = fetch_best_practices(SLIM_REGISTRY_URI)
+diff --git a/src/jpl/slim/commands/deploy_command.py b/src/jpl/slim/commands/deploy_command.py
+index acc2b4a..0819089 100644
+--- a/src/jpl/slim/commands/deploy_command.py
++++ b/src/jpl/slim/commands/deploy_command.py
+@@ -165,10 +165,6 @@ def deploy_best_practice(best_practice_id, repo_dir, remote=None, commit_message
+     Returns:
+         bool: True if deployment was successful, False otherwise
+     """
+-    # In test mode, simulate success without making actual changes
+-    if os.environ.get('SLIM_TEST_MODE', 'False').lower() in ('true', '1', 't'):
+-        logging.debug(f"TEST MODE: Simulating deployment of best practice {best_practice_id}")
+-        return True
+ 
+     logging.debug(f"deploy_best_practice called for: {best_practice_id}")
+     logging.debug(f"Repository: {repo_dir}, branch: {branch}, remote: {remote}")
+diff --git a/src/jpl/slim/utils/ai_utils.py b/src/jpl/slim/utils/ai_utils.py
+index 9c3e9d2..a29e08c 100644
+--- a/src/jpl/slim/utils/ai_utils.py
++++ b/src/jpl/slim/utils/ai_utils.py
+@@ -95,10 +95,6 @@ def generate_with_ai(best_practice_id, repo_path, template_path, model="openai/g
+     Returns:
+         str: Generated or modified content, or None if an error occurs
+     """
+-    # In test mode, return a mock response instead of calling AI services
+-    if os.environ.get('SLIM_TEST_MODE', 'False').lower() in ('true', '1', 't'):
+-        logging.debug(f"TEST MODE: Simulating AI generation for best practice {best_practice_id}")
+-        return f"Mock AI-generated content for {best_practice_id}"
+         
+     logging.debug(f"Using AI to apply best practice ID: {best_practice_id} in repository {repo_path}")
+     
+diff --git a/tests/conftest.py b/tests/conftest.py
+index 50cb014..1019dae 100644
+--- a/tests/conftest.py
++++ b/tests/conftest.py
+@@ -108,6 +108,12 @@ def test_ai_model_ready():
+ def create_temp_git_repo(repo_dir: str) -> git.Repo:
+     """Create a temporary git repository with initial commit."""
+     repo = git.Repo.init(repo_dir)
++    
++    # Set git identity for the test repository
++    with repo.config_writer() as git_config:
++        git_config.set_value('user', 'name', 'Test User')
++        git_config.set_value('user', 'email', 'test@example.com')
++    
+     readme_path = os.path.join(repo_dir, 'README.md')
+     with open(readme_path, 'w') as f:
+         f.write('# Test Repository\nThis is a test repository.')
+diff --git a/tests/integration/test_best_practice_commands.py b/tests/integration/test_best_practice_commands.py
+index 47f2d18..f4ad766 100644
+--- a/tests/integration/test_best_practice_commands.py
++++ b/tests/integration/test_best_practice_commands.py
+@@ -23,6 +23,12 @@ runner = CliRunner()
+ def create_temp_git_repo(repo_dir: str) -> git.Repo:
+     """Create a temporary git repository with initial commit."""
+     repo = git.Repo.init(repo_dir)
++    
++    # Set git identity for the test repository
++    with repo.config_writer() as git_config:
++        git_config.set_value('user', 'name', 'Test User')
++        git_config.set_value('user', 'email', 'test@example.com')
++    
+     # Create initial commit
+     readme_path = os.path.join(repo_dir, 'README.md')
+     with open(readme_path, 'w') as f:

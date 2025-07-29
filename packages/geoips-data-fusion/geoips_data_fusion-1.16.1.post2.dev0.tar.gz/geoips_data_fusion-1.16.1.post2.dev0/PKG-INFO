@@ -1,0 +1,74 @@
+Metadata-Version: 2.3
+Name: geoips_data_fusion
+Version: 1.16.1.post2.dev0
+Summary: Data Fusion GeoIPS Plugin Package
+License: LICENSE
+Requires-Python: >=3.10
+Classifier: License :: Other/Proprietary License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Project-URL: Repository, https://github.com/NRLMMD-GEOIPS/data_fusion
+Description-Content-Type: text/markdown
+
+    # # # This source code is subject to the license referenced at
+    # # # https://github.com/NRLMMD-GEOIPS.
+
+Data Fusion GeoIPS Plugin
+==========================
+
+The data_fusion package is a GeoIPS-compatible plugin, intended to be used within the GeoIPS ecosystem.
+Please see the
+[GeoIPS Documentation](https://github.com/NRLMMD-GEOIPS/geoips#readme)
+for more information on the GeoIPS plugin architecture and base infrastructure.
+
+Package Overview
+-----------------
+
+The Data Fusion plugin provides the capability for including an arbitrary number of data types within
+a single product or algorithm - an alternative processing workflow developed within this package
+handles passing different combinations of datasets to each module appropriately - the main geoips
+package only provides support for including a single dataset per product.
+
+Currently, the test scripts can be used as templates for setting up additional data fusion products and
+algorithms.  Additional documentation will be added in time.  If you have questions, please
+contact geoips@nrlmry.navy.mil.
+
+System Requirements
+---------------------
+
+* geoips >= 1.13.0
+* Test data repos contained in $GEOIPS_TESTDATA_DIR for tests to pass.
+  * test_data_fusion
+  * test_data_scat
+  * NOTE: Must obtain appropriate ABI, AHI test datasets via NOAA AWS
+
+IF REQUIRED: Install base geoips package
+------------------------------------------------------------
+SKIP IF YOU HAVE ALREADY INSTALLED BASE GEOIPS ENVIRONMENT
+
+If GeoIPS Base is not yet installed, follow the
+[installation instructions](https://github.com/NRLMMD-GEOIPS/geoips#installation)
+within the geoips source repo documentation:
+
+Install data_fusion package
+----------------------------
+```bash
+    # Ensure geoips Python environment is enabled.
+    git clone https://github.com/NRLMMD-GEOIPS/data_fusion.git $GEOIPS_PACKAGES_DIR/data_fusion
+    pip install -e $GEOIPS_PACKAGES_DIR/data_fusion
+    create_plugin_registries
+```
+
+Test data_fusion installation
+-----------------------------
+```bash
+    # Ensure geoips Python environment is enabled.
+    $GEOIPS_PACKAGES_DIR/geoips/setup/check_system_requirements.sh test_data test_data_fusion
+    $GEOIPS_PACKAGES_DIR/geoips/setup/check_system_requirements.sh test_data test_data_scat
+
+    $GEOIPS_PACKAGES_DIR/data_fusion/tests/test_all.sh
+```
+

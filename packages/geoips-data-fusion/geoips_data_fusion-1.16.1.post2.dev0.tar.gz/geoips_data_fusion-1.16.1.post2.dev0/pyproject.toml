@@ -1,0 +1,53 @@
+[tool.poetry]
+name = "geoips_data_fusion"  # package available at the root of the project
+version = "1.16.1.post2.dev0"
+description = "Data Fusion GeoIPS Plugin Package"
+authors = []
+readme = "README.md"
+keywords = []
+license = "LICENSE"   # required
+classifiers = [ # // list of PyPI trove classifiers to describe the project
+    "Programming Language :: Python :: 3",
+]
+repository = "https://github.com/NRLMMD-GEOIPS/data_fusion"
+#documentation = "set the url"
+include = ["**/*.txt", "**/*.py", "**/*.yaml"]
+
+# uses current version .postN and not incrementing
+[tool.poetry-dynamic-versioning]
+enable = false
+vcs = "git"
+metadata = false # don't include local-version hash; date doesn't appear by deafult
+style = "pep440" # pep440 is default; can rmeove later on; used for : keeping 0.0.8 as the default install until 0.0.9 is out
+#style = "semver"
+#tag-branch = "feature-poetry"
+strict = false
+pattern = "(?x)^((?P<epoch>\\d+)!)?(?P<base>\\d+(\\.\\d+)*)([-._]?((?P<stage>[a-zA-Z]+)[-._]?(?P<revision>\\d+)?))?(\\+(?P<tagged_metadata>.+))?$"
+
+[tool.poetry-dynamic-versioning.substitution]
+files = ["*/_version.py"]
+
+# This is where you would specify a pre-build script from pyproject.toml/poetry.
+# [tool.poetry.build]
+# generate-setup-file = false  # I have no idea what this does
+# script = "build.py"  # This gets called as a python script prior to running build
+
+[build-system]
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+build-backend = "poetry_dynamic_versioning.backend"                          # object used to perform the build process
+
+[tool.poetry.dependencies] # must download to run
+python = ">=3.10"       # mandatory to declare the required python version
+
+# [tool.poetry.dependencies] # Include any python dependencies here
+# "matplotlib" = "*"
+# "xarray" = "*"
+
+# All plugins within the "my_package" package are automatically discovered
+# during the plugin registry process.
+
+[tool.poetry.plugins."geoips.plugin_packages"]
+"data_fusion" = "data_fusion"
+
+[tool.poetry.scripts]
+data_fusion_procflow = "geoips.commandline.commandline_interface:main"

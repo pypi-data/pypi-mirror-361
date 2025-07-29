@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "open-agent-cli"
+version = "1.0.0"
+description = "🤖 CLI de IA para desenvolvimento - Cria projetos estruturados e código limpo usando OpenAI ou Google Gemini"
+readme = "README.md"
+license = "MIT"
+authors = [
+    {name = "Gustavo", email = "gustavdesousalima@gmail.com"}
+]
+maintainers = [
+    {name = "Gustavo", email = "gustavdesousalima@gmail.com"}
+]
+keywords = ["ai", "cli", "development", "code-generation", "openai", "gemini", "clean-code"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Code Generators",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Utilities",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "rich>=13.0.0",
+    "click>=8.0.0",
+    "pydantic>=2.0.0",
+    "openai>=1.0.0",
+    "google-generativeai>=0.3.0",
+    "autopep8>=2.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/gustavodesousalima/open-agent-cli"
+Documentation = "https://github.com/gustavodesousalima/open-agent-cli#readme"
+Repository = "https://github.com/gustavodesousalima/open-agent-cli"
+"Bug Tracker" = "https://github.com/gustavodesousalima/open-agent-cli/issues"
+
+[project.scripts]
+open-agent = "ai_agent_cli.cli:cli"
+
+[tool.setuptools.packages.find]
+include = ["ai_agent_cli*"]
+
+[tool.setuptools.package-data]
+"*" = ["*.txt", "*.md", "*.yml", "*.yaml"] 

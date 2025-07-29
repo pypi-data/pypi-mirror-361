@@ -1,0 +1,19 @@
+name: main
+
+on:
+  push:
+    branches: [main, test-me-*]
+    tags: "*"
+  pull_request:
+
+jobs:
+  main:
+    uses: FlavioAmurrioCS/workflows/.github/workflows/common-python.yml@main
+    permissions:
+      contents: write
+      id-token: write
+    secrets:
+      PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+    with:
+      zipapp-entrypoint: aws-http-auth
+      env: '["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]'

@@ -1,0 +1,159 @@
+[project]
+name = "asynctor"
+description = "Async functions to compare with anyio and asyncio, and toolkit to read excel with async/await."
+authors = [
+    { name = "Waket Zheng", email = "waketzheng@gmail.com" },
+]
+readme = "README.md"
+requires-python = ">=3.9"
+dynamic = []
+dependencies = [
+    "anyio>=3.7.1",
+    "eval-type-backport (>=0.2.2,<1.0.0); python_version < '3.10'",
+]
+version = "0.8.3"
+
+[project.license]
+text = "MIT"
+
+[project.optional-dependencies]
+redis = [
+    "redis>=5.0.0",
+]
+xls = [
+    "pandas>=2.2.0",
+    "openpyxl>=3.1.0",
+]
+fastapi = [
+    "asynctor[redis]",
+    "fastapi>=0.115.0",
+    "httpx>=0.28.1",
+    "asgi-lifespan>=2.1.0",
+]
+all = [
+    "asynctor[xls,redis,fastapi]",
+]
+
+[project.urls]
+homepage = "https://github.com/waketzheng/asynctor"
+repository = "https://github.com/waketzheng/asynctor.git"
+"Bug Tracker" = "https://github.com/waketzheng/asynctor/issues"
+
+[dependency-groups]
+dev = [
+    "fast-dev-cli>=0.15.1",
+    "types-redis>=4.6.0.20241004",
+    "pandas-stubs>=2.2.0",
+    "bandit>=1.8.3",
+    "pytest-mock>=3.14.1",
+    "fastapi-cdn-host>=0.9.1",
+    "uvicorn>=0.34.3",
+    "exceptiongroup>=1.3.0",
+    "typing-extensions>=4.14.1",
+]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+extend-select = [
+    "E",
+    "W",
+    "F",
+    "B",
+    "C4",
+    "I",
+    "SIM",
+    "FA",
+    "UP",
+    "RUF100",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"asynctor/_types.py" = [
+    "F401",
+]
+"test_*.py" = [
+    "E501",
+]
+"scripts/test.py" = [
+    "E501",
+]
+"scripts/*.py" = [
+    "UP009",
+    "UP032",
+]
+
+[tool.mypy]
+pretty = true
+python_version = "3.9"
+check_untyped_defs = true
+
+[tool.coverage.run]
+omit = [
+    "*/.cache/*",
+    "/usr/*",
+    "examples/fastapi/conftest.py",
+    "_types.py",
+]
+
+[tool.coverage.report]
+omit = [
+    "*/tests/*",
+    "test_*",
+]
+exclude_lines = [
+    "pragma: no cover",
+    "@overload",
+    "if __name__ == \"__main__\":",
+    "if TYPE_CHECKING:",
+]
+
+[tool.pdm.version]
+source = "file"
+path = "asynctor/__init__.py"
+
+[tool.pdm.scripts]
+test = "pdm run fast test"
+check = "pdm run fast check {args}"
+lint = "pdm run fast lint {args}"
+deps = "pdm sync -G :all {args}"
+prod = "pdm install --prod --frozen"
+update_self_version = "pdm sync"
+
+[tool.pdm.scripts.style]
+composite = [
+    "ruff format",
+    "ruff check --fix {args}",
+]
+
+[tool.pdm.scripts.bump]
+composite = [
+    "update_self_version",
+    "pdm run fast bump patch --commit {args}",
+]
+
+[tool.pdm.scripts.tag]
+composite = [
+    "update_self_version",
+    "pdm run fast tag {args}",
+]
+
+[tool.pdm.scripts.start]
+composite = [
+    "pre-commit install",
+    "deps",
+]
+
+[tool.pdm.scripts.ci]
+composite = [
+    "deps",
+    "check",
+    "test",
+]
+
+[build-system]
+requires = [
+    "pdm-backend",
+]
+build-backend = "pdm.backend"

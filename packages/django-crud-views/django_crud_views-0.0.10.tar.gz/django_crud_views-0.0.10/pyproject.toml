@@ -1,0 +1,112 @@
+[project]
+name = "django-crud-views"
+version = "0.0.10"
+description = "Django Crud Views"
+authors = [
+    { name = "Alexander Jacob", email = "alexander.jacob@jacob-consulting.de" }
+]
+license = { text = "MIT" }
+readme = "README.md"
+classifiers = [
+    "Intended Audience :: Developers",
+    "Development Status :: 3 - Alpha",
+    "Framework :: Django",
+    "Framework :: Django :: 4.2",
+    "Framework :: Django :: 5",
+    "Framework :: Django :: 5.2",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "django (>=4.2.0)",
+    "pydantic (>=2.2.1)",
+    "python-box (>=6.0.2)",
+    "django-tables2 (>=2.5.3)",
+    "django-filter (>=21.1)",
+    "typing-extensions (>=4.7.1)",
+    "django-ordered-model (>=3.4.3)"
+]
+
+[project.optional-dependencies]
+
+dev = [
+    "black",
+    "bumpver",
+    "mkdocs (>=1.6.1)",
+    "mkdocs-awesome-pages-plugin (>=2.10.1)",
+    "mkdocs-get-deps (>=0.2.0)"
+]
+
+test = [
+    "nox",
+    "pytest",
+    "pytest-cov",
+    "pytest-random-order",
+    "pytest-mock",
+    "pytest-django",
+    "lxml",
+]
+
+bootstrap5 = [
+    "django-bootstrap5 (>=21.3)",
+    "django-crispy-forms (>=2.0)",
+    "crispy-bootstrap5 (>=2023.10)",
+]
+
+polymorphic = [
+    "django-polymorphic (>=3.1.0)",
+    "setuptools"
+]
+
+minimal = [
+    "django (==4.2.0)",
+    "pydantic (==2.2.1)",
+    "python-box (==6.0.2)",
+    "django-tables2 (==2.5.3)",
+    "django-filter (==21.1)",
+    "typing-extensions (==4.7.1)",
+    "django-ordered-model (==3.4.3)"
+]
+
+bootstrap5minimal = [
+    "django-bootstrap5 (==21.3)",
+    "django-crispy-forms (==2.0)",
+    "crispy-bootstrap5 (==2023.10)",
+]
+
+[project.urls]
+Homepage = "https://github.com/jacob-consulting/django-crud-views"
+Documentation = "https://django-crud-views.readthedocs.io/en/latest/"
+Repository = "https://github.com:jacob-consulting/django-crud-views.git"
+Issues = "https://github.com/jacob-consulting/django-crud-views/issues"
+Changelog = "https://github.com/jacob-consulting/django-crud-views/blob/main/CHANGELOG.md"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+    packages = [
+        "crud_views",
+        "crud_views_bootstrap5"
+    ]
+
+# todo: polymorphic-minimal
+
+[tool.bumpver]
+current_version = "0.0.10"
+version_pattern = "MAJOR.MINOR.PATCH"
+commit_message = "Bump version {old_version} -> {new_version}"
+commit = true
+tag = true
+push = false
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = ['current_version = "{version}"', 'version = "{version}"']
+"crud_views/__init__.py" = ["{version}"]
+"crud_views_bootstrap5/__init__.py" = ["{version}"]
+"docs/index.md" = ["{version}"]
+"README.md" = ["{version}"]

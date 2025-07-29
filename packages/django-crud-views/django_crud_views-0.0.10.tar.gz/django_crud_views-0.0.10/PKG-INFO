@@ -1,0 +1,106 @@
+Metadata-Version: 2.4
+Name: django-crud-views
+Version: 0.0.10
+Summary: Django Crud Views
+Project-URL: Homepage, https://github.com/jacob-consulting/django-crud-views
+Project-URL: Documentation, https://django-crud-views.readthedocs.io/en/latest/
+Project-URL: Repository, https://github.com:jacob-consulting/django-crud-views.git
+Project-URL: Issues, https://github.com/jacob-consulting/django-crud-views/issues
+Project-URL: Changelog, https://github.com/jacob-consulting/django-crud-views/blob/main/CHANGELOG.md
+Author-email: Alexander Jacob <alexander.jacob@jacob-consulting.de>
+License: MIT
+License-File: LICENSE
+Classifier: Development Status :: 3 - Alpha
+Classifier: Framework :: Django
+Classifier: Framework :: Django :: 4.2
+Classifier: Framework :: Django :: 5
+Classifier: Framework :: Django :: 5.2
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.10
+Requires-Dist: django-filter>=21.1
+Requires-Dist: django-ordered-model>=3.4.3
+Requires-Dist: django-tables2>=2.5.3
+Requires-Dist: django>=4.2.0
+Requires-Dist: pydantic>=2.2.1
+Requires-Dist: python-box>=6.0.2
+Requires-Dist: typing-extensions>=4.7.1
+Provides-Extra: bootstrap5
+Requires-Dist: crispy-bootstrap5>=2023.10; extra == 'bootstrap5'
+Requires-Dist: django-bootstrap5>=21.3; extra == 'bootstrap5'
+Requires-Dist: django-crispy-forms>=2.0; extra == 'bootstrap5'
+Provides-Extra: bootstrap5minimal
+Requires-Dist: crispy-bootstrap5==2023.10; extra == 'bootstrap5minimal'
+Requires-Dist: django-bootstrap5==21.3; extra == 'bootstrap5minimal'
+Requires-Dist: django-crispy-forms==2.0; extra == 'bootstrap5minimal'
+Provides-Extra: dev
+Requires-Dist: black; extra == 'dev'
+Requires-Dist: bumpver; extra == 'dev'
+Requires-Dist: mkdocs-awesome-pages-plugin>=2.10.1; extra == 'dev'
+Requires-Dist: mkdocs-get-deps>=0.2.0; extra == 'dev'
+Requires-Dist: mkdocs>=1.6.1; extra == 'dev'
+Provides-Extra: minimal
+Requires-Dist: django-filter==21.1; extra == 'minimal'
+Requires-Dist: django-ordered-model==3.4.3; extra == 'minimal'
+Requires-Dist: django-tables2==2.5.3; extra == 'minimal'
+Requires-Dist: django==4.2.0; extra == 'minimal'
+Requires-Dist: pydantic==2.2.1; extra == 'minimal'
+Requires-Dist: python-box==6.0.2; extra == 'minimal'
+Requires-Dist: typing-extensions==4.7.1; extra == 'minimal'
+Provides-Extra: polymorphic
+Requires-Dist: django-polymorphic>=3.1.0; extra == 'polymorphic'
+Requires-Dist: setuptools; extra == 'polymorphic'
+Provides-Extra: test
+Requires-Dist: lxml; extra == 'test'
+Requires-Dist: nox; extra == 'test'
+Requires-Dist: pytest; extra == 'test'
+Requires-Dist: pytest-cov; extra == 'test'
+Requires-Dist: pytest-django; extra == 'test'
+Requires-Dist: pytest-mock; extra == 'test'
+Requires-Dist: pytest-random-order; extra == 'test'
+Description-Content-Type: text/markdown
+
+# Django CRUD Views
+
+Managing CRUD (Create, Read, Update, Delete) operations is a common requirement in Django applications. While Django’s
+class-based views provide flexibility, implementing CRUD functionality often involves repetitive code.
+
+Django CRUD Views simplifies this process by offering reusable, customizable class-based views that streamline CRUD
+operations. This package helps developers write cleaner, more maintainable code while keeping full control over their
+views.
+
+This documentation provides everything you need to get started, from installation to advanced customization. Whether
+you're building a small project or a large application, Django CRUD Views can help you work more efficiently.
+
+## Features
+
+- a collection of **CrudView**s for the same Django model whereas these views are aware of their sibling views
+- such a collection is called a **ViewSet**
+- linking to sibling views is easy, respecting Django's permission system
+- designed for HTML
+- built on top of Django's class-based generic views
+- and Django's permission system
+- uses these excellent packages:
+    - [django-tables2](https://django-tables2.readthedocs.io/en/latest/)
+    - [django-filter](https://django-filter.readthedocs.io/en/stable/)
+    - [django-crispy-forms](https://django-crispy-forms.readthedocs.io/en/latest/)
+    - [django-polymorphic](https://django-polymorphic.readthedocs.io/en/stable/)
+    - [django-ordered-model](https://github.com/django-ordered-model/django-ordered-model)
+- **ViewSet**s can be nested with deep URLs (multiple levels) if models are related via ForeignKey
+- **CrudView**s are predefined for CRUD operations: list, create, update, delete, detail, up/down
+- a **ViewSet** generates all urlpatterns for its **CrudView**s
+- Themes are pluggable, so you can easily customize the look and feel to your needs, includes themes
+    - `plain` no CSS, minimal HTML and JavaScript
+    - `bootstrap5` with Bootstrap 5
+- Django system checks for configurations to fail early on startup
+
+## What it is not
+
+- a replacement for Django's admin interface
+- a complete page building system with navigations and lots of widgets
+
+## Current version
+Current version: 0.0.10

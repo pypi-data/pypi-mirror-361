@@ -1,0 +1,1 @@
+from .chibi import chibi-store-wallet

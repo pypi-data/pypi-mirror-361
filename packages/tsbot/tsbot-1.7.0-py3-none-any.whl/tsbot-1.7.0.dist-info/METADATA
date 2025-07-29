@@ -1,0 +1,116 @@
+Metadata-Version: 2.4
+Name: tsbot
+Version: 1.7.0
+Summary: Asynchronous Python framework to build TeamSpeak 3 Server Query bots
+Author: jykob
+License: MIT License
+        
+        Copyright (c) 2024 jykob
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Project-URL: repository, https://github.com/jykob/tsbot
+Project-URL: documentation, https://tsbot.readthedocs.io/
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Framework :: AsyncIO
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.10
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: asyncssh>=2.17.0
+Requires-Dist: tsformatter>=0.2.1
+Requires-Dist: typing_extensions>=4.13.1
+Provides-Extra: dev
+Requires-Dist: ruff>=0.4.4; extra == "dev"
+Requires-Dist: pyright>=1.1.362; extra == "dev"
+Requires-Dist: sphinx-autobuild>=2024.4.16; extra == "dev"
+Requires-Dist: python-dotenv>=1.0.1; extra == "dev"
+Provides-Extra: tests
+Requires-Dist: pytest==8.3.3; extra == "tests"
+Requires-Dist: pytest-asyncio==0.24.0; extra == "tests"
+Provides-Extra: docs
+Requires-Dist: sphinx>=7.3.7; extra == "docs"
+Requires-Dist: myst-parser>=2.0.0; extra == "docs"
+Requires-Dist: sphinx_rtd_theme>=2.0.0; extra == "docs"
+Dynamic: license-file
+
+# TSBot &nbsp; [![PyPI - Version](https://img.shields.io/pypi/v/tsbot)](https://pypi.org/project/tsbot/)
+
+Asynchronous Python framework to build **TeamSpeak 3 Server Query** bots
+
+## ✅ Features
+
+- Modern Python `async` and `await` syntax
+- Fully typed interface
+- Event, command and background task systems
+- Secure connection through SSH, or raw connection for local servers
+- Ease of use query building
+- Automatic reconnection if connection is lost
+- Built-in and configurable ratelimiter if no access to `query_ip_allowlist.txt`
+
+## ✏️ Examples
+
+```python
+from __future__ import annotations
+
+import asyncio
+
+from tsbot import TSBot, TSCtx, query
+
+
+bot = TSBot(
+    username="USERNAME",
+    password="PASSWORD",
+    address="ADDRESS",
+)
+
+
+@bot.command("hello")
+async def hello_world(bot: TSBot, ctx: TSCtx):
+    await bot.respond(ctx, f"Hello {ctx['invokername']}!")
+
+
+@bot.on("cliententerview")
+async def poke_on_enter(bot: TSBot, ctx: TSCtx):
+    poke_query = query("clientpoke").params(clid=ctx["clid"], msg="Welcome to the server!")
+    await bot.send(poke_query)
+
+
+asyncio.run(bot.run())
+```
+
+**Check out [📁examples](https://github.com/jykob/TSBot/blob/main/examples) for more**
+
+## 📦 Installation
+
+**Python 3.10 or higher is required**
+
+Installing with pip:
+
+```shell
+# Linux/macOS
+python3 -m pip install tsbot
+
+# Windows
+py -3 -m pip install tsbot
+```

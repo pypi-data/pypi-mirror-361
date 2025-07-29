@@ -1,0 +1,312 @@
+
+# NaHDB
+
+NaHDB adalah solusi key-value database modern yang 💨 ringan, ⚡ cepat, dan 🔒 aman dengan dukungan enkripsi AES-256. Dirancang untuk developer 🐍 Python, 🟦 Node.js, dan 🐘 PHP, NaHDB memudahkan Anda menyimpan data dengan tingkat keamanan tinggi tanpa harus bergantung pada sistem database yang kompleks.
+
+## ☕ Dukung Pengembangan
+
+Jika Anda merasa terbantu dengan proyek ini, Anda bisa mendukung pengembangan lebih lanjut dengan berdonasi melalui:
+
+### 💳 Bank Transfer
+- **🏦 Bank Jago**  
+  **No. Rekening:** `105361441776`  
+  **Atas Nama:** *ILMAN HENDRAWAN SAPUTRA*  
+
+### 🌐 Cryptocurrency
+- **🪙 Litecoin (LTC):** `MSdWrJR8eHZEF9PFBKzyiSXcvAsTdrsg3D`
+- **₿ Bitcoin (BTC):** `3LDgRxf5sAky8ejJJE7tR4L6uvJzmwoH4k`
+- **💵 Bitcoin Cash (BCH):** `bitcoincash:qrrqattarsej5m3v05rtgfulcqqlxy840yls0rh56w`
+
+
+## 📦 Instalasi
+Salin file `NaHDB.cp312-win_amd64.pyd` ke dalam proyek Anda. atau
+```bash
+pip install NaHDB
+```
+
+---
+
+## 🚀 Contoh Kode Penggunaan
+
+### Inisialisasi
+
+**Liblary yang di butuhkan:**
+- pycryptodome
+```python
+from NaHDB import NaHDB
+
+db = NaHDB('databasePath', b'key')
+```
+
+### Login
+Default password root adalah '' dan mengembalikan boolean.
+
+```python
+db.login("root", "")
+```
+
+### Create Table
+
+```python
+# Create Table
+db.create_table("table",{"nameColom" : {"type": "str", "default": ""}})
+
+# Wait for the process to complete
+db.wait_until_done()
+
+# Get List Table
+listTable = db.list_table()
+print(listTable)
+```
+
+### Update Table
+
+```python
+# Update Table
+db.update_table("table",{"nameColom" : {"type": "str", "default": ""},"nameColom2" : {"type": "str", "default": ""}})
+
+# Wait for the process to complete
+db.wait_until_done()
+
+# Get Schema Table
+schemaTable = db.get_schema("table")
+print(schemaTable)
+```
+
+### Delete Table
+
+```python
+# Delete Table
+db.delete_table("table")
+```
+
+### Add Data
+
+```python
+# Add Data
+db.create("table", {"nameColom":"value"})
+```
+
+### Update Data
+
+```python
+# Update Data
+db.update("table", {"nameColom":"value"}, {"nameColom":"valueUpdate"})
+```
+
+### Delete Data
+
+```python
+# Remove Data
+db.delete("table", {"nameColom":"valueUpdate"})
+```
+
+### Join Table
+```python
+# Create Table Users
+db.create_table("users", {
+    "user_id": {"type": "int", "default": 0},
+    "name": {"type": "str", "default": ""},
+    "email": {"type": "str", "default": ""}
+})
+
+# Wait for the process to complete
+db.wait_until_done()
+
+# Add Data Users
+db.create("users", {"user_id": 1, "name": "Alice", "email": "alice@example.com"})
+db.create("users", {"user_id": 2, "name": "Bob", "email": "bob@example.com"})
+db.create("users", {"user_id": 3, "name": "Charlie", "email": "charlie@example.com"})
+
+# Wait for the process to complete
+db.wait_until_done()
+
+# Create Table Orders
+db.create_table("orders", {
+    "order_id": {"type": "int", "default": 0},
+    "user_id": {"type": "int", "default": 0},
+    "order_date": {"type": "str", "default": ""}
+})
+
+# Wait for the process to complete
+db.wait_until_done()
+
+# Add Data Orders
+db.create("orders", {"order_id": 101, "user_id": 1, "order_date": "2025-07-08"})
+db.create("orders", {"order_id": 102, "user_id": 2, "order_date": "2025-07-09"})
+db.create("orders", {"order_id": 103, "user_id": 1, "order_date": "2025-07-10"})
+
+# Wait for the process to complete
+db.wait_until_done()
+
+# Create Table Products
+db.create_table("products", {
+    "product_id": {"type": "int", "default": 0},
+    "order_id": {"type": "int", "default": 0},
+    "product_name": {"type": "str", "default": ""},
+    "price": {"type": "float", "default": 0.0}
+})
+
+# Wait for the process to complete
+db.wait_until_done()
+
+# Add Data Products
+db.create("products", {"product_id": 1001, "order_id": 101, "product_name": "Laptop", "price": 1200.0})
+db.create("products", {"product_id": 1002, "order_id": 101, "product_name": "Mouse", "price": 25.0})
+db.create("products", {"product_id": 1003, "order_id": 102, "product_name": "Keyboard", "price": 45.0})
+db.create("products", {"product_id": 1004, "order_id": 103, "product_name": "Monitor", "price": 300.0})
+
+# Wait for the process to complete
+db.wait_until_done()
+
+# Get Data Join Table Singgle Kolom
+data = db.join("orders", "user_id", [{"table": "users", "on": "user_id", "as": "user"}])
+print(data)
+
+# Get Data Join Table Multiple Colomn
+data = db.join_field([
+    { "table": "users"},
+    {"table": "orders","on": "user_id","where": {"table": "users", "on": "user_id"},"as": "orders"},
+    {"table": "products","on": "order_id","where": {"table": "orders", "on": "order_id"},"as": "products"}
+])
+print(data)
+```
+### Flush Table
+```python
+# Fulsh Table
+db.flush_table("users")
+```
+
+### Add User
+
+**Permision**:
+1. `__user__` :
+    - `get_users`
+    - `get_user_id_by_username`
+    - `add_user`
+    - `update_permission`
+    - `forget_password`
+    - `change_password`
+    - `get_username_by_id`
+    - `get_user_by_id`
+    - `update_username`
+2. `table` :
+    - `select`
+    - `create`
+    - `update`
+    - `delete`
+    - `flush`
+    - `get_schema`
+    - `list`
+    - `update_table`
+    - `delete_table`
+    - `create_table`
+
+
+```python
+# Add User
+db.add_user("username","password", "role",{ "users": ['select', 'create'] })
+
+# Wait for the process to complete
+db.wait_until_done()
+
+# Get Users
+users = db.get_users()
+print(users)
+```
+
+### Forget Password
+
+```python
+# Forget Password
+db.forget_password("username","passwordNew")
+```
+
+### Update Username
+
+```python
+# Get ID by Username
+idUser = db.get_user_id_by_username("username")
+
+# Update Username
+db.update_username("usernameNew",idUser)
+
+# Wait for the process to complete
+db.wait_until_done()
+```
+### Forget Password
+
+```python
+# Forget Password
+db.forget_password("username","passwordNew")
+```
+
+### Update Password
+
+```python
+# Update Password
+db.change_password("passwordNew",idUser)
+
+# Wait for the process to complete
+db.wait_until_done()
+```
+
+### Update Permision
+
+```python
+# Get Username by ID
+username = db.get_username_by_id(idUser)
+
+# Update Permision User
+db.update_permission(username, {"users":["select","create","update","delete"]})
+
+# Wait for the process to complete
+db.wait_until_done()
+
+# Get Users
+users = db.get_users()
+print(users)
+```
+
+### Check Login
+
+```python
+# Check Login
+islogin = db.is_login()
+print(islogin)
+```
+
+### Get User by ID
+
+```python
+# Get User by ID
+user = db.get_user_by_id(idUser)
+print(user)
+```
+---
+
+## 🔒 Fitur
+- AES-256 Encryption untuk semua data.
+- Cepat & ringan tanpa dependensi eksternal.
+- Lintas platform: Python, Node.js, PHP.
+- Penyimpanan berbasis file.
+
+
+## 📜 Lisensi
+MIT License.
+
+## ☕ Dukung Pengembangan
+
+Jika Anda merasa terbantu dengan proyek ini, Anda bisa mendukung pengembangan lebih lanjut dengan berdonasi melalui:
+
+### 💳 Bank Transfer
+- **🏦 Bank Jago**  
+  **No. Rekening:** `105361441776`  
+  **Atas Nama:** *ILMAN HENDRAWAN SAPUTRA*  
+
+### 🌐 Cryptocurrency
+- **🪙 Litecoin (LTC):** `MSdWrJR8eHZEF9PFBKzyiSXcvAsTdrsg3D`
+- **₿ Bitcoin (BTC):** `3LDgRxf5sAky8ejJJE7tR4L6uvJzmwoH4k`
+- **💵 Bitcoin Cash (BCH):** `bitcoincash:qrrqattarsej5m3v05rtgfulcqqlxy840yls0rh56w`
+
+🙏 Terima kasih atas dukungan Anda!

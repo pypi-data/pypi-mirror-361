@@ -1,0 +1,121 @@
+name: Auto Version Bump
+
+on:
+  workflow_dispatch:  # Manual trigger only
+  # DISABLED - Manual version management only
+  # push:
+  #   branches: [ main ]
+  #   paths-ignore:
+  #     - '**.md'
+  #     - '.github/workflows/version-bump.yml'
+  #     - '.github/workflows/**'
+  #     - 'docs/**'
+  #     - '*.md'
+
+jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          # Fetch all history to ensure we have the latest
+          fetch-depth: 0
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      
+      - name: Install dependencies
+        run: |
+          pip install toml
+      
+      - name: Ensure we're on the latest main
+        run: |
+          # Configure git
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          # Fetch latest changes and reset to origin/main
+          git fetch origin main
+          git reset --hard origin/main
+          
+          echo "Ensured we're on the latest main branch"
+      
+      - name: Bump version
+        id: bump
+        run: |
+          echo "Reading current version from pyproject.toml..."
+          
+          # Read current version
+          python -c "
+          import toml
+          import re
+          import os
+          
+          # Read current version
+          with open('pyproject.toml', 'r') as f:
+              data = toml.load(f)
+          
+          current_version = data['project']['version']
+          print(f'Current version: {current_version}')
+          
+          # Parse version components
+          match = re.match(r'(\d+)\.(\d+)\.(\d+)', current_version)
+          if match:
+              major, minor, patch = match.groups()
+              new_patch = int(patch) + 1
+              new_version = f'{major}.{minor}.{new_patch}'
+              print(f'New version: {new_version}')
+              
+              # Update pyproject.toml
+              data['project']['version'] = new_version
+              with open('pyproject.toml', 'w') as f:
+                  toml.dump(data, f)
+              
+              print('Updated pyproject.toml')
+              
+              # Set output for next steps
+              with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                  f.write(f'old_version={current_version}\n')
+                  f.write(f'new_version={new_version}\n')
+          else:
+              print('Could not parse version format')
+              exit(1)
+          "
+      
+      - name: Check if version actually changed
+        id: check-changes
+        run: |
+          # Check if there are actual changes to commit
+          if git diff --quiet pyproject.toml; then
+            echo "No version changes to commit"
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "Version changes detected"
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Commit and push changes
+        if: steps.check-changes.outputs.has_changes == 'true'
+        run: |
+          # Add the changed file
+          git add pyproject.toml
+          
+          # Create commit with a clear message
+          git commit -m "Auto-bump version from ${{ steps.bump.outputs.old_version }} to ${{ steps.bump.outputs.new_version }} [skip ci]"
+          
+          # Push with force to ensure we're always on top
+          # This prevents conflicts since we reset to origin/main earlier
+          git push origin main
+          
+          echo "Version bumped from ${{ steps.bump.outputs.old_version }} to ${{ steps.bump.outputs.new_version }}"
+      
+      - name: Skip if no changes
+        if: steps.check-changes.outputs.has_changes == 'false'
+        run: |
+          echo "No version changes detected, skipping commit and push" 

@@ -1,0 +1,118 @@
+Metadata-Version: 2.4
+Name: node-status-lib
+Version: 0.1.16
+Summary: A lightweight library for node and internal flow-level status tracking using PostgreSQL.
+Author-email: Angelo Antu <angelo.antu@kireap.com>
+License-Expression: MIT
+Keywords: node,status
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: psycopg2
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: black; extra == "dev"
+Requires-Dist: flake8; extra == "dev"
+
+# `node-status-lib`
+
+`node-status-lib` is a lightweight Python library designed to simplify the tracking of node and flow statuses in distributed systems. It is especially useful for monitoring pipelines, workflows, and microservices by storing runtime states in a PostgreSQL database.
+
+## Features
+
+* Track the status of an entire node
+* Track the status of individual flows/tasks within a node
+* Store all status updates directly into a PostgreSQL database
+* Built-in support for integration with secret managers (e.g., AWS Secrets Manager)
+* Easy integration into any Python-based pipeline or microservice
+
+---
+
+## Installation
+
+Install via [PyPI](https://pypi.org):
+
+```bash
+pip install node-status-lib
+```
+
+---
+
+## Usage
+
+### 1. Import the Library
+
+```python
+from node_status_lib.manager import NodeStatusManager
+from node_status_lib.enums import Status
+```
+
+
+### 2. Initialize the Node Status Manager
+
+```python
+manager = NodeStatusManager(
+    node_id="102",
+    node_name="multispectral_node",
+    flows=["heatmap_gen", "insight_gen", "response"],
+    db_details={
+        "DB_NAME": < DB_NAME >,
+        "DB_USER": < DB_USER >,
+        "DB_PASSWORD": < DB_PASS >,
+        "DB_HOST": < DB_HOST >,
+        "DB_PORT": < DB_PORT >
+    }
+)
+```
+
+### 4. Update Node and Flow Status
+
+```python
+# Update node's overall status
+manager.update_node_status(Status.RUNNING)
+
+# Update specific flow status
+manager.update_flow_status("heatmap_gen", Status.SUCCESS)
+```
+
+---
+
+## Status Enum Options
+
+```python
+Status.PENDING
+Status.RUNNING
+Status.SUCCESS
+Status.FAILED
+```
+
+---
+
+## 🗃️ Database Table Schema
+
+Make sure your PostgreSQL database has a table named `node_status`. Here's a basic schema:
+
+```sql
+CREATE TABLE node_status (
+    id SERIAL PRIMARY KEY,
+    node_id TEXT NOT NULL,
+    node_name TEXT NOT NULL,
+    flow_name TEXT,
+    status TEXT NOT NULL,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+---
+
+## Requirements
+
+* Python 3.7+
+* PostgreSQL
+* `psycopg2-binary`
+* `boto3` (optional, for AWS Secrets Manager)
+
+---
+## Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+

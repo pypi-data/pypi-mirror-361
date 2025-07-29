@@ -1,0 +1,61 @@
+Metadata-Version: 2.4
+Name: myword
+Version: 0.0.1
+Summary: Myanmar (Burmese) Syllable, Word, and Phrase
+Home-page: https://github.com/ye-kyaw-thu/myWord
+Author: Ye Kyaw Thu
+Author-email: yekyaw.thu@nectec.or.th
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: cached_path
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# Myanmar Tokenizer
+
+Syllable, word and phrase segmenter for Burmese (Myanmar language)
+
+GitHub: https://github.com/ye-kyaw-thu/myWord
+
+## Install
+
+```bash
+pip install myword
+```
+
+## Examples
+```
+from myword import SyllableTokenizer, WordTokenizer, PhraseTokenizer
+
+syltok = SyllableTokenizer()
+print(syltok.tokenize("မြန်မာနိုင်ငံ။"))
+# ['မြန်', 'မာ', 'နိုင်', 'ငံ', '။']
+
+wordtok = WordTokenizer()
+print(wordtok.tokenize("မြန်မာနိုင်ငံ။"))
+# ['မြန်မာ', 'နိုင်ငံ', '။']
+
+phrtok = PhraseTokenizer()
+print(phrtok.tokenize("မြန်မာနိုင်ငံသည် အရှေ့တောင်အာရှတွင် တည်ရှိသည်။"))
+# ['မြန်မာ', 'နိုင်ငံ', 'သည်_အရှေ့တောင်', 'အာရှ', 'တွင်', 'တည်_ရှိ', 'သည်_။']
+
+phrtok = PhraseTokenizer()
+print(phrtok.tokenize("သူဟာလက်ဝှေ့ပွဲမှာအနိုင်ရနိုင်စရာရှိတယ်"))
+
+phrtok = PhraseTokenizer(threshold = 0.1, minfreq = 3)
+print(phrtok.tokenize("သူဟာလက်ဝှေ့ပွဲမှာအနိုင်ရနိုင်စရာရှိတယ်"))
+```

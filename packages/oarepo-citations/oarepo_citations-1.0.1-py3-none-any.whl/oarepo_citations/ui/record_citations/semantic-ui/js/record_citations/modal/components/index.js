@@ -1,0 +1,1 @@
+export { RecordCitationsModal } from "./RecordCitationsModal";

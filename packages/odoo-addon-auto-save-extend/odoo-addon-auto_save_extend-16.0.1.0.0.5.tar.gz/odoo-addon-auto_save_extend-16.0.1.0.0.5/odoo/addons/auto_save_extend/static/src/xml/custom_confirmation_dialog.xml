@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="auto_save_extend.CustomConfirmationDialog" owl="1">
+        <Dialog size="'md'" modalRef="modalRef">
+            <t t-set-slot="header" owl="1">
+                <div class="modal-title h4" t-esc="props.title"/>
+            </t>
+            <p t-out="props.body" style="white-space: pre-wrap;"/>
+            <t t-set-slot="footer" owl="1">
+                <button class="btn btn-primary" t-on-click="_confirm" t-esc="props.confirmLabel"/>
+                <button class="btn btn-secondary" t-on-click="_stayHere" t-esc="props.stayLabel"/>
+                <button class="btn btn-secondary" t-on-click="_cancel" t-esc="props.cancelLabel"/>
+            </t>
+        </Dialog>
+    </t>
+</templates>

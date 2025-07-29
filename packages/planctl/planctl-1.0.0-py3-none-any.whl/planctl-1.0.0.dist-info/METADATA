@@ -1,0 +1,137 @@
+Metadata-Version: 2.4
+Name: planctl
+Version: 1.0.0
+Summary: A CLI tool for managing daily engineering tasks and priorities
+Home-page: https://github.com/yourusername/planctl
+Author: Will G.
+Author-email: noreply@users.noreply.github.com
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: typer[all]>=0.9.0
+Requires-Dist: rich>=13.0.0
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# PlanCtl
+
+A CLI tool for managing daily engineering tasks and priorities. Perfect for organizing your day-to-day work, tracking progress, and keeping notes for standup meetings.
+
+## Features
+
+- **Task Management**: Add, complete, and track todos with support for side initiatives and priority levels
+- **Parking Lot**: Keep track of items to discuss later or follow up on
+- **Archive System**: Clean up completed tasks to keep reports focused
+- **Daily Reports**: Generate organized reports of your work
+- **Rich CLI Interface**: Beautiful, colorful command-line interface
+
+## Installation
+
+### From Source
+```bash
+git clone https://github.com/wilsongomes-swe/planctl.git
+cd planctl
+pip install -e .
+```
+
+### From PyPI
+```bash
+pip install planctl
+```
+
+## Usage
+
+### Basic Commands
+
+Add a task:
+```bash
+planctl add-todo "Fix authentication bug"
+```
+
+Add a task with priority (lower number = higher priority):
+```bash
+planctl add-todo "Critical security fix" --priority 0
+```
+
+Add a side initiative:
+```bash
+planctl add-todo "Research new framework" --side
+```
+
+Add a side initiative with priority:
+```bash
+planctl add-todo "Optimize database queries" --side --priority 1
+```
+
+Mark task as done:
+```bash
+planctl done 1
+```
+
+List all tasks (sorted by priority):
+```bash
+planctl list-todos
+```
+
+Add to parking lot:
+```bash
+planctl add-parking "Discuss API changes with team"
+```
+
+Generate daily report (todos sorted by priority):
+```bash
+planctl report
+```
+
+Archive completed tasks:
+```bash
+planctl archive
+```
+
+Resolve parking lot item:
+```bash
+planctl resolve-parking 1
+```
+
+### All Commands
+
+| Command | Description |
+|---------|-------------|
+| `add-todo DESCRIPTION [--side] [--priority NUMBER]` | Add a new task (optionally mark as side initiative and set priority) |
+| `done ID` | Mark task as completed |
+| `undone ID` | Mark task as incomplete |
+| `list-todos` | List all active tasks (sorted by priority) |
+| `add-parking DESCRIPTION` | Add item to parking lot |
+| `list-parking` | List parking lot items |
+| `resolve-parking ID` | Mark parking lot item as resolved |
+| `report` | Generate daily report (todos sorted by priority) |
+| `archive` | Archive all completed tasks |
+
+## Data Storage
+
+PlanCtl stores data in `planctl_data.json` in your current working directory. This file contains:
+- Active todos with completion status, side initiative flags, and priority levels
+- Parking lot items with resolution status
+- Archived completed tasks
+
+## License
+
+MIT License

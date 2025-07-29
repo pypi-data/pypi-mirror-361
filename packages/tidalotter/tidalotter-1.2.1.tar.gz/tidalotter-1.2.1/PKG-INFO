@@ -1,0 +1,129 @@
+Metadata-Version: 2.4
+Name: tidalotter
+Version: 1.2.1
+Summary: A TIDAL download CLI, using Otter LLC's API.
+Project-URL: Homepage, https://github.com/ItsThatOneJack-Dev/tidalotter
+Project-URL: Repository, https://github.com/ItsThatOneJack-Dev/tidalotter
+Project-URL: Issues, https://github.com/ItsThatOneJack-Dev/tidalotter/issues
+Author-email: ItsThatOneJack <jack@itoj.dev>
+License: # 🏳️‍🌈 Opinionated Queer License v1.2 (Sharealike)
+        
+        © Copyright [ItsThatOneJack](https://itoj.dev)
+        
+        ## Permissions
+        
+        The creators of this Work ("The Licensor") grant permission
+        to any person, group or legal entity that doesn't violate the prohibitions below ("The User"),
+        to do everything with this Work that would otherwise infringe their copyright or any patent claims,
+        subject to the following conditions:
+        
+        ## Obligations
+        
+        The User must give appropriate credit to the Licensor,
+        provide a copy of this license or a (clickable, if the medium allows) link to
+        [oql.avris.it/license/v1.2](https://oql.avris.it/license/v1.2),
+        and indicate whether and what kind of changes were made.
+        The User may do so in any reasonable manner,
+        but not in any way that suggests the Licensor endorses the User or their use.
+        
+        ## Sharealike Requirement
+        
+        Any derivative work, modification, or adaptation of this Work must be licensed under the identical terms of this license. This includes but is not limited to:
+        
+        - Modified versions of the Work
+        - Works that incorporate substantial portions of this Work
+        - Works that are based upon or derived from this Work
+        
+        The User may not apply additional restrictions or permissions that contradict or circumvent the terms of this license to any derivative work.
+        
+        ## Prohibitions
+        
+        No one may use this Work for prejudiced or bigoted purposes, including but not limited to:
+        racism, xenophobia, queerphobia, queer exclusionism, homophobia, transphobia, enbyphobia, misogyny.
+        
+        No one may use this Work to inflict or facilitate violence or abuse of human rights,
+        as defined in either of the following documents:
+        [Universal Declaration of Human Rights](https://www.un.org/en/about-us/universal-declaration-of-human-rights),
+        [European Convention on Human Rights](https://prd-echr.coe.int/web/echr/european-convention-on-human-rights)
+        along with the rulings of the [European Court of Human Rights](https://www.echr.coe.int/).
+        
+        No law enforcement, carceral institutions, immigration enforcement entities, military entities or military contractors
+        may use the Work for any reason. This also applies to any individuals employed by those entities.
+        
+        No business entity where the ratio of pay (salaried, freelance, stocks, or other benefits)
+        between the highest and lowest individual in the entity is greater than 50 : 1
+        may use the Work for any reason.
+        
+        No private business run for profit with more than a thousand employees
+        may use the Work for any reason.
+        
+        Unless the User has made substantial changes to the Work,
+        or uses it only as a part of a new work (eg. as a library, as a part of an anthology, etc.),
+        they are prohibited from selling the Work.
+        That prohibition includes processing the Work with machine learning models.
+        
+        ## Sanctions
+        
+        If the Licensor notifies the User that they have not complied with the rules of the license,
+        they can keep their license by complying within 30 days after the notice.
+        If they do not do so, their license ends immediately.
+        
+        ## Warranty
+        
+        This Work is provided "as is", without warranty of any kind, express or implied.
+        The Licensor will not be liable to anyone for any damages related to the Work or this license,
+        under any kind of legal claim as far as the law allows.
+License-File: LICENSE.md
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: License :: Other/Proprietary License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.12
+Requires-Dist: requests>=2.32.4
+Requires-Dist: rich>=14.0.0
+Description-Content-Type: text/markdown
+
+# TidalOtter
+
+TidalOtter, the easy TIDAL download client!
+
+TidalOtter is a CLI (Command Line Interface) for Otter LLC (oterin)'s TIDAL download API.
+It provides an easy way to download music as either FLAC files, or M4A files!
+
+## Usage
+
+### Syntax
+
+`tidalotter [query] <location> <flags>`
+
+### Examples
+
+- `tidalotter`
+- `tidalotter "Affection Addiction"`
+- `tidalotter "Affection Addiction" --lossless`
+- `tidalotter "Affection Addiction" "C:\Users\Jack\Downloads"`
+- `tidalotter "Affection Addiction" "C:\Users\Jack\Downloads" --lossless`
+
+### Flags
+
+- `-ll`/`--lossless` — Download the audio file at lossless quality.
+- `-h`/`--high` — Download the audio file at high quality.
+- `-l`/`--low` — Download the audio file at low quality.
+- `-h`/`--help` — Show this help page.
+
+### Notes
+
+- When using `lossless` quality, the outputted file will be of `FLAC` filetype.
+  This is due to how TIDAL only offers `M4A` files using AAC, a lossy encoding.
+- When using `high` or `low` quality, the outputted file will be of `M4A` filetype.
+  This is due to how `FLAC` files are inherently `lossless`, and cannot be made lower quality.
+- Not choosing a quality will result in `low` quality being used.
+- The provided location must be a directory, and the path may not include missing directories.
+- Providing no arguments will result in this help page being displayed.
+- Providing no location will result in the file being stored within your current working directory.

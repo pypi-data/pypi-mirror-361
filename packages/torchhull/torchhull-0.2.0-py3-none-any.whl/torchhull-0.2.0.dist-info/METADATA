@@ -1,0 +1,164 @@
+Metadata-Version: 2.4
+Name: torchhull
+Version: 0.2.0
+Summary: A fast Visual Hull implementation
+Author-email: Patrick Stotko <stotko@cs.uni-bonn.de>
+Project-URL: Homepage, https://github.com/vc-bonn/torchhull
+Project-URL: Repository, https://github.com/vc-bonn/torchhull
+Project-URL: Documentation, https://vc-bonn.github.io/torchhull/
+Project-URL: Changelog, https://github.com/vc-bonn/torchhull/blob/main/CHANGELOG.md
+Classifier: Development Status :: 4 - Beta
+Classifier: License :: OSI Approved :: MIT License
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Programming Language :: C++
+Classifier: Environment :: GPU :: NVIDIA CUDA
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Scientific/Engineering :: Image Recognition
+Classifier: Topic :: Scientific/Engineering :: Visualization
+Classifier: Intended Audience :: Science/Research
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: torch
+Requires-Dist: charonload
+Provides-Extra: dev
+Requires-Dist: build; extra == "dev"
+Requires-Dist: black~=25.0; extra == "dev"
+Requires-Dist: isort; extra == "dev"
+Requires-Dist: docformatter; extra == "dev"
+Requires-Dist: clang-format~=14.0; extra == "dev"
+Requires-Dist: ruff>=0.2; extra == "dev"
+Requires-Dist: mypy; extra == "dev"
+Requires-Dist: codespell; extra == "dev"
+Requires-Dist: check-manifest; extra == "dev"
+Requires-Dist: sphinx; extra == "dev"
+Requires-Dist: furo; extra == "dev"
+Requires-Dist: sphinx-autobuild; extra == "dev"
+Requires-Dist: sphinx-autodoc-typehints>=2.0; extra == "dev"
+Requires-Dist: sphinx_autodoc_defaultargs; extra == "dev"
+Requires-Dist: sphinx_copybutton; extra == "dev"
+Requires-Dist: myst-parser; extra == "dev"
+Requires-Dist: docutils>=0.17; extra == "dev"
+Requires-Dist: moderngl; extra == "dev"
+Requires-Dist: numpy; extra == "dev"
+Requires-Dist: pillow; extra == "dev"
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: pytest-benchmark; extra == "dev"
+Requires-Dist: scipy; extra == "dev"
+Requires-Dist: trimesh; extra == "dev"
+Requires-Dist: nox; extra == "dev"
+Dynamic: license-file
+
+<h1 align="center">torchhull: A fast Visual Hull implementation</h1>
+
+<!-- start readme -->
+
+<p align="center">
+<a href="https://pypi.python.org/pypi/torchhull">
+    <img alt="PyPI - Version" src="https://img.shields.io/pypi/v/torchhull">
+</a>
+<a href="https://pypi.python.org/pypi/torchhull">
+    <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/torchhull">
+</a>
+<a href="https://github.com/vc-bonn/torchhull/blob/main/LICENSE">
+    <img alt="GitHub License" src="https://img.shields.io/badge/License-MIT-green.svg"/>
+</a>
+<a href="https://github.com/vc-bonn/torchhull/blob/main/LICENSE">
+    <img alt="GitHub License" src="https://img.shields.io/badge/License-BSD--3--Clause-green.svg"/>
+</a>
+<a href="https://github.com/vc-bonn/torchhull/actions/workflows/build.yml">
+    <img alt="Build" src="https://github.com/vc-bonn/torchhull/actions/workflows/build.yml/badge.svg">
+</a>
+<a href="https://github.com/vc-bonn/torchhull/actions/workflows/lint.yml">
+    <img alt="Lint" src="https://github.com/vc-bonn/torchhull/actions/workflows/lint.yml/badge.svg">
+</a>
+<a href="https://vc-bonn.github.io/torchhull">
+    <img alt="Documentation" src="https://img.shields.io/badge/docs-Latest-green.svg"/>
+</a>
+</p>
+
+
+torchhull is an extremely fast Torch C++/CUDA implementation for computing visual hulls from mask images and comes with Python bindings through [charonload](https://github.com/vc-bonn/charonload):
+
+- ⚡ Up to real-time capable speed depending on chosen resolution
+- 🗜️ Memory-efficient computation by constructing sparse voxel octrees
+- 🌊 Watertight mesh generation via Marching Cubes
+- 🎈 Smooth surfaces with sparse Gaussian blur preprocessing tailored for mask images
+- 🛠️ Support for partially visible objects, i.e. clipped mask images, and fully observed objects
+
+
+In particular, torchhull is a GPU implementation of the following paper:
+
+```bib
+@article{scharr2017fast,
+  title={{Fast High Resolution Volume Carving for 3D Plant Shoot Reconstruction}},
+  author={Scharr, Hanno and Briese, Christoph and Embgenbroich, Patrick and Fischbach, Andreas and Fiorani, Fabio and M{\"u}ller-Linow, Mark},
+  journal={Frontiers in Plant Science},
+  volume={8},
+  pages={303692},
+  year={2017},
+  publisher={Frontiers}
+}
+```
+
+
+## Installation
+
+torchhull requires the following prerequites (for JIT compilation):
+
+- Python >= 3.9
+- CUDA >= 12.1
+- C++17 compiler
+
+The package itself can be installed from PyPI:
+
+```sh
+pip install torchhull
+```
+
+
+## Quick Start
+
+torchhull gets as input mask images with camera information:
+
+- `masks`: Single-channel images `M` with binary values {0, 1}.
+- `transforms`: Fused extrinsic and intrinsic matrix `K * T`, i.e. transformation from world coordinates to OpenGL clip space (right before perspective division).
+
+The visual hull is then evaluated inside a cube with bottom-front-left corner `cube_corner_bfl` and extent `cube_length` at extracted at octree level `level`. The remaining flags control how the output mesh `(verts, faces)` should look like.
+
+```python
+import torchhull
+
+# Optional
+masks = torchhull.gaussian_blur(masks, # [B, H, W, 1]
+                                kernel_size,
+                                sigma,
+                                sparse=True,
+                               )
+
+verts, faces = torchhull.visual_hull(masks,  # [B, H, W, 1]
+                                     transforms,  # [B, 4, 4]
+                                     level,
+                                     cube_corner_bfl,
+                                     cube_length,
+                                     masks_partial=False,
+                                     unique_verts=True,
+                                    )
+```
+
+
+## License
+
+This software is provided under MIT license, with parts under BSD 3-Clause license. See [`LICENSE`](https://github.com/vc-bonn/torchhull/blob/main/LICENSE) for more information.
+
+
+## Contact
+
+Patrick Stotko - <a href="mailto:stotko@cs.uni-bonn.de">stotko@cs.uni-bonn.de</a><br/>
+
+<!-- end readme -->

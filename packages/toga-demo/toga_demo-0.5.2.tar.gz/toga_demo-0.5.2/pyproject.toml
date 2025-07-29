@@ -1,0 +1,109 @@
+[build-system]
+requires = [
+    "setuptools==77.0.3",
+    "setuptools_scm==8.1.0",
+    "setuptools_dynamic_dependencies==1.0.0",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+dynamic = ["version", "dependencies"]
+name = "toga-demo"
+description = "A demonstration of the capabilities of the Toga widget toolkit."
+readme = "README.rst"
+requires-python = ">= 3.9"
+license = "BSD-3-Clause"
+license-files = [
+    "LICENSE"
+]
+authors = [
+    {name="Russell Keith-Magee", email="russell@keith-magee.com"},
+]
+maintainers = [
+    {name="BeeWare Team", email="team@beeware.org"},
+]
+keywords = [
+    "gui",
+    "widget",
+    "cross-platform",
+    "desktop",
+    "mobile",
+    "macOS",
+    "cocoa",
+    "iOS",
+    "android",
+    "windows",
+    "winforms",
+    "linux",
+    "gtk",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: User Interfaces",
+    "Topic :: Software Development :: Widget Sets",
+]
+
+[project.urls]
+Homepage = "https://beeware.org/project/projects/libraries/toga/"
+Funding = "https://beeware.org/contributing/membership/"
+Documentation = "https://toga.readthedocs.io/"
+Tracker = "https://github.com/beeware/toga/issues"
+Source = "https://github.com/beeware/toga"
+Changelog = "https://toga.readthedocs.io/en/stable/background/project/releases.html"
+
+[project.scripts]
+toga-demo = "toga_demo.__main__:run"
+
+[tool.setuptools_scm]
+root = ".."
+
+[tool.setuptools_dynamic_dependencies]
+dependencies = [
+    "toga == {version}",
+]
+
+[tool.briefcase]
+project_name = "Toga Demo"
+bundle = "org.beeware"
+version = "0.0.1"
+url = "https://beeware.org"
+license.file = "LICENSE"
+author = "Tiberius Yak"
+author_email = "tiberius@beeware.org"
+
+[tool.briefcase.app.toga-demo]
+formal_name = "Toga Demo"
+description = "A demonstration of the capabilities of the Toga widget toolkit."
+sources = ["toga_demo"]
+
+[tool.briefcase.app.toga-demo.macOS]
+
+[tool.briefcase.app.toga-demo.linux]
+
+[tool.briefcase.app.toga-demo.windows]
+
+# Mobile deployments
+[tool.briefcase.app.toga-demo.iOS]
+
+[tool.briefcase.app.toga-demo.android]
+
+base_theme = "Theme.MaterialComponents.Light.DarkActionBar"
+
+build_gradle_dependencies = [
+    "com.google.android.material:material:1.12.0",
+    "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0",
+]
+
+[tool.check-wheel-contents]
+# WOO2: duplicated files (i.e. resource images)
+ignore = "W002"

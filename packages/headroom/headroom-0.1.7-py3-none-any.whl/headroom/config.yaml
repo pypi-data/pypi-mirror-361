@@ -1,0 +1,51 @@
+# Default configuration for Max
+# This file will be copied to your user config directory on first run.
+# You can then edit it to your liking.
+
+# LLM Provider settings
+# Configure your primary Large Language Model here.
+llm:
+  # provider: The LLM provider to use.
+  # Options: 'ollama', 'openai', 'anthropic', 'google', 'local_gguf'
+  provider: 'ollama'
+
+  # model: The model identifier.
+  # For 'ollama': e.g., 'llama3'
+  # For 'openai': e.g., 'gpt-4-turbo'
+  # For 'anthropic': e.g., 'claude-3-opus-20240229'
+  # For 'google': e.g., 'gemini-1.5-pro-latest'
+  # For 'local_gguf': The absolute path to your .gguf model file.
+  model: 'llama3'
+
+  # api_base: (Optional) The base URL for the API.
+  # Useful for local servers like Ollama or vLLM.
+  # For Ollama, the default is http://localhost:11434
+  api_base: 'http://localhost:11434'
+
+# For remote providers like OpenAI, Anthropic, or Google, set your API keys
+# as environment variables (e.g., in a .env file for local development):
+# OPENAI_API_KEY="sk-..."
+# ANTHROPIC_API_KEY="..."
+# GOOGLE_API_KEY="..."
+
+# Pre-defined commands that Max can execute.
+commands:
+  create_file:
+    command: touch {filename}
+    description: Create a file
+    arguments:
+      - filename
+  delete_file:
+    command: rm {filename}
+    description: Delete a file
+    arguments:
+      - filename
+  system_update:
+    command: sudo apt update && sudo apt upgrade -y
+    description: Perform system update
+
+# Conversation history settings
+conversation:
+  history_file: conversation_history.json
+  max_age_hours: 24
+  max_entries: 20

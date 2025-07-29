@@ -1,0 +1,42 @@
+# .readthedocs.yaml
+# Read the Docs configuration file
+# See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
+
+version: 2
+
+build:
+  os: ubuntu-22.04
+  tools:
+    # Docs are always built on Python 3.12. See also the tox config and contribution docs.
+    python: "3.12"
+  jobs:
+    post_checkout:
+      # RTD defaults to a depth of 50 but Briefcase versioning may require
+      # much more git history to accurately determine the SCM version
+      - git fetch --unshallow
+    pre_build:
+      - tox -e docs-lint
+
+# Build documentation in the docs/ directory with Sphinx
+sphinx:
+  builder: html
+  configuration: docs/conf.py
+  fail_on_warning: true
+
+# Build docs as PDF (other options are epub and htmlzip)
+formats:
+   - pdf
+
+# Install extras for build - dev is needed to run tox
+python:
+  install:
+  # Docs requirements are *mostly* handled by the `docs` extra; but we can't include
+  # the theme that way, so the theme is installed using a requirements.txt file,
+  # independent of the docs extra. Ideally, we'd use dependency groups for docs
+  # dependencies, but RTD doesn't support them yet.
+  - requirements: requirements-docs.txt
+  - method: pip
+    path: .
+    extra_requirements:
+      - dev
+      - docs

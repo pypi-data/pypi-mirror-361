@@ -1,0 +1,124 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "musicgen-minimal"
+version = "1.1.0"
+description = "Simple text-to-music generation that actually works - no enterprise complexity"
+readme = "README.md"
+license = "MIT"
+authors = [
+    {name = "MusicGen Minimal Team", email = "hello@musicgen-minimal.dev"}
+]
+keywords = ["music", "generation", "ai", "text-to-music", "musicgen", "audio", "transformers"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Multimedia :: Sound/Audio",
+    "Topic :: Multimedia :: Sound/Audio :: Analysis",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "torch>=2.0.0",
+    "transformers>=4.35.0",
+    "soundfile>=0.12.0",
+    "numpy>=1.21.0",
+    "typer>=0.9.0",
+    "rich>=13.0.0",
+    "requests>=2.25.0",
+    "pandas>=1.5.0",
+]
+
+[project.optional-dependencies]
+audio = [
+    "pydub>=0.25.0",
+]
+api = [
+    "fastapi>=0.100.0",
+    "uvicorn[standard]>=0.23.0",
+    "pydantic>=2.0.0",
+]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+]
+all = [
+    "musicgen-minimal[audio,api,dev]"
+]
+
+[project.urls]
+Homepage = "https://github.com/musicgen-minimal/musicgen-minimal"
+Repository = "https://github.com/musicgen-minimal/musicgen-minimal"
+Issues = "https://github.com/musicgen-minimal/musicgen-minimal/issues"
+Documentation = "https://github.com/musicgen-minimal/musicgen-minimal#readme"
+Changelog = "https://github.com/musicgen-minimal/musicgen-minimal/releases"
+
+[project.scripts]
+musicgen = "musicgen.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["musicgen*"]
+
+[tool.setuptools.package-data]
+musicgen = ["py.typed"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+line_length = 88
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--cov=musicgen",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--strict-markers",
+    "--disable-warnings",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+]

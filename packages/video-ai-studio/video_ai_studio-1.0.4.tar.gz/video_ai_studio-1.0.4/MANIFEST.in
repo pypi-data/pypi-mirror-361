@@ -1,0 +1,65 @@
+# MANIFEST.in - Controls what files are included in the PyPI package
+
+# Include documentation
+include README.md
+include LICENSE*
+recursive-include . *.md
+
+# Only include core package files (not entire packages directory tree)
+recursive-include packages/core/ai_content_pipeline *.py
+recursive-include packages/core/ai_content_pipeline *.yaml
+recursive-include packages/core/ai_content_pipeline *.json
+
+# Include pipeline configurations
+include input/pipelines/*.yaml
+
+# Exclude everything in packages except core pipeline
+prune packages/core/ai_content_platform
+prune packages/providers
+prune packages/services
+
+# Exclude sensitive and environment files  
+global-exclude .env*
+global-exclude *.env*
+
+# Exclude all virtual environments and temp directories
+prune venv
+prune env  
+prune test_env
+prune tts_env
+prune *_env
+prune */venv
+prune */env
+prune */test_env
+prune */tts_env
+prune */*_env
+prune output
+prune */output
+prune test_output
+prune */test_output
+prune temp
+prune tmp
+prune cache
+prune logs
+
+# Exclude development files
+global-exclude .git*
+global-exclude *.log
+global-exclude .vscode
+global-exclude .idea
+global-exclude __pycache__
+global-exclude *.py[co]
+global-exclude *.pyo
+
+# Exclude media files
+global-exclude *.mp4
+global-exclude *.avi
+global-exclude *.mov
+global-exclude *.mp3
+global-exclude *.wav
+
+# Exclude model files
+global-exclude *.bin
+global-exclude *.safetensors
+global-exclude *.ckpt
+global-exclude *.pth

@@ -1,0 +1,55 @@
+## Описание
+
+Библиотека для создания скриншотов маршрута в Open Street Map
+
+`pip install OsmRouteScreenLib`
+
+Написана на основе статьи: https://smyt.ru/blog/statc-osm-map-with-python/
+
+### Использование
+
+<pre>
+import OsmRouteScreenLib.startup as st
+import OsmRouteScreenLib.options as o
+
+options = o.make_options('http://tile-server.domain.com/{zoom}/{x}/{y}.png',
+               'https://route.domain.com/route/v1/driving/{startPoint};{endPoint}?overview=full&geometries=geojson')
+
+st.get_route_screen_by_points((47.232565,56.141757), (47.220063,56.139836), options)
+</pre>
+
+Доступны следующие опции:
+
+* url_tile: str - путь к тайловому серверу
+* url_routing: str - путь к серверу для получения маршрута
+* padding: float - отступ карты от краёв маршрута в процентах от 0 до 1
+* zoom: int - zoom карты
+* output: str - путь к выходному файлу
+* line_width: int - ширина линии
+* marker_text: str - метки
+* show_geodesic: bool - отображать метку с пройденной дистанцией (км)
+* split_line: bool - цетовое разделение маршрута
+
+## Сборка Ubuntu 22.04
+
+Устанавливаем дополнительные библиотека: `sudo apt install libcairo2-dev pkg-config python3-dev`
+
+<pre>
+python3 -m venv routing-service
+source routing-service/bin/activate
+pip install -r requirements.txt
+</pre>
+
+### Публикация пакета
+
+Устанавливаем библиотеки для публикации в pypi.org
+<pre>
+pip install setuptools wheel twine
+</pre>
+
+Выполняем в корне проекта
+<pre>
+python setup.py sdist bdist_wheel
+twine upload --repository pypi dist/*
+</pre>
+

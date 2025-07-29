@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel", "setuptools_scm>=6.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aipproto"
+# Version will be managed by setuptools_scm
+authors = [
+  { name="Phil Stahlfeld", email="phil@stahlfeld.com" },
+]
+dynamic = ["version"]
+description = "AIP proto generator"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "jinja2>=3.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/philstahlfeld/aipproto"
+Issues = "https://github.com/philstahlfeld/aipproto/issues"
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0",
+    "pytest-cov",
+]
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.package-data]
+"aipproto" = ["templates/*.jinja"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+enable_assertion_pass_hook = true
+
+[tool.setuptools_scm]
+version_scheme = "guess-next-dev"
+local_scheme = "node-and-date"

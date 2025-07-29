@@ -1,0 +1,96 @@
+# Elasticsearch Shell
+
+A powerful, interactive REPL for Elasticsearch with auto-completion.
+
+## Features
+
+- **Auto-completion**: Smart suggestions for:
+  - HTTP methods (`GET`, `POST`, `PUT`, `DELETE`)
+  - Indices and aliases
+  - Common Elasticsearch API endpoints (`_search`, `_cat/indices`, etc.)
+  - Query DSL keywords inside JSON bodies.
+- **Multi-line Editing**: Comfortably write and edit complex queries.
+- **Persistent History**: Your command history is saved across sessions in `~/.local/state/elasticsearch-shell/history`.
+- **Flexible Connection**: Connect to Elasticsearch using Cloud ID and API Key, or via Host, Username, and Password.
+
+## Requirements
+
+- Python 3.13+
+- `uv` package manager (e.g., `pip install uv`)
+
+## Usage
+
+The recommended way to run the application is with `uvx`:
+
+```bash
+uvx elasticsearch-shell
+```
+
+This will download and run the latest version in a temporary virtual environment.
+
+### Running from source (for development)
+
+If you have cloned this repository, you can also run the script directly. The script uses `uv` to manage its dependencies automatically.
+
+First, make the script executable:
+```bash
+chmod +x elasticsearch_shell/elasticsearch_shell.py
+```
+
+Then run it:
+```bash
+./elasticsearch_shell/elasticsearch_shell.py
+```
+
+Alternatively, you can run it with `uv` without making it executable:
+```bash
+uv run --script elasticsearch_shell/elasticsearch_shell.py
+```
+
+## Configuration
+
+Connection to your Elasticsearch cluster is configured via environment variables.
+
+### Method 1: Cloud ID and API Key
+
+This is the recommended method for connecting to Elastic Cloud.
+
+```bash
+export ES_CLOUD_ID="your_cloud_id"
+export ES_API_KEY="your_api_key_id:your_api_key_secret"
+```
+
+### Method 2: Host, Username, and Password
+
+For self-managed clusters or other connection scenarios.
+
+```bash
+export ES_HOST="https://your-elasticsearch-host:9200"
+export ES_USERNAME="your_username"
+export ES_PASSWORD="your_password"
+```
+
+## How to Use
+
+Once the shell is running, you can start making requests to Elasticsearch.
+
+- The first line of your input should be the HTTP method and the path (e.g., `GET /_search`).
+- For requests with a body (like `POST` or `PUT`), write the JSON body on the following lines.
+- Press `Meta+Enter` (or `Esc` then `Enter`) to submit the multi-line request.
+- Use `Ctrl+D` to exit.
+
+### Example
+
+Here's how you would run a search query:
+
+```
+>>> GET /my-index/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+```
+(Press `Meta+Enter` to submit)
+
+The shell will then execute the request and print the JSON response from Elasticsearch.

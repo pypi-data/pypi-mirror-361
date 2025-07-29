@@ -1,0 +1,184 @@
+[tool.poetry]
+name = "poetry-plugin-upgrade"
+version = "0.3.0"
+description = "Poetry plugin that updates dependencies and bumps their versions in pyproject.toml file"
+authors = ["Kyle Harrison <kyle.harrison.dev@gmail.com>"]
+packages = [{ include = "poetry_plugin_upgrade", from = "src" }]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/apoclyps/poetry-plugin-upgrade"
+repository = "https://github.com/apoclyps/poetry-plugin-upgrade"
+keywords = ["packaging", "dependency", "poetry", "update", "upgrade"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+include = ["LICENSE.md"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+poetry = ">=1.8.3,<3.0.0"
+
+[tool.poetry.group.dev.dependencies]
+black = "24.8.0"
+codespell = "2.3.0"
+freezegun = "1.5.1"
+ipdb = "0.13.13"
+mypy = "1.11.2"
+pre-commit = "4.0.1"
+pytest = "8.3.3"
+pytest-cov = "6.2.1"
+pytest-mock = "3.14.0"
+refurb = "2.0.0"
+ruff = "0.6.8"
+tox = "4.20.0"
+tox-gh-actions = "3.2.0"
+vcrpy = "6.0.2"
+
+[tool.poetry.plugins."poetry.application.plugin"]
+upgrade = "poetry_plugin_upgrade.plugin:UpgradeApplicationPlugin"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line_length = 88
+
+[tool.mypy]
+ignore_missing_imports = true
+pretty = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+addopts = "-vvv -s"
+testpaths = ["src", "tests"]
+
+[tool.codespell]
+builtin = "clear,rare,informal,code,names"
+check-filenames = ""
+check-hidden = ""
+enable-colors = ""
+ignore-words-list = "som,iam,jupyter,ot,fo,te,toos,ue,thead,mke,ths"
+quiet-level = 2
+skip = "poetry.lock,.mypy_cache,.git,.ruff_cache,.coverage,menu.json,.venv,.idea,.htmlcov"
+
+[tool.refurb]
+ignore = [107, 115, 124, 149]
+
+[tool.ruff]
+cache-dir = ".cache/ruff"
+fix = true
+
+# ruff linting rules are listed within: https://beta.ruff.rs/docs/rules
+lint.select = [
+    "ARG",  # flake8-unused-arguments
+    "B",    # flake8-bugbear
+    "C4",   # flake8-comprehensions
+    "C90",  # mccabe-complexity
+    "E",    # pycodestyle-errors
+    "ERA",  # eradicate
+    "EXE",  # flake8-executable
+    "F",    # pyflakes
+    "FA",   # flake8-future-annotations
+    "I",    # isort
+    "ICN",  # flake8-import-conventions
+    "INP",  # flake78-no-pep420
+    "INT",  # flake8-gettext
+    "ISC",  # flake8-implicit-str-concat
+    "PERF", # Perlint
+    "PGH",  # pygrep-hooks
+    "PIE",  # flake8-pie
+    "PL",   # Pylint
+    "PT",   # flake8-pytest-style
+    "PTH",  # flake8-use-pathlib
+    "PYI",  # flake8-pyi
+    "Q",    # flake8-quotes
+    "RET",  # flake8-return
+    "RSE",  # flake8-raise
+    "RSE",  # flake8-raise
+    "RUF",  # ruff
+    "S",    # flake8-bandit
+    "SIM",  # flake8-simplify
+    "SLF",  # flake8-self
+    "T10",  # flake8-debugger
+    "T20",  # flake8-print
+    "TCH",  # flake8-type-checking
+    "TID",  # flake8-tidy-imports
+    "UP",   # pyupgrade
+    "W",    # pycodestyle-warnings
+    "YTT",  # flake8-2020
+]
+
+lint.ignore = [
+    "B904",    # raise-without-from-inside-except
+    "C4",      # flake8-comprehensions
+    "E501",    # line-too-long
+    "EXE",     # flake8-executable
+    "FA",      # flake8-future-annotations
+    "ICN",     # flake8-import-conventions
+    "INP",     # flake78-no-pep420
+    "ISC",     # flake8-implicit-str-concat
+    "PIE",     # flake8-pie
+    "PLR0913", # too-many-arguments
+    "PLR0915", # too-many-statements
+    "PLR2004", # magic-value-comparison
+    "PT004",   # pytest-missing-fixture-name-underscore
+    "PT019",   # pytest-fixture-param-without-value
+    "RET506",  # superfluous-else-raise
+    "RUF012",  # mutable-class-default
+    "S101",    # use-of-assert-detected
+    "S106",    # hardcoded-password-func-arg
+    "SIM105",  # suppressible-exception
+    "T10",     # flake8-debugger
+    "T20",     # flake8-print
+]
+
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    "__pycache",
+    "migrations",
+    "settings",
+    ".coverage",
+    ".direnv",
+    ".mypy_cache",
+    ".pytype",
+    ".pdbrc",
+    ".pytest_cache",
+    ".ruff_cache",
+    ".tox",
+    ".venv",
+    ".git",
+    ".gitignore",
+    "poetry.lock",
+    "site-packages",
+    "tmp",
+    "Dockerfile",
+    "docker-compose.yml",
+    "gitlab-ci.yml",
+    "tests/test_migrations.py",
+]
+
+line-length = 88
+
+# Allow unused variables when underscore-prefixed.
+lint.dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+# Assume Python 3.11
+target-version = "py311"
+
+[tool.ruff.lint.mccabe]
+max-complexity = 20
+
+[tool.ruff.lint.flake8-quotes]
+docstring-quotes = "double"
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402"]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+force-wrap-aliases = true
+known-first-party = ["app", "tests"]

@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mbkauthepy"
+version = "1.6.7"
+authors = [
+  { name="Maaz.waheed", email="maaz.waheed@mbktechstudio.com" },
+]
+description = "A fully featured, secure, and extensible authentication system for Python Flask applications.Originally ported from the Node.js version to provide multi-language support for full-stack apps."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { file = "LICENSE" }
+keywords = ["flask", "authentication", "session", "auth", "postgresql", "security"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Systems Administration :: Authentication/Directory",
+    "Topic :: Security",
+    "Framework :: Flask",
+    "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Environment :: Web Environment",
+]
+
+dependencies = [
+    "Flask>=2.0",
+    "Flask-Session>=0.5",
+    "psycopg2-binary>=2.9",
+    "python-dotenv>=1.0",
+    "bcrypt>=4.0",
+    "requests>=2.28",
+    "pyotp>=2.8",
+    "Flask-Cors>=4.0",
+    "SQLAlchemy>=1.4",
+    "importlib-metadata; python_version<'3.10'",
+    "pybars3",
+]
+
+[project.urls]
+Homepage = "https://github.com/42Wor/mbkauthepy"
+Repository = "https://github.com/42Wor/mbkauthepy"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["mbkauthepy*"]
+exclude = ["tests*", "docs*"]
+
+[tool.setuptools.package-data]
+mbkauthepy = ["templates/*.handlebars"]

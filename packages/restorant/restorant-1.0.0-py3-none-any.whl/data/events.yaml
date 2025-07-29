@@ -1,0 +1,370 @@
+# Event Database
+# Categories: customer, kitchen, staff, business, special, night
+
+events:
+  # Customer Events (Service Hours)
+  e_001:
+    name: "Customer Complaint"
+    category: "customer"
+    probability: 0.15
+    description: "A customer is unhappy with their meal"
+    choices:
+      - text: "Apologize and offer a free dessert"
+        effects:
+          satisfaction: 2
+          money: -5
+      - text: "Explain the cooking process"
+        effects:
+          satisfaction: 1
+          staff_stress: 1
+      - text: "Ignore the complaint"
+        effects:
+          satisfaction: -3
+          rating: -1
+
+  e_002:
+    name: "Rush Hour"
+    category: "customer"
+    probability: 0.12
+    description: "A sudden rush of customers arrives"
+    choices:
+      - text: "Work through it efficiently"
+        effects:
+          money: 20
+          staff_stress: 2
+      - text: "Turn away some customers"
+        effects:
+          rating: -1
+          staff_stress: -1
+      - text: "Call in extra staff"
+        effects:
+          money: -30
+          staff_stress: 1
+
+  e_003:
+    name: "Special Dietary Request"
+    category: "customer"
+    probability: 0.08
+    description: "A customer has special dietary requirements"
+    choices:
+      - text: "Accommodate the request"
+        effects:
+          rating: 2
+          staff_stress: 1
+      - text: "Explain limitations politely"
+        effects:
+          satisfaction: 1
+      - text: "Refuse the request"
+        effects:
+          rating: -2
+
+  e_004:
+    name: "Customer Celebration"
+    category: "customer"
+    probability: 0.05
+    description: "A customer is celebrating a special occasion"
+    choices:
+      - text: "Offer complimentary dessert"
+        effects:
+          rating: 2
+          money: -8
+      - text: "Give them special attention"
+        effects:
+          rating: 1
+          staff_stress: 1
+      - text: "Treat them normally"
+        effects:
+          satisfaction: 0
+
+  # Kitchen Events (Service Hours)
+  e_005:
+    name: "Kitchen Fire"
+    category: "kitchen"
+    probability: 0.05
+    description: "A small fire breaks out in the kitchen"
+    choices:
+      - text: "Use fire extinguisher immediately"
+        effects:
+          money: -20
+          staff_stress: 2
+      - text: "Call fire department"
+        effects:
+          money: -50
+          rating: -2
+      - text: "Try to contain it yourself"
+        effects:
+          staff_stress: 3
+          rating: -1
+
+  e_006:
+    name: "Equipment Breakdown"
+    category: "kitchen"
+    probability: 0.10
+    description: "Essential kitchen equipment stops working"
+    choices:
+      - text: "Call repair service immediately"
+        effects:
+          money: -40
+          staff_stress: 1
+      - text: "Try to fix it yourself"
+        effects:
+          staff_stress: 2
+          rating: -1
+      - text: "Work around the problem"
+        effects:
+          staff_stress: 3
+          satisfaction: -1
+
+  e_007:
+    name: "Ingredient Shortage"
+    category: "kitchen"
+    probability: 0.08
+    description: "You're running low on a key ingredient"
+    choices:
+      - text: "Run to the store quickly"
+        effects:
+          money: -10
+          staff_stress: 1
+      - text: "Substitute with what you have"
+        effects:
+          satisfaction: -1
+      - text: "Remove the dish from menu"
+        effects:
+          money: -15
+          rating: -1
+
+  e_008:
+    name: "Power Outage"
+    category: "kitchen"
+    probability: 0.03
+    description: "The power goes out during service"
+    choices:
+      - text: "Use emergency lighting and continue"
+        effects:
+          staff_stress: 2
+          satisfaction: -1
+      - text: "Close for the night"
+        effects:
+          money: -100
+          rating: -2
+      - text: "Offer candlelit dining"
+        effects:
+          money: 20
+          rating: 1
+
+  # Staff Events (Service Hours)
+  e_009:
+    name: "Staff Argument"
+    category: "staff"
+    probability: 0.10
+    description: "Two staff members are arguing in the kitchen"
+    choices:
+      - text: "Mediate the conflict"
+        effects:
+          staff_stress: 1
+          satisfaction: 1
+      - text: "Send one home"
+        effects:
+          staff_stress: -1
+          money: -30
+      - text: "Let them work it out"
+        effects:
+          staff_stress: 2
+          rating: -1
+
+  e_010:
+    name: "Staff Injury"
+    category: "staff"
+    probability: 0.06
+    description: "A staff member gets a minor injury"
+    choices:
+      - text: "Send them to get medical attention"
+        effects:
+          money: -25
+          staff_stress: 1
+      - text: "Have them continue with first aid"
+        effects:
+          staff_stress: 2
+          rating: -1
+      - text: "Ignore the injury"
+        effects:
+          rating: -2
+
+  # Business Events (Service Hours)
+  e_011:
+    name: "Health Inspector"
+    category: "business"
+    probability: 0.04
+    description: "A health inspector has arrived for a surprise inspection"
+    choices:
+      - text: "Show them around confidently"
+        effects:
+          rating: 1
+      - text: "Panic and try to hide issues"
+        effects:
+          rating: -3
+          money: -100
+      - text: "Offer them a meal"
+        effects:
+          money: -25
+          rating: -2
+
+  e_012:
+    name: "Food Delivery Issue"
+    category: "business"
+    probability: 0.07
+    description: "Your ingredient delivery is late or incorrect"
+    choices:
+      - text: "Accept the delivery anyway"
+        effects:
+          satisfaction: -1
+      - text: "Reject and demand correct order"
+        effects:
+          money: -20
+          staff_stress: 1
+      - text: "Find alternative supplier"
+        effects:
+          money: -15
+          staff_stress: 2
+
+  # Special Events (Service Hours)
+  e_013:
+    name: "Food Critic Visit"
+    category: "special"
+    probability: 0.02
+    description: "A famous food critic has entered your restaurant"
+    choices:
+      - text: "Give them the best service possible"
+        effects:
+          staff_stress: 2
+          rating: 3
+      - text: "Treat them like any other customer"
+        effects:
+          satisfaction: 1
+      - text: "Ask for special treatment"
+        effects:
+          rating: -2
+
+  e_014:
+    name: "Celebrity Visit"
+    category: "special"
+    probability: 0.01
+    description: "A famous celebrity has entered your restaurant"
+    choices:
+      - text: "Treat them like royalty"
+        effects:
+          staff_stress: 2
+          rating: 2
+          money: 50
+      - text: "Respect their privacy"
+        effects:
+          satisfaction: 2
+          rating: 1
+      - text: "Ask for an autograph"
+        effects:
+          rating: -1
+
+  e_015:
+    name: "Local Food Blogger"
+    category: "special"
+    probability: 0.03
+    description: "A popular food blogger wants to review your restaurant"
+    choices:
+      - text: "Give them a special tasting menu"
+        effects:
+          money: -15
+          rating: 2
+      - text: "Offer them a regular meal"
+        effects:
+          rating: 1
+      - text: "Decline the review"
+        effects:
+          rating: -1
+
+  # Night Events (After Hours)
+  e_016:
+    name: "Late Night Cleanup"
+    category: "night"
+    probability: 0.20
+    description: "The kitchen needs thorough cleaning after a busy day"
+    choices:
+      - text: "Do a thorough cleaning"
+        effects:
+          staff_stress: 1
+          rating: 1
+      - text: "Quick cleanup only"
+        effects:
+          staff_stress: -1
+      - text: "Leave it for tomorrow"
+        effects:
+          rating: -1
+
+  e_017:
+    name: "Equipment Maintenance"
+    category: "night"
+    probability: 0.15
+    description: "Kitchen equipment needs maintenance"
+    choices:
+      - text: "Perform maintenance now"
+        effects:
+          money: -30
+          staff_stress: 1
+      - text: "Schedule for tomorrow"
+        effects:
+          staff_stress: -1
+      - text: "Ignore the issue"
+        effects:
+          rating: -1
+
+  e_018:
+    name: "Inventory Check"
+    category: "night"
+    probability: 0.25
+    description: "Time to check and update inventory"
+    choices:
+      - text: "Do a thorough inventory check"
+        effects:
+          staff_stress: 1
+          money: 10
+      - text: "Quick check only"
+        effects:
+          staff_stress: -1
+      - text: "Skip inventory check"
+        effects:
+          money: -5
+
+  e_019:
+    name: "Staff Meeting"
+    category: "night"
+    probability: 0.10
+    description: "Hold a staff meeting to discuss improvements"
+    choices:
+      - text: "Have a productive meeting"
+        effects:
+          staff_stress: 1
+          satisfaction: 2
+      - text: "Quick briefing only"
+        effects:
+          staff_stress: -1
+          satisfaction: 1
+      - text: "Skip the meeting"
+        effects:
+          satisfaction: -1
+
+  e_020:
+    name: "Recipe Development"
+    category: "night"
+    probability: 0.08
+    description: "Time to experiment with new recipes"
+    choices:
+      - text: "Spend time developing new dishes"
+        effects:
+          money: -20
+          staff_stress: 1
+          rating: 1
+      - text: "Quick recipe review"
+        effects:
+          staff_stress: -1
+      - text: "Focus on existing menu"
+        effects:
+          staff_stress: -1 

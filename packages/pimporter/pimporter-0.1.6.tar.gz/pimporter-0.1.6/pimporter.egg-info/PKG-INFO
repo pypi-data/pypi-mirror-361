@@ -1,0 +1,110 @@
+Metadata-Version: 2.4
+Name: pimporter
+Version: 0.1.6
+Summary: Checks for conflicting, unused or duplicate import aliases
+Author: MWB
+License-Expression: MIT
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: colorama
+
+# pimporter 🐍📦
+Clean up your code's cargo.
+
+**pimporter** is a lightweight static analysis tool for inspecting Python import statements.  
+It helps you detect:
+
+- Aliases (`as`) used for multiple modules (conflicts)
+- Duplicate or hidden import aliases
+- Unused imports
+- Local vs external imports
+- Clean summary per file
+
+---
+
+## 🔧 Installation
+
+Install via pip (after packaging it as a wheel or locally):
+
+```bash
+pip install pimporter
+````
+
+Or from a local directory:
+
+```bash
+pip install .
+```
+
+---
+
+## 🚀 Usage
+
+```bash
+pimporter path/to/your/script_or_directory.py
+```
+
+* You can pass either a single Python file or a directory (recursively scans `.py` files).
+* The tool will display detailed line-by-line output with color-coded status.
+
+---
+
+## 🖨️ Example Output
+
+```text
+  [!!!] Conflict: Alias 'foo' is used for multiple modules:
+    Line 14   -> wurst as foo
+    Line 24   -> module_a.foo as foo
+    Line 25   -> module_b.foo as foo
+
+    Line   25 - [!!]   unused                   foo from module_b.foo
+```
+
+---
+
+## ✅ Features
+
+* [x] Detects alias conflicts across imports
+* [x] Highlights hidden and explicit duplicates
+* [x] Differentiates between local and external modules
+* [x] Colorized terminal output using `colorama`
+* [ ] (Planned) CLI arguments for filtering and exporting
+* [ ] (Planned) Export as JSON or markdown
+
+---
+
+## 📦 Dependencies
+
+* [`colorama`](https://pypi.org/project/colorama/) – for colorful terminal output
+
+---
+
+## 💡 Motivation
+
+While linters like `pylint`, `flake8`, or `ruff` cover general import cleanliness, **pimporter** focuses specifically on the **integrity and clarity of alias usage** – particularly useful for larger codebases or shared projects where import patterns can become inconsistent or ambiguous.
+
+---
+
+## 🧪 Development
+
+Clone and run:
+
+```bash
+python -m pimporter path/to/codebase/
+```
+
+---
+
+## 📄 License
+
+MIT License – use it, modify it, share it.
+
+---
+
+## ✍️ Author
+
+Your Name
+[optional.email@example.com](mailto:optional.email@example.com)]
+
+```
+

@@ -1,0 +1,100 @@
+[project]
+name = "slough-cli-tool"
+version = "1.0.0-beta.8"
+description = "Add your description here"
+readme = "README.md"
+authors = [{ name = "Daryl Stark", email = "daryl@dstark.nl" }]
+requires-python = ">=3.13"
+dependencies = [
+    "jinja2>=3.1.6",
+    "pydantic>=2.10.4",
+    "pyyaml>=6.0.2",
+    "typer>=0.15.1",
+]
+
+[project.scripts]
+slough = "slough_cli_tool:main"
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.lint]
+exclude = ["docs/*.py"]
+select = [
+    "E",   # pycodestyle (errors)
+    "W",   # pycodestyle (warnings)
+    "PL",  # pylint
+    "B",   # flake8-bugbear
+    "SIM", # flake8-simplify
+    "LOG", # flake8-logging
+    "Q",   # flake8-quotes
+    "ANN", # flak8-annotations
+    "ICN", # flake8-import-conventions
+    "SLF", # flake8-self
+    "TD",  # flake8-todo
+    "FIX", # flake8-fixme
+    "D",   # pydocstyle
+    "F",   # Pyflakes
+    "UP",  # pyupgrade
+    "I",   # isort
+    "N",   # pep8-naming
+]
+ignore = [
+    "B008",    # function call in default argument
+    "PLR2004", # magic value used in comparison
+    "TD003",   # missing link
+    "TD002",   # missing author
+    "PLR0913", # too many arguments
+    "FIX002",  # fixme found - skipped for now
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.flake8-quotes]
+docstring-quotes = "double"
+inline-quotes = 'single'
+multiline-quotes = 'double'
+
+[tool.ruff.format]
+quote-style = 'single'
+indent-style = 'space'
+docstring-code-format = true
+exclude = ["docs/*.py"]
+
+[dependency-groups]
+dev = [
+    "mypy==1.14.1",
+    "pytest>=8.3.4",
+    "pytest-cov>=6.0.0",
+    "pytest-sugar>=1.0.0",
+    "sphinx>=8.2.3",
+    "sphinx-rtd-theme>=3.0.2",
+    "types-pyyaml>=6.0.12.20241230",
+]
+
+[tool.pytest.ini_options]
+addopts = [
+    '--cov=slough_cli_tool',
+    '--cov=slough_config',
+    '--cov=slough',
+    '--cov=dev_container_gen',
+    '--cov=template_engine',
+    '--cov-report=html',
+    '--cov-report=lcov',
+    '--cov-context=test',
+    '--cov-branch',
+]
+testpaths = ['tests']
+
+[tool.mypy]
+python_version = '3.13'
+
+[tool.uv]
+package = true
+
+[[tool.uv.index]]
+name = "slough-lib-py-slough"
+url = "https://test.pypi.org/simple/"
+publish-url = "https://test.pypi.org/legacy/"
+explicit = true

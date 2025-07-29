@@ -1,0 +1,144 @@
+---
+description: This lessons-learned file serves as a critical knowledge base for capturing and preventing mistakes. During development, document any reusable solutions, bug fixes, or important patterns. Consult it before implementing any solution.
+alwaysApply: false
+---
+*This lessons-learned file serves as a critical knowledge base for capturing and preventing mistakes. During development, document any reusable solutions, bug fixes, or important patterns using the format: Category: Issue → Solution → Impact. Entries must be categorized by priority (Critical/Important/Enhancement) and include clear problem statements, solutions, prevention steps, and code examples. Only update upon user request with "lesson" trigger word. Focus on high-impact, reusable lessons that improve code quality, prevent common errors, and establish best practices. Cross-reference with .cursor\memories.md for context.*
+
+# Lessons Learned
+
+*Note: This file is updated only upon user request and focuses on capturing important, reusable lessons learned during development. Each entry follows format: Priority: Category → Issue: [Problem] → Fix: [Solution] → Why: [Impact]. Use grep/automated tools to verify changes and prevent regressions.*
+
+## Component Development
+
+**Important**: Template Engine Unification Strategy
+→ Issue: Supporting both Handlebars and Jinja2 without breaking compatibility.
+→ Solution: Implement unified load_template() with file extension-based detection (.hbs, .jinja, .j2), separate loader functions, keep existing signatures.
+→ Impact: Enables multi-engine support, backward compatibility, and easy future extension.
+
+## Component Development  
+  
+**Important**: Template Engine Unification Strategy    
+→ Issue: Supporting both Handlebars and Jinja2 without breaking compatibility.    
+→ Solution: Implement unified load_template() with file extension-based detection (.hbs, .jinja, .j2), separate loader functions, keep existing signatures.    
+→ Impact: Enables multi-engine support, backward compatibility, and easy future extension.  
+  
+**Important**: Template Rendering Function Unification    
+→ Issue: Need uniform rendering function for diverse template engines.    
+→ Solution: Unified render_template() handling both template types using isinstance(), with consistent error reporting.    
+→ Impact: Simplifies maintenance, supports extensibility, and provides consistent UX.  
+  
+**Enhancement**: Template Engine Feature Parity    
+→ Issue: Jinja2 has advanced features not present in Handlebars.    
+→ Solution: Produce thorough Jinja2 examples showing filters, loops, and comparisons; document feature differences.    
+→ Impact: Enables informed engine choice and showcases capabilities.  
+  
+**Important**: Dynamic Pydantic Model Creation    
+→ Issue: Need runtime JSON schema enforcement.    
+→ Solution: Use pydantic.create_model() with mapping from JSON schema to fields.    
+→ Impact: Enables token-level constraint enforcement, ensuring true compliance.  
+  
+**Critical**: Code Smell — Reinvented JSON Schema Parsing    
+→ Issue: Manual schema-to-model conversion is maintenance-heavy, incomplete.    
+→ Solution: Replace with dedicated json-schema-to-pydantic library and inheritance.    
+→ Impact: Reduces 150+ lines of code, improves robustness, and prevents duplicate work.  
+  
+## Schema Enforcement  
+  
+**Critical**: ChatHistory Integration with Kernel    
+→ Issue: Using {{$chat_history}} as template variable fails if passed separately.    
+→ Solution: Use service.get_chat_message_contents() with chat_history param directly, not via template.    
+→ Impact: Prevents errors; approach is critical for structured output.  
+  
+**Critical**: Semantic Kernel Response Extraction    
+→ Issue: Extraction logic broke due to multiple result types (list, FunctionResult.value).    
+→ Solution: Add robust handling for both types using isinstance/checks.    
+→ Impact: Reliable for production; avoids hidden integration bugs.  
+  
+**Important**: JSON Schema Field Type Mapping    
+→ Issue: JSON schema constraints (enum, ranges, lengths) not mapped fully to Pydantic.    
+→ Solution: Central mapping function ensuring all validation rules applied when generating fields.    
+→ Impact: Maintains schema integrity and catches errors early.  
+  
+**Enhancement**: Structured Output Enforcement    
+→ Issue: JSON mode lacks validation.    
+→ Solution: Set settings.response_format = KernelBaseModel for 100% schema compliance.    
+→ Impact: No more invalid API output, aligns with Azure OpenAI and CI/CD best practices.  
+  
+## Testing Infrastructure and Practices  
+  
+**Critical**: Mocking Pydantic Models    
+→ Issue: Mocking KernelBaseModel subclasses with Mock causes metaclass errors.    
+→ Solution: Use concrete Pydantic classes in fixtures.    
+→ Impact: Eliminates class conflicts, stabilizes schema tests.  
+  
+**Important**: Realistic Mocking Strategy    
+→ Issue: Fake mocks don’t capture real API response shape.    
+→ Solution: Generate mocks from real API data, including nested/usage fields.    
+→ Impact: Closer to prod behavior, better early bug detection.  
+  
+**Important**: Systematic Test Failure Resolution    
+→ Issue: Many test failures are overwhelming.    
+→ Solution: Categorize by complexity and tackle easy → hard.    
+→ Impact: Efficiently attains 100% pass rate and lessens cognitive load.  
+  
+**Important**: Test Architecture Design    
+→ Issue: Monolithic test files impede scaling/maintenance.    
+→ Solution: Split into unit (heavy mocks), integration (minimal mocks), and acceptance (real API) tests.    
+→ Impact: Obtain speed, coverage, realism—reflects industry best practices.  
+  
+**Enhancement**: Exception Handling Alignment in Tests    
+→ Issue: Tests assume wrong error types/messages.    
+→ Solution: Base assertions on real exceptions/messages thrown.    
+→ Impact: Less brittle, matches production logic.  
+  
+## Acceptance Test and Template Refactoring  
+  
+**Critical**: Custom Monolithic AcceptanceTestFramework    
+→ Issue: 600+ line ad hoc class; hard to maintain, violates pytest/industry practices.    
+→ Solution: Refactor to pytest-based, with fixtures (llm_ci_runner, temp_files, llm_judge, etc.), and use Rich for output.    
+→ Impact: Easier to extend, standard tooling, reduces boilerplate.  
+  
+**Important**: Anti-Pattern — Regex for LLM-as-Judge Parsing    
+→ Issue: Using regex for judging output is fragile and fails on format changes.    
+→ Solution: Use structured (JSON schema) outputs from LLM.    
+→ Impact: Eliminates parse errors, makes validation type-safe/reliable.  
+  
+**Important**: Test Extensibility    
+→ Issue: Adding tests requires lots of custom boilerplate/knowledge.    
+→ Solution: Encapsulate setup/execution in shared pytest fixtures so new tests need ~20 lines.    
+→ Impact: Encourages more/consistent tests, easier collaboration.  
+  
+**Enhancement**: Rich Formatting in Test Output    
+→ Issue: Print statements are hard to read/scan.    
+→ Solution: Implement Rich (tables, panels, colors) for judgment and debugging feedback.    
+→ Impact: Faster debugging, visually appealing.  
+  
+**Enhancement**: Pytest Parametrization for Efficiency    
+→ Issue: Many-variant test cases led to duplicated code.    
+→ Solution: Use @pytest.mark.parametrize to DRY out scenario-based tests.    
+→ Impact: Less test code, easier additions, higher scenario coverage.  
+  
+  
+## YAML & Template Execution  
+  
+**Critical**: response_format Not Supported in Execution Settings YAML    
+→ Issue: YAML-based Handlebars templates can’t enforce schema at YAML level (response_format param ignored).    
+→ Solution: Merge YAML template config (temperature, etc) with programmatic settings.response_format in code.    
+→ Impact: Enforces schema, preserves template authors’ intent; critical architectural constraint.  
+  
+**Important**: Handlebars Template Output Pipeline    
+→ Issue: Rendered Handlebars templates need conversion to ChatHistory for existing flow.    
+→ Solution: Wrap as ChatMessageContent and supply to service.get_chat_message_contents().    
+→ Impact: Avoids need to rearchitect core flow.  
+  
+**Important**: Template Variable Validation    
+→ Issue: Missing variables during rendering cause cryptic errors.    
+→ Solution: Validate config for required vars vs. provided input; raise early, clear errors.    
+→ Impact: Surfaces issues before runtime.  
+  
+**Enhancement**: Merging Execution Settings    
+→ Issue: Need to merge YAML-provided settings (temperature, etc.) with programmatic enforcement (schema).    
+→ Solution: Extract, merge, then apply both kinds of settings before execution.    
+→ Impact: Honors template parameters and maintains validation.  
+  
+  

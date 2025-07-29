@@ -1,0 +1,25 @@
+interface: product_defaults
+family: interpolator_algorithm_colormapper
+name: Temp
+docstring: |
+  The geoips_clavrx Temp product_defaults.
+spec:
+  interpolator:
+    plugin:
+      name: interp_nearest
+      arguments: {}
+  algorithm:
+    plugin:
+      name: single_channel
+      arguments:
+        output_data_range: [180, 340]
+        scale_factor: 1.0
+        min_outbounds: "crop"
+        max_outbounds: "crop"
+        norm: False
+        inverse: False
+  colormapper:
+    plugin:
+      name: cmap_IR
+      arguments:
+        data_range: [180, 340]

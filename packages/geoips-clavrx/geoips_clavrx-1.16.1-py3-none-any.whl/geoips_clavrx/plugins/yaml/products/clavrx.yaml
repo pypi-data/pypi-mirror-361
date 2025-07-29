@@ -1,0 +1,221 @@
+interface: products
+family: list
+name: clavrx
+docstring: |
+  The products geoips_clavrx default configuration.
+spec:
+  products:
+
+    - name: Cloud-Fraction
+      source_names: ["clavrx"]
+      docstring: |
+        GeoIPS CLAVR-x Cloud Fraction product.
+      product_defaults: CLAVR-x-Base
+      spec:
+        variables: ["cloud_fraction", "latitude", "longitude"]
+        algorithm:
+          plugin:
+            arguments:
+              output_data_range: [0, 1.0]
+              scale_factor: 1.0
+        colormapper:
+          plugin:
+            name: cmap_cldFraction
+            arguments:
+              data_range: [0, 1.0]
+
+    - name: Cloud-Type
+      source_names: ["clavrx"]
+      docstring: |
+        GeoIPS CLAVR-x Cloud Type product.
+          0: Clear
+          1: Probably clear
+          2: Fog
+          3: Water
+          4: Supercooled water
+          5: Mixed
+          6: Opaque ice
+          7: Cirrus
+          8: Overlapping
+          9: Overshooting
+          10: Unknown
+          11: Dust
+          12: Smoke
+          13: Fire
+      product_defaults: CLAVR-x-Base
+      spec:
+        variables: ["cloud_type", "latitude", "longitude"]
+        algorithm:
+          plugin:
+            arguments:
+              output_data_range: [0, 13]
+              scale_factor: 1.0
+        colormapper:
+          plugin:
+            name: cmap_cldType
+            arguments:
+              data_range: [0, 13]
+
+    - name: Cloud-Mask
+      source_names: ["clavrx"]
+      docstring: |
+        GeoIPS CLAVR-x Cloud Mask product.
+          0: Clear
+          1: Probably clear
+          2: Probably cloudy
+          3: Cloudy
+      product_defaults: CLAVR-x-Base
+      spec:
+        variables: ["cloud_mask", "latitude", "longitude"]
+        algorithm:
+          plugin:
+            arguments:
+              output_data_range: [0, 3]
+              scale_factor: 1.0
+        colormapper:
+          plugin:
+            name: cmap_cldMask
+            arguments:
+              data_range: [0, 3]
+
+    - name: Cloud-Base-Height
+      source_names: ["clavrx"]
+      docstring: |
+        GeoIPS CLAVR-x Cloud Base Height product
+      product_defaults: Cloud-Height
+      spec:
+        variables: ["cld_height_base", "latitude", "longitude"]
+
+    - name: Cloud-Top-Height
+      source_names: ["clavrx"]
+      docstring: |
+        GeoIPS CLAVR-x Cloud Top Height product
+      product_defaults: Cloud-Height
+      spec:
+        variables: ["cld_height_acha", "latitude", "longitude"]
+
+    - name: Cloud-Optical-Depth
+      source_names: ["clavrx"]
+      docstring: |
+        GeoIPS CLAVR-x Cloud Optical Depth product
+        Cloud optical depth at 0.65um.
+      product_defaults: CLAVR-x-Base
+      spec:
+        variables: ["cld_opd_acha", "latitude", "longitude"]
+        algorithm:
+          plugin:
+            arguments:
+              output_data_range: [-0.2, 8]
+              scale_factor: 1.0
+        colormapper:
+          plugin:
+            name: cmap_cldOpd
+            arguments:
+              data_range: [-0.2, 8]
+
+    - name: Cloud-Phase
+      source_names: ["clavrx"]
+      docstring: |
+        GeoIPS CLAVR-x Cloud Phase product
+          0: Clear
+          1: Water
+          2: Supercooled
+          3: Mixed
+          4: Ice
+          5: Unknown
+      product_defaults: CLAVR-x-Base
+      spec:
+        variables: ["cloud_phase", "latitude", "longitude"]
+        algorithm:
+          plugin:
+            arguments:
+              output_data_range: [0, 5]
+              scale_factor: 1.0
+        colormapper:
+          plugin:
+            name: cmap_cldPhase
+            arguments:
+              data_range: [0, 5]
+
+    - name: Cloud-Temp-ACHA
+      source_names: ["clavrx"]
+      docstring: |
+        GeoIPS CLAVR-x ACHA Cloud Temperature product.
+      product_defaults: Temp
+      spec:
+        variables: ["cld_temp_acha", "latitude", "longitude"]
+        algorithm:
+          plugin:
+            arguments:
+              output_data_range: [160, 320]
+        colormapper:
+          plugin:
+            name: cmap_cldTemp
+            arguments:
+              data_range: [160, 320]
+
+    - name: Temp-3p75
+      source_names: ["clavrx"]
+      docstring: |
+        GeoIPS CLAVR-x 3p75um Brightness Temperatures product
+      product_defaults: Temp
+      spec:
+        variables: ["temp_3_75um_nom", "latitude", "longitude"]
+
+    - name: Temp-11p0
+      source_names: ["clavrx"]
+      docstring: |
+        GeoIPS CLAVR-x 11.0um Brightness Temperatures product
+      product_defaults: Temp
+      spec:
+        variables: ["temp_11_0um_nom", "latitude", "longitude"]
+
+    - name: Effective-Radius
+      source_names: ["clavrx"]
+      docstring: |
+        GeoIPS CLAVR-x cloud particles effective radius product
+        NOTE: Values are only available where cloud exists -
+        clear pixels are masked out.
+      product_defaults: CLAVR-x-Base
+      spec:
+        variables: ["cld_reff_acha", "latitude", "longitude"]
+        algorithm:
+          plugin:
+            arguments:
+              output_data_range: [0, 160]
+              scale_factor: 1.0
+        colormapper:
+          plugin:
+            name: cmap_cldReff
+            arguments:
+              data_range: [0, 160]
+
+    - name: Absdiff-Cloud-Top-Height
+      source_names: ["clavrx"]
+      docstring: |
+        Absolute difference of Cloud-Top-Height between two CLAVR-x files one timestep
+        apart.
+      family: algorithm_interpolator_colormapper
+      spec:
+        variables: ["cld_height_acha", "latitude", "longitude"]
+        algorithm:
+          plugin:
+            name: absdiff_cth
+            arguments:
+              output_data_range: [0, 20]
+              scale_factor: 0.001
+              min_outbounds: "mask"
+              max_outbounds: "mask"
+              norm: False
+              inverse: False
+        interpolator:
+          plugin:
+            name: interp_nearest
+            arguments: {}
+        colormapper:
+          plugin:
+            name: matplotlib_linear_norm
+            arguments:
+              cmap_source: matplotlib
+              cmap_name: turbo
+              data_range: [0, 20] # in km

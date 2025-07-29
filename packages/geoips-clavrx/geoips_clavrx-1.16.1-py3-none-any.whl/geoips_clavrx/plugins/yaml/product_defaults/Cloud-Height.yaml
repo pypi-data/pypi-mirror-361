@@ -1,0 +1,25 @@
+interface: product_defaults
+family: interpolator_algorithm_colormapper
+name: Cloud-Height
+docstring: |
+  The Cloud-Height product_defaults geoips_clavrx configuration.
+spec:
+  interpolator:
+    plugin:
+      name: interp_nearest
+      arguments: {}
+  algorithm:
+    plugin:
+      name: single_channel
+      arguments:
+        output_data_range: [0, 20]
+        scale_factor: 0.001
+        min_outbounds: "crop"
+        max_outbounds: "crop"
+        norm: False
+        inverse: False
+  colormapper:
+    plugin:
+      name: cmap_cldHeight
+      arguments:
+        data_range: [0, 20]

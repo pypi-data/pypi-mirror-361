@@ -1,0 +1,57 @@
+# Project metadata (see https://peps.python.org/pep-0621)
+[project]
+name = "apx-fractal-task-collection"
+version = "0.4.8"
+description = "A collection of custom fractal tasks."
+readme = "README.md"
+license = { text = "BSD-3-Clause" }
+authors = [
+    { name = "Adrian Tschan", email = "atschan@apricotx.com" },
+]
+
+# Required Python version and dependencies
+requires-python = ">=3.8"
+dependencies = ["fractal-tasks-core==1.4.3", "scikit-image", "matplotlib", "image_registration", "pytest", "mahotas",
+                "basicpy", 'minisom', 'phenograph', 'scikit-learn', "tifffile==2025.1.10",
+                "jax==0.4.23", "jaxlib==0.4.23", "SimpleITK-SimpleElastix", "ome-zarr", "ashlar", "pyfeats",
+                "pydantic>=2.0", "defusedxml", "seaborn", "numcodecs==0.13.1"]
+
+# Optional dependencies (e.g. for `pip install -e ".[dev]"`, see
+# https://peps.python.org/pep-0621/#dependencies-optional-dependencies)
+[project.optional-dependencies]
+dev = ["devtools", "pytest", "requests", "build", "jsonschema",
+    "mkdocs", "mkdocstrings", "mkdocs-gen-files", "mkdocs-material", "mkdocs-material-extensions",
+    "mkdocstrings", "mkdocstrings-python",
+]
+
+# Build options (see https://peps.python.org/pep-0517)
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["apx_fractal_task_collection", "apx_fractal_task_collection.*"]
+
+# Always include the __FRACTAL_MANIFEST__.json file in the package
+[tool.setuptools.package-data]
+"*" = ["__FRACTAL_MANIFEST__.json"]
+
+
+[tool.bumpver]
+current_version = "0.4.8"
+version_pattern = "MAJOR.MINOR.PATCH"
+commit_message = "bump version {old_version} -> {new_version}"
+tag_message = "{new_version}"
+tag_scope = "default"
+pre_commit_hook = ""
+post_commit_hook = ""
+commit = true
+tag = true
+push = true
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = [
+    'version = "{version}"',
+]
+

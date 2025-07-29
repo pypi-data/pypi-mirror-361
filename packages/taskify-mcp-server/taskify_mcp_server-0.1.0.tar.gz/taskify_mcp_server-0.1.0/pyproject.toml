@@ -1,0 +1,30 @@
+[project]
+name = "taskify-mcp-server"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "hicaosen",email = "cscg52@qq.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "mcp[cli] (>=1.10.1,<2.0.0)"
+]
+
+
+[project.scripts]
+taskify-mcp-server = "server:main"
+
+[tool.poetry]
+packages = [
+    {include = "server.py", from = "src"},
+    {include = "__init__.py", from = "src"},
+]
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.12.2"
+pyright = "^1.1.403"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

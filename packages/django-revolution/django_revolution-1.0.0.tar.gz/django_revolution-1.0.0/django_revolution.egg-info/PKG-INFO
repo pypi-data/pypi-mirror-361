@@ -1,0 +1,646 @@
+Metadata-Version: 2.4
+Name: django-revolution
+Version: 1.0.0
+Summary: Zone-based API architecture for Django. Install and go.
+Home-page: https://unrealos.com
+Author: Unrealos
+Author-email: Unrealos <developers@unrealos.com>
+Maintainer-email: Unrealos <developers@unrealos.com>
+License-Expression: MIT
+Project-URL: Homepage, https://unrealos.com
+Project-URL: Bug Tracker, https://github.com/markolofsen/django-revolution/issues
+Project-URL: Documentation, https://github.com/markolofsen/django-revolution
+Keywords: django,api,openapi,rest,zones,typescript,python,client,generation
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Framework :: Django
+Classifier: Framework :: Django :: 3.2
+Classifier: Framework :: Django :: 4.0
+Classifier: Framework :: Django :: 4.1
+Classifier: Framework :: Django :: 4.2
+Classifier: Framework :: Django :: 5.0
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: Django>=3.2
+Requires-Dist: djangorestframework>=3.12.0
+Requires-Dist: drf-spectacular>=0.24.0
+Requires-Dist: Jinja2>=3.0.0
+Requires-Dist: PyYAML>=6.0
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: pydantic-settings>=2.0.0
+Requires-Dist: questionary>=2.0.0
+Requires-Dist: rich>=13.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0; extra == "dev"
+Requires-Dist: pytest-django>=4.0; extra == "dev"
+Requires-Dist: black>=21.0; extra == "dev"
+Requires-Dist: flake8>=3.8; extra == "dev"
+Requires-Dist: mypy>=0.800; extra == "dev"
+Dynamic: author
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-python
+
+# Django Revolution
+
+> Universal Zone-Based API Client Generator for Django
+
+[![PyPI version](https://badge.fury.io/py/django-revolution.svg)](https://badge.fury.io/py/django-revolution)
+[![Python Support](https://img.shields.io/pypi/pyversions/django-revolution.svg)](https://pypi.org/project/django-revolution/)
+[![Django Support](https://img.shields.io/pypi/djversions/django-revolution.svg)](https://pypi.org/project/django-revolution/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
+Django Revolution is a powerful library that automatically generates **TypeScript** and **Python** API clients from your Django REST Framework APIs, organized by **zones** (logical groupings of related endpoints).
+
+## 🚀 Features
+
+- **🎯 Zone-Based Architecture**: Organize your APIs into logical zones (public, admin, mobile, etc.)
+- **📱 Multi-Client Generation**: Generate both TypeScript and Python clients automatically
+- **🔥 drf-spectacular Integration**: Leverage OpenAPI 3.0 schemas with full Django REST Framework support
+- **📦 Archive Management**: Automatic versioning and archiving of generated clients
+- **🏗️ Monorepo Support**: Seamless integration with monorepo structures
+- **⚡ Django Management Commands**: Simple CLI interface via Django management commands
+- **🔧 Highly Configurable**: Comprehensive configuration via Pydantic settings
+- **🎨 Rich Logging**: Beautiful console output with detailed progress information
+
+## 📋 Table of Contents
+
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [Zone Configuration](#zone-configuration)
+- [CLI Commands](#cli-commands)
+- [Generated Clients](#generated-clients)
+- [Monorepo Integration](#monorepo-integration)
+- [API Reference](#api-reference)
+- [Contributing](#contributing)
+
+## 🛠️ Installation
+
+### 1. Install Django Revolution
+
+```bash
+pip install django-revolution
+```
+
+### 2. Add to Django Settings
+
+```python
+# settings.py
+INSTALLED_APPS = [
+    # ... your apps
+    'drf_spectacular',
+    'django_revolution',
+]
+
+# drf-spectacular settings
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Your API',
+    'DESCRIPTION': 'Your API Description',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_REQUEST': True,
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+```
+
+### 3. Install Client Generators (Auto-installed by default)
+
+```bash
+# TypeScript generator
+npm install -g @unrealos/openapi-ts
+
+# Python generator
+pip install openapi-python-client
+```
+
+## 🚀 Quick Start
+
+### 1. Configure Your Zones
+
+```python
+# settings.py
+DJANGO_REVOLUTION = {
+    'zones': {
+        'public': {
+            'apps': ['accounts', 'products', 'orders'],
+            'title': 'Public API',
+            'description': 'Public-facing API endpoints',
+            'public': True,
+        },
+        'admin': {
+            'apps': ['admin_panel', 'analytics'],
+            'title': 'Admin API',
+            'description': 'Administrative endpoints',
+            'auth_required': True,
+            'public': False,
+        },
+        'mobile': {
+            'apps': ['mobile_auth', 'push_notifications'],
+            'title': 'Mobile API',
+            'description': 'Mobile app specific endpoints',
+            'version': 'v2',
+        }
+    },
+    'output': {
+        'base_directory': './openapi'
+    },
+    'generators': {
+        'typescript': {
+            'enabled': True,
+            'output_format': 'prettier'
+        },
+        'python': {
+            'enabled': True,
+            'project_name_template': 'myproject_{zone}_client'
+        }
+    },
+    'monorepo': {
+        'enabled': True,
+        'path': '../monorepo',
+        'api_package_path': 'packages/api'
+    }
+}
+```
+
+### 2. Generate Clients
+
+```bash
+# Generate all clients for all zones
+python manage.py revolution
+
+# Generate specific zones
+python manage.py revolution --zones public admin
+
+# Generate only TypeScript clients
+python manage.py revolution --typescript
+
+# Generate only Python clients
+python manage.py revolution --python
+
+# Show status
+python manage.py revolution --status
+```
+
+### 3. Use Generated Clients
+
+**TypeScript (Generated Client):**
+
+```typescript
+import { PublicApiClient } from '@unrealos/public-api-client';
+
+const client = new PublicApiClient({
+  BASE: 'https://api.example.com',
+});
+
+// Use the client
+const products = await client.products.listProducts();
+const user = await client.accounts.getCurrentUser();
+```
+
+**Python (Generated Client):**
+
+```python
+from myproject_public_client import Client
+
+client = Client(base_url="https://api.example.com")
+
+# Use the client
+products = client.products.list_products()
+user = client.accounts.get_current_user()
+```
+
+## ⚙️ Configuration
+
+Django Revolution uses Pydantic for configuration validation and management.
+
+### Environment Variables
+
+```bash
+# Override configuration via environment variables
+export DJANGO_REVOLUTION_DEBUG=true
+export DJANGO_REVOLUTION_API_PREFIX=apix
+export DJANGO_REVOLUTION_AUTO_INSTALL_DEPS=true
+```
+
+### Configuration File
+
+```python
+# settings.py
+DJANGO_REVOLUTION = {
+    # Core settings
+    'api_prefix': 'api',
+    'debug': False,
+    'auto_install_deps': True,
+
+    # Output configuration
+    'output': {
+        'base_directory': './openapi',
+        'schemas_directory': 'schemas',
+        'clients_directory': 'clients',
+        'archive_directory_ts': 'archive/typescript',
+        'archive_directory_py': 'archive/python'
+    },
+
+    # Generator settings
+    'generators': {
+        'typescript': {
+            'enabled': True,
+            'output_directory': './openapi/clients/typescript',
+            'output_format': 'prettier',  # or 'none'
+            'generate_tests': False,
+            'custom_templates': None
+        },
+        'python': {
+            'enabled': True,
+            'output_directory': './openapi/clients/python',
+            'project_name_template': 'django_revolution_{zone}',
+            'package_name_template': 'django_revolution_{zone}',
+            'overwrite': True,
+            'fail_on_warning': False,
+            'custom_templates': None
+        }
+    },
+
+    # Monorepo integration
+    'monorepo': {
+        'enabled': True,
+        'path': '../monorepo',
+        'api_package_path': 'packages/api'
+    },
+
+    # Zone definitions
+    'zones': {
+        # See zone configuration below
+    }
+}
+```
+
+## 🎯 Zone Configuration
+
+Zones are logical groupings of your API endpoints. Each zone generates separate client libraries.
+
+```python
+'zones': {
+    'zone_name': {
+        'apps': ['app1', 'app2'],           # Required: Django apps in this zone
+        'title': 'Human Readable Title',    # Optional: Display title
+        'description': 'Zone description',  # Optional: Description
+        'public': True,                     # Optional: Is publicly accessible
+        'auth_required': False,             # Optional: Requires authentication
+        'rate_limit': '1000/hour',          # Optional: Rate limiting
+        'permissions': ['perm1', 'perm2'],  # Optional: Required permissions
+        'version': 'v1',                    # Optional: API version
+        'prefix': 'custom_prefix',          # Optional: URL prefix override
+        'cors_enabled': False,              # Optional: Enable CORS
+        'middleware': ['middleware.auth'],   # Optional: Custom middleware
+        'path_prefix': None                 # Optional: Path prefix for URLs
+    }
+}
+```
+
+### Example Zone Configurations
+
+```python
+'zones': {
+    # Public API - no authentication required
+    'public': {
+        'apps': ['products', 'categories', 'search'],
+        'title': 'Public API',
+        'description': 'Publicly accessible endpoints',
+        'public': True,
+        'cors_enabled': True
+    },
+
+    # Admin API - full authentication and permissions
+    'admin': {
+        'apps': ['admin_panel', 'user_management', 'analytics'],
+        'title': 'Administration API',
+        'description': 'Administrative endpoints for staff users',
+        'auth_required': True,
+        'permissions': ['staff_access'],
+        'rate_limit': '500/hour'
+    },
+
+    # Mobile API - optimized for mobile apps
+    'mobile': {
+        'apps': ['mobile_auth', 'push_notifications', 'mobile_sync'],
+        'title': 'Mobile API',
+        'description': 'Mobile-optimized endpoints',
+        'version': 'v2',
+        'auth_required': True,
+        'rate_limit': '2000/hour'
+    },
+
+    # Partner API - for third-party integrations
+    'partner': {
+        'apps': ['partner_webhooks', 'partner_data'],
+        'title': 'Partner Integration API',
+        'description': 'Third-party partner integration endpoints',
+        'auth_required': True,
+        'permissions': ['partner_access'],
+        'rate_limit': '100/hour'
+    }
+}
+```
+
+## 🖥️ CLI Commands
+
+Django Revolution provides a comprehensive Django management command:
+
+```bash
+# Basic usage
+python manage.py revolution
+
+# Generate specific zones
+python manage.py revolution --zones public admin mobile
+
+# Generator options
+python manage.py revolution --typescript          # TypeScript only
+python manage.py revolution --python             # Python only
+python manage.py revolution --no-typescript      # Skip TypeScript
+python manage.py revolution --no-python          # Skip Python
+
+# Output options
+python manage.py revolution --no-archive         # Skip archiving
+python manage.py revolution --no-monorepo        # Skip monorepo sync
+python manage.py revolution --output-dir ./custom-output
+
+# Utility commands
+python manage.py revolution --status             # Show status
+python manage.py revolution --list-zones         # List all zones
+python manage.py revolution --validate           # Validate environment
+python manage.py revolution --install-deps       # Install dependencies
+python manage.py revolution --clean              # Clean output directories
+
+# Debug options
+python manage.py revolution --debug              # Enable debug logging
+```
+
+### Command Examples
+
+```bash
+# Generate only public and admin zones with TypeScript
+python manage.py revolution --zones public admin --typescript
+
+# Clean output and regenerate everything
+python manage.py revolution --clean
+
+# Check if everything is configured properly
+python manage.py revolution --validate
+
+# Generate to custom directory without archiving
+python manage.py revolution --output-dir /tmp/api-clients --no-archive
+```
+
+## 📚 Generated Clients
+
+### TypeScript Clients
+
+Generated TypeScript clients include:
+
+- **Full type definitions** from your Django models and serializers
+- **Fetch-based HTTP client** with automatic request/response handling
+- **IDE autocomplete support** with comprehensive TypeScript types
+- **Package.json** with proper dependencies and scripts
+- **Error handling** with typed error responses
+
+**Directory structure:**
+
+```
+openapi/clients/typescript/
+├── public/
+│   ├── index.ts
+│   ├── types.ts
+│   ├── services/
+│   └── package.json
+├── admin/
+│   ├── index.ts
+│   ├── types.ts
+│   ├── services/
+│   └── package.json
+```
+
+### Python Clients
+
+Generated Python clients include:
+
+- **Full Python dataclasses** from your Django models
+- **Requests-based HTTP client** with session management
+- **Type hints and mypy support** for all methods and models
+- **Setup.py** with proper dependencies and metadata
+- **Exception handling** with custom exception classes
+
+**Directory structure:**
+
+```
+openapi/clients/python/
+├── public/
+│   └── myproject_public_client/
+│       ├── __init__.py
+│       ├── client.py
+│       ├── models/
+│       ├── api/
+│       └── setup.py
+├── admin/
+│   └── myproject_admin_client/
+│       ├── __init__.py
+│       ├── client.py
+│       ├── models/
+│       ├── api/
+│       └── setup.py
+```
+
+## 🏗️ Monorepo Integration
+
+Django Revolution seamlessly integrates with monorepo structures:
+
+### Configuration
+
+```python
+'monorepo': {
+    'enabled': True,
+    'path': '../monorepo',  # Path to your monorepo
+    'api_package_path': 'packages/api'  # Where to place API clients
+}
+```
+
+### Generated Structure
+
+```
+monorepo/
+├── packages/
+│   ├── api/
+│   │   ├── typescript/
+│   │   │   ├── public/
+│   │   │   └── admin/
+│   │   └── python/
+│   │       ├── public/
+│   │       └── admin/
+│   ├── web/
+│   └── mobile/
+├── pnpm-workspace.yaml
+└── package.json
+```
+
+### Workspace Configuration
+
+Django Revolution automatically updates your workspace configuration:
+
+**pnpm-workspace.yaml:**
+
+```yaml
+packages:
+  - 'packages/**'
+  - 'packages/api/**' # Added automatically
+```
+
+**TypeScript packages:**
+
+Configured as workspace dependencies
+Properly scoped (e.g., `@unrealos/public-api-client`)
+Ready for monorepo builds and publishing
+
+## 📖 API Reference
+
+### Programmatic Usage
+
+```python
+from django_revolution import OpenAPIGenerator, get_settings
+
+# Initialize with default settings
+config = get_settings()
+generator = OpenAPIGenerator(config)
+
+# Generate all clients
+summary = generator.generate_all()
+
+# Generate specific zones
+summary = generator.generate_all(zones=['public', 'admin'])
+
+# Generate only TypeScript
+config.generators.python.enabled = False
+summary = generator.generate_all()
+
+# Check generation status
+status = generator.get_status()
+print(f"Generated {status['zones_detected']} zones")
+```
+
+### Configuration Classes
+
+```python
+from django_revolution.config import (
+    DjangoRevolutionSettings,
+    ZoneModel,
+    GenerationResult,
+    GenerationSummary
+)
+
+# Create settings programmatically
+settings = DjangoRevolutionSettings(
+    api_prefix='api',
+    zones={
+        'public': {
+            'apps': ['products'],
+            'title': 'Public API'
+        }
+    }
+)
+
+# Validate zone configuration
+zone = ZoneModel(
+    name='public',
+    apps=['products', 'orders'],
+    title='Public API',
+    auth_required=False
+)
+```
+
+### Zone Management
+
+```python
+from django_revolution.zones import ZoneManager, ZoneDetector
+
+# Manage zones
+zone_manager = ZoneManager(config)
+zones = zone_manager.get_zones()
+
+# Detect zones from Django configuration
+detector = ZoneDetector(config)
+detected_zones = detector.detect_zones()
+```
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+### Development Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/unrealos/django-revolution.git
+cd django-revolution
+
+# Install in development mode
+pip install -e ".[dev]"
+
+# Run tests
+pytest
+
+# Run linting
+black django_revolution/
+isort django_revolution/
+flake8 django_revolution/
+mypy django_revolution/
+```
+
+### Running Tests
+
+```bash
+# Run all tests
+pytest
+
+# Run with coverage
+pytest --cov=django_revolution
+
+# Run specific test file
+pytest tests/test_generator.py
+```
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **drf-spectacular** for excellent OpenAPI 3.0 integration with Django REST Framework
+- **@unrealos/openapi-ts** for robust TypeScript client generation
+- **openapi-python-client** for comprehensive Python client generation
+- **Pydantic** for configuration validation and management
+- **Rich** for beautiful console output
+
+## 📞 Support
+
+- **Documentation**: [https://django-revolution.readthedocs.io/](https://django-revolution.readthedocs.io/)
+- **Issues**: [https://github.com/markolofsen/django-revolution/issues](https://github.com/markolofsen/django-revolution/issues)
+- **Discussions**: [https://github.com/markolofsen/django-revolution/discussions](https://github.com/markolofsen/django-revolution/discussions)
+
+---
+
+Made with ❤️ by the [Unrealos Team](https://unrealos.com)

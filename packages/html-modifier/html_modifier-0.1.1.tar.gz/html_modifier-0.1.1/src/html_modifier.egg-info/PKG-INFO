@@ -1,0 +1,78 @@
+Metadata-Version: 2.4
+Name: html_modifier
+Version: 0.1.1
+Summary: 针对大模型生成的长HTML代码时存在语法错误，提供精准修改能力。
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+Requires-Dist: mcp[cli]~=1.10.1
+Requires-Dist: lxml~=6.0.0
+Requires-Dist: beautifulsoup4~=4.13.4
+Requires-Dist: soupsieve~=2.7
+Requires-Dist: typing-extensions~=4.14.1
+Requires-Dist: html5lib~=1.1
+Requires-Dist: h11~=0.16.0
+Requires-Dist: typer~=0.16.0
+Requires-Dist: python-dotenv~=1.1.1
+Requires-Dist: anyio~=4.9.0
+Requires-Dist: pydantic~=2.11.7
+Requires-Dist: httpx~=0.28.1
+Requires-Dist: jsonschema~=4.24.0
+Requires-Dist: starlette~=0.47.1
+Requires-Dist: pydantic-core~=2.33.2
+Requires-Dist: rich~=14.0.0
+Requires-Dist: attrs~=25.3.0
+Requires-Dist: pygments~=2.19.2
+Requires-Dist: sniffio~=1.3.1
+Requires-Dist: click~=8.2.1
+Requires-Dist: httpcore~=1.0.9
+Requires-Dist: idna~=3.10
+Requires-Dist: mdurl~=0.1.2
+Requires-Dist: shellingham~=1.5.4
+Requires-Dist: certifi~=2025.7.9
+Requires-Dist: uvicorn~=0.35.0
+Requires-Dist: six~=1.17.0
+Requires-Dist: webencodings~=0.5.1
+Requires-Dist: referencing~=0.36.2
+Requires-Dist: editorconfig~=0.17.1
+Requires-Dist: jsbeautifier~=1.15.4
+Requires-Dist: python-multipart~=0.0.20
+
+# MCP HTML修改
+
+## 功能说明
+
+针对大模型生成的长HTML代码时存在语法错误，提供精准修改能力。
+
+## 示例
+
+```json
+"<div class=\"container\">原始HTML内容</div>"
+```
+
+```json
+[
+  {
+    "description": "替换容器类名",
+    "xpath": "//div[@class='container']",
+    "new_html": "<section class=\"main-content\" :active>新内容</section>"
+  }
+]
+```
+
+## 参数说明
+
+### 函数名 `modify_html`
+
+| 参数名             | 类型     | 父级            | 说明          |
+|-----------------|--------|---------------|-------------|
+| `html`          | string |               | 原始HTML模板字符串 |
+| `modifications` | array  |               | 修改任务列表      |
+| `description`   | string | modifications | 修改描述（调试用）   |
+| `xpath`         | string | modifications | XML路径定位符    |
+| `new_html`      | string | modifications | 替换后的HTML片段  |
+
+## 注意事项
+
+1. 确保XPath表达式符合XML规范
+2. Vue模板语法只是简单字符串替换
+3. 设置环境变量`DANGEROUSLY_OMIT_AUTH=True`

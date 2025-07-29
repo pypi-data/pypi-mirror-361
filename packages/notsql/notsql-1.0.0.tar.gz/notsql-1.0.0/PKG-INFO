@@ -1,0 +1,431 @@
+Metadata-Version: 2.4
+Name: notsql
+Version: 1.0.0
+Summary: JSONベースの簡易NoSQL DB（ファイル保存型）
+Home-page: https://github.com/tikipiya/notsql
+Author: tikisan
+Author-email: s2501082@sendai-nct.jp
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Database
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0; extra == "dev"
+Requires-Dist: pytest-cov>=2.0; extra == "dev"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: provides-extra
+Dynamic: requires-python
+Dynamic: summary
+
+# Notsql - JSONベースの簡易NoSQL DB
+
+**Notsql**は、JSONファイルベースの簡易NoSQL データベースライブラリです。MongoDBライクな構文を提供し、インストール不要で小規模なサービスやクライアントアプリケーションに最適です。
+
+## 🚀 特徴
+
+- **📁 ファイルベース**: JSONファイルによるデータ保存
+- **🔍 Mongoライクな構文**: 使い慣れたMongoDBのクエリ構文
+- **⚡ インストール不要**: 外部依存なし
+- **🔐 同時アクセス対応**: ファイルロック機能
+- **📊 インデックス機能**: 高速検索のためのインデックス
+- **🎯 小規模サービス向け**: 軽量で簡単に導入可能
+
+## 📦 インストール
+
+```bash
+pip install notsql
+```
+
+## 🎯 基本的な使い方
+
+### データベース接続
+
+```python
+from notsql import NotsqlDB
+
+# データベースを作成・接続
+db = NotsqlDB('myapp')
+
+# 特定のパスを指定
+db = NotsqlDB('myapp', db_path='/path/to/data')
+```
+
+### コレクション操作
+
+```python
+# コレクションを取得
+users = db.collection('users')
+```
+
+### 挿入操作
+
+```python
+# 単一ドキュメントの挿入
+user_id = users.insert_one({
+    'name': 'Alice',
+    'age': 30,
+    'email': 'alice@example.com'
+})
+
+# 複数ドキュメントの挿入
+user_ids = users.insert_many([
+    {'name': 'Bob', 'age': 25},
+    {'name': 'Charlie', 'age': 35}
+])
+```
+
+### 検索操作
+
+```python
+# 単一ドキュメントの検索
+user = users.find_one({'name': 'Alice'})
+
+# 全ドキュメントの検索
+all_users = users.find()
+
+# 条件付き検索
+adults = users.find({'age': {'$gte': 18}})
+
+# 制限とスキップ
+recent_users = users.find({}, limit=10, skip=5)
+
+# ソート
+sorted_users = users.find({}, sort={'age': -1})  # 降順
+```
+
+### 更新操作
+
+```python
+# 単一ドキュメントの更新
+users.update_one(
+    {'name': 'Alice'},
+    {'$set': {'age': 31}}
+)
+
+# 複数ドキュメントの更新
+users.update_many(
+    {'age': {'$lt': 18}},
+    {'$set': {'category': 'minor'}}
+)
+```
+
+### 削除操作
+
+```python
+# 単一ドキュメントの削除
+users.delete_one({'name': 'Alice'})
+
+# 複数ドキュメントの削除
+users.delete_many({'age': {'$lt': 18}})
+```
+
+## 🔍 クエリオペレーター
+
+### 比較オペレーター
+
+```python
+# 等価
+users.find({'age': 30})
+users.find({'age': {'$eq': 30}})
+
+# 不等価
+users.find({'age': {'$ne': 30}})
+
+# 大なり・小なり
+users.find({'age': {'$gt': 25}})    # >
+users.find({'age': {'$gte': 25}})   # >=
+users.find({'age': {'$lt': 35}})    # <
+users.find({'age': {'$lte': 35}})   # <=
+
+# 範囲
+users.find({'age': {'$in': [25, 30, 35]}})
+users.find({'age': {'$nin': [25, 30, 35]}})
+```
+
+### 論理オペレーター
+
+```python
+# AND
+users.find({'$and': [
+    {'age': {'$gte': 25}},
+    {'age': {'$lte': 35}}
+]})
+
+# OR
+users.find({'$or': [
+    {'age': {'$lt': 25}},
+    {'age': {'$gt': 35}}
+]})
+
+# NOT
+users.find({'$not': {'age': {'$gte': 18}}})
+```
+
+### 配列オペレーター
+
+```python
+# 配列内の要素を検索
+users.find({'tags': {'$in': ['python', 'javascript']}})
+
+# 配列のサイズ
+users.find({'tags': {'$size': 3}})
+
+# 配列の全要素がマッチ
+users.find({'tags': {'$all': ['python', 'programming']}})
+
+# 配列内のオブジェクトマッチ
+users.find({'scores': {'$elemMatch': {'subject': 'math', 'score': {'$gte': 80}}}})
+```
+
+### 文字列オペレーター
+
+```python
+# 正規表現
+users.find({'name': {'$regex': r'^A.*'}})
+
+# 大文字小文字を無視
+users.find({'name': {'$regex': r'^alice', '$options': 'i'}})
+```
+
+### 存在チェック
+
+```python
+# フィールドの存在
+users.find({'email': {'$exists': True}})
+
+# 型チェック
+users.find({'age': {'$type': 'int'}})
+```
+
+## 🎯 更新オペレーター
+
+```python
+# 値の設定
+users.update_one({'name': 'Alice'}, {'$set': {'age': 31}})
+
+# 値の削除
+users.update_one({'name': 'Alice'}, {'$unset': {'age': 1}})
+
+# 数値の増減
+users.update_one({'name': 'Alice'}, {'$inc': {'age': 1}})
+
+# 配列への追加
+users.update_one({'name': 'Alice'}, {'$push': {'tags': 'new_tag'}})
+
+# 配列から削除
+users.update_one({'name': 'Alice'}, {'$pull': {'tags': 'old_tag'}})
+
+# 配列への重複なし追加
+users.update_one({'name': 'Alice'}, {'$addToSet': {'tags': 'unique_tag'}})
+```
+
+## 📊 インデックス機能
+
+```python
+# インデックスの作成
+users.create_index('email')
+
+# ユニークインデックス
+users.create_index('email', unique=True)
+
+# インデックスの削除
+users.drop_index('email')
+
+# インデックス一覧
+indexes = users.list_indexes()
+```
+
+## 🗂️ データベース管理
+
+```python
+# コレクション一覧
+collections = db.list_collections()
+
+# コレクションの削除
+db.drop_collection('users')
+
+# データベースの削除
+db.drop_database()
+
+# 統計情報
+stats = db.get_stats()
+```
+
+## 🎨 実用例
+
+### ブログシステム
+
+```python
+from notsql import NotsqlDB
+
+# データベース接続
+db = NotsqlDB('blog')
+
+# コレクション作成
+users = db.collection('users')
+posts = db.collection('posts')
+comments = db.collection('comments')
+
+# インデックス作成
+users.create_index('email', unique=True)
+posts.create_index('author_id')
+comments.create_index('post_id')
+
+# ユーザー作成
+user_id = users.insert_one({
+    'name': 'Alice',
+    'email': 'alice@example.com',
+    'role': 'author'
+})
+
+# 投稿作成
+post_id = posts.insert_one({
+    'title': 'Python入門',
+    'content': 'Pythonの基本的な使い方について',
+    'author_id': user_id,
+    'tags': ['python', 'programming'],
+    'status': 'published'
+})
+
+# コメント作成
+comments.insert_one({
+    'post_id': post_id,
+    'author_id': user_id,
+    'content': 'とても参考になりました！'
+})
+
+# 検索
+published_posts = posts.find({'status': 'published'})
+python_posts = posts.find({'tags': {'$in': ['python']}})
+```
+
+### ECサイト
+
+```python
+# 商品管理
+products = db.collection('products')
+orders = db.collection('orders')
+
+# 商品データ
+products.insert_many([
+    {
+        'name': 'ノートPC',
+        'category': 'electronics',
+        'price': 80000,
+        'stock': 10
+    },
+    {
+        'name': 'マウス',
+        'category': 'electronics',
+        'price': 2000,
+        'stock': 50
+    }
+])
+
+# 価格帯での検索
+affordable_products = products.find({'price': {'$lte': 50000}})
+
+# 在庫のある商品
+in_stock = products.find({'stock': {'$gt': 0}})
+```
+
+## 🔧 設定とパフォーマンス
+
+### データベースパス
+
+```python
+# デフォルト: ./data/database_name/
+db = NotsqlDB('myapp')
+
+# カスタムパス
+db = NotsqlDB('myapp', db_path='/custom/path')
+```
+
+### インデックスの活用
+
+```python
+# よく検索されるフィールドにインデックスを作成
+users.create_index('email')
+users.create_index('created_at')
+
+# 複合的な検索パターンの場合
+products.create_index('category')
+products.create_index('price')
+```
+
+## 🚨 制限事項
+
+1. **ファイルサイズ**: 大量のデータには適さない
+2. **同時アクセス**: 高負荷な同時アクセスには制限がある
+3. **トランザクション**: ACID特性は保証されない
+4. **クエリパフォーマンス**: 複雑なクエリは性能に影響する
+
+## 🤝 使用例とベストプラクティス
+
+### 適切な使用例
+
+- 設定ファイルの管理
+- 小規模なWebアプリケーション
+- プロトタイプ開発
+- ローカルデータの保存
+- テスト環境でのデータ管理
+
+### 推奨事項
+
+1. **インデックス戦略**: よく検索されるフィールドにインデックスを作成
+2. **データ構造**: ネストを適度に保つ
+3. **バックアップ**: 定期的なデータファイルのバックアップ
+4. **監視**: データファイルサイズの監視
+
+## 📚 API リファレンス
+
+### NotsqlDB クラス
+
+```python
+class NotsqlDB:
+    def __init__(self, db_name: str, db_path: str = None)
+    def collection(self, name: str) -> Collection
+    def list_collections(self) -> List[str]
+    def drop_collection(self, name: str) -> bool
+    def drop_database(self)
+    def get_stats(self) -> Dict[str, Any]
+```
+
+### Collection クラス
+
+```python
+class Collection:
+    def insert_one(self, document: Dict[str, Any]) -> str
+    def insert_many(self, documents: List[Dict[str, Any]]) -> List[str]
+    def find_one(self, query: Dict[str, Any] = None) -> Optional[Dict[str, Any]]
+    def find(self, query: Dict[str, Any] = None, limit: int = None, 
+             skip: int = 0, sort: Dict[str, int] = None) -> List[Dict[str, Any]]
+    def update_one(self, query: Dict[str, Any], update: Dict[str, Any]) -> bool
+    def update_many(self, query: Dict[str, Any], update: Dict[str, Any]) -> int
+    def delete_one(self, query: Dict[str, Any]) -> bool
+    def delete_many(self, query: Dict[str, Any]) -> int
+    def count_documents(self, query: Dict[str, Any] = None) -> int
+    def create_index(self, field_name: str, unique: bool = False) -> bool
+    def drop_index(self, field_name: str) -> bool
+    def list_indexes(self) -> List[str]
+    def drop(self)
+```
+
+## 📝 ライセンス
+
+MIT License

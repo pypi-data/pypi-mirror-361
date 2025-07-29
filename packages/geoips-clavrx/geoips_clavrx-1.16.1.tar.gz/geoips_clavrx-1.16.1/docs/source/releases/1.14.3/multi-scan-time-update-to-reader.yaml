@@ -1,0 +1,22 @@
+enhancement:
+- description: |
+    Based on *GEOIPS#796: 2024-10-09, AMI and EWSG Refactor: Multi-scan time functionality*
+
+    Updated the clavrx_hdf4 reader to handle mutliple scan times if provided. Now a user
+    can provide one or more clavrx files from a certain sensor and perform calculations
+    on datasets taken at different scan times if wanted.
+
+    These changes are dependent on the aforementioned PR, so do not merge this until
+    that PR has been merged to main. Added a new algorithm, product, and test script
+    which makes use of the multi-scan time functionality.
+  files:
+    added:
+      - geoips_clavrx/plugins/modules/algorithms/absdiff_cth.py
+      - tests/scripts/abi.mst.Cloud-Top-Height.imagery_annotated.sh
+    modified:
+      - geoips_clavrx/plugins/modules/readers/clavrx_hdf4.py
+      - geoips_clavrx/plugins/yaml/products/clavrx.yaml
+  related-issue:
+    number: 312
+    repo_url: https://github.com/NRLMMD-GEOIPS/geoips/
+  title: 'Multi-Scan Time Update to Reader'

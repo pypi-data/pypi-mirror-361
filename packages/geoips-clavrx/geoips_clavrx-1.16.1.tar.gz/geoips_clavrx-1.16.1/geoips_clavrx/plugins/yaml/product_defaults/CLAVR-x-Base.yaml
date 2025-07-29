@@ -1,0 +1,28 @@
+interface: product_defaults
+family: interpolator_algorithm_colormapper
+name: CLAVR-x-Base
+docstring: |
+  Base product defaults for all CLAVR-x products.
+  Each individual product will specify individual scaling
+  factors, data ranges, colormappers, etc within the product
+  list.
+spec:
+  interpolator:
+    plugin:
+      name: interp_nearest
+      arguments: {}
+  algorithm:
+    plugin:
+      name: single_channel
+      arguments:
+        output_data_range: [0, 1.0] # Specify in product list
+        scale_factor: 1.0  # Specify in product list if needed
+        min_outbounds: "crop"
+        max_outbounds: "crop"
+        norm: False
+        inverse: False
+  colormapper:
+    plugin:
+      name: veridis # Specify in product list
+      arguments:
+        data_range: [0, 1.0] # Specify in product list

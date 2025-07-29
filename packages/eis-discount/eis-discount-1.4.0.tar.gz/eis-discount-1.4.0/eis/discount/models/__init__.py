@@ -1,0 +1,48 @@
+# flake8: noqa
+
+# import all models into this package
+# if you have many models here with many references from one model to another this may
+# raise a RecursionError
+# to avoid this, import only the models that you directly need like:
+# from from eis.discount.model.pet import Pet
+# or import this package, but before doing it, use:
+# import sys
+# sys.setrecursionlimit(n)
+
+from eis.discount.model.campaign_class import CampaignClass
+from eis.discount.model.charge_policy_voucher_request_dto import ChargePolicyVoucherRequestDto
+from eis.discount.model.charge_policy_voucher_response_class import ChargePolicyVoucherResponseClass
+from eis.discount.model.check_account_eligibility_request_dto import CheckAccountEligibilityRequestDto
+from eis.discount.model.check_account_eligibility_response_class import CheckAccountEligibilityResponseClass
+from eis.discount.model.create_campaign_request_dto import CreateCampaignRequestDto
+from eis.discount.model.create_campaign_response_class import CreateCampaignResponseClass
+from eis.discount.model.create_eligible_account_request_dto import CreateEligibleAccountRequestDto
+from eis.discount.model.create_eligible_account_response_class import CreateEligibleAccountResponseClass
+from eis.discount.model.create_policy_voucher_request_dto import CreatePolicyVoucherRequestDto
+from eis.discount.model.create_policy_voucher_response_class import CreatePolicyVoucherResponseClass
+from eis.discount.model.create_product_discount_dto import CreateProductDiscountDto
+from eis.discount.model.create_voucher_request_dto import CreateVoucherRequestDto
+from eis.discount.model.create_voucher_response_class import CreateVoucherResponseClass
+from eis.discount.model.eligible_account_class import EligibleAccountClass
+from eis.discount.model.get_campaign_response_class import GetCampaignResponseClass
+from eis.discount.model.get_policy_voucher_response_class import GetPolicyVoucherResponseClass
+from eis.discount.model.get_voucher_response_class import GetVoucherResponseClass
+from eis.discount.model.inline_response200 import InlineResponse200
+from eis.discount.model.inline_response503 import InlineResponse503
+from eis.discount.model.list_campaigns_response_class import ListCampaignsResponseClass
+from eis.discount.model.list_eligible_accounts_response_class import ListEligibleAccountsResponseClass
+from eis.discount.model.list_policy_vouchers_response_class import ListPolicyVouchersResponseClass
+from eis.discount.model.list_vouchers_response_class import ListVouchersResponseClass
+from eis.discount.model.policy_voucher_class import PolicyVoucherClass
+from eis.discount.model.policy_voucher_transaction_class import PolicyVoucherTransactionClass
+from eis.discount.model.product_discount_class import ProductDiscountClass
+from eis.discount.model.redeem_policy_voucher_request_dto import RedeemPolicyVoucherRequestDto
+from eis.discount.model.redeem_policy_voucher_response_class import RedeemPolicyVoucherResponseClass
+from eis.discount.model.update_campaign_request_dto import UpdateCampaignRequestDto
+from eis.discount.model.update_campaign_response_class import UpdateCampaignResponseClass
+from eis.discount.model.update_campaign_status_request_dto import UpdateCampaignStatusRequestDto
+from eis.discount.model.update_voucher_request_dto import UpdateVoucherRequestDto
+from eis.discount.model.update_voucher_response_class import UpdateVoucherResponseClass
+from eis.discount.model.voucher_class import VoucherClass
+from eis.discount.model.withdraw_policy_voucher_request_dto import WithdrawPolicyVoucherRequestDto
+from eis.discount.model.withdraw_policy_voucher_response_class import WithdrawPolicyVoucherResponseClass

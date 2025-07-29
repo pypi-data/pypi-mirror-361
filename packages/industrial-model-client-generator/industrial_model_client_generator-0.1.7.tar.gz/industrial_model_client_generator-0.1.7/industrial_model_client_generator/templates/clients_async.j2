@@ -1,0 +1,73 @@
+from __future__ import annotations
+import datetime
+from typing import Annotated
+
+from pydantic import Field
+
+from industrial_model import  InstanceId, ViewInstance, ViewInstanceConfig, WritableViewInstance, AsyncEngine, Engine, PaginatedResult
+from industrial_model.queries import BasePaginatedQuery, BaseSearchQuery, NestedQueryParam, QueryParam
+
+{% for view_definition in view_definitions %}
+from .requests.aggregation import Aggregation{{ view_definition.view_name }}Request
+from .requests.query import Query{{ view_definition.view_name }}Request
+from .requests.search import Search{{ view_definition.view_name }}Request
+
+from .models.aggregation import {{ view_definition.view_name }}Aggregation
+from .models.entity_complete import {{ view_definition.view_name }}Complete
+from .models.entity import {{ view_definition.view_name }}
+from .models.search import {{ view_definition.view_name }}Search
+
+{%- endfor %}
+
+{% for view_definition in view_definitions %}
+class Async{{ view_definition.view_name }}Client:
+    def __init__(self, engine: AsyncEngine):
+        self._engine = engine
+
+    async def aggregate_async(
+        self,
+        request: Aggregation{{ view_definition.view_name }}Request
+    ) -> list[{{ view_definition.view_name }}Aggregation]:
+        return await self._engine.aggregate_async(request.to_statement({{ view_definition.view_name }}Aggregation))
+
+    async def search_async(
+        self,
+        request: Search{{ view_definition.view_name }}Request
+    ) -> list[{{ view_definition.view_name }}Search]:
+        return await self._engine.search_async(request.to_statement({{ view_definition.view_name }}Search))
+
+
+    async def query_async(
+        self,
+         request: Query{{ view_definition.view_name }}Request
+    ) -> PaginatedResult[{{ view_definition.view_name }}]:
+        return await self._engine.query_async(request.to_statement({{ view_definition.view_name }}))
+
+    async def query_all_pages_async(
+        self,
+         request: Query{{ view_definition.view_name }}Request
+    ) -> list[{{ view_definition.view_name }}]:
+        return await self._engine.query_all_pages_async(request.to_statement({{ view_definition.view_name }}))
+
+    async def query_complete_async(
+        self,
+         request: Query{{ view_definition.view_name }}Request
+    ) -> PaginatedResult[{{ view_definition.view_name }}Complete]:
+        return await self._engine.query_async(request.to_statement({{ view_definition.view_name }}Complete))
+
+    async def query_all_pages_complete_async(
+        self,
+         request: Query{{ view_definition.view_name }}Request
+    ) -> list[{{ view_definition.view_name }}Complete]:
+        return await self._engine.query_all_pages_async(request.to_statement({{ view_definition.view_name }}Complete))
+
+    async def upsert_async(
+        self, entries: list[{{ view_definition.view_name }}], replace: bool = False
+    ) -> None:
+        return await self._engine.upsert_async(entries, replace)
+
+    async def delete_async(self, nodes: list[{{ view_definition.view_name }}]) -> None:
+        return await self._engine.delete_async(nodes)
+
+{%- endfor %}
+

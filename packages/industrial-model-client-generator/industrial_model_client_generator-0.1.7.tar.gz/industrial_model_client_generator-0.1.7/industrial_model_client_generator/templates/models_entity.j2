@@ -1,0 +1,31 @@
+from __future__ import annotations
+import datetime
+from typing import Annotated, Any
+
+from pydantic import Field
+
+from industrial_model import  AggregatedViewInstance, InstanceId, ViewInstance, ViewInstanceConfig, WritableViewInstance, Engine, PaginatedResult, RootModel
+from industrial_model.queries import BasePaginatedQuery, BaseSearchQuery, NestedQueryParam, QueryParam
+
+{% for view_definition in view_definitions %}
+from .search import {{ view_definition.view_name }}Search
+{%- endfor %}
+
+
+{% for view_definition in view_definitions %}
+
+class {{ view_definition.view_name }}({{ view_definition.view_name }}Search, WritableViewInstance):
+    {{ view_definition.view_config }}
+    {%- for field in view_definition.regular_fields %}
+    {{ field }}
+    {%- endfor %}
+
+    def edge_id_factory(
+        self, target_node: InstanceId, edge_type: InstanceId
+    ) -> InstanceId:
+        return InstanceId(
+            external_id=f"{self.external_id}-{target_node.external_id}-{edge_type.external_id}",
+            space=self.space,
+        )
+
+{%- endfor %}

@@ -1,0 +1,103 @@
+Metadata-Version: 2.4
+Name: industrial-model-client-generator
+Version: 0.1.7
+Summary: Industrial Model Client Generator
+Author-email: Lucas Alves <lucasrosaalves@gmail.com>
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Database
+Classifier: Topic :: Database :: Database Engines/Servers
+Classifier: Typing :: Typed
+Requires-Python: >=3.11
+Requires-Dist: cognite-sdk>=7.75.0
+Requires-Dist: dotenv>=0.9.9
+Requires-Dist: industrial-model>=0.1.31
+Requires-Dist: jinja2>=3.1.6
+Requires-Dist: mypy>=1.15.0
+Requires-Dist: pydantic>=2.11.4
+Requires-Dist: pyyaml>=6.0.2
+Requires-Dist: ruff>=0.11.8
+Description-Content-Type: text/markdown
+
+# 🏭 Industrial Model Client Generator
+
+A utility for generating client-specific configurations for industrial data models
+
+## 📦 Overview
+
+The `industrial_model_client_generator` package automates the generation of client configurations based on a set of input definitions.
+
+## 🚀 Installation
+
+```bash
+pip install industrial-model-client-generator
+```
+
+## ⚙️ Configuration Guide
+
+This project requires a generator-config.yaml file to be placed in the root directory where the script is executed. This file contains environment-specific settings such as Cognite credentials, data model configuration, and instance space mappings.
+
+### Creating `generator-config.yaml`
+
+```yaml
+client_name: "TestingClientV2"
+output_path: "output" # not required
+client_mode: "async" # options: both, async, sync
+
+cognite:
+  project: "${CDF_PROJECT}"
+  client_name: "${CDF_CLIENT_NAME}"
+  base_url: "https://${CDF_CLUSTER}.cognitedata.com"
+  credentials:
+    client_credentials:
+      token_url: "${CDF_TOKEN_URL}"
+      client_id: "${CDF_CLIENT_ID}"
+      client_secret: "${CDF_CLIENT_SECRET}"
+      scopes: ["https://${CDF_CLUSTER}.cognitedata.com/.default"]
+
+data_model:
+  external_id: "${CDF_DATA_MODEL_EXTERNAL_ID}"
+  space: "${CDF_DATA_MODEL_SPACE}"
+  version: "${CDF_DATA_MODEL_VERSION}"
+
+instance_space_configs: # not required
+  - view_or_space_external_id: "GENERIC-COR-ALL-DMD"
+    instance_spaces:
+      - "REF-COR-ALL-DAT"
+  - view_or_space_external_id: "Equipment"
+    instance_spaces_prefix: "SAP-"
+  - view_or_space_external_id: "FunctionalLocation"
+    instance_spaces_prefix: "SAP-"
+```
+
+### 🔐 Setting the Variables
+
+#### Option: `.env` File (Recommended)
+
+Create a file named `.env` in the root of your project:
+
+```env
+CDF_PROJECT=cognite-dev
+CDF_CLIENT_NAME=testing
+CDF_CLUSTER=az-eastus-1
+CDF_TOKEN_URL=https://login.microsoftonline.com/xxxx/oauth2/v2.0/token
+CDF_CLIENT_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+CDF_CLIENT_SECRET=your-client-secret
+CDF_DATA_MODEL_EXTERNAL_ID=CogniteCore
+CDF_DATA_MODEL_SPACE=cdf_cdm
+CDF_DATA_MODEL_VERSION=v1
+
+```
+
+## 🚀 Usage
+
+```python
+from industrial_model_client_generator import generate
+
+generate()
+
+```

@@ -1,0 +1,22 @@
+from __future__ import annotations
+import datetime
+from typing import Annotated, Any
+
+from pydantic import Field
+
+from industrial_model import  AggregatedViewInstance, InstanceId, ViewInstance, ViewInstanceConfig, WritableViewInstance, Engine, PaginatedResult, RootModel
+from industrial_model.queries import BasePaginatedQuery, BaseSearchQuery, NestedQueryParam, QueryParam
+
+
+{% for view_definition in view_definitions %}
+class {{ view_definition.view_name }}Search(ViewInstance):
+    {{ view_definition.view_config }}
+    {% if view_definition.search_fields %}
+    {%- for field in view_definition.search_fields %}
+    {{ field }}
+    {%- endfor %}
+    {% else %}
+    pass
+    {% endif %}
+
+{%- endfor %}

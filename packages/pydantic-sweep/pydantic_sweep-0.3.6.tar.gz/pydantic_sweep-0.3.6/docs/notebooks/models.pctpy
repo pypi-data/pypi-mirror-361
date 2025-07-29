@@ -1,0 +1,83 @@
+# %% [markdown]
+"""
+# Model class
+
+The main intent of the library is for configuring experiments. These are typically
+relatively expensive, so that we want to avoid running a wrong configuration by accident
+at any cost. However, by default `pydantic`'s behavior is unsafe:
+"""
+
+# %%
+import pprint
+
+import pydantic
+
+
+class Model(pydantic.BaseModel):
+    x: int = 5
+
+
+m = Model(y=6)
+pprint.pp(m)
+
+# %%
+m.x = "not-a-number"  # type: ignore[assignment]
+pprint.pp(m)
+
+# %% [markdown]
+"""
+That is, by default `pydantic` ignores extra arguments and doesn't validate 
+assignments after the initialization phase. Both of these can be changed in the 
+configuration. In particular, {py:class}`pydantic_sweep.BaseModel` configures
+
+* `extra="forbid"` to raise errors upon additional, mistyped arguments
+* `validate_assignment=True` to run validation on assignment to already initialized 
+  models. 
+
+While we check for these settings as part of our {any}`check_model` and 
+{any}`initialize` methods, these checks are not exhaustive and it may be possible to 
+induce unexpected behaviors.
+
+## Model Unions
+
+As mentioned in {doc}`nested`, `pydantic`'s default behavior for matching submodels 
+allows for ambiguity when partial data could match multiple models:
+"""
+
+# %%
+import pydantic
+
+
+class Sub1(pydantic.BaseModel):
+    x: int
+
+
+class Sub2(pydantic.BaseModel):
+    x: int
+
+
+class Model2(pydantic.BaseModel):
+    sub: Sub1 | Sub2
+
+
+pprint.pp(Model2(sub=dict(x=1)))
+
+# %% [markdown]
+"""
+For the purpose of configuration, this automatic model selection is undesired. To 
+avoid this kind of unsafe behavior, {any}`pydantic_sweep.BaseModel` includes a custom
+[model_validator](https://docs.pydantic.dev/latest/concepts/validators/#model-before
+-validator) that makes sure only one of the models matches. Other validations are 
+left to the core `pydantic` code.
+
+## Leaf values
+
+In general, `pydantic` allows arbitrary leaf values within the notebook. This 
+includes mutable objects such as dictionaries and lists. For the purpose of 
+configuring experiments, it is strongly encouraged to only use immutable types. With 
+mutable objects, it is too easy to accidentally share state across different pydantic
+models and thereby induce unexpected behaviors.
+
+On the next page, we will conclude the tutorial with a full-fledged example on how to
+use the library.
+"""

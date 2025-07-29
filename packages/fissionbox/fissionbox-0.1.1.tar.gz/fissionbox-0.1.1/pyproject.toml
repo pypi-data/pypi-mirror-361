@@ -1,0 +1,30 @@
+[project]
+name = "fissionbox"
+version = "0.1.1"
+description = "Fission box is a Python library built by NormAI to help you interact with the FissionBox API."
+authors = [
+    { name = "Mohammad Alshakoush", email = "mo@normai.nl" },
+    { name = "Mo Assaf", email = "assaf@normai.nl" }
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "pydantic>=2.11.7",
+    "requests>=2.32.4",
+    "tqdm>=4.67.1",
+]
+
+[build-system]
+requires = ["setuptools>=61.2", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "fissionbox"}
+
+# Tell setuptools to discover the two subpackages under "."
+[tool.setuptools.packages.find]
+where = ["fissionbox"]
+include = ["core", "cli", "core.*", "cli.*"]
+
+[project.scripts]
+fissionbox = "fissionbox.cli.main:main"

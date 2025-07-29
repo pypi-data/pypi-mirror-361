@@ -1,0 +1,135 @@
+Metadata-Version: 2.3
+Name: lfm2
+Version: 0.0.2
+Summary: LFM2 - Pytorch
+License: MIT
+Keywords: artificial intelligence,deep learning,optimizers,Prompt Engineering
+Author: Kye Gomez
+Author-email: kye@apac.ai
+Requires-Python: >=3.10,<4.0
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Dist: loguru
+Requires-Dist: torch
+Project-URL: Documentation, https://github.com/kyegomez/LFM2
+Project-URL: Homepage, https://github.com/kyegomez/LFM2
+Project-URL: Repository, https://github.com/kyegomez/LFM2
+Description-Content-Type: text/markdown
+
+# LFM2 - Liquid Foundation Model 2 (Minimal Implementation)
+
+[![PyPI version](https://badge.fury.io/py/lfm2.svg)](https://badge.fury.io/py/lfm2)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+This is a minimal, open-source implementation of the Liquid Foundation Model 2 (LFM2) architecture described in [Liquid AI's blog post](https://www.liquid.ai/blog/liquid-foundation-models-v2-our-second-series-of-generative-ai-models). Since there is no official open-source implementation available, this repository provides a PyTorch implementation of the core architecture for research and educational purposes.
+
+## Features
+
+- Hybrid architecture combining short-range convolutions with grouped query attention
+- 16 blocks: 10 LIV convolution blocks + 6 GQA blocks
+- Double-gated short-range convolutions for efficient local processing
+- Grouped Query Attention (GQA) for efficient global attention
+- SwiGLU activation functions
+- RMSNorm normalization
+- Rotary Positional Embeddings (RoPE)
+
+## Model Sizes
+
+The implementation supports three model sizes:
+
+- 350M parameters (768 hidden size)
+- 700M parameters (1024 hidden size)
+- 1.2B parameters (1536 hidden size)
+
+## Installation
+
+```bash
+pip3 install -U lfm2 
+```
+
+## Quick Start
+
+```python
+import torch
+from lfm2.main import create_lfm2_model
+
+# Create a model
+model = create_lfm2_model(
+    model_size="700M",  # Choose from: "350M", "700M", "1.2B"
+    vocab_size=32768,
+    max_seq_length=32768,
+    verbose=True
+)
+
+# Example forward pass
+batch_size = 2
+seq_length = 32
+input_ids = torch.randint(0, model.config.vocab_size, (batch_size, seq_length))
+
+# Generate outputs
+with torch.no_grad():
+    outputs = model(input_ids)
+    logits = outputs["logits"]
+```
+
+## Architecture Details
+
+### LIV Convolution Blocks
+The model uses Linear Input-Varying (LIV) convolution blocks that combine double-gating with short-range convolutions:
+
+```python
+def lfm2_conv(x):
+    B, C, x = linear(x)    # input projection
+    x = B*x                # gating (gate depends on input)
+    x = conv(x)            # short conv
+    x = C*x                # gating
+    x = linear(x)
+    return x
+```
+
+### Grouped Query Attention
+The model implements Grouped Query Attention (GQA) for efficient global attention processing, reducing memory and computational requirements while maintaining model quality.
+
+## Usage Examples
+
+Check `example.py` for detailed usage examples including:
+1. Basic forward pass
+2. Forward pass with attention masks
+3. Forward pass with caching
+4. Forward pass with all outputs
+5. Forward pass with custom position IDs
+
+## Citation
+
+If you use this implementation in your research, please cite:
+
+```bibtex
+@misc{lfm2_minimal,
+  author = {Kye Gomez},
+  title = {LFM2: Minimal Implementation of Liquid Foundation Model 2},
+  year = {2024},
+  publisher = {GitHub},
+  url = {https://github.com/kyegomez/LFM2}
+}
+```
+
+## Disclaimer
+
+This is an unofficial, minimal implementation based on publicly available information about the LFM2 architecture. It is not affiliated with or endorsed by Liquid AI. The implementation may differ from the original model in various aspects.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+

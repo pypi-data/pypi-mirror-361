@@ -1,0 +1,65 @@
+[build-system]
+requires = ["setuptools>=46.4"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "blissclient"
+dynamic = ["version"]
+authors = [{ name = "ESRF", email = "bcu@esrf.fr" }]
+description = "A python client library for the bliss REST API"
+readme = { file = "README.md", content-type = "text/markdown" }
+license = { file = "LICENSE.md" }
+classifiers = [
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+]
+requires-python = ">=3.10"
+
+dependencies = [
+    "httpx",
+    "pydantic >= 2",
+    "python-socketio[client] >= 5.11",
+    "tblib",
+]
+
+[project.urls]
+"Homepage" = "https://gitlab.esrf.fr/bliss/blissclient"
+"Bug Tracker" = "https://gitlab.esrf.fr/bliss/blissclient/issues"
+
+[tool.setuptools.dynamic]
+version = {attr = "blissclient.__version__"}
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+blissclient = ["py.typed"]
+
+[project.optional-dependencies]
+test = [
+    "pytest >=7",
+    "pint",
+]
+
+dev = [
+    "black >=24",
+    "flake8 >=4",
+    "flake8-pyproject",
+]
+
+[tool.flake8]
+extend-ignore = ["E501", "E203", "W503"]
+max-line-length = 88
+exclude = [
+    "src/blissclient/openapi",
+]
+
+[tool.coverage.run]
+omit = [
+    "setup.py",
+    "blissclient/tests/*",
+]

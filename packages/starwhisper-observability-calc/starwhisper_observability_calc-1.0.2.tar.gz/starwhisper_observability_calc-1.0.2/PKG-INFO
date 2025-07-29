@@ -1,0 +1,354 @@
+Metadata-Version: 2.1
+Name: starwhisper-observability-calc
+Version: 1.0.2
+Summary: 天文可观测性计算器 - 支持恒星、深空天体和太阳系天体的可观测性计算，提供MCP和Web服务
+Author-email: Cunshi Wang <wangcunshi@nao.cas.cn>
+Maintainer-email: Cunshi Wang <wangcunshi@nao.cas.cn>
+License: MIT
+Project-URL: Homepage, https://github.com/wangcunshi/StarWhisper-observation-calculator
+Project-URL: Repository, https://github.com/wangcunshi/StarWhisper-observation-calculator
+Project-URL: Documentation, https://github.com/wangcunshi/StarWhisper-observation-calculator#readme
+Project-URL: Issues, https://github.com/wangcunshi/StarWhisper-observation-calculator/issues
+Project-URL: Changelog, https://github.com/wangcunshi/StarWhisper-observation-calculator/blob/main/CHANGELOG.md
+Project-URL: Download, https://pypi.org/project/starwhisper-observability-calc/
+Keywords: astronomy,observability,mcp,model-context-protocol,astropy,simbad,starwhisper,observatory,calculation,uvx,fastmcp
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Science/Research
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Scientific/Engineering :: Astronomy
+Classifier: Topic :: Scientific/Engineering :: Physics
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Environment :: Console
+Classifier: Framework :: FastAPI
+Classifier: Typing :: Typed
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: astropy>=5.0.0
+Requires-Dist: astroquery>=0.4.6
+Requires-Dist: astroplan>=0.8.0
+Requires-Dist: numpy>=1.20.0
+Requires-Dist: typing-extensions>=4.0.0
+Provides-Extra: web
+Requires-Dist: fastapi>=0.104.0; extra == "web"
+Requires-Dist: uvicorn[standard]>=0.24.0; extra == "web"
+Requires-Dist: pydantic>=2.0.0; extra == "web"
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=3.0.0; extra == "dev"
+Requires-Dist: black>=22.0.0; extra == "dev"
+Requires-Dist: isort>=5.0.0; extra == "dev"
+Requires-Dist: flake8>=4.0.0; extra == "dev"
+Requires-Dist: mypy>=0.910; extra == "dev"
+Requires-Dist: pre-commit>=2.15.0; extra == "dev"
+Requires-Dist: build>=0.10.0; extra == "dev"
+Requires-Dist: twine>=4.0.0; extra == "dev"
+Provides-Extra: all
+Requires-Dist: starwhisper-observability-calc[web]; extra == "all"
+Requires-Dist: starwhisper-observability-calc[dev]; extra == "all"
+
+# StarWhisper Observatory Calculator
+
+[![PyPI version](https://badge.fury.io/py/starwhisper-observation-calculator.svg)](https://badge.fury.io/py/starwhisper-observation-calculator)
+[![Python versions](https://img.shields.io/pypi/pyversions/starwhisper-observation-calculator.svg)](https://pypi.org/project/starwhisper-observation-calculator/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+一个用于计算天文目标可观测性的Python包，支持恒星、深空天体和太阳系天体。提供MCP（Model Context Protocol）服务接口，可与支持MCP的AI助手集成。
+
+## 🌟 主要特性
+
+- 🔭 **多目标支持**: 恒星、深空天体、太阳系天体
+- 📍 **灵活观测站**: 支持自定义观测站位置
+- 🌙 **月距约束**: 考虑月球干扰的可观测性分析
+- 📊 **高度曲线**: 生成24小时高度变化曲线
+- 🌐 **Web API**: 提供RESTful API接口
+- 🤖 **MCP服务**: 标准MCP协议，支持AI助手集成
+- 📱 **命令行工具**: 简单易用的CLI界面
+
+## 🚀 快速开始
+
+### 安装
+
+```bash
+# 基本安装
+pip install starwhisper-observation-calculator
+
+# 或使用 uv
+uv pip install starwhisper-observation-calculator
+
+# 安装Web服务支持
+pip install starwhisper-observation-calculator[web]
+
+# 安装完整功能
+pip install starwhisper-observation-calculator[all]
+```
+
+### 基本使用
+
+```python
+from starwhisper_observation_calculator import ObservabilityCalculator
+
+# 创建计算器（默认兴隆观测站）
+calculator = ObservabilityCalculator(
+    latitude=40.393333,
+    longitude=117.575278,
+    altitude=900.0
+)
+
+# 计算Vega可观测性
+result = calculator.calculate_observability("Vega")
+print(result)
+```
+
+### 命令行使用
+
+```bash
+# 基本使用
+observability-calculator Vega
+
+# 指定观测站
+observability-calculator moon --latitude 40.393333 --longitude 117.575278
+
+# 自定义约束条件
+observability-calculator M31 --min-altitude 20 --min-moon-separation 45
+```
+
+## 🤖 MCP服务
+
+本包提供完整的MCP服务，可与支持MCP的AI助手（如Claude Desktop、Cursor等）集成。
+
+### 启动MCP服务
+
+#### 方法一：使用 uvx（推荐，无需安装）
+
+```bash
+# 直接运行MCP服务
+uvx starwhisper-observation-calculator
+
+# 运行计算器
+uvx starwhisper-observation-calculator --calculator Vega
+
+# 启动Web服务
+uvx starwhisper-observation-calculator --web --port 8080
+```
+
+#### 方法二：本地安装后使用
+
+```bash
+# 启动MCP服务
+observability-mcp
+
+# 或直接使用python模块
+python -m starwhisper_observation_calculator.mcp_server
+```
+
+### MCP配置
+
+#### 方法一：使用 uvx（推荐）
+
+```json
+{
+  "mcpServers": {
+    "starwhisper-observation": {
+      "command": "uvx",
+      "args": ["starwhisper-observation-calculator"],
+      "env": {}
+    }
+  }
+}
+```
+
+#### 方法二：本地安装后使用
+
+```json
+{
+  "mcpServers": {
+    "starwhisper-observation": {
+      "command": "observability-mcp",
+      "args": [],
+      "env": {}
+    }
+  }
+}
+```
+
+### 在AI助手中使用
+
+安装并配置MCP服务后，你可以直接与AI助手对话：
+
+```
+用户: 请计算Vega在兴隆观测站的可观测性
+AI助手: 我来为您计算Vega在兴隆观测站的可观测性...
+
+[自动调用MCP工具: calculate_observability]
+参数: latitude=40.393333, longitude=117.575278, target_name="Vega"
+
+结果: 
+🌟 Vega 可观测性分析报告
+
+📍 观测站: 40.393333°, 117.575278°, 900.0m
+🌌 坐标: 18:36:56.3363, +38:47:01.280  
+📊 当前高度: 45.23°
+✅ 可观测性: 可观测
+🎯 约束条件: 高度✅ 月距✅
+```
+
+## 🌐 Web服务
+
+### 启动Web服务
+
+```bash
+# 启动Web服务
+observability-web
+
+# 或指定端口
+observability-web --port 8080
+```
+
+### API接口
+
+- `GET /` - Web界面
+- `GET /docs` - API文档
+- `POST /observability` - 计算可观测性
+- `POST /observability/batch` - 批量计算
+- `GET /targets/supported` - 获取支持的目标
+- `GET /observatories` - 获取预设观测站
+
+### 使用示例
+
+```bash
+# 计算Vega可观测性
+curl -X POST "http://localhost:8000/observability" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "latitude": 40.393333,
+    "longitude": 117.575278,
+    "target_name": "Vega"
+  }'
+```
+
+## 📊 支持的目标
+
+### 太阳系天体
+- sun, moon, mercury, venus, mars, jupiter, saturn, uranus, neptune, pluto
+
+### 恒星
+- Vega, Sirius, Polaris, Rigel, Betelgeuse, Altair, Deneb, Arcturus, Spica, Antares
+
+### 深空天体
+- M31, M42, M13, M57, M27, M51, M104, M87
+
+## 📍 预设观测站
+
+- **兴隆观测站**: 40.393333°, 117.575278°, 900m
+- **新昌观测站**: 29.501784°, 120.905740°, 0m
+- **帕洛马天文台**: 33.3563°, -116.8650°, 1712m
+
+## 🔧 高级配置
+
+### 自定义观测站
+
+```python
+from starwhisper_observation_calculator import ObservabilityCalculator
+
+calculator = ObservabilityCalculator(
+    latitude=your_latitude,
+    longitude=your_longitude,
+    altitude=your_altitude,
+    timezone="Asia/Shanghai"
+)
+```
+
+### 约束条件
+
+```python
+result = calculator.calculate_observability(
+    target_name="Vega",
+    min_altitude=20.0,        # 最小地平高度
+    min_moon_separation=45.0, # 最小月距
+    time_range_hours=48       # 检查时间范围
+)
+```
+
+## 🛠️ 开发
+
+### 安装开发依赖
+
+```bash
+# 克隆项目
+git clone https://github.com/wangcunshi/StarWhisper-observation-calculator.git
+cd StarWhisper-observation-calculator
+
+# 安装开发依赖
+pip install -e .[dev]
+
+# 或使用 uv
+uv pip install -e .[dev]
+```
+
+### 运行测试
+
+```bash
+# 测试核心功能
+python -c "from starwhisper_observation_calculator import ObservabilityCalculator; print('✅ 导入成功')"
+
+# 测试MCP服务
+observability-mcp
+
+# 测试Web服务
+observability-web
+```
+
+### 代码格式化
+
+```bash
+# 格式化代码
+black src tests
+isort src tests
+
+# 类型检查
+mypy src
+```
+
+## 📄 许可证
+
+本项目采用 MIT 许可证，详见 [LICENSE](LICENSE) 文件。
+
+## 🤝 贡献
+
+欢迎提交 Issue 和 Pull Request！
+
+1. Fork 项目
+2. 创建功能分支 (`git checkout -b feature/amazing-feature`)
+3. 提交更改 (`git commit -m 'Add amazing feature'`)
+4. 推送到分支 (`git push origin feature/amazing-feature`)
+5. 创建 Pull Request
+
+## 📞 支持
+
+- 📧 邮箱: wangcunshi@nao.cas.cn
+- 🐛 Issues: [GitHub Issues](https://github.com/wangcunshi/StarWhisper-observation-calculator/issues)
+- 📖 文档: [GitHub README](https://github.com/wangcunshi/StarWhisper-observation-calculator#readme)
+
+## 📝 更新日志
+
+### v1.0.0
+- 🎉 首次发布
+- ✨ 支持恒星、深空天体和太阳系天体
+- 🤖 MCP服务支持
+- 🌐 Web API接口
+- 📱 命令行工具
+- 📊 高度曲线生成
+- 🌙 月距约束检查
+
+---
+
+⭐ 如果这个项目对你有帮助，请给它一个 Star！ 

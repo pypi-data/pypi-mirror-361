@@ -1,0 +1,86 @@
+import tiktoken
+import llm
+from .node import NodeType
+from typing import Dict, Iterable, TypeVar, Callable, List
+from .templates import (
+    ROOT_LEVEL_TEMPLATE,
+    SYSTEM_PROMPT,
+    FOLDER_SHORT_DESCRIPTION_TEMPLATE,
+    FILE_TEMPLATE,
+)
+import logging
+import concurrent.futures
+import os
+
+# Configure default logger
+logger = logging.getLogger("llm_devtale")
+
+# Type variables for generic functions
+T = TypeVar("T")
+R = TypeVar("R")
+prompts: Dict[NodeType, str] = {
+    NodeType.FILE: FILE_TEMPLATE,
+    NodeType.FOLDER: FOLDER_SHORT_DESCRIPTION_TEMPLATE,
+    NodeType.REPOSITORY: ROOT_LEVEL_TEMPLATE,
+}
+
+
+class TokenCounter:
+    @staticmethod
+    def count_tokens(text: str) -> int:
+        return len(tiktoken.get_encoding("cl100k_base").encode(text))
+
+
+def get_prompt(summary_type: NodeType) -> str:
+    prompt: str = prompts.get(summary_type, "")
+    if not prompt:
+        raise Exception("No template found with {summary_type}")
+
+    return prompt
+
+
+def generate_summary(llm_model: llm.Model, data: dict, summary_type: NodeType) -> str:
+    prompt: str = get_prompt(summary_type).format(data=data)
+    return llm_model.prompt(prompt, system=SYSTEM_PROMPT).text()
+
+
+def get_llm_model(model_name: str) -> llm.Model:
+    if not model_name:
+        model_name = llm.get_default_model()
+
+    return llm.get_model(model_name)
+
+
+def parallel_process(
+    items: Iterable[T], process_func: Callable[[T], R], max_workers: int = 0
+) -> List[R]:
+    """
+    Process items in parallel using a thread pool.
+
+    Args:
+        items: Items to process
+        process_func: Function to apply to each item
+        max_workers: Maximum number of worker threads
+
+    Returns:
+        List of results
+    """
+    items_list = list(items)
+    results = []
+
+    if max_workers < 1:
+        max_workers = min(10, (os.cpu_count() or 4))
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = []
+        for item in items_list:
+            futures.append(executor.submit(process_func, item))
+
+        for future in concurrent.futures.as_completed(futures):
+            try:
+                result = future.result()
+                results.append(result)
+            except Exception as e:
+                logger.error(f"Error in parallel processing: {e}")
+
+    return results

@@ -1,0 +1,84 @@
+Metadata-Version: 2.1
+Name: explainiverse
+Version: 0.1.1a0
+Summary: Unified, extensible explainability framework supporting LIME, SHAP, and custom adapters
+Home-page: https://github.com/jemsbhai/explainiverse
+License: MIT
+Author: Muntaser Syed
+Author-email: jemsbhai@gmail.com
+Requires-Python: >=3.10,<3.13
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Dist: lime (>=0.2.0.1,<0.3.0.0)
+Requires-Dist: numpy (==1.24.4)
+Requires-Dist: scikit-learn (>=1.1,<1.4)
+Requires-Dist: shap (>=0.48.0,<0.49.0)
+Requires-Dist: xgboost (>=3.0.2,<4.0.0)
+Project-URL: Repository, https://github.com/jemsbhai/explainiverse
+Description-Content-Type: text/markdown
+
+# Explainiverse
+
+Explainiverse is a unified, extensible, and testable Python framework for explainable AI (XAI).  
+It provides a consistent API and support for post-hoc explainers like LIME and SHAP, model adapters, and rigorous evaluation strategies.
+
+---
+
+## Features
+
+- Standardized Explainer interface (`BaseExplainer`)
+- Support for classification, regression, and multi-class models
+- Integrated explainers:
+  - LIME (Local surrogate models)
+  - SHAP (KernelExplainer with per-class and global support)
+- Adapter layer for scikit-learn models
+- Explanation object with structured output and future extensibility for `.plot()`
+- Full unit test suite covering classification, regression, global/cohort SHAP, and adapter behavior
+
+---
+
+## Installation
+
+This package will soon be available on PyPI.
+
+For development use:
+
+```bash
+git clone https://github.com/YOUR_USERNAME/explainiverse.git
+cd explainiverse
+poetry install
+```
+
+---
+
+## Running Tests
+
+All tests can be run using:
+
+```bash
+poetry run python tests/test_all.py
+```
+
+For individual component testing:
+
+```bash
+poetry run python tests/test_shap_explainer.py
+poetry run python tests/test_lime_explainer.py
+```
+
+---
+
+## Documentation
+
+Documentation is currently in development.  
+Until then, test files (especially `test_shap_explainer.py`) demonstrate usage and structure.
+
+---
+
+## License
+
+This project is licensed under the MIT License.
+

@@ -1,0 +1,200 @@
+#**************
+# p o e t r y *
+#**************
+
+[tool.poetry]
+name = "finsy"
+version = "0.28.0"
+description = "P4Runtime Client Library"
+license = "Apache-2.0"
+authors = ["Bill Fisher <william.w.fisher@gmail.com>"]
+readme = "README.md"
+homepage = "https://github.com/byllyfish/finsy"
+classifiers = [
+  "Development Status :: 4 - Beta", 
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Framework :: AsyncIO",
+  "Typing :: Typed",
+]
+
+[tool.poetry.requires-plugins]
+poetry-plugin-export = ">=1.8"
+
+[tool.poetry.urls]
+"Release Notes" = "https://github.com/byllyfish/finsy/blob/main/CHANGELOG.md"
+"Issue Tracker" = "https://github.com/byllyfish/finsy/issues"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+# Core dependencies.
+grpcio = "^1.73.1"
+parsy = "^2.1.0"
+protobuf = "^6.31.1"
+pyee = "^13.0.0"
+
+# Optional dependency: installed via `pip install finsy[demonet]`
+shellous = { version = "^0.38.0", optional = true }
+
+[tool.poetry.extras]
+demonet = ["shellous"]
+
+[tool.poetry.group.dev.dependencies]
+black = "25.1.0"
+mypy = "^1.16.1"
+pdoc = "^15.0.4"
+prometheus-client = "^0.22.1"
+pylint = "^3.3.7"
+pyright = "^1.1.403"
+pytest = "^8.4.1"
+pytest-asyncio = "^1.0.0"
+pytest-cov = "^6.2.1"
+ruff = "^0.12.2"
+shellous = "^0.38.0"
+
+[tool.poetry.group.demonet]
+optional = true
+
+[tool.poetry.group.demonet.dependencies]
+pygraphviz = "^1.13"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+#**************
+# p y t e s t *
+#**************
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+addopts = '-s --log-cli-format="%(created).03f %(levelname)s %(name)s %(message)s" --log-cli-level=DEBUG --log-file-format="%(created).03f %(levelname)s %(name)s %(message)s"'
+norecursedirs = ["examples"]
+
+#****************
+# p y r i g h t *
+#****************
+
+[tool.pyright]
+ignore = [
+  "finsy/proto/**/*_pb2.py", 
+  "finsy/proto/**/*_pb2.pyi", 
+  "finsy/proto/**/*_pb2_grpc.py", 
+  "finsy/proto/**/*_pb2_grpc.pyi",
+  "finsy/test/demonet_topo.py",
+  "examples/tests/*.py"
+]
+strict = [
+  "examples/**/*.py", 
+  "finsy/**/*.py",
+  "tests/conftest.py",
+  "tests/test_p4data.py",
+  "tests/test_p4entity.py",
+  "tests/test_p4schema.py",
+  "tests/test_p4values.py",
+  "tests/test_controller.py",
+  "tests/test_switch.py"
+]
+useLibraryCodeForTypes = true
+
+# Enable warnings not enabled by `strict`.
+reportUninitializedInstanceVariable = "warning"
+reportCallInDefaultInitializer = "warning"
+reportUnnecessaryTypeIgnoreComment = "warning"
+
+#************
+# b l a c k *
+#************
+
+[tool.black]
+target-version = ['py310']
+required-version = "25.1.0"
+force-exclude = "_pb2(_grpc)?\\.pyi?$"
+
+#************
+# i s o r t *
+#************
+
+[tool.isort]
+profile = "black"
+skip_glob = ["*_pb2.py", "*_pb2_grpc.py", ".venv*", ".poetry"]
+
+#**************
+# p y l i n t *
+#**************
+
+[tool.pylint.main]
+ignore-patterns = [".*_pb2\\.py", ".*_pb2_grpc\\.py"]
+ignore-paths = ["finsy/proto"]
+ignored-modules = ["finsy.proto"]
+
+[tool.pylint.basic]
+good-names = ["i", "j", "k", "v", "ex", "Run", "_", "m", "s", "ee", "up", "id", "vt"]
+
+[tool.pylint.design]
+max-attributes = 17
+min-public-methods = 0
+max-public-methods = 27
+max-branches = 15
+max-returns = 10
+
+[tool.pylint.format]
+max-module-lines = 2700
+max-line-length = 120
+
+[tool.pylint."messages control"]
+disable = [
+  "wrong-import-position",
+  "cyclic-import",
+  "protected-access",
+  "unnecessary-ellipsis",
+]
+
+[tool.pylint.variables]
+allowed-redefined-builtins = ["format"]
+
+#**********
+# m y p y *
+#**********
+
+[tool.mypy]
+disallow_untyped_defs = true
+exclude = [ ".+_pb2.py", ".+_pb2_grpc.py" ]
+
+#**********
+# r u f f *
+#**********
+
+[tool.ruff]
+exclude = [
+  "*_pb2.{py,pyi}", 
+  "*pb2_grpc.{py,pyi}", 
+  "typings/*.pyi", 
+  "*/install-poetry.py",
+  "*/demonet_topo.py",
+]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "D202", "PTH", "RET", "RUF", "W"]
+ignore = [
+  "S101",   # Use of `assert` detected
+  "EM101",  # Exception must not use a string literal, assign to variable first
+  "EM102",  # Exception must not use an f-string literal, assign to variable first
+]
+
+[tool.ruff.lint.per-file-ignores]
+"finsy/proto/__init__.py" = ["E402"]
+"examples/int/demo/main.py" = ["F403", "F405"]
+
+# Line too long (E501)
+"examples/tests/*.py" = ["E501"]
+".devcontainer/install-poetry.py" = ["E501"]
+"finsy/test/gnmi_server.py" = ["E501"]
+"tests/test_gnmistring.py" = ["E501"]
+"tests/test_p4client.py" = ["E501"]
+"tests/test_pbutil.py" = ["E501"]

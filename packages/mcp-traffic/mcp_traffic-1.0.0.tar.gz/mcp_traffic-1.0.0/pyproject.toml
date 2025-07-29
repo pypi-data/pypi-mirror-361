@@ -1,0 +1,151 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mcp-traffic"
+version = "1.0.0"
+description = "Tokyo traffic data collection and analysis system using ODPT API"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Tatsuru Kikuchi", email = "contact@mcp-traffic.example.com"}
+]
+maintainers = [
+    {name = "Tatsuru Kikuchi", email = "contact@mcp-traffic.example.com"}
+]
+keywords = [
+    "tokyo",
+    "traffic",
+    "transportation",
+    "odpt",
+    "data-collection",
+    "japan",
+    "transit",
+    "api",
+    "real-time",
+    "monitoring"
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Environment :: Console",
+    "Environment :: Web Environment"
+]
+requires-python = ">=3.8"
+dependencies = [
+    "requests>=2.31.0",
+    "python-dotenv>=1.0.0",
+    "schedule>=1.2.0",
+    "click>=8.1.0",
+    "pandas>=2.0.0",
+    "numpy>=1.24.0",
+    "pytz>=2023.3",
+    "jsonschema>=4.17.0",
+    "pydantic>=2.0.0",
+    "sqlalchemy>=2.0.0",
+    "psutil>=5.9.0",
+    "prometheus-client>=0.17.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+    "mypy>=1.4.0",
+    "pre-commit>=3.0.0"
+]
+postgres = ["psycopg2-binary>=2.9.0"]
+mongodb = ["pymongo>=4.4.0"]
+all = [
+    "psycopg2-binary>=2.9.0",
+    "pymongo>=4.4.0"
+]
+
+[project.urls]
+Homepage = "https://tatsuru-kikuchi.github.io/MCP-traffic"
+Documentation = "https://tatsuru-kikuchi.github.io/MCP-traffic/docs/"
+Dashboard = "https://tatsuru-kikuchi.github.io/MCP-traffic/dashboard.html"
+Repository = "https://github.com/Tatsuru-Kikuchi/MCP-traffic"
+"Bug Tracker" = "https://github.com/Tatsuru-Kikuchi/MCP-traffic/issues"
+Changelog = "https://github.com/Tatsuru-Kikuchi/MCP-traffic/blob/main/CHANGELOG.md"
+
+[project.scripts]
+mcp-traffic = "mcp_traffic.cli:main"
+mcp-collect = "mcp_traffic.collectors.traffic_collector:main"
+
+[tool.setuptools.packages.find]
+include = ["mcp_traffic*"]
+exclude = ["tests*"]
+
+[tool.setuptools.package-data]
+mcp_traffic = ["*.json", "*.yml", "*.yaml", "*.txt"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q --strict-markers --strict-config"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[tool.coverage.run]
+source = ["mcp_traffic"]
+omit = ["*/tests/*", "*/venv/*", "*/.venv/*"]
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
+skip_covered = false
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true

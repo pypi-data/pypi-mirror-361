@@ -1,0 +1,54 @@
+Metadata-Version: 2.4
+Name: pydlltoolkit
+Version: 0.1.0b0
+Summary: Python DLL Injection Toolkit
+Home-page: https://github.com/CodeChakkra/pydlltoolkit
+Author: CodeChakkra
+Author-email: ttenwi888@gmail.com
+Requires-Python: >=3.13
+Description-Content-Type: text/markdown
+Requires-Dist: pywin32>=300
+Dynamic: author
+Dynamic: author-email
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# pydlltoolkit
+
+## Installation
+
+You can install the package via pip:
+
+```bash
+pip install pydlltoolkit
+```
+
+Example:
+
+```python
+
+import os
+from pydlltoolkit import DllInjector
+
+if __name__ == "__main__":
+    pid = 888
+
+    base_dir = os.path.dirname(__file__)
+
+    dll_path = os.path.join(base_dir, "simple.dll")
+    dll_name = os.path.basename(dll_path)
+
+    d = DllInjector()
+
+    # Inject DLL
+    d.inject(pid, dll_path)
+
+    # # Uninject DLL (Unload)
+    d.uninject(pid, dll_name)
+
+
+```

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Getting started &#8212; coolstring 0.0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=d45e8c67"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Reference" href="reference.html" />
+    <link rel="prev" title="coolstring documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="getting-started">
+<h1>Getting started<a class="headerlink" href="#getting-started" title="Link to this heading">¶</a></h1>
+<p>This section will give you basic information how to use the <strong>CoolString</strong> class.</p>
+<section id="installation-and-import">
+<h2>Installation and Import<a class="headerlink" href="#installation-and-import" title="Link to this heading">¶</a></h2>
+<p>Installing the module is done using pip:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>coolstring
+</pre></div>
+</div>
+<p>or, to install for a specific python interpreter, for example python3.11, do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3.11<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>coolstring
+</pre></div>
+</div>
+<p>Now, let’s import the module in python and create a CoolString object from a string:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">coolstring</span><span class="w"> </span><span class="kn">import</span> <span class="n">CoolString</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">foo</span> <span class="o">=</span> <span class="n">CoolString</span><span class="p">(</span><span class="s2">&quot;Hello world!&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Great! Now we have a CoolString!</p>
+</section>
+<section id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading">¶</a></h2>
+<p>The aim of CoolString is to add compatibility with as many operators as possible.
+Of course, CoolString can still do basic things like addition or multiplication:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">coolstring</span><span class="w"> </span><span class="kn">import</span> <span class="n">CoolString</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">foo</span> <span class="o">=</span> <span class="n">CoolString</span><span class="p">(</span><span class="s2">&quot;Hello world!&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">foo</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">&#39;Hello world!3&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">foo</span> <span class="o">+</span> <span class="s2">&quot;bar&quot;</span><span class="p">)</span>
+<span class="go">&#39;Hello world!bar&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">foo</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">&#39;Hello world!Hello world!Hello world!&#39;</span>
+</pre></div>
+</div>
+<p>But it also includes subtraction and division:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">coolstring</span><span class="w"> </span><span class="kn">import</span> <span class="n">CoolString</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">foo</span> <span class="o">=</span> <span class="n">CoolString</span><span class="p">(</span><span class="s2">&quot;Hello world!&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">foo</span> <span class="o">-</span> <span class="s2">&quot; world&quot;</span><span class="p">)</span>
+<span class="go">&#39;Hello!&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">foo</span><span class="o">//</span><span class="mi">3</span>
+<span class="go">[CoolString(&#39;Hell&#39;), CoolString(&#39;o wo&#39;), CoolString(&#39;rld!&#39;)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">foo</span><span class="o">/</span><span class="mi">3</span>
+<span class="go">[CoolString(&#39;Hell&#39;), CoolString(&#39;o wo&#39;), CoolString(&#39;rld!&#39;), CoolString(&#39;&#39;)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">foo</span><span class="o">%</span><span class="mi">3</span>
+<span class="go">CoolString(&#39;&#39;)</span>
+</pre></div>
+</div>
+<p>There are many more, check the <a class="reference internal" href="reference.html"><span class="doc">Reference</span></a> for more details.</p>
+</section>
+<section id="configuring">
+<h2>Configuring<a class="headerlink" href="#configuring" title="Link to this heading">¶</a></h2>
+<p>For some operations, it is possible to set a mode in which they operate.
+This applies to the compare operators as well as the shifting operators.</p>
+<p>Configuring a CoolString is done with the <strong>configure</strong>-method:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">coolstring</span><span class="w"> </span><span class="kn">import</span> <span class="n">CoolString</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">foo</span> <span class="o">=</span> <span class="n">CoolString</span><span class="p">(</span><span class="s2">&quot;Hello World!&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">foo</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">shiftmode</span><span class="o">=</span><span class="n">bitshift</span><span class="p">,</span><span class="n">compmode</span><span class="o">=</span><span class="n">length</span><span class="p">)</span> <span class="c1">#...</span>
+</pre></div>
+</div>
+<p>When a new CoolString object is created from this CoolString object, the configuration is copied to the new CoolString.</p>
+<p>See the <a class="reference internal" href="reference.html"><span class="doc">Reference</span></a> for the specific configuration values.</p>
+<p>Additionally, you can configure the key “verbose” with a boolean.
+If enabled, some operations will print information about what they do in operation.</p>
+<p>Default modes are shiftmode=”stringshift”, compmode=”content” and verbose=False.</p>
+</section>
+<section id="information">
+<h2>Information<a class="headerlink" href="#information" title="Link to this heading">¶</a></h2>
+<p>Because this is still in early stage, I cannot ensure that there are no bugs.</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">coolstring</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation-and-import">Installation and Import</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configuring">Configuring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#information">Information</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">coolstring documentation</a></li>
+      <li>Next: <a href="reference.html" title="next chapter">Reference</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, DouglasAdams_42.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/start.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

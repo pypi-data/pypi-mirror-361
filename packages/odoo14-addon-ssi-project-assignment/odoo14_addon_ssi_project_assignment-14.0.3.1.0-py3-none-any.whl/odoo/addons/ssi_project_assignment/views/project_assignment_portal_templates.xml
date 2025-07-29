@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <template
+        id="portal_layout"
+        name="Portal layout: project menu entry"
+        inherit_id="portal.portal_breadcrumbs"
+        priority="40"
+    >
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li
+                t-if="page_name == 'project_assignment' or project_assignment"
+                class="col-lg-2"
+                t-attf-class="breadcrumb-item #{'active ' if not project else ''}"
+            >
+                <a
+                    t-if="project_assignment"
+                    t-attf-href="/my/project-assignments?{{ keep_query() }}"
+                >Project Assignments</a>
+                <t t-else="">Project Assignments</t>
+            </li>
+            <li
+                t-if="project_assignment"
+                class="breadcrumb-item active text-truncate col-8 col-lg-10"
+            >
+                <t t-esc="project_assignment.name" />
+            </li>
+        </xpath>
+    </template>
+
+    <template
+        id="portal_my_home"
+        name="Show Project Assignments"
+        customize_show="True"
+        inherit_id="portal.portal_my_home"
+        priority="40"
+    >
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Project Assignments</t>
+                <t t-set="url" t-value="'/my/project-assignments'" />
+                <t t-set="placeholder_count" t-value="'project_assignment_count'" />
+            </t>
+        </xpath>
+    </template>
+
+    <template id="portal_my_project_assignments" name="My Project Assignments">
+        <t t-call="portal.portal_layout">
+            <t t-set="title">Project Assignments</t>
+            <t t-set="breadcrumbs_searchbar" t-value="True" />
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Project Assignments</t>
+            </t>
+            <t t-if="not project_assignments">
+                <div class="alert alert-warning mt8" role="alert">
+                    There are no Project Assignments.
+                </div>
+            </t>
+            <t t-if="project_assignments" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th># Document</th>
+                        <th>Project</th>
+                        <th>Assignee</th>
+                        <th>Role</th>
+                        <th>Date Assign</th>
+                        <th>Date Start</th>
+                        <th>Date End</th>
+                        <th>Responsible</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="project_assignments" t-as="project_assignment">
+                        <td>
+                            <a
+                                t-attf-href="/my/project-assignment/#{project_assignment.id}?{{ keep_query() }}"
+                            ><span t-field="project_assignment.name" /></a>
+                        </td>
+                        <td><span t-field="project_assignment.project_id" /></td>
+                        <td><span t-field="project_assignment.asignee_id" /></td>
+                        <td><span t-field="project_assignment.role_id" /></td>
+                        <td><span t-field="project_assignment.date_assign" /></td>
+                        <td><span t-field="project_assignment.date_start" /></td>
+                        <td><span t-field="project_assignment.date_end" /></td>
+                        <td><span t-field="project_assignment.user_id" /></td>
+                        <td class="tx_status">
+                            <t t-if="project_assignment.state == 'draft'">
+                                <span class="badge badge-pill badge-info"><i
+                                        class="fa fa-fw fa-clock-o"
+                                        aria-label="Draft"
+                                        title="Draft"
+                                        role="img"
+                                    /><span
+                                        class="d-none d-md-inline"
+                                    >Draft</span></span>
+                            </t>
+                            <t t-if="project_assignment.state == 'confirm'">
+                                <span class="badge badge-pill badge-info"><i
+                                        class="fa fa-fw fa-clock-o"
+                                        aria-label="Waiting for Approval"
+                                        title="Waiting for Approval"
+                                        role="img"
+                                    /><span
+                                        class="d-none d-md-inline"
+                                    >Waiting for Approval</span></span>
+                            </t>
+                            <t t-if="project_assignment.state == 'open'">
+                                <span class="badge badge-pill badge-info"><i
+                                        class="fa fa-fw fa-clock-o"
+                                        aria-label="In Progress"
+                                        title="In Progress"
+                                        role="img"
+                                    /><span
+                                        class="d-none d-md-inline"
+                                    >In Progress</span></span>
+                            </t>
+                            <t t-if="project_assignment.state == 'done'">
+                                <span class="badge badge-pill badge-info"><i
+                                        class="fa fa-fw fa-clock-o"
+                                        aria-label="Done"
+                                        title="Done"
+                                        role="img"
+                                    /><span
+                                        class="d-none d-md-inline"
+                                    >Done</span></span>
+                            </t>
+                            <t t-if="project_assignment.state == 'reject'">
+                                <span class="badge badge-pill badge-info"><i
+                                        class="fa fa-fw fa-clock-o"
+                                        aria-label="Reject"
+                                        title="Reject"
+                                        role="img"
+                                    /><span
+                                        class="d-none d-md-inline"
+                                    >Reject</span></span>
+                            </t>
+                            <t t-if="project_assignment.state == 'terminate'">
+                                <span class="badge badge-pill badge-info"><i
+                                        class="fa fa-fw fa-clock-o"
+                                        aria-label="Terminate"
+                                        title="Terminate"
+                                        role="img"
+                                    /><span
+                                        class="d-none d-md-inline"
+                                    >Terminate</span></span>
+                            </t>
+                            <t t-if="project_assignment.state == 'cancel'">
+                                <span class="badge badge-pill badge-info"><i
+                                        class="fa fa-fw fa-clock-o"
+                                        aria-label="Cancelled"
+                                        title="Cancelled"
+                                        role="img"
+                                    /><span
+                                        class="d-none d-md-inline"
+                                    >Cancelled</span></span>
+                            </t>
+                        </td>
+                    </tr>
+                </tbody>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_my_project_assignment" name="My Project Assignment">
+        <t t-call="portal.portal_layout">
+            <t t-set="title">Project Assignment</t>
+            <t t-call="portal.portal_record_layout">
+                <t t-set="card_header">
+                    <div class="row no-gutters">
+                        <div class="col-12">
+                            <h5 class="d-flex mb-1 mb-md-0 row">
+                                <span
+                                    t-field="project_assignment.name"
+                                    class="col-9 text-truncate"
+                                />
+                                <small class="text-muted d-none d-md-inline"> (#<span
+                                        t-field="project_assignment.id"
+                                    />)</small>
+                                <div class="col-3 col-md-2 text-right">
+                                    <small class="text-right">Status:</small>
+                                    <t t-if="project_assignment.state == 'draft'">
+                                        <span
+                                            class=" badge badge-pill badge-info"
+                                            title="Current stage of this assignment request"
+                                        >Draft</span>
+                                    </t>
+                                    <t t-if="project_assignment.state == 'confirm'">
+                                        <span
+                                            class=" badge badge-pill badge-info"
+                                            title="Current stage of this assignment request"
+                                        >Waiting for Apporval</span>
+                                    </t>
+                                    <t t-if="project_assignment.state == 'open'">
+                                        <span
+                                            class=" badge badge-pill badge-info"
+                                            title="Current stage of this assignment request"
+                                        >In Progress</span>
+                                    </t>
+                                    <t t-if="project_assignment.state == 'done'">
+                                        <span
+                                            class=" badge badge-pill badge-info"
+                                            title="Current stage of this assignment request"
+                                        >Done</span>
+                                    </t>
+                                    <t t-if="project_assignment.state == 'reject'">
+                                        <span
+                                            class=" badge badge-pill badge-info"
+                                            title="Current stage of this assignment request"
+                                        >Reject</span>
+                                    </t>
+                                    <t t-if="project_assignment.state == 'terminate'">
+                                        <span
+                                            class=" badge badge-pill badge-info"
+                                            title="Current stage of this assignment request"
+                                        >Terminate</span>
+                                    </t>
+                                    <t t-if="project_assignment.state == 'cancel'">
+                                        <span
+                                            class=" badge badge-pill badge-info"
+                                            title="Current stage of this assignment request"
+                                        >Cancelled</span>
+                                    </t>
+                                </div>
+                            </h5>
+                        </div>
+                    </div>
+                </t>
+                <t t-set="card_body">
+                    <div class="row mb-1">
+                        <div class="col-12 col-md-6 mb-1">
+                            <strong>Document:</strong> <span
+                                t-field="project_assignment.name"
+                            />
+                        </div>
+                        <div
+                            class="col-12 col-md-6"
+                            t-if="project_assignment.date_assign"
+                        >
+                            <strong>Date Assign:</strong> <span
+                                t-field="project_assignment.date_assign"
+                                t-options='{"widget": "date"}'
+                            />
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-12 col-md-6 mb-1">
+                            <strong>Project:</strong> <span
+                                t-field="project_assignment.project_id"
+                            />
+                        </div>
+                        <div
+                            class="col-12 col-md-6"
+                            t-if="project_assignment.date_start"
+                        >
+                            <strong>Date Start:</strong> <span
+                                t-field="project_assignment.date_start"
+                                t-options='{"widget": "date"}'
+                            />
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-12 col-md-6 mb-1">
+                            <strong>Role:</strong> <span
+                                t-field="project_assignment.role_id"
+                            />
+                        </div>
+                        <div class="col-12 col-md-6" t-if="project_assignment.date_end">
+                            <strong>Date End:</strong> <span
+                                t-field="project_assignment.date_end"
+                                t-options='{"widget": "date"}'
+                            />
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-12 col-md-6 mb-1">
+                            <strong>Responsible:</strong> <span
+                                t-field="project_assignment.user_id"
+                            />
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <div
+                            class="col-12 col-md-6 mb-1"
+                            t-if="project_assignment.asignee_id"
+                        >
+                            <strong>Assignee:</strong>
+                            <div class="row">
+                                <div class="col flex-grow-0 pr-3">
+                                    <img
+                                        t-if="project_assignment.asignee_id.image_1024"
+                                        class="rounded-circle mt-1 o_portal_contact_img"
+                                        t-att-src="image_data_uri(project_assignment.asignee_id.image_1024)"
+                                        alt="Contact"
+                                    />
+                                    <img
+                                        t-else=""
+                                        class="rounded-circle mt-1 o_portal_contact_img"
+                                        src="/web/static/src/img/user_menu_avatar.png"
+                                        alt="Contact"
+                                    />
+                                </div>
+                                <div class="col pl-md-0">
+                                    <div
+                                        t-field="project_assignment.asignee_id"
+                                        t-options='{"widget": "contact", "fields": ["name", "email", "phone"]}'
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-1" t-if="project_assignment.note">
+                        <div
+                            t-if="project_assignment.note"
+                            t-attf-class="col-12 col-lg-7 mb-4 mb-md-0 {{'col-lg-7'}}"
+                        >
+                            <hr class="mb-1" />
+                            <div class="d-flex my-2">
+                                <strong>Notes</strong>
+                            </div>
+                            <div
+                                class="py-1 px-2 bg-100 medium"
+                                t-field="project_assignment.note"
+                            />
+                        </div>
+                    </div>
+                </t>
+            </t>
+            <div class="row justify-content-center text-center d-print-none pt-1 pb-4">
+                <div class="col-sm-auto mt8">
+                    <form
+                        id="approve"
+                        method="POST"
+                        t-attf-action="/my/project-assignment/#{project_assignment.id}/approve?access_token=#{project_assignment.access_token}"
+                        class="modal-content"
+                    >
+                        <input
+                            type="hidden"
+                            name="csrf_token"
+                            t-att-value="request.csrf_token()"
+                        />
+                        <button
+                            t-if="approve_ok"
+                            type="submit"
+                            class="btn btn-primary"
+                        ><i class="fa fa-check" />Approve</button>
+                    </form>
+                </div>
+                <div class="col-sm-auto mt8">
+                    <form
+                        id="reject"
+                        method="POST"
+                        t-attf-action="/my/project-assignment/#{project_assignment.id}/reject?access_token=#{project_assignment.access_token}"
+                        class="modal-content"
+                    >
+                        <input
+                            type="hidden"
+                            name="csrf_token"
+                            t-att-value="request.csrf_token()"
+                        />
+                        <button t-if="reject_ok" type="submit" class="btn btn-danger"><i
+                                class="fa fa-times"
+                            />Reject</button>
+                    </form>
+                </div>
+            </div>
+            <div class="mt32">
+                <h4><strong>Message and communication history</strong></h4>
+                <t t-call="portal.message_thread">
+                    <t t-set="object" t-value="project_assignment" />
+                    <t t-set="token" t-value="access_token" />
+                    <t t-set="pid" t-value="pid" />
+                    <t t-set="hash" t-value="hash" />
+                </t>
+            </div>
+        </t>
+
+    </template>
+</odoo>

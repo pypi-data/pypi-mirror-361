@@ -1,0 +1,152 @@
+[project]
+name = "rlic"
+# keep version in sync with Cargo.toml
+version = "0.4.0"
+description = "A minimal Line Integral Convolution extension for NumPy, written in Rust"
+license = "MIT"
+license-files = [
+    "LICENSE/*"
+]
+authors = [
+    { name = "C.M.T. Robert" },
+]
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "Development Status :: 4 - Beta",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: Free Threading :: 4 - Resilient",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Typing :: Typed",
+]
+requires-python = ">=3.9" # keep in sync with pyo3 (Cargo.toml)
+dependencies = [
+    "exceptiongroup>=1.0.0 ; python_full_version < '3.11'", # keep in sync with typecheck dep group
+    "numpy>=1.22.0",
+]
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[project.urls]
+Homepage = "https://github.com/neutrinoceros/rlic"
+Changelog = "https://github.com/neutrinoceros/rlic/blob/main/CHANGELOG.md"
+
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
+
+[dependency-groups]
+covcheck = [
+    {include-group = "test"},
+    "coverage[toml]>=7.6.1 ; python_version < '3.11'",
+    "coverage>=7.6.1 ; python_version >= '3.11'",
+]
+test = [
+    "pytest>=8.1.0",
+]
+typecheck = [
+    "exceptiongroup>=1.0.0", # keep in sync with conditional runtime dep
+    "basedpyright>=1.26.0",
+    "mypy>=1.13.0",
+    "pyright>=1.1.391",
+]
+# uv sync includes this group by default, which works in combination
+# with tool.uv.sources and tool.uv.default-groups. Don't use this group
+# with any other tool.
+uv-only = [
+    "vectorplot",
+]
+
+[tool.uv]
+default-groups = [
+    "uv-only",
+]
+
+[tool.uv.sources]
+vectorplot = { git = "https://github.com/neutrinoceros/scikits-vectorplot", rev = "7477c801c9bfaa1bbb8084aad0b2dab7065f79d0" }  # v0.2.0post2
+
+[tool.maturin]
+module-name = "rlic._core"
+python-packages = ["rlic"]
+python-source = "src"
+exclude = [
+    "scratch/*",
+    "scripts/*",
+    "static/*",
+    "uv.lock",
+    ".*",
+    "_typos.toml",
+]
+
+[tool.pytest.ini_options]
+filterwarnings = [
+  "error",
+]
+addopts = "-ra"
+xfail_strict = true
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+exclude_lines = [
+    # a more strict default pragma
+    "\\# pragma: no cover\\b",
+
+    # allow defensive code
+    "^\\s*raise NotImplementedError\\b",
+
+    # typing-related code
+    "^if TYPE_CHECKING:",
+    ": \\.\\.\\.(\\s*#.*)?$",
+    "^ +\\.\\.\\.$",
+    "-> ['\"]?NoReturn['\"]?:",
+]
+
+[tool.pyright]
+reportImplicitStringConcatenation = false
+reportUnnecessaryTypeIgnoreComment = false # todo: drop this when Python 3.10 is EOL
+
+[tool.mypy]
+show_error_codes = true
+show_error_context = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+ignore_errors = true
+
+[tool.ruff.lint]
+ignore = ["E501"]
+select = [
+    "E",
+    "F",
+    "W",
+    "D",   # pydocstyle
+    "C4",  # flake8-comprehensions
+    "B",   # flake8-bugbear
+    "TCH", # flake8-type-checking
+    "YTT", # flake8-2020
+    "I",   # isort
+    "UP",  # pyupgrade
+    "NPY", # numpy specific rules
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["D"]
+"scripts/*" = ["D"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"

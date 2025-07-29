@@ -1,0 +1,265 @@
+name: CD
+on:
+  push:
+    tags: v*
+  pull_request:
+    paths:
+    - pyproject.toml
+    - meson.*
+    - .github/workflows/cd.yml
+  workflow_dispatch:
+
+
+jobs:
+  pre-publication-checks:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Source
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      with:
+        fetch-depth: 0
+    - uses: astral-sh/setup-uv@bd01e18f51369d5a26f1651c3cb451d3417e3bba # v6.3.1
+      with:
+        enable-cache: false
+    - name: Pre-publication checks
+      run: uv run scripts/pre_publish_checks.py
+
+  build-sdist:
+    name: Build source distribution
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+    - uses: astral-sh/setup-uv@bd01e18f51369d5a26f1651c3cb451d3417e3bba # v6.3.1
+      with:
+        enable-cache: true
+        prune-cache: false
+        cache-suffix: build
+    - name: Build sdist
+      run: uv build --sdist
+    - name: Upload sdist
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      with:
+        name: sdist
+        path: dist/*.tar.gz
+
+  test-sdist:
+    name: Test source distribution
+    needs: [build-sdist]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Source
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+    - uses: astral-sh/setup-uv@bd01e18f51369d5a26f1651c3cb451d3417e3bba # v6.3.1
+      with:
+        enable-cache: true
+        prune-cache: false
+        cache-suffix: test
+    - run: uv sync --only-group test
+    - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+      with:
+        path: dist
+        name: sdist
+    - name: test source distribution in isolation
+      run: |
+        tar xzf dist/*.tar.gz
+        cd rlic-*
+        uv pip install .
+        uv run --no-project pytest --color=yes -ra
+
+  # adapted from
+  # https://github.com/messense/crfs-rs/blob/main/.github/workflows/Python.yml
+  macos-intel:
+    runs-on: macos-13
+    steps:
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+    - uses: astral-sh/setup-uv@bd01e18f51369d5a26f1651c3cb451d3417e3bba # v6.3.1
+      with:
+        python-version: 3.9
+        cache-suffix: test
+
+    - name: Configure uv
+      # this step is needed to avoid a collision with system PyPy
+      run: |
+        echo "UV_PYTHON_PREFERENCE=only-managed" >> $GITHUB_ENV
+
+    - uses: dtolnay/rust-toolchain@stable
+    - name: Build wheels - x86_64
+      uses: PyO3/maturin-action@e10f6c464b90acceb5f640d31beda6d586ba7b4a # v1.49.3
+      with:
+        target: x86_64
+        args: --release --out dist
+    - name: Test wheel
+      run: |
+        uv sync --only-group test
+        uv pip install numpy
+        uv pip install rlic --no-index --find-links dist --no-deps
+        uv run --no-sync pytest --color=yes
+    - name: Upload wheels
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      with:
+        name: wheels-mac-intel
+        path: dist
+
+  macos-arm64:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+    - uses: astral-sh/setup-uv@bd01e18f51369d5a26f1651c3cb451d3417e3bba # v6.3.1
+      with:
+        python-version: 3.9
+        cache-suffix: test
+    - uses: dtolnay/rust-toolchain@stable
+    - name: Build wheels - arm64
+      uses: PyO3/maturin-action@e10f6c464b90acceb5f640d31beda6d586ba7b4a # v1.49.3
+      with:
+        target: aarch64-apple-darwin
+        args: --release --out dist
+    - name: Test wheel
+      run: |
+        uv sync --only-group test
+        uv pip install numpy
+        uv pip install rlic --no-index --find-links dist --no-deps
+        uv run --no-sync pytest --color=yes
+    - name: Upload wheels
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      with:
+        name: wheels-mac-arm64
+        path: dist
+
+  windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        target:
+        - x64
+        - x86
+    steps:
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+    - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+      with:
+        python-version: 3.9
+        architecture: ${{ matrix.target }}
+    - uses: astral-sh/setup-uv@bd01e18f51369d5a26f1651c3cb451d3417e3bba # v6.3.1
+      with:
+        cache-suffix: test
+    - uses: dtolnay/rust-toolchain@stable
+    - name: Build wheels
+      uses: PyO3/maturin-action@e10f6c464b90acceb5f640d31beda6d586ba7b4a # v1.49.3
+      with:
+        target: ${{ matrix.target }}
+        args: --release --out dist
+    - name: Configure uv
+      run: |
+        echo "UV_PYTHON_PREFERENCE=only-system" >> $GITHUB_ENV
+    - name: Test wheel
+      run: |
+        uv sync --only-group test
+        uv pip install numpy
+        uv pip install rlic --no-index --find-links dist --no-deps
+        uv run --no-sync pytest --color=yes
+    - name: Upload wheels
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      with:
+        name: wheels-win-${{ matrix.target }}
+        path: dist
+
+  manylinux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target:
+        - x86_64
+        - aarch64
+    steps:
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+    - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+      with:
+        python-version: 3.9
+        architecture: x64
+    - uses: astral-sh/setup-uv@bd01e18f51369d5a26f1651c3cb451d3417e3bba # v6.3.1
+      with:
+        cache-suffix: test
+    - name: Build wheels
+      uses: PyO3/maturin-action@e10f6c464b90acceb5f640d31beda6d586ba7b4a # v1.49.3
+      with:
+        target: ${{ matrix.target }}
+        manylinux: '2_28'
+        args: --release --out dist
+    - name: Configure uv
+      run: |
+        echo "UV_PYTHON_PREFERENCE=only-system" >> $GITHUB_ENV
+    - name: Test wheel
+      if: matrix.target == 'x86_64'
+      run: |
+        uv sync --only-group test
+        uv pip install numpy
+        uv pip install rlic --no-index --find-links dist --no-deps
+        uv run --no-sync pytest --color=yes
+    - name: Upload wheels
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      with:
+        name: wheels-manylinux-${{ matrix.target }}
+        path: dist
+
+  musllinux:
+    # cross-compiling: no testing
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target:
+        - x86_64-unknown-linux-musl
+        - aarch64-unknown-linux-musl
+    steps:
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+    - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+      with:
+        python-version: 3.9
+        architecture: x64
+    - name: Build wheels
+      uses: PyO3/maturin-action@e10f6c464b90acceb5f640d31beda6d586ba7b4a # v1.49.3
+      with:
+        target: ${{ matrix.target }}
+        manylinux: musllinux_1_2
+        args: --release --out dist
+    - name: Upload wheels
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      with:
+        name: wheels-musllinux-${{ matrix.target }}
+        path: dist
+
+  deploy:
+    name: Publish to PyPI
+    needs:
+    - pre-publication-checks
+    - build-sdist
+    - test-sdist
+    - macos-intel
+    - macos-arm64
+    - windows
+    - manylinux
+    - musllinux
+    environment:
+      name: pypi
+      url: https://pypi.org/p/rlic
+    permissions:
+      id-token: write
+
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
+    steps:
+    - name: Download sdist
+      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+      with:
+        path: dist
+        name: sdist
+
+    - name: Download wheels
+      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+      with:
+        path: dist
+        pattern: wheels-*
+        merge-multiple: true
+
+    - name: Publish package distributions to PyPI
+      uses: pypa/gh-action-pypi-publish@76f52bc884231f62b9a034ebfe128415bbaabdfc # v1.12.4

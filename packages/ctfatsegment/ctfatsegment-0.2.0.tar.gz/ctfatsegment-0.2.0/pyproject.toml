@@ -1,0 +1,65 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ctfatsegment"
+dynamic = ["version"]
+description = "Process whole body CT image to segment visceral and subcutaneous fat"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [{ name = "Dániel András Szabó", email = "szabo.daniel.andras@med.unideb.hu" }]
+requires-python = ">=3.10"
+
+# Automatically install these with pip install
+dependencies = [
+    "numpy>=1.24.4,<2.3.0",
+    "nibabel>=5.2.1",
+    "pillow>=10.4.0",
+    "pydicom>=2.4.4",
+    "scikit-image>=0.21.0",
+    "scipy>=1.10.1"
+]
+
+# Optional dependencies (e.g. pip install your-package[dev])
+[project.optional-dependencies]
+dev = ["ruff", "twine", "check-wheel-contents", "pytest"]
+
+# Define CLI script entry point
+[project.scripts]
+ctfatsegment = "ctfatsegment2.ctfat_segment:segmProcess"
+
+[project.urls]
+GitHub = "https://github.com/Daniloper/UD_ctfatsegment"
+
+# Git-based versioning
+[tool.hatch.version]
+source = "vcs"
+
+# Ruff linter config
+[tool.ruff]
+line-length = 88
+select = ["E", "F", "I", "B"]  # Error, pyflakes, import order, bugbear
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "Q", "I", "NPY201"]
+ignore = ["E501"]
+
+# Hatch script env for linting/build checking
+[tool.hatch.envs.default.scripts]
+build-check = "hatch run lint:check"
+
+[tool.hatch.envs.lint.scripts]
+check = [
+  "ruff check ctfatsegment2",
+  "rm -rf dist/",
+  "hatch build",
+  "check-wheel-contents dist/*.whl",
+  "twine check dist/*"
+]
+
+[tool.hatch.build.targets.sdist]
+include = ["ctfatsegment2", "README.md", "LICENSE"]
+
+[tool.hatch.build.targets.wheel]
+include = ["ctfatsegment2"]

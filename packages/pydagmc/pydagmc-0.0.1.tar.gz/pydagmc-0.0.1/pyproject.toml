@@ -1,0 +1,53 @@
+# Build System Configuration
+[build-system]
+requires = ["setuptools", "setuptools_scm[toml]", "wheel"]
+build-backend = "setuptools.build_meta"
+
+# Project Metadata
+[project]
+name = "pydagmc"
+dynamic = ["version"]
+authors = [
+    { name = "Patrick Shriwise", email = "pshriwise@gmail.com" },
+    { name = "Paul Wilson", email = "paul.wilson@wisc.edu" },
+    { name = "Paul Romano", email = "paul.k.romano@gmail.com" },
+    { name = "Ethan Peterson", email = "ethan.peterson@mit.edu" },
+    { name = "Ahnaf Tahmid Chowdhury", email = "tahmid@nukehub.org" },
+    { name = "Jonathan Shimwell", email = "drshimwell@gmail.com" }
+]
+description = """
+A convenience interface for examining,
+modifying, and creating, DAGMC models using PyMOAB
+"""
+readme = "README.md"
+license = { text = "MIT" }
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering",
+    "Programming Language :: Python :: 3",
+]
+requires-python = ">=3.8"
+# TODO: add PyMOAB once on PyPI
+dependencies = ["numpy"]
+
+# Optional Dependencies
+[project.optional-dependencies]
+test = ["pytest"]
+ci = ["pytest-cov"]
+
+# Project URLs
+[project.urls]
+"Bug Tracker" = "https://github.com/svalinn/pydagmc/issues"
+"Source Code" = "https://github.com/svalinn/pydagmc"
+
+# Setuptools SCM Configuration
+[tool.setuptools_scm]
+
+[tool.setuptools]
+package-dir = {"" = "src"}

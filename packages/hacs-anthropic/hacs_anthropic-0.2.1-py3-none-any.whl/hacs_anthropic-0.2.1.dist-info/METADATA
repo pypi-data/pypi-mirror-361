@@ -1,0 +1,82 @@
+Metadata-Version: 2.4
+Name: hacs-anthropic
+Version: 0.2.1
+Summary: Healthcare Agent Communication Standard - Anthropic Integration
+Project-URL: Homepage, https://github.com/solanovisitor/hacs
+Project-URL: Documentation, https://github.com/solanovisitor/hacs/blob/main/docs/README.md
+Project-URL: Repository, https://github.com/solanovisitor/hacs
+Project-URL: Bug Tracker, https://github.com/solanovisitor/hacs/issues
+Project-URL: Changelog, https://github.com/solanovisitor/hacs/blob/main/docs/reference/changelog.md
+Author-email: Solano Todeschini <solano.todeschini@gmail.com>
+Maintainer-email: Solano Todeschini <solano.todeschini@gmail.com>
+License: Apache-2.0
+Keywords: agents,ai,anthropic,claude,clinical,healthcare,llm,structured-output
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Healthcare Industry
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Scientific/Engineering :: Medical Science Apps.
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Typing :: Typed
+Requires-Python: >=3.10
+Requires-Dist: anthropic>=0.57.1
+Requires-Dist: hacs-core>=0.2.0
+Requires-Dist: hacs-models>=0.2.0
+Requires-Dist: hacs-tools>=0.2.0
+Requires-Dist: pydantic>=2.7.0
+Provides-Extra: dev
+Requires-Dist: pyright>=1.1.0; extra == 'dev'
+Requires-Dist: pytest-cov>=4.0.0; extra == 'dev'
+Requires-Dist: pytest>=7.0.0; extra == 'dev'
+Requires-Dist: ruff>=0.4.0; extra == 'dev'
+Description-Content-Type: text/markdown
+
+# HACS Anthropic Integration
+
+Anthropic Claude integration for Healthcare Agent Communication Standard (HACS).
+
+## Features
+
+- Structured healthcare data generation using Claude
+- FHIR-compliant output with type safety
+- Integration with HACS models and tools
+- Support for all Claude models (Sonnet, Haiku, etc.)
+
+## Installation
+
+```bash
+pip install hacs-anthropic
+```
+
+## Quick Start
+
+```python
+from hacs_anthropic import create_structured_generator
+from hacs_models import Patient
+
+# Initialize generator
+generator = create_structured_generator(
+    model="claude-3-5-sonnet-20241022"
+)
+
+# Generate structured patient data
+patient = generator.generate_hacs_resource(
+    resource_type=Patient,
+    user_prompt="Create a patient with diabetes"
+)
+
+print(f"Generated: {patient.display_name}")
+```
+
+## Documentation
+
+For full documentation, see the [main HACS documentation](https://github.com/solanovisitor/hacs/blob/main/docs/README.md).
+
+## License
+
+Apache-2.0 

@@ -1,0 +1,57 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pypewriter"
+dynamic = ["version"]
+description = 'Typewriter effect for your terminal'
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+keywords = []
+
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = []
+
+[project.urls]
+Source = "https://github.com/namedottxt/pypewriter"
+
+[tool.hatch.version]
+path = "src/pypewriter/__about__.py"
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/pypewriter tests}"
+
+[tool.coverage.run]
+source_pkgs = ["pypewriter", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/pypewriter/__about__.py",
+]
+
+[tool.coverage.paths]
+pypewriter = ["src/pypewriter", "*/pypewriter/src/pypewriter"]
+tests = ["tests", "*/pypewriter/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]

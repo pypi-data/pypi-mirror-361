@@ -1,0 +1,44 @@
+[build-system]
+requires = ["hatchling>=1.11.0"]
+build-backend = "hatchling.build"
+
+[project.scripts]
+scenario-labs = "scenario_labs.experiment:main"
+
+[project]
+requires-python = ">=3.10"
+version = "0.0.7"
+name        = "scenario-labs"
+description = "Framework for building, configuring, and running multi-agent conversational simulations."
+readme      = ".github/README.md"
+license     = "MIT"
+
+dependencies = [
+    "google-genai",
+    "openai",
+    "pyyaml",
+    "xai-sdk",
+]
+
+[project.optional-dependencies]
+developer = [
+    "bandit",
+    "black",
+    "hatch",
+    "jinja2",
+    "mypy",
+    "pytest",
+    "ruff",
+]
+
+[tool.hatch.build]
+ignore-vcs = false
+reproducible = true
+directory = "dist"
+sources = ["src"]
+include = ["src/", "LICENSE", "pyproject.toml", ".github/README.md"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-v"

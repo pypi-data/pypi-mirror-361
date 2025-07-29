@@ -1,0 +1,69 @@
+[build-system]
+requires = [
+    "setuptools==80.9.0",
+    "setuptools_scm==8.3.1",
+    "setuptools_dynamic_dependencies==1.0.0",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+dynamic = ["version", "dependencies"]
+name = "toga-dummy"
+description = "A dummy testing backend for the Toga widget toolkit."
+readme = "README.rst"
+requires-python = ">= 3.9"
+license = "BSD-3-Clause"
+license-files = [
+    "LICENSE"
+]
+authors = [
+    {name="Russell Keith-Magee", email="russell@keith-magee.com"},
+]
+maintainers = [
+    {name="BeeWare Team", email="team@beeware.org"},
+]
+keywords = [
+    "gui",
+    "widget",
+    "cross-platform",
+    "toga",
+    "testing",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: User Interfaces",
+    "Topic :: Software Development :: Widget Sets",
+]
+
+[project.urls]
+Homepage = "https://beeware.org/project/projects/libraries/toga/"
+Funding = "https://beeware.org/contributing/membership/"
+Documentation = "https://toga.readthedocs.io/"
+Tracker = "https://github.com/beeware/toga/issues"
+Source = "https://github.com/beeware/toga"
+Changelog = "https://toga.readthedocs.io/en/stable/background/project/releases.html"
+
+[project.entry-points."toga.backends"]
+dummy = "toga_dummy"
+
+[project.entry-points."toga.image_formats"]
+dummy = "toga_dummy.plugins.image_formats.CustomImageConverter"
+disabled = "toga_dummy.plugins.image_formats.DisabledImageConverter"
+
+[tool.setuptools_scm]
+root = ".."
+
+[tool.setuptools_dynamic_dependencies]
+dependencies = [
+    "toga-core == {version}",
+]

@@ -1,0 +1,52 @@
+Metadata-Version: 2.4
+Name: mfd-kernel-namespace
+Version: 1.8.0
+Summary: Module to handle kernel namespaces.
+Project-URL: Homepage, https://github.com/intel/mfd
+Project-URL: Repository, https://github.com/intel/mfd-kernel-namespace
+Project-URL: Issues, https://github.com/intel/mfd-kernel-namespace/issues
+Project-URL: Changelog, https://github.com/intel/mfd-kernel-namespace/blob/main/CHANGELOG.md
+Requires-Python: <3.14,>=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE.md
+License-File: AUTHORS.md
+Dynamic: license-file
+
+> [!IMPORTANT]  
+> This project is under development. All source code and features on the main branch are for the purpose of testing or evaluation and not production ready.
+
+# MFD Kernel Namespace
+
+Module to handle kernel namespaces.
+
+## API NETWORK NAMESPACE
+
+* add_namespace_call_command - method for extending command about namespace command call.
+
+## Usage
+
+```Python
+from mfd_kernel_namespace import add_namespace_call_command
+
+
+# Class example
+class CustomPing:
+    def __init__(self, connection):
+        self._conn = connection
+
+    def ping(self, namespace):
+        command = add_namespace_call_command("ping 1.0.0.0", namespace)
+        self._conn.start_process(command=command)
+        # or 
+        self._conn.start_process(command=add_namespace_call_command("ping 1.0.0.0", namespace))
+```
+
+## OS supported:
+
+* LINUX
+* ESXI
+* FREEBSD
+
+## Issue reporting
+
+If you encounter any bugs or have suggestions for improvements, you're welcome to contribute directly or open an issue [here](https://github.com/intel/mfd-kernel-namespace/issues).

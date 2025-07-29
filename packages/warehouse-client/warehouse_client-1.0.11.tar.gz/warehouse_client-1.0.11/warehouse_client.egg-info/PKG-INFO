@@ -1,0 +1,66 @@
+Metadata-Version: 2.4
+Name: warehouse-client
+Version: 1.0.11
+Summary: Client library to interact with levinsen software warehouse artifact management system.
+Home-page: https://github.com/levinsen-software/warehouse-python
+Author: levinsen software
+Author-email: opensource@levinsen.software
+License: MIT
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Description-Content-Type: text/markdown
+License-File: LICENSE.txt
+Requires-Dist: requests
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: summary
+
+# Python client library for warehouse
+
+This library implements basic functionality for interaction with a warehouse instance.
+
+Examples of this includes:
+
+* Searching with natural and normal query languages for bundles and files
+* Readout of properties for files and bundles
+* Download and upload of files
+* Creation of bundles
+* Trashing and restoration of bundles and files
+
+## Examples
+
+For a basic demonstration of the library functionality, an interactive mode is included. Make sure the two files `~/.warehouse.apikey` and `~/.warehouse.url` are populated with API key and URL to the warehouse instance, respectively, and launch the interative mode:
+
+```sh
+> python -m warehouse
+
+Reading config from ~/.warehouse.url and ~/.warehouse.apikey
+
+Successfully connected to warehouse on https://warehouse.local
+A client object named 'c' is available
+
+Try running help(c) for more information
+
+>>>
+```
+
+### Searching for bundle and listing of properties
+
+```python
+import warehouse as wh
+
+c = wh.Client("https://warehouse.local", wh.ApikeyAuth(APIKEY))
+
+for bundle in c.find_bundles('bundle.version exists', sorting=None, limit=1):
+    print(bundle.get_properties())
+```

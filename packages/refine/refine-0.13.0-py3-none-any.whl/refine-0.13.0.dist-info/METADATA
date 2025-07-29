@@ -1,0 +1,51 @@
+Metadata-Version: 2.4
+Name: refine
+Version: 0.13.0
+Summary: Polishing and improving codebases automatically
+Project-URL: Repository, https://github.com/s0undt3ch/refine
+Project-URL: Documentation, https://s0undt3ch.github.io/refine
+Project-URL: Issues, https://github.com/s0undt3ch/refine/issues
+Project-URL: Changelog, https://github.com/s0undt3ch/refine/blob/main/CHANGELOG.md
+Author-email: Pedro Algarvio <pedro@algarvio.me>
+License-Expression: Apache-2.0
+License-File: LICENSE
+Requires-Python: <4,>3.11
+Requires-Dist: libcst<1.8.0
+Requires-Dist: msgspec>=0.19.0
+Requires-Dist: py-walk>=0.3.3
+Requires-Dist: sqlfluff<4,>=3.4
+Requires-Dist: tomllib>=1.1.0; python_version < '3.11'
+Description-Content-Type: text/markdown
+
+<h1 align="center">
+  <img width="240px" src="https://raw.githubusercontent.com/s0undt3ch/refine/main/docs/imgs/refine.png" alt="refine"/>
+</h1>
+
+<h2 align="center">
+  <em>Polishing and improving codebases automatically</em>
+</h2>
+
+`refine` leverages the capabilities of [libCST](https://libcst.readthedocs.io/) (Library for Concrete Syntax Trees), a Python
+library designed for parsing, manipulating, and generating Python code in a syntax-preserving way. It builds upon libCST's
+[codemod](https://libcst.readthedocs.io/en/latest/codemods_tutorial.html) module, which provides utilities for transforming code
+programmatically.
+
+## Key Differentiators
+
+### Chained Codemod Execution
+
+`refine` enables running multiple `codemod`'s in a single CLI execution, streamlining workflows compared to libCST's one-codemod-per-execution approach.
+
+### Priority Management
+
+Codemods are applied in a predefined order based on priorities defined by the modules. This ensures automatic logical sequencing of transformations.
+
+## Streamlined Features
+
+### Single-Pass Efficiency
+
+Chained execution minimizes redundant parsing and tree-building processes, improving efficiency for large-scale projects.
+
+### Focus on Developer Productivity
+
+By reducing the need for multiple executions, `refine` enhances developer workflows, especially in CI/CD pipelines or batch processing.

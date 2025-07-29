@@ -1,0 +1,23 @@
+<style>
+    #impersonate-container {
+        display: inline-block;
+        margin: 0px auto;
+        padding-left: 65px;
+        position: fixed;
+        transition: all 0.5s ease-in-out 0s;
+        z-index: 1031;
+        bottom: 20px;
+        left: 0px;
+        right: 0px;
+        opacity: 0.8;
+    }
+    #impersonate-container.close {
+        position: absolute; right: 10px; top: 5px; z-index: 1033;
+    }
+</style>
+<div data-notify="container" id="impersonate-container" class="col-10 col-xs-11 col-sm-4 alert alert-{% if new_user %}warning{% else %}danger{% endif %}" role="alert" data-notify-position="bottom-center">
+    <a type="button" aria-hidden="true" class="close" href="javascript:document.cookie='{{ cookie_name }}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'; window.location.href='/';";" data-notify="dismiss">×</a>
+    <span data-notify="icon" class="fa fa-users"></span>
+    <span data-notify="title">Impersonating {% if new_user %}<em>{{ new_user.username }}</em>{% else %}FAILED{% endif %}</span>
+    <span data-notify="message">{% if not new_user %}<em>{{ new_username }}</em> does not exist. {% endif %}Close this to reset.</span>
+</div>

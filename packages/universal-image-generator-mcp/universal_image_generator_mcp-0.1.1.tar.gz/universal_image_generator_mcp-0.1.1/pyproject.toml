@@ -1,0 +1,35 @@
+[project]
+name = "universal-image-generator-mcp"
+version = "0.1.1"
+description = "Universal Image Generator MCP"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{name = "Tony Wang",email = "shanghaishanghai@yeah.net"}]
+keywords = ["http", "mcp", "llm", "automation"]
+license = { text = "MIT" }
+dependencies = [
+    "build>=1.2.2.post1",
+    "fastmcp>=0.4.1",
+    "google>=3.0.0",
+    "google-genai>=1.7.0",
+    "pillow>=11.1.0",
+    "twine>=6.1.0",
+    "zhipuai>=2.1.5.20250708",
+]
+
+[project.scripts]
+universal-image-generator-mcp = "universal_image_generator_mcp:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+dev-dependencies = ["pyright>=1.1.389", "ruff>=0.7.3"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/universal_image_generator_mcp"]
+
+[project.urls]
+Homepage = "https://github.com/ECNU3D/universal-image-generator-mcp"
+Issues = "https://github.com/ECNU3D/universal-image-generator-mcp/issues"

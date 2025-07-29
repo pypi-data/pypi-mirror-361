@@ -1,0 +1,81 @@
+[tools]
+uv = 'latest'
+ruff = "latest"
+
+[env]
+PROJECT_NAME = "{{ config_root | basename }}"
+_.file = '.env'
+_.python.venv = { path = ".venv", create = true, uv_create_args = ["--system-site-packages", "--seed"] }
+
+[tasks.format]
+description = "Perform all necessary formatting, linting and fixing so we can eliminate all other tasks."
+run = [
+    "uv run ruff format --check .", # Format code
+    "uv run ruff check --fix .", # Fix all other issues
+    "uv run ruff format --check .", # Format code
+]
+
+[tasks.chownit]
+description = "Change ownership of files"
+run = "sudo chown -R $USER:$USER ."
+
+[tasks.test-verbose]
+description = "Run tests with verbose output"
+run = "uv run pytest -v --tb=full --disable-warnings"
+
+[tasks.test-watch]
+description = "Run tests in watch mode (install pytest-watch: uv add --dev pytest-watch)"
+run = "uv run ptw -- --tb=short --disable-warnings"
+
+[tasks.test-cov]
+description = "Run tests with coverage report"
+run = "uv run pytest --cov=src --cov-report=html --cov-report=term"
+
+[tasks.test-specific]
+description = "Run a specific test file or pattern"
+run = "uv run pytest tests/${TEST_FILE:-test_*.py} -v"
+
+[tasks.dev]
+description = "Install development dependencies"
+run = "uv sync --dev"
+
+[tasks.clean]
+description = "Clean up build artifacts and caches"
+run = [
+    "/bin/rm -rf .pytest_cache",
+    "/bin/rm -rf .ruff_cache", 
+    "/bin/rm -rf htmlcov",
+    "/bin/rm -rf dist",
+    "find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true",
+    "find . -name '*.pyc' -delete"
+]
+
+[tasks.build]
+description = "Build the package"
+run = "uv build"
+
+[tasks.publish-pypi]
+description = "Build and publish the package to PyPI using uv and twine"
+run = [
+    "/bin/rm -rf dist",
+    "uv build",
+    "uv pip install --upgrade twine",
+    "uv run twine upload --repository pypi --config-file .pypirc  dist/*"
+]
+
+[tasks.security]
+description = "Run security checks (requires bandit: uv add --dev bandit)"
+run = "uv run bandit -r src"
+
+[tasks.deps-update]
+description = "Update all dependencies"
+run = "uv lock --upgrade"
+
+[tasks.deps-check]
+description = "Check for dependency vulnerabilities (requires safety: uv add --dev safety)"
+run = "uv run safety check"
+
+# Composite tasks for common workflows
+[tasks.pre-commit]
+description = "Run pre-commit checks (format, lint, test)"
+depends = ["format"]

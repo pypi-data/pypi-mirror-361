@@ -1,0 +1,202 @@
+Metadata-Version: 2.4
+Name: mfd-ftp
+Version: 1.8.0
+Summary: Module for handling operations with File Transfer Protocol on client and server sessions.
+Project-URL: Homepage, https://github.com/intel/mfd
+Project-URL: Repository, https://github.com/intel/mfd-ftp
+Project-URL: Issues, https://github.com/intel/mfd-ftp/issues
+Project-URL: Changelog, https://github.com/intel/mfd-ftp/blob/main/CHANGELOG.md
+Requires-Python: <3.14,>=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE.md
+License-File: AUTHORS.md
+Requires-Dist: pyftpdlib~=1.5.6
+Requires-Dist: mfd-common-libs>=1.11.0
+Requires-Dist: mfd-typing>=1.23.0
+Requires-Dist: mfd-traffic-manager>=1.18.0
+Dynamic: license-file
+
+> [!IMPORTANT] 
+> This project is under development. All source code and features on the main branch are for the purpose of testing or evaluation and not production ready.
+
+# MFD FTP
+Module for handling File Transfer Protocol.
+
+## Usage
+#### FTPUtils
+    FTPUtils(ip, username, password)
+    ip: ip_address - correct IPv4/6 ip address
+    username, password: str
+    
+##### Available methods
+`return_dirs(catalog: str) -> typing.List` - returning list of directories in root or given catalog 
+    
+`is_directory_on_ftp(directory: str) -> bool` - checking if directory exists
+   
+`copy_files_to_ftp(source_directory: str, destination_directory: str) -> bool` - copying files from given directory to new directory on FTP
+
+---
+#### FTPServer
+
+In code
+```python
+    from mfd_ftp import server
+    from mfd_connect import RPyCConnection
+
+    conn = RPyCConnection("0.0.0.0")
+    p = server.start_server_as_process(ip='0.0.0.0', port=21, directory=Path('/'),
+        username='test_user', password='xxxx')
+    p = server.start_remote_server_as_process(connection=conn, ip='0.0.0.0', port=21, directory=Path('/'),
+        username='test_user', password='xxxx')
+```
+Standalone
+
+    python -m mfd_ftp.server --ip {ip} --port {port} --directory {directory} --username {username}
+    --password {password}
+
+#### FTP Client
+
+In code
+```python
+    from mfd_ftp import client
+    from mfd_connect import RPyCConnection
+
+    conn = RPyCConnection("0.0.0.0")
+    p = client.start_client_as_process(ip='0.0.0.0', port=21, task='send', 
+    source='source_file', destination='transferred_file', username='test_user', password='xxxx')
+    p = client.start_remote_client_as_process(connection=conn, ip='0.0.0.0', port=21, task='send', 
+    source='source_file', destination='transferred_file', username='test_user', password='xxxx')
+```
+    
+Standalone
+
+    python -m mfd_ftp.client --ip 0.0.0.0 --port 21 --task send --source original_filename
+     --destination transffered_filename --username username --password password
+     
+
+#### FTP-Client-Traffic
+
+```python
+    def __init__(
+        self,
+        connection: "Connection",
+        ip: Union[IPv4Address, IPv6Address],
+        port: int,
+        username: str,
+        password: str,
+        task: str,
+        source: str,
+        destination: str,
+        python_executable: Optional[str] = None,
+        timeout: Optional[int] = None,
+    ) -> None:
+        """FTP client traffic.
+
+        :param connection: FTP Connection
+        :param ip: Address of the FTP server.
+        :param port: Number of a port on which server is running.
+        :param username: Username for the server to login.
+        :param password: Password for the user.
+        :param task: Task for the client, can either be 'send' or 'receive'.
+        :param source: File to either receive or send.
+        :param destination: Destination for the received or sent file.
+        :param python_executable: Executable python
+        :param timeout: Timeout in seconds for operations, like connection attempt, or transfer.
+        :return: None
+        """
+```
+
+#### FTP-Server-Traffic
+
+```python
+    def __init__(
+        self,
+        connection: "Connection",
+        ip: Union[IPv4Address, IPv6Address],
+        port: int,
+        directory: str,
+        username: str,
+        password: str,
+        python_executable: Optional[str] = None,
+        permissions: Optional[str] = None,
+    ) -> None:
+        """FTP server traffic.
+
+        :param connection: FTP Connection
+        :param ip: Address of the FTP server.
+        :param port: Number of a port on which server is running.
+        :param directory: Path to directory which server should share.
+        :param username: Username for the server to login.
+        :param password: Password for the user.
+        :param python_executable: Executable python
+        :param permissions: User permissions, indicating which operations are allowed.
+        :return: None
+        """
+```
+
+In the [server_traffic](#FTP-Server-Traffic) and [client_traffic](#FTP-Client-Traffic): `python_executable` parameter requires a python executable path(of the device under test) if connection object is anything else other than [RPyCConnection, LocalConnection].
+
+### Traffic Manager
+FTP-Server/ClientTraffic have been implemented with [Traffic](https://github.com/intel-innersource/libraries.python.mfd.mfd-traffic-manager/tree/main#traffic-api) interface. It can be used with Traffic Manager and Stream in [mfd-traffic-manager](https://github.com/intel-innersource/libraries.python.mfd.mfd-traffic-manager) as one of supported traffics.
+Details are available in mfd-traffic-manager documentation.
+
+
+#### `Traffic` API
+All classes for specific traffics should inherit from Traffic base class interface.
+It provides some abstract methods, all of them need to be implemented in child classes:
+* `start() -> None` - start traffic indefinitely
+* `stop() -> None` - stop traffic
+* `run(duration: int) -> None` - run traffic for a specified number of seconds (usually for server, process should be running until stop)
+* `validate(validation_criteria: Optional[Dict[Callable, Dict[str, Any]]]) -> bool` - validate traffic by passed criteria
+
+Example usage for FTP:
+```python
+from mfd_connect import RPyCConnection
+from mfd_ftp import FTPClientTraffic, FTPServerTraffic
+from mfd_traffic_manager import TrafficManager, Stream
+
+
+def validate_files_transmitted(results: str, files_transmitted: int) -> bool:
+    """Validate Files transmitted.
+
+    :param results: Results from FTP Process
+    :param files_transmitted: expected number of files transmitted
+    :return: status of validation
+    """
+    ftp_files_transmitted = results.count("File was sent")
+    if ftp_files_transmitted != files_transmitted:
+        print("Number of files transmitted are not as expected")
+        return False
+    return True
+
+
+server_conn = RPyCConnection("10.10.10.10")
+client_conn = RPyCConnection("10.10.10.20")
+
+ftp_server = FTPServerTraffic(
+    connection=server_conn, ip="10.10.10.10", port=21, directory="/", username="user", password="xxxx"
+)
+ftp_client = FTPClientTraffic(
+    connection=client_conn,
+    ip="10.10.10.10",
+    port=21,
+    username="user",
+    password="xxxx",
+    task="send",
+    source="source.txt",
+    destination="destination.txt",
+)
+
+manager = TrafficManager()
+stream = Stream(clients=[ftp_client], server=ftp_server, name="Stream1")
+manager.add_stream(stream)
+manager.start(name="Stream1")
+manager.stop(name="Stream1")
+validation_criteria = {validate_files_transmitted: {"files_transmitted": 1}}
+print(manager.validate(name="Stream1", clients_validation_criteria=validation_criteria))
+# Output: True
+```
+
+## Issue reporting
+
+If you encounter any bugs or have suggestions for improvements, you're welcome to contribute directly or open an issue [here](https://github.com/intel/mfd-ftp/issues).

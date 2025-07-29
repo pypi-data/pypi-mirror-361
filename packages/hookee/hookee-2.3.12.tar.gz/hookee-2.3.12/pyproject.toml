@@ -1,0 +1,106 @@
+[project]
+name = "hookee"
+dynamic = ["version"]
+description = "Command line webhooks, on demand"
+readme = "README.md"
+license = "MIT"
+authors = [{ name = "Alex Laird", email = "contact@alexlaird.com" }]
+maintainers = [{ name = "Alex Laird", email = "contact@alexlaird.com" }]
+requires-python = ">=3.9"
+dependencies = [
+    "pluginbase>=1.0",
+    "confuse>=1.3",
+    "flask>=1.1",
+    "click>=7.1",
+    "pyngrok>=7.2",
+    "defusedxml>=0.6"
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Environment :: Web Environment",
+    "Framework :: Flask",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: System Administrators",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Internet :: Proxy Servers",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+    "Topic :: Software Development :: Testing",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "coverage[toml]",
+    "requests",
+    "flake8",
+    "flake8-pyproject",
+    "pep8-naming"
+]
+docs = [
+    "Sphinx",
+    "sphinx-notfound-page"
+]
+
+[project.scripts]
+hookee = "hookee.cli:hookee"
+
+[project.urls]
+Changelog = "https://github.com/alexdlaird/hookee/blob/main/CHANGELOG.md"
+Documentation = "https://hookee.readthedocs.io"
+Sponsor = "https://github.com/sponsors/alexdlaird"
+"Source Code" = "https://github.com/alexdlaird/hookee"
+
+[tool.setuptools]
+package-dir = { hookee = "hookee" }
+
+[tool.setuptools.dynamic]
+version = { attr = "hookee.__version__" }
+
+[tool.pytest.ini_options]
+junit_family = "legacy"
+addopts = [
+    "--ignore=venv",
+    "--durations=0",
+    "--durations-min=2",
+    "--junitxml=build/test-results/junit.xml"
+]
+
+[tool.coverage.run]
+omit = [
+    "venv/**",
+    "*/tests/**"
+]
+
+[tool.coverage.report]
+precision = 2
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+]
+
+[tool.coverage.xml]
+output = "build/coverage/coverage.xml"
+
+[tool.coverage.html]
+title = "Coverage Report"
+directory = "build/coverage"
+
+[tool.flake8]
+max-line-length = 119
+statistics = true
+exclude = "docs/*,venv/*,build/*,dist/*,.egg-info/*"

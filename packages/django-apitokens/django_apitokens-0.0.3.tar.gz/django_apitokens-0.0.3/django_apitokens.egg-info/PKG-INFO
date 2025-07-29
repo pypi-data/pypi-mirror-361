@@ -1,0 +1,74 @@
+Metadata-Version: 2.4
+Name: django-apitokens
+Version: 0.0.3
+Summary: Generate API tokens for django-restframework
+Author-email: InfoSec Engineering <surface@paddypowerbetfair.com>
+License: MIT
+Keywords: django,api,restframework,tokens,self-service
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Framework :: Django
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Environment :: Web Environment
+Classifier: Topic :: Software Development
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: Django<6.0,>=3.1
+Requires-Dist: django-rest-knox==4.2.0
+Provides-Extra: dev
+Requires-Dist: black==23.1.0; extra == "dev"
+Requires-Dist: ruff==0.0.256; extra == "dev"
+Dynamic: license-file
+
+# django-apitokens
+
+Generate tokens compatible with Django Restframework (`drf`) from your Django Admin view:
+- Create new tokens at will (after being generated, they no longer can be reversed, since only a digest is stored in the database).
+- Add expirity dates (supports time and date)
+- Remove tokens when you no longer need them.
+
+## My Token view
+
+![Screenshot 2023-03-21 at 14 47 02](https://user-images.githubusercontent.com/7786556/226643622-893b631d-d353-4833-8def-78f61ea77561.png)
+
+
+## Add token view
+
+![Screenshot 2023-03-21 at 14 47 19](https://user-images.githubusercontent.com/7786556/226643580-ac761fd7-91a9-4c5c-898b-4cc1daf9d812.png)
+
+
+# Install
+
+- Install the python package: `pip install django-apitokens` 
+- Add `apitokens` to your Django installed apps:
+
+```python
+# In your settings.py
+INSTALLED_APPS = [
+    ...
+    'apitokens',
+]
+```
+
+- Ensure you are using `knox` `TokenAuthentication` class:
+
+```python
+# In your settings.py
+REST_FRAMEWORK = {
+    ...,
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'knox.auth.TokenAuthentication',
+        ...,
+    ),
+    ...,
+}
+```
+
+- You are set to use tokens generated through this app as a way to login with the DRF framework.
+
+# Contributing
+
+To contribute code to this app, ensure you're following the [community guidelines](https://github.com/surface-security/guidelines#contributing)

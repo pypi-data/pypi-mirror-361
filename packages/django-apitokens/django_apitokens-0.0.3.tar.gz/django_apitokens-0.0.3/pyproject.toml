@@ -1,0 +1,77 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "django-apitokens"
+dynamic = ["version"]
+authors = [
+    {name = "InfoSec Engineering", email = "surface@paddypowerbetfair.com"},
+]
+description = "Generate API tokens for django-restframework"
+readme = "README.md"
+requires-python = ">=3.7"
+keywords = ["django", "api", "restframework", "tokens", "self-service"]
+license = {text = "MIT"}
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Framework :: Django",
+    "License :: OSI Approved :: MIT License",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Environment :: Web Environment",
+    "Topic :: Software Development",
+]
+dependencies = [
+    "Django >= 3.1, < 6.0",
+    "django-rest-knox == 4.2.0",
+]
+
+[tool.setuptools.dynamic]
+version = {attr = "apitokens.__version__"}
+
+[tool.setuptools]
+packages = ["apitokens"]
+
+[project.optional-dependencies]
+dev = ["black==23.1.0", "ruff==0.0.256"]
+
+[tool.black]
+line-length = 120
+skip-string-normalization = true
+target-version = ['py39']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | \.venv3
+  | _build
+  | buck-out
+  | build
+  | dist
+  | migrations
+)/
+'''
+
+[tool.ruff]
+exclude = [
+    '.git',
+    '__pycache__',
+    'venv',
+    'venv3',
+]
+ignore = []
+line-length = 120
+select = [
+    'E',
+    'F',
+    'W',
+    "I001",
+]
+src = ['apitokens']

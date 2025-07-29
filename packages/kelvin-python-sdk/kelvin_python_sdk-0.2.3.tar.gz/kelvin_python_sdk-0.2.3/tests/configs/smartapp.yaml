@@ -1,0 +1,43 @@
+spec_version: 5.0.0
+type: app
+
+name: smart-app-x
+title: Smart App  X
+description: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+version: 1.0.2
+category: optimizer
+
+flags:
+  enable_runtime_update:
+    configuration: false
+    assets: false
+    resource_parameters: true
+    resource_properties: false
+
+data_streams:
+  inputs:
+    - name: temp_f
+      data_type: number
+    - name: speed_sp_out
+      data_type: number
+
+  outputs:
+    - name: temp_c
+      data_type: number
+
+control_changes:
+  inputs:
+    - name: speed_sp
+      data_type: number
+
+  outputs:
+    - name: speed_sp_out
+      data_type: number
+    - name: control_mode
+      data_type: number
+    - name: scada_mode
+      data_type: number
+
+schemas:
+  configuration: "schemas/configuration.json"
+  parameters: "schemas/parameters.json"

@@ -1,0 +1,55 @@
+# Fichier : pyproject.toml
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rostaing-ocr"
+# MODIFIÉ : Version incrémentée pour refléter le changement majeur de moteur OCR.
+version = "0.3.0"
+authors = [
+  { name="Davila Rostaing", email="rostaingdavila@gmail.com" },
+]
+# MODIFIÉ : Description légèrement affinée pour mettre en avant la performance sur les documents.
+description = "An advanced OCR tool for extracting text from both scanned and non-scanned PDFs, as well as images, while preserving the original vertical reading order. Designed for integration into AI applications such as LLMs and RAG systems, it outputs clean plain text (.txt) and Markdown (.md) files."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Text Processing :: General",
+    "Topic :: Scientific/Engineering :: Image Recognition",
+    "Intended Audience :: Developers",
+    "Development Status :: 4 - Beta",
+]
+
+# MODIFIÉ : Dépendances de base.
+# EasyOCR est supprimé. PyTorch et torchvision sont déplacés dans les "extras".
+dependencies = [
+    "PyMuPDF>=1.23.0",
+    "Pillow>=9.0.0",
+    # Doctr est maintenant la dépendance OCR principale.
+    "python-doctr>=0.8.1",
+    # Les dépendances du backend sont maintenant ici :
+    "torch>=1.8.0",
+    "torchvision>=0.9.0"
+]
+
+# AJOUTÉ : Section pour les dépendances optionnelles (la meilleure pratique).
+# Cela permet aux utilisateurs de choisir leur backend de deep learning.
+# [project.optional-dependencies]
+# torch = [
+    # "torch>=1.8.0",
+    # "torchvision>=0.9.0"
+# ]
+# tensorflow = [
+    # Optionnellement, vous pourriez aussi supporter TensorFlow si vous le souhaitez.
+    # "tensorflow>=2.4.0",
+    # "tensorflow-addons"
+# ]
+
+[project.urls]
+"Homepage" = "https://github.com/Rostaing/rostaing-ocr"
+"Bug Tracker" = "https://github.com/Rostaing/rostaing-ocr/issues"

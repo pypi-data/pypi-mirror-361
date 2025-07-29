@@ -1,0 +1,409 @@
+Metadata-Version: 2.4
+Name: stateen
+Version: 1.0.0
+Summary: Minimal state management library similar to React's useState for Python
+Home-page: https://github.com/tikipiya/stateen
+Author: tikisan
+Author-email: s2501082@sendai-nct.jp
+Project-URL: Bug Reports, https://github.com/tikipiya/stateen/issues
+Project-URL: Source, https://github.com/tikipiya/stateen
+Project-URL: Documentation, https://github.com/tikipiya/stateen
+Keywords: state management,react,hooks,gui,cli,games,reactive
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Software Development :: User Interfaces
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: flake8>=6.0.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Provides-Extra: gui
+Requires-Dist: tkinter; extra == "gui"
+Requires-Dist: PyQt5>=5.15.0; extra == "gui"
+Requires-Dist: PyQt6>=6.4.0; extra == "gui"
+Provides-Extra: async
+Requires-Dist: asyncio; extra == "async"
+Requires-Dist: aiofiles>=22.0.0; extra == "async"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license-file
+Dynamic: project-url
+Dynamic: provides-extra
+Dynamic: requires-python
+Dynamic: summary
+
+# Stateen - Python用ミニマル状態管理ライブラリ
+
+Reactの`useState`にインスパイアされたPythonアプリケーション用のミニマル状態管理ライブラリです。GUIアプリケーション、CLIツール、ゲーム、再現実験に最適です。
+
+## 特徴
+
+- **React風API**: 馴染みのある`use_state`構文
+- **スレッドセーフ**: 並行アプリケーション用の組み込みスレッドセーフティ
+- **リアクティブ**: 状態変更用の自動コールバックシステム
+- **永続化**: セッション間でのオプション状態永続化
+- **デバッグ機能**: 組み込みデバッグ・監視ツール
+- **フック**: `use_effect`、`use_memo`、`use_callback`等の追加フック
+- **コンテキスト**: コンテキストによるスコープ化された状態管理
+- **依存関係ゼロ**: コア機能に外部依存関係不要
+
+## インストール
+
+```bash
+pip install stateen
+```
+
+## クイックスタート
+
+```python
+from stateen import use_state
+
+# 基本的な使用法
+count, set_count = use_state(0)
+print(count())  # 0
+set_count(5)
+print(count())  # 5
+
+# コールバック付き
+def on_change(old_value, new_value):
+    print(f"カウントが{old_value}から{new_value}に変更されました")
+
+count, set_count = use_state(0, on_change=on_change)
+set_count(10)  # 出力: カウントが0から10に変更されました
+```
+
+## APIリファレンス
+
+### コア関数
+
+#### `use_state(initial_value, state_id=None, on_change=None)`
+
+Reactの`useState`と似た状態を作成します。
+
+**パラメータ:**
+- `initial_value`: 状態の初期値
+- `state_id`: 状態のオプションの一意識別子
+- `on_change`: 状態が変更されたときに呼び出されるオプションのコールバック `(old_value, new_value)`
+
+**戻り値:**
+- `(getter_function, setter_function)`のタプル
+
+**例:**
+```python
+from stateen import use_state
+
+# 基本的な状態
+name, set_name = use_state("太郎")
+print(name())  # "太郎"
+set_name("花子")
+print(name())  # "花子"
+
+# コールバック付き
+def on_user_change(old, new):
+    print(f"ユーザーが{old}から{new}に変更されました")
+
+user, set_user = use_state(
+    {"name": "太郎", "age": 30},
+    on_change=on_user_change
+)
+set_user({"name": "花子", "age": 25})
+```
+
+### フック
+
+#### `use_effect(effect, dependencies=None, effect_id=None)`
+
+Reactの`useEffect`と似た副作用を実行します。
+
+```python
+from stateen import use_state, use_effect
+
+count, set_count = use_state(0)
+
+# countが変更されたときにエフェクトを実行
+use_effect(
+    lambda: print(f"カウントは現在{count()}です"),
+    dependencies=[count()]
+)
+
+# クリーンアップ付きエフェクト
+def setup_timer():
+    import threading
+    timer = threading.Timer(1.0, lambda: print("タイマー!"))
+    timer.start()
+    return lambda: timer.cancel()  # クリーンアップ関数
+
+use_effect(setup_timer, dependencies=[])
+```
+
+#### `use_memo(compute_fn, dependencies=None, memo_id=None)`
+
+高コストな計算をメモ化します。
+
+```python
+from stateen import use_state, use_memo
+
+count, set_count = use_state(0)
+
+# countが変更されたときのみ実行される高コスト計算
+expensive_value = use_memo(
+    lambda: sum(range(count() * 1000)),
+    dependencies=[count()]
+)
+```
+
+#### `use_callback(callback, dependencies=None, callback_id=None)`
+
+コールバックをメモ化します。
+
+```python
+from stateen import use_state, use_callback
+
+count, set_count = use_state(0)
+
+# countが変更されたときのみコールバックが変更される
+increment = use_callback(
+    lambda: set_count(count() + 1),
+    dependencies=[count()]
+)
+```
+
+### 永続化
+
+#### `use_persistent_state(initial_value, state_id, storage_path=None, format="json", auto_save=True, on_change=None)`
+
+セッション間で持続する永続的な状態を作成します。
+
+```python
+from stateen import use_persistent_state
+
+# 永続的なカウンター
+count, set_count = use_persistent_state(0, "app_counter")
+set_count(5)  # 自動的に保存される
+
+# カスタム保存場所
+settings, set_settings = use_persistent_state(
+    {"theme": "dark"},
+    "app_settings",
+    storage_path="./config"
+)
+```
+
+### コンテキスト管理
+
+#### `create_context(name="default")`
+
+スコープ化された状態コンテキストを作成します。
+
+```python
+from stateen import create_context
+
+with create_context("user_session") as ctx:
+    user, set_user = ctx.use_state({"name": "太郎"})
+    # 状態はこのコンテキストにスコープされる
+```
+
+### デバッグ
+
+#### `debug_state(enabled=True)`
+
+状態のデバッグと監視を有効にします。
+
+```python
+from stateen import debug_state, use_state
+
+# デバッグを有効にする
+debugger = debug_state(True)
+
+# 状態を作成
+count, set_count = use_state(0, state_id="counter")
+set_count(5)
+set_count(10)
+
+# 変更履歴を表示
+debugger.print_events()
+debugger.get_statistics()
+```
+
+## 使用例
+
+### GUIアプリケーション
+
+```python
+import tkinter as tk
+from stateen import use_state
+
+def create_counter_app():
+    count, set_count = use_state(0)
+    
+    root = tk.Tk()
+    root.title("カウンターアプリ")
+    
+    label = tk.Label(root, text=str(count()))
+    label.pack()
+    
+    def update_label():
+        label.config(text=str(count()))
+    
+    def increment():
+        set_count(count() + 1)
+        update_label()
+    
+    button = tk.Button(root, text="増加", command=increment)
+    button.pack()
+    
+    return root
+
+app = create_counter_app()
+app.mainloop()
+```
+
+### CLIアプリケーション
+
+```python
+from stateen import use_state, use_persistent_state
+
+def cli_todo_app():
+    todos, set_todos = use_persistent_state([], "todos")
+    
+    def add_todo(text):
+        current_todos = todos()
+        set_todos(current_todos + [text])
+    
+    def list_todos():
+        for i, todo in enumerate(todos()):
+            print(f"{i + 1}. {todo}")
+    
+    def remove_todo(index):
+        current_todos = todos()
+        if 0 <= index < len(current_todos):
+            set_todos(current_todos[:index] + current_todos[index + 1:])
+    
+    return add_todo, list_todos, remove_todo
+
+add_todo, list_todos, remove_todo = cli_todo_app()
+```
+
+### ゲーム開発
+
+```python
+from stateen import use_state, use_effect
+
+class GameState:
+    def __init__(self):
+        self.score, self.set_score = use_state(0)
+        self.lives, self.set_lives = use_state(3)
+        self.level, self.set_level = use_state(1)
+        
+        # ハイスコアの自動保存
+        self.high_score, self.set_high_score = use_persistent_state(
+            0, "high_score"
+        )
+        
+        # スコアが閾値に達したときのレベルアップ
+        use_effect(
+            lambda: self.check_level_up(),
+            dependencies=[self.score()]
+        )
+    
+    def check_level_up(self):
+        if self.score() >= self.level() * 100:
+            self.set_level(self.level() + 1)
+            print(f"レベルアップ！現在レベル{self.level()}")
+    
+    def add_score(self, points):
+        new_score = self.score() + points
+        self.set_score(new_score)
+        
+        if new_score > self.high_score():
+            self.set_high_score(new_score)
+
+game = GameState()
+```
+
+## 高度な機能
+
+### カスタムストレージバックエンド
+
+```python
+from stateen.persistence import StatePersistence
+
+# カスタムストレージ場所
+persistence = StatePersistence("./my_app_data")
+
+# 特定の永続化設定を持つカスタム状態
+count, set_count = use_persistent_state(
+    0, "counter", 
+    storage_path="./game_saves"
+)
+```
+
+### 状態監視
+
+```python
+from stateen import create_state_monitor
+
+# 特定の状態を監視
+monitor = create_state_monitor(
+    "user_score",
+    callback=lambda old, new: print(f"スコア: {old} -> {new}")
+)
+
+# 監視を削除
+monitor['remove']()
+```
+
+### スレッドセーフティ
+
+```python
+import threading
+from stateen import use_state
+
+count, set_count = use_state(0)
+
+def worker():
+    for i in range(1000):
+        set_count(count() + 1)
+
+# 安全な並行アクセス
+threads = [threading.Thread(target=worker) for _ in range(5)]
+for t in threads:
+    t.start()
+for t in threads:
+    t.join()
+
+print(f"最終カウント: {count()}")  # 5000になるはず
+```
+
+## ライセンス
+
+MITライセンス。詳細は[LICENSE](LICENSE)を参照してください。
+
+## 変更履歴
+
+### 1.0.0
+- 初回リリース
+- コア`use_state`機能
+- フック: `use_effect`、`use_memo`、`use_callback`
+- コンテキスト管理
+- デバッグツール
+- スレッドセーフティ
+- 包括的なテストスイート

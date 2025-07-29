@@ -1,0 +1,89 @@
+[project]
+dependencies = [
+    "astropy",
+    "ipykernel",
+    "tqdm",
+    "pyyaml",
+    "pandas",
+    "fastapi[standard]",
+]
+name = "fitsdb"
+version = "0.0.3"
+description = "Raw FITS database management tool"
+readme = "README.md"
+requires-python = ">=3.10"
+
+[project.license]
+text = "MIT"
+
+[project.scripts]
+fitsdb = "fitsdb.main:main"
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "jaxoplanet>=0.1.0",
+    "pytest-xdist",
+]
+dev = [
+    "ruff",
+    "black",
+    "isort",
+]
+
+[tool.pdm.build]
+includes = [
+    "src/fitsdb/*.sql",
+]
+
+[tool.black]
+target-version = [
+    "py310",
+]
+line-length = 88
+
+[tool.ruff]
+line-length = 89
+target-version = "py310"
+
+[tool.ruff.lint]
+select = [
+    "F",
+    "I",
+    "E",
+    "W",
+    "YTT",
+    "B",
+    "Q",
+    "PLE",
+    "PLR",
+    "PLW",
+    "UP",
+]
+ignore = [
+    "B023",
+    "E741",
+    "PLR0912",
+    "PLR0913",
+    "PLR0915",
+    "PLR2004",
+]
+
+[tool.ruff.lint.isort]
+known-first-party = [
+    "fitsdb",
+]
+combine-as-imports = true
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+docstring-code-format = true
+skip-magic-trailing-comma = false
+
+[build-system]
+requires = [
+    "pdm-backend",
+]
+build-backend = "pdm.backend"

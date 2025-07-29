@@ -1,0 +1,209 @@
+[project]
+name = "auratrace"
+version = "0.1.0"
+description = "AI-powered data lineage and observability tool for Python"
+readme = "README.md"
+license = {text = "Apache-2.0"}
+authors = [
+    {name = "Rishi Tiwari", email = "wizard.enterprises.07@gmail.com"}
+]
+
+keywords = [
+    "data-lineage",
+    "observability",
+    "data-profiling",
+    "performance-monitoring",
+    "ai-assistant",
+    "python",
+    "pandas",
+    "numpy",
+    "data-science",
+    "mlops"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Monitoring",
+    "Topic :: Database :: Database Engines/Servers",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence"
+]
+requires-python = ">=3.8"
+dependencies = [
+    "pandas>=1.3.0",
+    "numpy>=1.20.0",
+    "networkx>=2.6.0",
+    "psutil>=5.8.0",
+    "openai>=1.0.0",
+    "rich>=12.0.0",
+    "click>=8.0.0",
+    "pyyaml>=6.0",
+    "jinja2>=3.0.0",
+    "matplotlib>=3.5.0",
+    "seaborn>=0.11.0",
+    "scikit-learn>=1.0.0",
+    "plotly>=5.0.0",
+    "dash>=2.0.0",
+    "dash-bootstrap-components>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=22.0.0",
+    "flake8>=5.0.0",
+    "mypy>=1.0.0",
+    "isort>=5.0.0",
+    "pre-commit>=2.20.0",
+    "safety>=2.0.0",
+    "bandit>=1.7.0",
+]
+docs = [
+    "sphinx>=5.0.0",
+    "sphinx-rtd-theme>=1.0.0",
+    "myst-parser>=0.18.0",
+    "sphinx-autodoc-typehints>=1.19.0",
+]
+viz = [
+    "pyvis>=0.3.0",
+    "graphviz>=0.20.0",
+]
+openai = ["openai>=1.0.0"]
+huggingface = ["transformers>=4.30.0"]
+requests = ["requests>=2.28.0"]
+all = ["openai>=1.0.0", "transformers>=4.30.0", "requests>=2.28.0"]
+
+[project.urls]
+Homepage = "https://github.com/Cosmos-Coder-Ray/AuraTrace"
+Documentation = "https://github.com/Cosmos-Coder-Ray/AuraTrace/docs"
+Repository = "https://github.com/Cosmos-Coder-Ray/AuraTrace"
+"Bug Tracker" = "https://github.com/Cosmos-Coder-Ray/AuraTrace/issues"
+"Source Code" = "https://github.com/Cosmos-Coder-Ray/AuraTrace"
+"Changelog" = "https://github.com/Cosmos-Coder-Ray/AuraTrace/blob/main/CHANGELOG.md"
+
+[project.scripts]
+auratrace = "auratrace.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["auratrace"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["auratrace"]
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = [
+    "pandas.*",
+    "numpy.*",
+    "networkx.*",
+    "psutil.*",
+    "transformers.*",
+    "openai.*",
+    "rich.*",
+    "click.*",
+    "pyyaml.*",
+    "jinja2.*",
+    "matplotlib.*",
+    "seaborn.*",
+    "scikit-learn.*",
+    "plotly.*",
+    "dash.*",
+    "dash_bootstrap_components.*",
+    "pyvis.*",
+    "graphviz.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q --strict-markers --strict-config"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+]
+
+[tool.coverage.run]
+source = ["auratrace"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "*/__pycache__/*",
+    "*/venv/*",
+    "*/env/*",
+    "*//.venv/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.bandit]
+exclude_dirs = ["tests", "docs"]
+skips = ["B101", "B601"]
+
+[tool.safety]
+audit = true 

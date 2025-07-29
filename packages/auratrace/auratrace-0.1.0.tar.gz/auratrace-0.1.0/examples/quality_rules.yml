@@ -1,0 +1,86 @@
+# Example quality rules for AuraTrace
+# This file demonstrates various data quality checks
+
+rules:
+  # Check for excessive null values
+  - name: null_check_general
+    description: Check for excessive null values in any column
+    type: null_check
+    parameters:
+      max_null_percentage: 50.0
+    severity: warning
+
+  # Check for null values in critical columns
+  - name: null_check_critical
+    description: Check for null values in critical columns
+    type: null_check
+    column: user_id
+    parameters:
+      max_null_percentage: 0.0
+    severity: error
+
+  # Check for duplicate user IDs
+  - name: uniqueness_check_user_id
+    description: Check for duplicate user IDs
+    type: uniqueness_check
+    column: user_id
+    severity: error
+
+  # Check for duplicate emails
+  - name: uniqueness_check_email
+    description: Check for duplicate email addresses
+    type: uniqueness_check
+    column: email
+    severity: warning
+
+  # Check age range
+  - name: age_range_check
+    description: Check that age is within reasonable range
+    type: range_check
+    column: age
+    parameters:
+      min_value: 0
+      max_value: 120
+    severity: warning
+
+  # Check score range
+  - name: score_range_check
+    description: Check that score is within expected range
+    type: range_check
+    column: score
+    parameters:
+      min_value: 0
+      max_value: 100
+    severity: warning
+
+  # Check email format
+  - name: email_format_check
+    description: Check that email addresses have valid format
+    type: format_check
+    column: email
+    parameters:
+      pattern: '^[^@]+@[^@]+\.[^@]+$'
+    severity: error
+
+  # Check name format
+  - name: name_format_check
+    description: Check that names are not empty
+    type: format_check
+    column: name
+    parameters:
+      pattern: '^.+$'
+    severity: warning
+
+  # Check for required columns
+  - name: completeness_check
+    description: Check that all required columns are present
+    type: completeness_check
+    parameters:
+      required_columns:
+        - user_id
+        - name
+        - age
+        - email
+        - score
+        - category
+    severity: error 

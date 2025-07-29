@@ -1,0 +1,2558 @@
+{
+  "ids_info": {
+    "name": "disruption",
+    "description": "Description of physics quantities of specific interest during a disruption, in particular halo currents, etc ...",
+    "version": "4.0.1.dev164",
+    "max_depth": 6,
+    "leaf_count": 185,
+    "physics_domain": "mhd",
+    "documentation_coverage": 1.0,
+    "related_ids": [],
+    "common_use_cases": []
+  },
+  "coordinate_systems": {},
+  "paths": {
+    "disruption/global_quantities": {
+      "path": "disruption/global_quantities",
+      "documentation": "Global quantities",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "global_quantities/current_halo_pol",
+        "global_quantities/current_halo_phi"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "global_quantities/current_halo_pol",
+          "global_quantities/current_halo_phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "disruption_global_quantities"
+    },
+    "disruption/global_quantities/current_halo_pol": {
+      "path": "disruption/global_quantities/current_halo_pol",
+      "documentation": "Poloidal halo current",
+      "units": "A",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "global_quantities/current_halo_phi",
+        "global_quantities/energy_ohm",
+        "global_quantities"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.global_quantities/current_halo_pol[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "global_quantities/current_halo_phi"
+        ],
+        "physics_related": [
+          "global_quantities/energy_ohm",
+          "global_quantities/current_halo_phi"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "global_quantities",
+          "global_quantities/current_halo_phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "time"
+    },
+    "disruption/global_quantities/current_halo_phi": {
+      "path": "disruption/global_quantities/current_halo_phi",
+      "documentation": "Toroidal halo current",
+      "units": "A",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "global_quantities/current_halo_pol",
+        "global_quantities/energy_ohm",
+        "global_quantities"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.global_quantities/current_halo_phi[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "global_quantities/current_halo_pol"
+        ],
+        "physics_related": [
+          "global_quantities/energy_ohm",
+          "global_quantities/current_halo_pol"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "global_quantities",
+          "global_quantities/current_halo_pol"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "time"
+    },
+    "disruption/global_quantities/power_ohm": {
+      "path": "disruption/global_quantities/power_ohm",
+      "documentation": "Total ohmic power",
+      "units": "W",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "global_quantities/current_halo_pol",
+        "global_quantities/current_halo_phi",
+        "global_quantities/energy_ohm",
+        "global_quantities/power_ohm_halo",
+        "global_quantities"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.global_quantities/power_ohm[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "global_quantities/current_halo_pol",
+          "global_quantities/current_halo_phi"
+        ],
+        "physics_related": [
+          "global_quantities/energy_ohm",
+          "global_quantities/power_ohm_halo"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "global_quantities",
+          "global_quantities/current_halo_pol",
+          "global_quantities/current_halo_phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "time"
+    },
+    "disruption/global_quantities/power_ohm_halo": {
+      "path": "disruption/global_quantities/power_ohm_halo",
+      "documentation": "Ohmic power in the halo region",
+      "units": "W",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "global_quantities/current_halo_pol",
+        "global_quantities/current_halo_phi",
+        "global_quantities/energy_ohm",
+        "global_quantities/power_ohm",
+        "global_quantities"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.global_quantities/power_ohm_halo[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "global_quantities/current_halo_pol",
+          "global_quantities/current_halo_phi"
+        ],
+        "physics_related": [
+          "global_quantities/energy_ohm",
+          "global_quantities/power_ohm"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "global_quantities",
+          "global_quantities/current_halo_pol",
+          "global_quantities/current_halo_phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "time"
+    },
+    "disruption/global_quantities/power_parallel_halo": {
+      "path": "disruption/global_quantities/power_parallel_halo",
+      "documentation": "Power of the parallel heat flux in the halo region",
+      "units": "W",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "global_quantities/current_halo_pol",
+        "global_quantities/current_halo_phi",
+        "global_quantities/energy_ohm",
+        "global_quantities/power_ohm",
+        "global_quantities"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.global_quantities/power_parallel_halo[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "global_quantities/current_halo_pol",
+          "global_quantities/current_halo_phi"
+        ],
+        "physics_related": [
+          "global_quantities/energy_ohm",
+          "global_quantities/power_ohm"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "global_quantities",
+          "global_quantities/current_halo_pol",
+          "global_quantities/current_halo_phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "time"
+    },
+    "disruption/global_quantities/power_radiated_electrons_impurities": {
+      "path": "disruption/global_quantities/power_radiated_electrons_impurities",
+      "documentation": "Total power radiated by electrons on impurities",
+      "units": "W",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "global_quantities/current_halo_pol",
+        "global_quantities/current_halo_phi",
+        "global_quantities/energy_ohm",
+        "global_quantities/power_ohm",
+        "global_quantities"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.global_quantities/power_radiated_electrons_impurities[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "global_quantities/current_halo_pol",
+          "global_quantities/current_halo_phi"
+        ],
+        "physics_related": [
+          "global_quantities/energy_ohm",
+          "global_quantities/power_ohm"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "global_quantities",
+          "global_quantities/current_halo_pol",
+          "global_quantities/current_halo_phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "time"
+    },
+    "disruption/global_quantities/power_radiated_electrons_impurities_halo": {
+      "path": "disruption/global_quantities/power_radiated_electrons_impurities_halo",
+      "documentation": "Power radiated by electrons on impurities in the halo region",
+      "units": "W",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "global_quantities/current_halo_pol",
+        "global_quantities/current_halo_phi",
+        "global_quantities/energy_ohm",
+        "global_quantities/power_ohm",
+        "global_quantities"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.global_quantities/power_radiated_electrons_impurities_halo[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "global_quantities/current_halo_pol",
+          "global_quantities/current_halo_phi"
+        ],
+        "physics_related": [
+          "global_quantities/energy_ohm",
+          "global_quantities/power_ohm"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "global_quantities",
+          "global_quantities/current_halo_pol",
+          "global_quantities/current_halo_phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "time"
+    },
+    "disruption/global_quantities/energy_ohm": {
+      "path": "disruption/global_quantities/energy_ohm",
+      "documentation": "Total ohmic cumulated energy (integral of the power over the disruption duration)",
+      "units": "J",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "global_quantities/current_halo_pol",
+        "global_quantities/current_halo_phi",
+        "global_quantities/energy_ohm_halo",
+        "global_quantities"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.global_quantities/energy_ohm[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "global_quantities/current_halo_pol",
+          "global_quantities/current_halo_phi"
+        ],
+        "physics_related": [
+          "global_quantities/energy_ohm_halo"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "global_quantities",
+          "global_quantities/current_halo_pol",
+          "global_quantities/current_halo_phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "time"
+    },
+    "disruption/global_quantities/energy_ohm_halo": {
+      "path": "disruption/global_quantities/energy_ohm_halo",
+      "documentation": "Ohmic cumulated energy (integral of the power over the disruption duration) in the halo region",
+      "units": "J",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "global_quantities/current_halo_pol",
+        "global_quantities/current_halo_phi",
+        "global_quantities/energy_ohm",
+        "global_quantities"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.global_quantities/energy_ohm_halo[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "global_quantities/current_halo_pol",
+          "global_quantities/current_halo_phi"
+        ],
+        "physics_related": [
+          "global_quantities/energy_ohm",
+          "global_quantities/energy_ohm"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "global_quantities",
+          "global_quantities/current_halo_pol",
+          "global_quantities/current_halo_phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "time"
+    },
+    "disruption/global_quantities/energy_parallel_halo": {
+      "path": "disruption/global_quantities/energy_parallel_halo",
+      "documentation": "Cumulated parallel energy (integral of the heat flux parallel power over the disruption duration) in the halo region",
+      "units": "J",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "global_quantities/current_halo_pol",
+        "global_quantities/current_halo_phi",
+        "global_quantities/energy_ohm",
+        "global_quantities"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.global_quantities/energy_parallel_halo[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "global_quantities/current_halo_pol",
+          "global_quantities/current_halo_phi"
+        ],
+        "physics_related": [
+          "global_quantities/energy_ohm",
+          "global_quantities/energy_ohm"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "global_quantities",
+          "global_quantities/current_halo_pol",
+          "global_quantities/current_halo_phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "time"
+    },
+    "disruption/global_quantities/energy_radiated_electrons_impurities": {
+      "path": "disruption/global_quantities/energy_radiated_electrons_impurities",
+      "documentation": "Total cumulated energy (integral of the power over the disruption duration) radiated by electrons on impurities",
+      "units": "J",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "global_quantities/current_halo_pol",
+        "global_quantities/current_halo_phi",
+        "global_quantities/energy_ohm",
+        "global_quantities"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.global_quantities/energy_radiated_electrons_impurities[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "global_quantities/current_halo_pol",
+          "global_quantities/current_halo_phi"
+        ],
+        "physics_related": [
+          "global_quantities/energy_ohm",
+          "global_quantities/energy_ohm"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "global_quantities",
+          "global_quantities/current_halo_pol",
+          "global_quantities/current_halo_phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "time"
+    },
+    "disruption/global_quantities/energy_radiated_electrons_impurities_halo": {
+      "path": "disruption/global_quantities/energy_radiated_electrons_impurities_halo",
+      "documentation": "Cumulated energy (integral of the power over the disruption duration) radiated by electrons on impurities in the halo region",
+      "units": "J",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "global_quantities/current_halo_pol",
+        "global_quantities/current_halo_phi",
+        "global_quantities/energy_ohm",
+        "global_quantities"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.global_quantities/energy_radiated_electrons_impurities_halo[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "global_quantities/current_halo_pol",
+          "global_quantities/current_halo_phi"
+        ],
+        "physics_related": [
+          "global_quantities/energy_ohm",
+          "global_quantities/energy_ohm"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "global_quantities",
+          "global_quantities/current_halo_pol",
+          "global_quantities/current_halo_phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "time"
+    },
+    "disruption/global_quantities/psi_halo_boundary": {
+      "path": "disruption/global_quantities/psi_halo_boundary",
+      "documentation": "Poloidal flux at halo region boundary",
+      "units": "Wb",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "global_quantities/current_halo_pol",
+        "global_quantities/current_halo_phi",
+        "global_quantities/phi_halo_boundary",
+        "global_quantities",
+        "profiles_1d/grid/psi_magnetic_axis",
+        "profiles_1d/grid/psi_boundary"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.global_quantities/psi_halo_boundary[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "global_quantities/current_halo_pol",
+          "global_quantities/current_halo_phi"
+        ],
+        "physics_related": [
+          "profiles_1d/grid/psi_magnetic_axis",
+          "profiles_1d/grid/psi_boundary",
+          "global_quantities/phi_halo_boundary"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "global_quantities",
+          "global_quantities/current_halo_pol",
+          "global_quantities/current_halo_phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "time"
+    },
+    "disruption/global_quantities/phi_halo_boundary": {
+      "path": "disruption/global_quantities/phi_halo_boundary",
+      "documentation": "Toroidal flux at halo region boundary",
+      "units": "Wb",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "global_quantities/current_halo_pol",
+        "global_quantities/current_halo_phi",
+        "global_quantities/energy_ohm",
+        "global_quantities/psi_halo_boundary",
+        "global_quantities"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.global_quantities/phi_halo_boundary[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "global_quantities/current_halo_pol",
+          "global_quantities/current_halo_phi"
+        ],
+        "physics_related": [
+          "global_quantities/energy_ohm",
+          "global_quantities/psi_halo_boundary"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "global_quantities",
+          "global_quantities/current_halo_pol",
+          "global_quantities/current_halo_phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "time"
+    },
+    "disruption/global_quantities/phi_halo_boundary_poloidal_current": {
+      "path": "disruption/global_quantities/phi_halo_boundary_poloidal_current",
+      "documentation": "Toroidal flux at halo region boundary generated by the plasma poloidal current",
+      "units": "Wb",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "global_quantities/current_halo_pol",
+        "global_quantities/current_halo_phi",
+        "global_quantities/energy_ohm",
+        "global_quantities/psi_halo_boundary",
+        "global_quantities"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.global_quantities/phi_halo_boundary_poloidal_current[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "global_quantities/current_halo_pol",
+          "global_quantities/current_halo_phi"
+        ],
+        "physics_related": [
+          "global_quantities/energy_ohm",
+          "global_quantities/psi_halo_boundary"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "global_quantities",
+          "global_quantities/current_halo_pol",
+          "global_quantities/current_halo_phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "time"
+    },
+    "disruption/halo_currents": {
+      "path": "disruption/halo_currents",
+      "documentation": "Halo currents geometry and values for a set of time slices",
+      "units": "",
+      "coordinates": [
+        "halo_currents(itime)/time"
+      ],
+      "lifecycle": "active",
+      "data_type": "struct_array",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "halo_currents/area",
+        "halo_currents/active_wall_point",
+        "halo_currents/time",
+        "global_quantities/energy_ohm"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "global_quantities/energy_ohm"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "halo_currents/area",
+          "halo_currents/active_wall_point",
+          "halo_currents/time"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "disruption_halo_currents",
+      "temporal_context": "time"
+    },
+    "disruption/halo_currents/area": {
+      "path": "disruption/halo_currents/area",
+      "documentation": "Set of wall areas through which there are halo currents",
+      "units": "",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "struct_array",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "halo_currents/active_wall_point",
+        "halo_currents/time",
+        "global_quantities/energy_ohm",
+        "halo_currents",
+        "halo_currents/area/start_point",
+        "halo_currents/area/end_point",
+        "halo_currents/area/current_halo_pol"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "global_quantities/energy_ohm"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "halo_currents",
+          "halo_currents/active_wall_point",
+          "halo_currents/time",
+          "halo_currents/area/start_point",
+          "halo_currents/area/end_point",
+          "halo_currents/area/current_halo_pol"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "disruption_halo_currents_area"
+    },
+    "disruption/halo_currents/area/start_point": {
+      "path": "disruption/halo_currents/area/start_point",
+      "documentation": "Position of the start point of this area",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "halo_currents/area/end_point",
+        "halo_currents/area/current_halo_pol",
+        "halo_currents/area",
+        "halo_currents/area/start_point/r",
+        "halo_currents/area/start_point/z",
+        "global_quantities/energy_ohm"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "global_quantities/energy_ohm"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "halo_currents/area",
+          "halo_currents/area/end_point",
+          "halo_currents/area/current_halo_pol",
+          "halo_currents/area/start_point/r",
+          "halo_currents/area/start_point/z"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "rz0d_dynamic_aos"
+    },
+    "disruption/halo_currents/area/start_point/r": {
+      "path": "disruption/halo_currents/area/start_point/r",
+      "documentation": "Major radius",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "halo_currents/area/start_point/z",
+        "halo_currents/area/start_point",
+        "global_quantities/energy_ohm"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "global_quantities/energy_ohm",
+          "halo_currents/area/start_point/z"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "halo_currents/area/start_point",
+          "halo_currents/area/start_point/z"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "disruption/halo_currents/area/start_point/z": {
+      "path": "disruption/halo_currents/area/start_point/z",
+      "documentation": "Height",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "halo_currents/area/start_point/r",
+        "halo_currents/area/start_point",
+        "global_quantities/energy_ohm"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "global_quantities/energy_ohm",
+          "halo_currents/area/start_point/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "halo_currents/area/start_point",
+          "halo_currents/area/start_point/r"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "disruption/halo_currents/area/end_point": {
+      "path": "disruption/halo_currents/area/end_point",
+      "documentation": "Position of the end point of this area",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "halo_currents/area/start_point",
+        "halo_currents/area/current_halo_pol",
+        "halo_currents/area",
+        "halo_currents/area/end_point/r",
+        "halo_currents/area/end_point/z",
+        "global_quantities/energy_ohm"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "global_quantities/energy_ohm"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "halo_currents/area",
+          "halo_currents/area/start_point",
+          "halo_currents/area/current_halo_pol",
+          "halo_currents/area/end_point/r",
+          "halo_currents/area/end_point/z"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "rz0d_dynamic_aos"
+    },
+    "disruption/halo_currents/area/end_point/r": {
+      "path": "disruption/halo_currents/area/end_point/r",
+      "documentation": "Major radius",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "halo_currents/area/end_point/z",
+        "halo_currents/area/start_point/r",
+        "halo_currents/area/end_point",
+        "global_quantities/energy_ohm"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "global_quantities/energy_ohm",
+          "halo_currents/area/start_point/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "halo_currents/area/end_point",
+          "halo_currents/area/end_point/z"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "disruption/halo_currents/area/end_point/z": {
+      "path": "disruption/halo_currents/area/end_point/z",
+      "documentation": "Height",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "halo_currents/area/end_point/r",
+        "halo_currents/area/start_point/r",
+        "halo_currents/area/end_point",
+        "global_quantities/energy_ohm"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "global_quantities/energy_ohm",
+          "halo_currents/area/start_point/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "halo_currents/area/end_point",
+          "halo_currents/area/end_point/r"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "disruption/halo_currents/area/current_halo_pol": {
+      "path": "disruption/halo_currents/area/current_halo_pol",
+      "documentation": "Poloidal halo current crossing through this area",
+      "units": "A",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "halo_currents/area/start_point",
+        "halo_currents/area/end_point",
+        "halo_currents/area",
+        "global_quantities/energy_ohm",
+        "global_quantities/current_halo_pol"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "global_quantities/energy_ohm",
+          "global_quantities/current_halo_pol"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "halo_currents/area",
+          "halo_currents/area/start_point",
+          "halo_currents/area/end_point"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "disruption/halo_currents/active_wall_point": {
+      "path": "disruption/halo_currents/active_wall_point",
+      "documentation": "R,Z position of the point of the plasma boundary in contact with the wall",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "halo_currents/area",
+        "halo_currents/time",
+        "global_quantities/energy_ohm",
+        "halo_currents",
+        "halo_currents/active_wall_point/r",
+        "halo_currents/active_wall_point/z"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "global_quantities/energy_ohm"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "halo_currents",
+          "halo_currents/area",
+          "halo_currents/time",
+          "halo_currents/active_wall_point/r",
+          "halo_currents/active_wall_point/z"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "rz0d_dynamic_aos"
+    },
+    "disruption/halo_currents/active_wall_point/r": {
+      "path": "disruption/halo_currents/active_wall_point/r",
+      "documentation": "Major radius",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "halo_currents/active_wall_point/z",
+        "halo_currents/active_wall_point",
+        "global_quantities/energy_ohm",
+        "halo_currents/area/start_point/r"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "global_quantities/energy_ohm",
+          "halo_currents/area/start_point/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "halo_currents/active_wall_point",
+          "halo_currents/active_wall_point/z"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "disruption/halo_currents/active_wall_point/z": {
+      "path": "disruption/halo_currents/active_wall_point/z",
+      "documentation": "Height",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "halo_currents/active_wall_point/r",
+        "halo_currents/active_wall_point",
+        "global_quantities/energy_ohm",
+        "halo_currents/area/start_point/r"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "global_quantities/energy_ohm",
+          "halo_currents/area/start_point/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "halo_currents/active_wall_point",
+          "halo_currents/active_wall_point/r"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "disruption/halo_currents/time": {
+      "path": "disruption/halo_currents/time",
+      "documentation": "Time",
+      "units": "s",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "halo_currents/area",
+        "halo_currents/active_wall_point",
+        "global_quantities/energy_ohm",
+        "profiles_1d/time",
+        "halo_currents",
+        "time"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "global_quantities/energy_ohm",
+          "profiles_1d/time",
+          "time"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "halo_currents",
+          "halo_currents/area",
+          "halo_currents/active_wall_point"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "disruption/profiles_1d": {
+      "path": "disruption/profiles_1d",
+      "documentation": "Radial profiles for a set of time slices",
+      "units": "",
+      "coordinates": [
+        "profiles_1d(itime)/time"
+      ],
+      "lifecycle": "active",
+      "data_type": "struct_array",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "profiles_1d/grid",
+        "profiles_1d/j_runaways",
+        "profiles_1d/power_density_conductive_losses",
+        "global_quantities/energy_ohm"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "global_quantities/energy_ohm"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "profiles_1d/grid",
+          "profiles_1d/j_runaways",
+          "profiles_1d/power_density_conductive_losses"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "disruption_profiles_1d",
+      "temporal_context": "time"
+    },
+    "disruption/profiles_1d/grid": {
+      "path": "disruption/profiles_1d/grid",
+      "documentation": "Radial grid",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "profiles_1d/j_runaways",
+        "profiles_1d/power_density_conductive_losses",
+        "global_quantities/energy_ohm",
+        "profiles_1d",
+        "profiles_1d/grid/rho_tor_norm",
+        "profiles_1d/grid/rho_tor"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "global_quantities/energy_ohm"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "profiles_1d",
+          "profiles_1d/j_runaways",
+          "profiles_1d/power_density_conductive_losses",
+          "profiles_1d/grid/rho_tor_norm",
+          "profiles_1d/grid/rho_tor"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "core_radial_grid"
+    },
+    "disruption/profiles_1d/grid/rho_tor_norm": {
+      "path": "disruption/profiles_1d/grid/rho_tor_norm",
+      "documentation": "Normalized toroidal flux coordinate. The normalizing value for rho_tor_norm, is the toroidal flux coordinate at the equilibrium boundary (LCFS or 99.x % of the LCFS in case of a fixed boundary equilibium calculation, see time_slice/boundary/b_flux_pol_norm in the equilibrium IDS)",
+      "units": "1",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "profiles_1d/grid/rho_tor",
+        "profiles_1d/grid",
+        "global_quantities/energy_ohm"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "global_quantities/energy_ohm"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "profiles_1d/grid",
+          "profiles_1d/grid/rho_tor"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "disruption/profiles_1d/grid/rho_tor": {
+      "path": "disruption/profiles_1d/grid/rho_tor",
+      "documentation": "Toroidal flux coordinate = sqrt(phi/(pi*b0)), where the toroidal magnetic field, b0, corresponds to that stored in vacuum_toroidal_field/b0 and pi can be found in the IMAS constants",
+      "units": "m",
+      "coordinates": [
+        "profiles_1d(itime)/grid/rho_tor_norm"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "profiles_1d/grid/rho_tor_norm",
+        "profiles_1d/grid/rho_pol_norm",
+        "profiles_1d/grid",
+        "global_quantities/energy_ohm",
+        "halo_currents/area/start_point/r"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "profiles_1d/grid/rho_pol_norm"
+        ],
+        "physics_related": [
+          "global_quantities/energy_ohm",
+          "halo_currents/area/start_point/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "profiles_1d/grid",
+          "profiles_1d/grid/rho_tor_norm"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "disruption/profiles_1d/grid/rho_pol_norm": {
+      "path": "disruption/profiles_1d/grid/rho_pol_norm",
+      "documentation": "Normalized poloidal flux coordinate = sqrt((psi(rho)-psi(magnetic_axis)) / (psi(LCFS)-psi(magnetic_axis)))",
+      "units": "1",
+      "coordinates": [
+        "profiles_1d(itime)/grid/rho_tor_norm"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "profiles_1d/grid/rho_tor_norm",
+        "profiles_1d/grid/rho_tor",
+        "profiles_1d/grid",
+        "global_quantities/energy_ohm"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "profiles_1d/grid/rho_tor"
+        ],
+        "physics_related": [
+          "global_quantities/energy_ohm"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "profiles_1d/grid",
+          "profiles_1d/grid/rho_tor_norm",
+          "profiles_1d/grid/rho_tor"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "disruption/profiles_1d/grid/psi": {
+      "path": "disruption/profiles_1d/grid/psi",
+      "documentation": "Poloidal magnetic flux. Integral of magnetic field passing through a contour defined by the intersection of a flux surface passing through the point of interest and a Z=constant plane. If the integration surface is flat, the surface normal vector is in the increasing vertical coordinate direction, Z, namely upwards.",
+      "units": "Wb",
+      "coordinates": [
+        "profiles_1d(itime)/grid/rho_tor_norm"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "profiles_1d/grid/rho_tor_norm",
+        "profiles_1d/grid/rho_tor",
+        "profiles_1d/grid/psi_magnetic_axis",
+        "profiles_1d/grid/psi_boundary",
+        "profiles_1d/grid/rho_pol_norm",
+        "profiles_1d/grid",
+        "global_quantities/psi_halo_boundary"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "profiles_1d/grid/rho_tor",
+          "profiles_1d/grid/rho_pol_norm"
+        ],
+        "physics_related": [
+          "profiles_1d/grid/psi_magnetic_axis",
+          "profiles_1d/grid/psi_boundary",
+          "global_quantities/psi_halo_boundary"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "profiles_1d/grid",
+          "profiles_1d/grid/rho_tor_norm",
+          "profiles_1d/grid/rho_tor"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "disruption/profiles_1d/grid/volume": {
+      "path": "disruption/profiles_1d/grid/volume",
+      "documentation": "Volume enclosed inside the magnetic surface",
+      "units": "m^3",
+      "coordinates": [
+        "profiles_1d(itime)/grid/rho_tor_norm"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "profiles_1d/grid/rho_tor_norm",
+        "profiles_1d/grid/rho_tor",
+        "profiles_1d/grid/rho_pol_norm",
+        "profiles_1d/grid",
+        "global_quantities/energy_ohm"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "profiles_1d/grid/rho_tor",
+          "profiles_1d/grid/rho_pol_norm"
+        ],
+        "physics_related": [
+          "global_quantities/energy_ohm"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "profiles_1d/grid",
+          "profiles_1d/grid/rho_tor_norm",
+          "profiles_1d/grid/rho_tor"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "disruption/profiles_1d/grid/area": {
+      "path": "disruption/profiles_1d/grid/area",
+      "documentation": "Cross-sectional area of the flux surface",
+      "units": "m^2",
+      "coordinates": [
+        "profiles_1d(itime)/grid/rho_tor_norm"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "profiles_1d/grid/rho_tor_norm",
+        "profiles_1d/grid/rho_tor",
+        "profiles_1d/grid/surface",
+        "profiles_1d/grid/rho_pol_norm",
+        "profiles_1d/grid",
+        "global_quantities/energy_ohm"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "profiles_1d/grid/rho_tor",
+          "profiles_1d/grid/rho_pol_norm"
+        ],
+        "physics_related": [
+          "global_quantities/energy_ohm",
+          "profiles_1d/grid/surface"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "profiles_1d/grid",
+          "profiles_1d/grid/rho_tor_norm",
+          "profiles_1d/grid/rho_tor"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "disruption/profiles_1d/grid/surface": {
+      "path": "disruption/profiles_1d/grid/surface",
+      "documentation": "Surface area of the toroidal flux surface",
+      "units": "m^2",
+      "coordinates": [
+        "profiles_1d(itime)/grid/rho_tor_norm"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "profiles_1d/grid/rho_tor_norm",
+        "profiles_1d/grid/rho_tor",
+        "profiles_1d/grid/area",
+        "profiles_1d/grid/rho_pol_norm",
+        "profiles_1d/grid",
+        "global_quantities/energy_ohm"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "profiles_1d/grid/rho_tor",
+          "profiles_1d/grid/rho_pol_norm"
+        ],
+        "physics_related": [
+          "global_quantities/energy_ohm",
+          "profiles_1d/grid/area"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "profiles_1d/grid",
+          "profiles_1d/grid/rho_tor_norm",
+          "profiles_1d/grid/rho_tor"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "disruption/profiles_1d/grid/psi_magnetic_axis": {
+      "path": "disruption/profiles_1d/grid/psi_magnetic_axis",
+      "documentation": "Value of the poloidal magnetic flux at the magnetic axis (useful to normalize the psi array values when the radial grid doesn't go from the magnetic axis to the plasma boundary)",
+      "units": "Wb",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "profiles_1d/grid/rho_tor_norm",
+        "profiles_1d/grid/rho_tor",
+        "profiles_1d/grid/psi_boundary",
+        "profiles_1d/grid",
+        "global_quantities/psi_halo_boundary"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "profiles_1d/grid/psi_boundary",
+          "global_quantities/psi_halo_boundary"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "profiles_1d/grid",
+          "profiles_1d/grid/rho_tor_norm",
+          "profiles_1d/grid/rho_tor"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "disruption/profiles_1d/grid/psi_boundary": {
+      "path": "disruption/profiles_1d/grid/psi_boundary",
+      "documentation": "Value of the poloidal magnetic flux at the plasma boundary (useful to normalize the psi array values when the radial grid doesn't go from the magnetic axis to the plasma boundary)",
+      "units": "Wb",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "profiles_1d/grid/rho_tor_norm",
+        "profiles_1d/grid/rho_tor",
+        "profiles_1d/grid/psi_magnetic_axis",
+        "profiles_1d/grid",
+        "global_quantities/psi_halo_boundary"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "profiles_1d/grid/psi_magnetic_axis",
+          "global_quantities/psi_halo_boundary"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "profiles_1d/grid",
+          "profiles_1d/grid/rho_tor_norm",
+          "profiles_1d/grid/rho_tor"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "disruption/profiles_1d/j_runaways": {
+      "path": "disruption/profiles_1d/j_runaways",
+      "documentation": "Runaways parallel current density = average(j.B) / B0, where B0 = Disruption/Vacuum_Toroidal_Field/ B0",
+      "units": "A.m^-2",
+      "coordinates": [
+        "profiles_1d(itime)/grid/rho_tor_norm"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "profiles_1d/grid",
+        "profiles_1d/power_density_conductive_losses",
+        "global_quantities/energy_ohm",
+        "profiles_1d",
+        "profiles_1d/grid/rho_tor",
+        "profiles_1d/grid/rho_pol_norm"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "profiles_1d/grid/rho_tor",
+          "profiles_1d/grid/rho_pol_norm"
+        ],
+        "physics_related": [
+          "global_quantities/energy_ohm"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "profiles_1d",
+          "profiles_1d/grid",
+          "profiles_1d/power_density_conductive_losses"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "disruption/profiles_1d/power_density_conductive_losses": {
+      "path": "disruption/profiles_1d/power_density_conductive_losses",
+      "documentation": "Power density of conductive losses to the wall (positive sign for losses)",
+      "units": "W.m^-3",
+      "coordinates": [
+        "profiles_1d(itime)/grid/rho_tor_norm"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "profiles_1d/grid",
+        "profiles_1d/j_runaways",
+        "global_quantities/energy_ohm",
+        "profiles_1d/power_density_radiative_losses",
+        "profiles_1d",
+        "profiles_1d/grid/rho_tor",
+        "profiles_1d/grid/rho_pol_norm"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "profiles_1d/grid/rho_tor",
+          "profiles_1d/grid/rho_pol_norm"
+        ],
+        "physics_related": [
+          "global_quantities/energy_ohm",
+          "profiles_1d/power_density_radiative_losses"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "profiles_1d",
+          "profiles_1d/grid",
+          "profiles_1d/j_runaways"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "disruption/profiles_1d/power_density_radiative_losses": {
+      "path": "disruption/profiles_1d/power_density_radiative_losses",
+      "documentation": "Power density of radiative losses (positive sign for losses)",
+      "units": "W.m^-3",
+      "coordinates": [
+        "profiles_1d(itime)/grid/rho_tor_norm"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "profiles_1d/grid",
+        "profiles_1d/j_runaways",
+        "profiles_1d/power_density_conductive_losses",
+        "global_quantities/energy_ohm",
+        "profiles_1d",
+        "profiles_1d/grid/rho_tor",
+        "profiles_1d/grid/rho_pol_norm"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "profiles_1d/grid/rho_tor",
+          "profiles_1d/grid/rho_pol_norm"
+        ],
+        "physics_related": [
+          "global_quantities/energy_ohm",
+          "profiles_1d/power_density_conductive_losses"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "profiles_1d",
+          "profiles_1d/grid",
+          "profiles_1d/j_runaways",
+          "profiles_1d/power_density_conductive_losses"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "disruption/profiles_1d/time": {
+      "path": "disruption/profiles_1d/time",
+      "documentation": "Time",
+      "units": "s",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "profiles_1d/grid",
+        "profiles_1d/j_runaways",
+        "profiles_1d/power_density_conductive_losses",
+        "global_quantities/energy_ohm",
+        "halo_currents/time",
+        "profiles_1d",
+        "time"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "global_quantities/energy_ohm",
+          "halo_currents/time",
+          "time"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "profiles_1d",
+          "profiles_1d/grid",
+          "profiles_1d/j_runaways",
+          "profiles_1d/power_density_conductive_losses"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "disruption/vacuum_toroidal_field": {
+      "path": "disruption/vacuum_toroidal_field",
+      "documentation": "Characteristics of the vacuum toroidal field (used in rho_tor definition and in the normalization of current densities)",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "vacuum_toroidal_field/r0",
+        "vacuum_toroidal_field/b0",
+        "global_quantities/energy_ohm"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "global_quantities/energy_ohm"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "vacuum_toroidal_field/r0",
+          "vacuum_toroidal_field/b0"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "b_tor_vacuum_1"
+    },
+    "disruption/vacuum_toroidal_field/r0": {
+      "path": "disruption/vacuum_toroidal_field/r0",
+      "documentation": "Reference major radius where the vacuum toroidal magnetic field is given (usually a fixed position such as the middle of the vessel at the equatorial midplane)",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "vacuum_toroidal_field/b0",
+        "global_quantities/energy_ohm",
+        "vacuum_toroidal_field",
+        "halo_currents/area/start_point/r"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "global_quantities/energy_ohm",
+          "halo_currents/area/start_point/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "vacuum_toroidal_field",
+          "vacuum_toroidal_field/b0"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "disruption/vacuum_toroidal_field/b0": {
+      "path": "disruption/vacuum_toroidal_field/b0",
+      "documentation": "Vacuum toroidal field at R0 [T]; Positive sign means anti-clockwise when viewing from above. The product R0B0 must be consistent with the b_tor_vacuum_r field of the tf IDS.",
+      "units": "T",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "vacuum_toroidal_field/r0",
+        "global_quantities/energy_ohm",
+        "global_quantities/current_halo_pol",
+        "global_quantities/current_halo_phi",
+        "vacuum_toroidal_field"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.vacuum_toroidal_field/b0[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "global_quantities/current_halo_pol",
+          "global_quantities/current_halo_phi"
+        ],
+        "physics_related": [
+          "global_quantities/energy_ohm"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "vacuum_toroidal_field",
+          "vacuum_toroidal_field/r0"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "/time"
+    },
+    "disruption/time": {
+      "path": "disruption/time",
+      "documentation": "Generic time",
+      "units": "s",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "halo_currents/time",
+        "profiles_1d/time"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "halo_currents/time",
+          "profiles_1d/time"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "time"
+    }
+  },
+  "semantic_groups": {
+    "misc": [
+      "disruption/global_quantities",
+      "disruption/vacuum_toroidal_field"
+    ],
+    "physics_temporal_evolution": [
+      "disruption/global_quantities/current_halo_pol",
+      "disruption/global_quantities/current_halo_phi",
+      "disruption/global_quantities/power_ohm",
+      "disruption/global_quantities/power_ohm_halo",
+      "disruption/global_quantities/power_parallel_halo",
+      "disruption/global_quantities/power_radiated_electrons_impurities",
+      "disruption/global_quantities/power_radiated_electrons_impurities_halo",
+      "disruption/global_quantities/energy_ohm",
+      "disruption/global_quantities/energy_ohm_halo",
+      "disruption/global_quantities/energy_parallel_halo",
+      "disruption/global_quantities/energy_radiated_electrons_impurities",
+      "disruption/global_quantities/energy_radiated_electrons_impurities_halo",
+      "disruption/global_quantities/psi_halo_boundary",
+      "disruption/global_quantities/phi_halo_boundary",
+      "disruption/global_quantities/phi_halo_boundary_poloidal_current",
+      "disruption/vacuum_toroidal_field/b0"
+    ],
+    "coordinates_1...N": [
+      "disruption/halo_currents/area",
+      "disruption/profiles_1d/grid/rho_tor_norm"
+    ],
+    "structure_halo_currents": [
+      "disruption/halo_currents/area/start_point",
+      "disruption/halo_currents/area/end_point",
+      "disruption/halo_currents/active_wall_point"
+    ],
+    "units_m": [
+      "disruption/halo_currents/area/start_point/r",
+      "disruption/halo_currents/area/start_point/z",
+      "disruption/halo_currents/area/end_point/r",
+      "disruption/halo_currents/area/end_point/z",
+      "disruption/halo_currents/active_wall_point/r",
+      "disruption/halo_currents/active_wall_point/z",
+      "disruption/profiles_1d/grid/rho_tor",
+      "disruption/vacuum_toroidal_field/r0"
+    ],
+    "units_s": [
+      "disruption/halo_currents/time",
+      "disruption/profiles_1d/time",
+      "disruption/time"
+    ],
+    "units_Wb": [
+      "disruption/profiles_1d/grid/psi",
+      "disruption/profiles_1d/grid/psi_magnetic_axis",
+      "disruption/profiles_1d/grid/psi_boundary"
+    ],
+    "units_m^2": [
+      "disruption/profiles_1d/grid/area",
+      "disruption/profiles_1d/grid/surface"
+    ],
+    "units_W_m^-3": [
+      "disruption/profiles_1d/power_density_conductive_losses",
+      "disruption/profiles_1d/power_density_radiative_losses"
+    ]
+  }
+}

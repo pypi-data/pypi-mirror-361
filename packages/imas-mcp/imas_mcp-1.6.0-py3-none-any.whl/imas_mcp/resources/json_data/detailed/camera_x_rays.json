@@ -1,0 +1,6226 @@
+{
+  "ids_info": {
+    "name": "camera_x_rays",
+    "description": "X-rays imaging camera (can be used for soft or hard X-rays imaging systems)",
+    "version": "4.0.1.dev164",
+    "max_depth": 6,
+    "leaf_count": 318,
+    "physics_domain": "radiation_diagnostics",
+    "documentation_coverage": 1.0,
+    "related_ids": [],
+    "common_use_cases": []
+  },
+  "coordinate_systems": {},
+  "paths": {
+    "camera_x_rays/name": {
+      "path": "camera_x_rays/name",
+      "documentation": "Short string identifier (unique for a given device)",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": null,
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/description": {
+      "path": "camera_x_rays/description",
+      "documentation": "Description, e.g. “channel viewing the upper divertor”",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/frame": {
+      "path": "camera_x_rays/frame",
+      "documentation": "Set of frames. Each time step corresponds to the beginning of the photon integration of each image",
+      "units": "",
+      "coordinates": [
+        "frame(itime)/time"
+      ],
+      "lifecycle": "active",
+      "data_type": "struct_array",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "frame/counts_n",
+        "frame/time",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "frame/counts_n",
+          "frame/time"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "camera_x_rays_frame",
+      "temporal_context": "time"
+    },
+    "camera_x_rays/frame/counts_n": {
+      "path": "camera_x_rays/frame/counts_n",
+      "documentation": "Number of counts detected on each pixel during one exposure time. First dimension : line index (horizontal axis). Second dimension: column index (vertical axis).",
+      "units": "",
+      "coordinates": [
+        "1...N",
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "INT_2D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "frame/time",
+        "camera/line_of_sight",
+        "frame",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "frame",
+          "frame/time"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/frame/time": {
+      "path": "camera_x_rays/frame/time",
+      "documentation": "Time",
+      "units": "s",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "frame/counts_n",
+        "camera/line_of_sight",
+        "frame",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "exposure_time"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "exposure_time"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "frame",
+          "frame/counts_n"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/photon_energy": {
+      "path": "camera_x_rays/photon_energy",
+      "documentation": "List of values of the photon energy (coordinate for quantum_effiency)",
+      "units": "eV",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "camera/line_of_sight",
+        "energy_threshold_lower"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "energy_threshold_lower"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/quantum_efficiency": {
+      "path": "camera_x_rays/quantum_efficiency",
+      "documentation": "Quantum efficiency of the detector, i.e. conversion factor multiplying the number of counts to obtain the number of photons impacting the detector, tabulated as a function of the photon energy, for each pixel of the detector. If all pixels have the same quantum efficiency, just set the size of the first and second dimensions to 1",
+      "units": "1",
+      "coordinates": [
+        "1...N",
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_3D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": null,
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/energy_threshold_lower": {
+      "path": "camera_x_rays/energy_threshold_lower",
+      "documentation": "Lower energy detection threshold on each pixel of the detector (photons are counted only if their energy is above this value)",
+      "units": "eV",
+      "coordinates": [
+        "1...N",
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_2D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "camera/line_of_sight",
+        "photon_energy"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "photon_energy"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/energy_configuration_name": {
+      "path": "camera_x_rays/energy_configuration_name",
+      "documentation": "Name of the chosen energy configuration (energy detection threshold)",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/pixel_status": {
+      "path": "camera_x_rays/pixel_status",
+      "documentation": "Status of each pixel : +1 for valid pixels, -1 for inactive pixels, -2 for mis-calibrated pixels.",
+      "units": "",
+      "coordinates": [
+        "1...N",
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "INT_2D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": null,
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/aperture": {
+      "path": "camera_x_rays/aperture",
+      "documentation": "Description of the collimating aperture of the diagnostic",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "aperture/geometry_type",
+        "aperture/centre",
+        "aperture/radius",
+        "aperture/x2_unit_vector/y",
+        "camera/pixel_position/r",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "aperture/geometry_type",
+          "aperture/centre",
+          "aperture/radius"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "detector_aperture"
+    },
+    "camera_x_rays/aperture/geometry_type": {
+      "path": "camera_x_rays/aperture/geometry_type",
+      "documentation": "Type of geometry used to describe the surface of the detector or aperture (1:'outline', 2:'circular', 3:'rectangle'). In case of 'outline', the surface is described by an outline of point in a local coordinate system defined by a centre and three unit vectors X1, X2, X3. Note that there is some flexibility here and the data provider should choose the most convenient coordinate system for the object, respecting the definitions of (X1,X2,X3) indicated below. In case of 'circular', the surface is a circle defined by its centre, radius, and normal vector oriented towards the plasma X3.  In case of 'rectangle', the surface is a rectangle defined by its centre, widths in the X1 and X2 directions, and normal vector oriented towards the plasma X3.",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "INT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "aperture/centre",
+        "aperture/radius",
+        "aperture/x1_unit_vector",
+        "camera/line_of_sight",
+        "aperture",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "aperture",
+          "aperture/centre",
+          "aperture/radius",
+          "aperture/x1_unit_vector"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/aperture/centre": {
+      "path": "camera_x_rays/aperture/centre",
+      "documentation": "If geometry_type=2, coordinates of the centre of the circle. If geometry_type=1 or 3, coordinates of the origin of the local coordinate system (X1,X2,X3) describing the plane detector/aperture. This origin is located within the detector/aperture area.",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "aperture/geometry_type",
+        "aperture/radius",
+        "aperture/x1_unit_vector",
+        "camera/line_of_sight",
+        "aperture",
+        "aperture/centre/r",
+        "aperture/centre/phi",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "aperture",
+          "aperture/geometry_type",
+          "aperture/radius",
+          "aperture/x1_unit_vector",
+          "aperture/centre/r",
+          "aperture/centre/phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "rphiz0d_static"
+    },
+    "camera_x_rays/aperture/centre/r": {
+      "path": "camera_x_rays/aperture/centre/r",
+      "documentation": "Major radius",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "aperture/centre/phi",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/z",
+        "aperture/centre",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/z"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "aperture/centre",
+          "aperture/centre/phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/aperture/centre/phi": {
+      "path": "camera_x_rays/aperture/centre/phi",
+      "documentation": "Toroidal angle (oriented counter-clockwise when viewing from above)",
+      "units": "rad",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "aperture/centre/r",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "camera/pixel_position/phi",
+        "aperture/centre",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "camera/pixel_position/phi"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "aperture/centre",
+          "aperture/centre/r"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/aperture/centre/z": {
+      "path": "camera_x_rays/aperture/centre/z",
+      "documentation": "Height",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "aperture/centre/r",
+        "aperture/centre/phi",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "aperture/centre",
+          "aperture/centre/r",
+          "aperture/centre/phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/aperture/radius": {
+      "path": "camera_x_rays/aperture/radius",
+      "documentation": "Radius of the circle, used only if geometry_type = 2",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "aperture/geometry_type",
+        "aperture/centre",
+        "aperture/x1_unit_vector",
+        "camera/line_of_sight",
+        "aperture",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "aperture",
+          "aperture/geometry_type",
+          "aperture/centre",
+          "aperture/x1_unit_vector"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/aperture/x1_unit_vector": {
+      "path": "camera_x_rays/aperture/x1_unit_vector",
+      "documentation": "Components of the X1 direction unit vector in the (X,Y,Z) coordinate system, where X is the major radius axis for phi = 0, Y is the major radius axis for phi = pi/2, and Z is the height axis. The X1 vector is more horizontal than X2 (has a smaller abs(Z) component) and oriented in the positive phi direction (counter-clockwise when viewing from above).",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "aperture/geometry_type",
+        "aperture/centre",
+        "aperture/radius",
+        "camera/line_of_sight",
+        "aperture",
+        "aperture/x1_unit_vector/x",
+        "aperture/x1_unit_vector/y",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "aperture",
+          "aperture/geometry_type",
+          "aperture/centre",
+          "aperture/radius",
+          "aperture/x1_unit_vector/x",
+          "aperture/x1_unit_vector/y"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "xyz0d_static"
+    },
+    "camera_x_rays/aperture/x1_unit_vector/x": {
+      "path": "camera_x_rays/aperture/x1_unit_vector/x",
+      "documentation": "Component along X axis",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "aperture/x1_unit_vector/y",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "aperture/x1_unit_vector",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "aperture/x1_unit_vector",
+          "aperture/x1_unit_vector/y"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/aperture/x1_unit_vector/y": {
+      "path": "camera_x_rays/aperture/x1_unit_vector/y",
+      "documentation": "Component along Y axis",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "aperture/x1_unit_vector/x",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "aperture/x1_unit_vector",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "aperture/x1_unit_vector",
+          "aperture/x1_unit_vector/x"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/aperture/x1_unit_vector/z": {
+      "path": "camera_x_rays/aperture/x1_unit_vector/z",
+      "documentation": "Component along Z axis",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "aperture/x1_unit_vector/x",
+        "aperture/x1_unit_vector/y",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "aperture/x1_unit_vector",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "aperture/x1_unit_vector",
+          "aperture/x1_unit_vector/x",
+          "aperture/x1_unit_vector/y"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/aperture/x2_unit_vector": {
+      "path": "camera_x_rays/aperture/x2_unit_vector",
+      "documentation": "Components of the X2 direction unit vector in the (X,Y,Z) coordinate system, where X is the major radius axis for phi = 0, Y is the major radius axis for phi = pi/2, and Z is the height axis. The X2 axis is orthonormal so that uX2 = uX3 x uX1.",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "aperture/geometry_type",
+        "aperture/centre",
+        "aperture/radius",
+        "camera/line_of_sight",
+        "aperture",
+        "aperture/x2_unit_vector/x",
+        "aperture/x2_unit_vector/y",
+        "camera/pixel_position/r"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "aperture",
+          "aperture/geometry_type",
+          "aperture/centre",
+          "aperture/radius",
+          "aperture/x2_unit_vector/x",
+          "aperture/x2_unit_vector/y"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "xyz0d_static"
+    },
+    "camera_x_rays/aperture/x2_unit_vector/x": {
+      "path": "camera_x_rays/aperture/x2_unit_vector/x",
+      "documentation": "Component along X axis",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "aperture/x2_unit_vector/y",
+        "camera/pixel_position/r",
+        "aperture/centre/r",
+        "aperture/x2_unit_vector",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "aperture/x2_unit_vector",
+          "aperture/x2_unit_vector/y"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/aperture/x2_unit_vector/y": {
+      "path": "camera_x_rays/aperture/x2_unit_vector/y",
+      "documentation": "Component along Y axis",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "aperture/x2_unit_vector/x",
+        "camera/pixel_position/r",
+        "aperture/centre/r",
+        "aperture/x2_unit_vector",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "aperture/x2_unit_vector",
+          "aperture/x2_unit_vector/x"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/aperture/x2_unit_vector/z": {
+      "path": "camera_x_rays/aperture/x2_unit_vector/z",
+      "documentation": "Component along Z axis",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "aperture/x2_unit_vector/x",
+        "aperture/x2_unit_vector/y",
+        "camera/pixel_position/r",
+        "aperture/centre/r",
+        "aperture/x2_unit_vector",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "aperture/x2_unit_vector",
+          "aperture/x2_unit_vector/x",
+          "aperture/x2_unit_vector/y"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/aperture/x3_unit_vector": {
+      "path": "camera_x_rays/aperture/x3_unit_vector",
+      "documentation": "Components of the X3 direction unit vector in the (X,Y,Z) coordinate system, where X is the major radius axis for phi = 0, Y is the major radius axis for phi = pi/2, and Z is the height axis. The X3 axis is normal to the detector/aperture plane and oriented towards the plasma.",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "aperture/geometry_type",
+        "aperture/centre",
+        "aperture/radius",
+        "camera/line_of_sight",
+        "aperture",
+        "aperture/x3_unit_vector/x",
+        "aperture/x3_unit_vector/y",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "aperture",
+          "aperture/geometry_type",
+          "aperture/centre",
+          "aperture/radius",
+          "aperture/x3_unit_vector/x",
+          "aperture/x3_unit_vector/y"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "xyz0d_static"
+    },
+    "camera_x_rays/aperture/x3_unit_vector/x": {
+      "path": "camera_x_rays/aperture/x3_unit_vector/x",
+      "documentation": "Component along X axis",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "aperture/x3_unit_vector/y",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "aperture/x3_unit_vector",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "aperture/x3_unit_vector",
+          "aperture/x3_unit_vector/y"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/aperture/x3_unit_vector/y": {
+      "path": "camera_x_rays/aperture/x3_unit_vector/y",
+      "documentation": "Component along Y axis",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "aperture/x3_unit_vector/x",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "aperture/x3_unit_vector",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "aperture/x3_unit_vector",
+          "aperture/x3_unit_vector/x"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/aperture/x3_unit_vector/z": {
+      "path": "camera_x_rays/aperture/x3_unit_vector/z",
+      "documentation": "Component along Z axis",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "aperture/x3_unit_vector/x",
+        "aperture/x3_unit_vector/y",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "aperture/x3_unit_vector",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "aperture/x3_unit_vector",
+          "aperture/x3_unit_vector/x",
+          "aperture/x3_unit_vector/y"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/aperture/x1_width": {
+      "path": "camera_x_rays/aperture/x1_width",
+      "documentation": "Full width of the aperture in the X1 direction, used only if geometry_type = 3",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "aperture/geometry_type",
+        "aperture/centre",
+        "aperture/radius",
+        "camera/line_of_sight",
+        "aperture",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "aperture",
+          "aperture/geometry_type",
+          "aperture/centre",
+          "aperture/radius"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/aperture/x2_width": {
+      "path": "camera_x_rays/aperture/x2_width",
+      "documentation": "Full width of the aperture in the X2 direction, used only if geometry_type = 3",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "aperture/geometry_type",
+        "aperture/centre",
+        "aperture/radius",
+        "camera/line_of_sight",
+        "aperture",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "aperture",
+          "aperture/geometry_type",
+          "aperture/centre",
+          "aperture/radius"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/aperture/outline": {
+      "path": "camera_x_rays/aperture/outline",
+      "documentation": "Irregular outline of the detector/aperture in the (X1, X2) coordinate system. Repeat the first point since this is a closed contour",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "aperture/geometry_type",
+        "aperture/centre",
+        "aperture/radius",
+        "camera/line_of_sight",
+        "aperture",
+        "aperture/outline/x1",
+        "aperture/outline/x2",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "aperture",
+          "aperture/geometry_type",
+          "aperture/centre",
+          "aperture/radius",
+          "aperture/outline/x1",
+          "aperture/outline/x2"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "x1x21d_static"
+    },
+    "camera_x_rays/aperture/outline/x1": {
+      "path": "camera_x_rays/aperture/outline/x1",
+      "documentation": "Positions along x1 axis",
+      "units": "m",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "aperture/outline/x2",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "aperture/outline",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "aperture/outline",
+          "aperture/outline/x2"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/aperture/outline/x2": {
+      "path": "camera_x_rays/aperture/outline/x2",
+      "documentation": "Positions along x2 axis",
+      "units": "m",
+      "coordinates": [
+        "aperture/outline/x1"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "aperture/outline/x1",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "aperture/outline",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "aperture/outline",
+          "aperture/outline/x1"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/aperture/surface": {
+      "path": "camera_x_rays/aperture/surface",
+      "documentation": "Surface of the detector/aperture, derived from the above geometric data",
+      "units": "m^2",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "aperture/geometry_type",
+        "aperture/centre",
+        "aperture/radius",
+        "camera/line_of_sight",
+        "filter_window/surface",
+        "aperture",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "filter_window/surface"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "aperture",
+          "aperture/geometry_type",
+          "aperture/centre",
+          "aperture/radius"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/camera": {
+      "path": "camera_x_rays/camera",
+      "documentation": "Characteristics of the camera used. The orientation of the camera is described as follows : pixels are aligned along x1 and x2 unit vectors while x3 is normal to the detector plane.",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/pixel_dimensions",
+        "camera/pixels_n",
+        "camera/pixel_position",
+        "camera/pixel_position/r",
+        "camera/line_of_sight",
+        "aperture/x2_unit_vector/y"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera/pixel_dimensions",
+          "camera/pixels_n",
+          "camera/pixel_position"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "camera_geometry"
+    },
+    "camera_x_rays/camera/pixel_dimensions": {
+      "path": "camera_x_rays/camera/pixel_dimensions",
+      "documentation": "Pixel dimension in each direction (x1, x2)",
+      "units": "m",
+      "coordinates": [
+        "1...2"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/pixels_n",
+        "camera/pixel_position",
+        "camera/camera_dimensions",
+        "camera/line_of_sight",
+        "camera",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "camera/pixels_n",
+          "camera/camera_dimensions"
+        ],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera",
+          "camera/pixels_n",
+          "camera/pixel_position",
+          "camera/camera_dimensions"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/camera/pixels_n": {
+      "path": "camera_x_rays/camera/pixels_n",
+      "documentation": "Number of pixels in each direction (x1, x2)",
+      "units": "",
+      "coordinates": [
+        "1...2"
+      ],
+      "lifecycle": "active",
+      "data_type": "INT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/pixel_dimensions",
+        "camera/pixel_position",
+        "camera/camera_dimensions",
+        "camera/line_of_sight",
+        "camera",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "camera/pixel_dimensions",
+          "camera/camera_dimensions"
+        ],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera",
+          "camera/pixel_dimensions",
+          "camera/pixel_position",
+          "camera/camera_dimensions"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/camera/pixel_position": {
+      "path": "camera_x_rays/camera/pixel_position",
+      "documentation": "Position of the centre of each pixel. First dimension : line index (x1 axis). Second dimension: column index (x2 axis).",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/pixel_dimensions",
+        "camera/pixels_n",
+        "camera/camera_dimensions",
+        "camera/line_of_sight",
+        "camera",
+        "camera/pixel_position/r",
+        "camera/pixel_position/phi",
+        "aperture/x2_unit_vector/y"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera",
+          "camera/pixel_dimensions",
+          "camera/pixels_n",
+          "camera/camera_dimensions",
+          "camera/pixel_position/r",
+          "camera/pixel_position/phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "rphiz2d_static"
+    },
+    "camera_x_rays/camera/pixel_position/r": {
+      "path": "camera_x_rays/camera/pixel_position/r",
+      "documentation": "Major radius",
+      "units": "m",
+      "coordinates": [
+        "1...N",
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_2D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/pixel_position/phi",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "camera/pixel_position",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera/pixel_position",
+          "camera/pixel_position/phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/camera/pixel_position/phi": {
+      "path": "camera_x_rays/camera/pixel_position/phi",
+      "documentation": "Toroidal angle (oriented counter-clockwise when viewing from above)",
+      "units": "rad",
+      "coordinates": [
+        "1...N",
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_2D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/phi",
+        "camera/pixel_position",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/phi"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera/pixel_position",
+          "camera/pixel_position/r"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/camera/pixel_position/z": {
+      "path": "camera_x_rays/camera/pixel_position/z",
+      "documentation": "Height",
+      "units": "m",
+      "coordinates": [
+        "1...N",
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_2D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/pixel_position/r",
+        "camera/pixel_position/phi",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "camera/pixel_position",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera/pixel_position",
+          "camera/pixel_position/r",
+          "camera/pixel_position/phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/camera/camera_dimensions": {
+      "path": "camera_x_rays/camera/camera_dimensions",
+      "documentation": "Total camera dimension in each direction (x1, x2)",
+      "units": "m",
+      "coordinates": [
+        "1...2"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/pixel_dimensions",
+        "camera/pixels_n",
+        "camera/pixel_position",
+        "camera/line_of_sight",
+        "camera",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "camera/pixel_dimensions",
+          "camera/pixels_n"
+        ],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera",
+          "camera/pixel_dimensions",
+          "camera/pixels_n",
+          "camera/pixel_position"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/camera/centre": {
+      "path": "camera_x_rays/camera/centre",
+      "documentation": "Position of the camera centre",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/pixel_dimensions",
+        "camera/pixels_n",
+        "camera/pixel_position",
+        "camera/line_of_sight",
+        "camera",
+        "camera/centre/r",
+        "camera/centre/phi",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera",
+          "camera/pixel_dimensions",
+          "camera/pixels_n",
+          "camera/pixel_position",
+          "camera/centre/r",
+          "camera/centre/phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "rphiz0d_static"
+    },
+    "camera_x_rays/camera/centre/r": {
+      "path": "camera_x_rays/camera/centre/r",
+      "documentation": "Major radius",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/centre/phi",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "camera/centre",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera/centre",
+          "camera/centre/phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/camera/centre/phi": {
+      "path": "camera_x_rays/camera/centre/phi",
+      "documentation": "Toroidal angle (oriented counter-clockwise when viewing from above)",
+      "units": "rad",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/centre/r",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/phi",
+        "camera/centre",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/phi"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera/centre",
+          "camera/centre/r"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/camera/centre/z": {
+      "path": "camera_x_rays/camera/centre/z",
+      "documentation": "Height",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/centre/r",
+        "camera/centre/phi",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "camera/centre",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera/centre",
+          "camera/centre/r",
+          "camera/centre/phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/camera/x1_unit_vector": {
+      "path": "camera_x_rays/camera/x1_unit_vector",
+      "documentation": "Components of the X1 direction unit vector in the (X,Y,Z) coordinate system, where X is the major radius axis for phi = 0, Y is the major radius axis for phi = pi/2, and Z is the height axis. The X1 vector is more horizontal than X2 (has a smaller abs(Z) component) and oriented in the positive phi direction (counter-clockwise when viewing from above).",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/pixel_dimensions",
+        "camera/pixels_n",
+        "camera/pixel_position",
+        "camera/line_of_sight",
+        "camera",
+        "camera/x1_unit_vector/x",
+        "camera/x1_unit_vector/y",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera",
+          "camera/pixel_dimensions",
+          "camera/pixels_n",
+          "camera/pixel_position",
+          "camera/x1_unit_vector/x",
+          "camera/x1_unit_vector/y"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "xyz0d_static"
+    },
+    "camera_x_rays/camera/x1_unit_vector/x": {
+      "path": "camera_x_rays/camera/x1_unit_vector/x",
+      "documentation": "Component along X axis",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/x1_unit_vector/y",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "camera/x1_unit_vector",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera/x1_unit_vector",
+          "camera/x1_unit_vector/y"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/camera/x1_unit_vector/y": {
+      "path": "camera_x_rays/camera/x1_unit_vector/y",
+      "documentation": "Component along Y axis",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/x1_unit_vector/x",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "camera/x1_unit_vector",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera/x1_unit_vector",
+          "camera/x1_unit_vector/x"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/camera/x1_unit_vector/z": {
+      "path": "camera_x_rays/camera/x1_unit_vector/z",
+      "documentation": "Component along Z axis",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/x1_unit_vector/x",
+        "camera/x1_unit_vector/y",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "camera/x1_unit_vector",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera/x1_unit_vector",
+          "camera/x1_unit_vector/x",
+          "camera/x1_unit_vector/y"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/camera/x2_unit_vector": {
+      "path": "camera_x_rays/camera/x2_unit_vector",
+      "documentation": "Components of the X2 direction unit vector in the (X,Y,Z) coordinate system, where X is the major radius axis for phi = 0, Y is the major radius axis for phi = pi/2, and Z is the height axis. The X2 axis is orthonormal so that uX2 = uX3 x uX1.",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/pixel_dimensions",
+        "camera/pixels_n",
+        "camera/pixel_position",
+        "camera/line_of_sight",
+        "camera",
+        "camera/x2_unit_vector/x",
+        "camera/x2_unit_vector/y",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera",
+          "camera/pixel_dimensions",
+          "camera/pixels_n",
+          "camera/pixel_position",
+          "camera/x2_unit_vector/x",
+          "camera/x2_unit_vector/y"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "xyz0d_static"
+    },
+    "camera_x_rays/camera/x2_unit_vector/x": {
+      "path": "camera_x_rays/camera/x2_unit_vector/x",
+      "documentation": "Component along X axis",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/x2_unit_vector/y",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "camera/x2_unit_vector",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera/x2_unit_vector",
+          "camera/x2_unit_vector/y"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/camera/x2_unit_vector/y": {
+      "path": "camera_x_rays/camera/x2_unit_vector/y",
+      "documentation": "Component along Y axis",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/x2_unit_vector/x",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "camera/x2_unit_vector",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera/x2_unit_vector",
+          "camera/x2_unit_vector/x"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/camera/x2_unit_vector/z": {
+      "path": "camera_x_rays/camera/x2_unit_vector/z",
+      "documentation": "Component along Z axis",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/x2_unit_vector/x",
+        "camera/x2_unit_vector/y",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "camera/x2_unit_vector",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera/x2_unit_vector",
+          "camera/x2_unit_vector/x",
+          "camera/x2_unit_vector/y"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/camera/x3_unit_vector": {
+      "path": "camera_x_rays/camera/x3_unit_vector",
+      "documentation": "Components of the X3 direction unit vector in the (X,Y,Z) coordinate system, where X is the major radius axis for phi = 0, Y is the major radius axis for phi = pi/2, and Z is the height axis. The X3 axis is normal to the camera plane and oriented towards the plasma.",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/pixel_dimensions",
+        "camera/pixels_n",
+        "camera/pixel_position",
+        "camera/line_of_sight",
+        "camera",
+        "camera/x3_unit_vector/x",
+        "camera/x3_unit_vector/y",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera",
+          "camera/pixel_dimensions",
+          "camera/pixels_n",
+          "camera/pixel_position",
+          "camera/x3_unit_vector/x",
+          "camera/x3_unit_vector/y"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "xyz0d_static"
+    },
+    "camera_x_rays/camera/x3_unit_vector/x": {
+      "path": "camera_x_rays/camera/x3_unit_vector/x",
+      "documentation": "Component along X axis",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/x3_unit_vector/y",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "camera/x3_unit_vector",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera/x3_unit_vector",
+          "camera/x3_unit_vector/y"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/camera/x3_unit_vector/y": {
+      "path": "camera_x_rays/camera/x3_unit_vector/y",
+      "documentation": "Component along Y axis",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/x3_unit_vector/x",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "camera/x3_unit_vector",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera/x3_unit_vector",
+          "camera/x3_unit_vector/x"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/camera/x3_unit_vector/z": {
+      "path": "camera_x_rays/camera/x3_unit_vector/z",
+      "documentation": "Component along Z axis",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/x3_unit_vector/x",
+        "camera/x3_unit_vector/y",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "camera/x3_unit_vector",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera/x3_unit_vector",
+          "camera/x3_unit_vector/x",
+          "camera/x3_unit_vector/y"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/camera/line_of_sight": {
+      "path": "camera_x_rays/camera/line_of_sight",
+      "documentation": "Description of the line of sight for each pixel, given by 2 points. For each coordinate : first dimension : line index (x1 axis); second dimension: column index (x2 axis).",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/pixel_dimensions",
+        "camera/pixels_n",
+        "camera/pixel_position",
+        "camera",
+        "camera/line_of_sight/first_point",
+        "camera/line_of_sight/second_point",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera",
+          "camera/pixel_dimensions",
+          "camera/pixels_n",
+          "camera/pixel_position",
+          "camera/line_of_sight/first_point",
+          "camera/line_of_sight/second_point"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "line_of_sight_2points_rphiz_2d"
+    },
+    "camera_x_rays/camera/line_of_sight/first_point": {
+      "path": "camera_x_rays/camera/line_of_sight/first_point",
+      "documentation": "Position of the first point",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/line_of_sight/second_point",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "camera/line_of_sight",
+        "camera/line_of_sight/first_point/r",
+        "camera/line_of_sight/first_point/phi"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera/line_of_sight",
+          "camera/line_of_sight/second_point",
+          "camera/line_of_sight/first_point/r",
+          "camera/line_of_sight/first_point/phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "rphiz2d_static"
+    },
+    "camera_x_rays/camera/line_of_sight/first_point/r": {
+      "path": "camera_x_rays/camera/line_of_sight/first_point/r",
+      "documentation": "Major radius",
+      "units": "m",
+      "coordinates": [
+        "1...N",
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_2D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/line_of_sight/first_point/phi",
+        "camera/line_of_sight/first_point",
+        "camera/line_of_sight",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera/line_of_sight/first_point",
+          "camera/line_of_sight/first_point/phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/camera/line_of_sight/first_point/phi": {
+      "path": "camera_x_rays/camera/line_of_sight/first_point/phi",
+      "documentation": "Toroidal angle (oriented counter-clockwise when viewing from above)",
+      "units": "rad",
+      "coordinates": [
+        "1...N",
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_2D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/line_of_sight/first_point/r",
+        "camera/line_of_sight/first_point",
+        "camera/line_of_sight",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/phi"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/phi"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera/line_of_sight/first_point",
+          "camera/line_of_sight/first_point/r"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/camera/line_of_sight/first_point/z": {
+      "path": "camera_x_rays/camera/line_of_sight/first_point/z",
+      "documentation": "Height",
+      "units": "m",
+      "coordinates": [
+        "1...N",
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_2D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/line_of_sight/first_point/r",
+        "camera/line_of_sight/first_point/phi",
+        "camera/line_of_sight/first_point",
+        "camera/line_of_sight",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera/line_of_sight/first_point",
+          "camera/line_of_sight/first_point/r",
+          "camera/line_of_sight/first_point/phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/camera/line_of_sight/second_point": {
+      "path": "camera_x_rays/camera/line_of_sight/second_point",
+      "documentation": "Position of the second point",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/line_of_sight/first_point",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "camera/line_of_sight",
+        "camera/line_of_sight/second_point/r",
+        "camera/line_of_sight/second_point/phi"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera/line_of_sight",
+          "camera/line_of_sight/first_point",
+          "camera/line_of_sight/second_point/r",
+          "camera/line_of_sight/second_point/phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "rphiz2d_static"
+    },
+    "camera_x_rays/camera/line_of_sight/second_point/r": {
+      "path": "camera_x_rays/camera/line_of_sight/second_point/r",
+      "documentation": "Major radius",
+      "units": "m",
+      "coordinates": [
+        "1...N",
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_2D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/line_of_sight/second_point/phi",
+        "camera/line_of_sight/second_point",
+        "camera/line_of_sight",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera/line_of_sight/second_point",
+          "camera/line_of_sight/second_point/phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/camera/line_of_sight/second_point/phi": {
+      "path": "camera_x_rays/camera/line_of_sight/second_point/phi",
+      "documentation": "Toroidal angle (oriented counter-clockwise when viewing from above)",
+      "units": "rad",
+      "coordinates": [
+        "1...N",
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_2D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/line_of_sight/second_point/r",
+        "camera/line_of_sight/second_point",
+        "camera/line_of_sight",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/phi"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/phi"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera/line_of_sight/second_point",
+          "camera/line_of_sight/second_point/r"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/camera/line_of_sight/second_point/z": {
+      "path": "camera_x_rays/camera/line_of_sight/second_point/z",
+      "documentation": "Height",
+      "units": "m",
+      "coordinates": [
+        "1...N",
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_2D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/line_of_sight/second_point/r",
+        "camera/line_of_sight/second_point/phi",
+        "camera/line_of_sight/second_point",
+        "camera/line_of_sight",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "camera/line_of_sight/second_point",
+          "camera/line_of_sight/second_point/r",
+          "camera/line_of_sight/second_point/phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window": {
+      "path": "camera_x_rays/filter_window",
+      "documentation": "Characteristics of the filter window",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/name",
+        "filter_window/description",
+        "filter_window/geometry_type",
+        "filter_window/curvature_type",
+        "filter_window/centre",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window/name",
+          "filter_window/description",
+          "filter_window/geometry_type",
+          "filter_window/curvature_type",
+          "filter_window/centre"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "filter_window"
+    },
+    "camera_x_rays/filter_window/name": {
+      "path": "camera_x_rays/filter_window/name",
+      "documentation": "Short string identifier (unique for a given device)",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/description",
+        "filter_window/geometry_type",
+        "filter_window/curvature_type",
+        "filter_window/centre",
+        "filter_window/radius",
+        "camera/line_of_sight",
+        "filter_window",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window",
+          "filter_window/description",
+          "filter_window/geometry_type",
+          "filter_window/curvature_type",
+          "filter_window/centre",
+          "filter_window/radius"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/description": {
+      "path": "camera_x_rays/filter_window/description",
+      "documentation": "Description, e.g. “channel viewing the upper divertor”",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/name",
+        "filter_window/geometry_type",
+        "filter_window/curvature_type",
+        "filter_window/centre",
+        "filter_window/radius",
+        "camera/line_of_sight",
+        "filter_window",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window",
+          "filter_window/name",
+          "filter_window/geometry_type",
+          "filter_window/curvature_type",
+          "filter_window/centre",
+          "filter_window/radius"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/geometry_type": {
+      "path": "camera_x_rays/filter_window/geometry_type",
+      "documentation": "Geometry of the filter contour. Note that there is some flexibility in the choice of the local coordinate system (X1,X2,X3). The data provider should choose the most convenient coordinate system for the filter, respecting the definitions of (X1,X2,X3) indicated below.",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/name",
+        "filter_window/description",
+        "filter_window/curvature_type",
+        "filter_window/centre",
+        "filter_window/radius",
+        "camera/line_of_sight",
+        "filter_window",
+        "filter_window/geometry_type/name",
+        "filter_window/geometry_type/index",
+        "filter_window/geometry_type/description",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window",
+          "filter_window/name",
+          "filter_window/description",
+          "filter_window/curvature_type",
+          "filter_window/centre",
+          "filter_window/radius",
+          "filter_window/geometry_type/name",
+          "filter_window/geometry_type/index",
+          "filter_window/geometry_type/description"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "identifier_static"
+    },
+    "camera_x_rays/filter_window/geometry_type/name": {
+      "path": "camera_x_rays/filter_window/geometry_type/name",
+      "documentation": "Short string identifier",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/geometry_type/index",
+        "filter_window/geometry_type/description",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "filter_window/geometry_type",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window/geometry_type",
+          "filter_window/geometry_type/index",
+          "filter_window/geometry_type/description"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/geometry_type/index": {
+      "path": "camera_x_rays/filter_window/geometry_type/index",
+      "documentation": "Integer identifier (enumeration index within a list). Private identifier values must be indicated by a negative index.",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "INT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/geometry_type/name",
+        "filter_window/geometry_type/description",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "filter_window/geometry_type",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window/geometry_type",
+          "filter_window/geometry_type/name",
+          "filter_window/geometry_type/description"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/geometry_type/description": {
+      "path": "camera_x_rays/filter_window/geometry_type/description",
+      "documentation": "Verbose description",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/geometry_type/name",
+        "filter_window/geometry_type/index",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "filter_window/geometry_type",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window/geometry_type",
+          "filter_window/geometry_type/name",
+          "filter_window/geometry_type/index"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/curvature_type": {
+      "path": "camera_x_rays/filter_window/curvature_type",
+      "documentation": "Curvature of the filter.",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/name",
+        "filter_window/description",
+        "filter_window/geometry_type",
+        "filter_window/centre",
+        "filter_window/radius",
+        "camera/line_of_sight",
+        "filter_window",
+        "filter_window/curvature_type/name",
+        "filter_window/curvature_type/index",
+        "filter_window/curvature_type/description",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window",
+          "filter_window/name",
+          "filter_window/description",
+          "filter_window/geometry_type",
+          "filter_window/centre",
+          "filter_window/radius",
+          "filter_window/curvature_type/name",
+          "filter_window/curvature_type/index",
+          "filter_window/curvature_type/description"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "identifier_static"
+    },
+    "camera_x_rays/filter_window/curvature_type/name": {
+      "path": "camera_x_rays/filter_window/curvature_type/name",
+      "documentation": "Short string identifier",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/curvature_type/index",
+        "filter_window/curvature_type/description",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "filter_window/curvature_type",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window/curvature_type",
+          "filter_window/curvature_type/index",
+          "filter_window/curvature_type/description"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/curvature_type/index": {
+      "path": "camera_x_rays/filter_window/curvature_type/index",
+      "documentation": "Integer identifier (enumeration index within a list). Private identifier values must be indicated by a negative index.",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "INT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/curvature_type/name",
+        "filter_window/curvature_type/description",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "filter_window/curvature_type",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window/curvature_type",
+          "filter_window/curvature_type/name",
+          "filter_window/curvature_type/description"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/curvature_type/description": {
+      "path": "camera_x_rays/filter_window/curvature_type/description",
+      "documentation": "Verbose description",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/curvature_type/name",
+        "filter_window/curvature_type/index",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "filter_window/curvature_type",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window/curvature_type",
+          "filter_window/curvature_type/name",
+          "filter_window/curvature_type/index"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/centre": {
+      "path": "camera_x_rays/filter_window/centre",
+      "documentation": "Coordinates of the origin of the local coordinate system (X1,X2,X3) describing the filter. This origin is located within the filter area and should be the middle point of the filter surface. If geometry_type=2, it's the centre of the circular filter. If geometry_type=3, it's the centre of the rectangular filter.",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/name",
+        "filter_window/description",
+        "filter_window/geometry_type",
+        "filter_window/curvature_type",
+        "filter_window/radius",
+        "camera/line_of_sight",
+        "filter_window",
+        "filter_window/centre/r",
+        "filter_window/centre/phi",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window",
+          "filter_window/name",
+          "filter_window/description",
+          "filter_window/geometry_type",
+          "filter_window/curvature_type",
+          "filter_window/radius",
+          "filter_window/centre/r",
+          "filter_window/centre/phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "rphiz0d_static"
+    },
+    "camera_x_rays/filter_window/centre/r": {
+      "path": "camera_x_rays/filter_window/centre/r",
+      "documentation": "Major radius",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/centre/phi",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "filter_window/centre",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window/centre",
+          "filter_window/centre/phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/centre/phi": {
+      "path": "camera_x_rays/filter_window/centre/phi",
+      "documentation": "Toroidal angle (oriented counter-clockwise when viewing from above)",
+      "units": "rad",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/centre/r",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/phi",
+        "filter_window/centre",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/phi"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window/centre",
+          "filter_window/centre/r"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/centre/z": {
+      "path": "camera_x_rays/filter_window/centre/z",
+      "documentation": "Height",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/centre/r",
+        "filter_window/centre/phi",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "filter_window/centre",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window/centre",
+          "filter_window/centre/r",
+          "filter_window/centre/phi"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/radius": {
+      "path": "camera_x_rays/filter_window/radius",
+      "documentation": "Radius of the circle, used only if geometry_type/index = 2",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/name",
+        "filter_window/description",
+        "filter_window/geometry_type",
+        "filter_window/curvature_type",
+        "filter_window/centre",
+        "camera/line_of_sight",
+        "filter_window",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window",
+          "filter_window/name",
+          "filter_window/description",
+          "filter_window/geometry_type",
+          "filter_window/curvature_type",
+          "filter_window/centre"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/x1_unit_vector": {
+      "path": "camera_x_rays/filter_window/x1_unit_vector",
+      "documentation": "Components of the X1 direction unit vector in the (X,Y,Z) coordinate system, where X is the major radius axis for phi = 0, Y is the major radius axis for phi = pi/2, and Z is the height axis. The X1 vector is more horizontal than X2 (has a smaller abs(Z) component) and oriented in the positive phi direction (counter-clockwise when viewing from above).",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/name",
+        "filter_window/description",
+        "filter_window/geometry_type",
+        "filter_window/curvature_type",
+        "filter_window/centre",
+        "camera/line_of_sight",
+        "filter_window",
+        "filter_window/x1_unit_vector/x",
+        "filter_window/x1_unit_vector/y",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window",
+          "filter_window/name",
+          "filter_window/description",
+          "filter_window/geometry_type",
+          "filter_window/curvature_type",
+          "filter_window/centre",
+          "filter_window/x1_unit_vector/x",
+          "filter_window/x1_unit_vector/y"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "xyz0d_static"
+    },
+    "camera_x_rays/filter_window/x1_unit_vector/x": {
+      "path": "camera_x_rays/filter_window/x1_unit_vector/x",
+      "documentation": "Component along X axis",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/x1_unit_vector/y",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "filter_window/x1_unit_vector",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window/x1_unit_vector",
+          "filter_window/x1_unit_vector/y"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/x1_unit_vector/y": {
+      "path": "camera_x_rays/filter_window/x1_unit_vector/y",
+      "documentation": "Component along Y axis",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/x1_unit_vector/x",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "filter_window/x1_unit_vector",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window/x1_unit_vector",
+          "filter_window/x1_unit_vector/x"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/x1_unit_vector/z": {
+      "path": "camera_x_rays/filter_window/x1_unit_vector/z",
+      "documentation": "Component along Z axis",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/x1_unit_vector/x",
+        "filter_window/x1_unit_vector/y",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "filter_window/x1_unit_vector",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window/x1_unit_vector",
+          "filter_window/x1_unit_vector/x",
+          "filter_window/x1_unit_vector/y"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/x2_unit_vector": {
+      "path": "camera_x_rays/filter_window/x2_unit_vector",
+      "documentation": "Components of the X2 direction unit vector in the (X,Y,Z) coordinate system, where X is the major radius axis for phi = 0, Y is the major radius axis for phi = pi/2, and Z is the height axis. The X2 axis is orthonormal so that uX2 = uX3 x uX1.",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/name",
+        "filter_window/description",
+        "filter_window/geometry_type",
+        "filter_window/curvature_type",
+        "filter_window/centre",
+        "camera/line_of_sight",
+        "filter_window",
+        "filter_window/x2_unit_vector/x",
+        "filter_window/x2_unit_vector/y",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window",
+          "filter_window/name",
+          "filter_window/description",
+          "filter_window/geometry_type",
+          "filter_window/curvature_type",
+          "filter_window/centre",
+          "filter_window/x2_unit_vector/x",
+          "filter_window/x2_unit_vector/y"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "xyz0d_static"
+    },
+    "camera_x_rays/filter_window/x2_unit_vector/x": {
+      "path": "camera_x_rays/filter_window/x2_unit_vector/x",
+      "documentation": "Component along X axis",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/x2_unit_vector/y",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "filter_window/x2_unit_vector",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window/x2_unit_vector",
+          "filter_window/x2_unit_vector/y"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/x2_unit_vector/y": {
+      "path": "camera_x_rays/filter_window/x2_unit_vector/y",
+      "documentation": "Component along Y axis",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/x2_unit_vector/x",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "filter_window/x2_unit_vector",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window/x2_unit_vector",
+          "filter_window/x2_unit_vector/x"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/x2_unit_vector/z": {
+      "path": "camera_x_rays/filter_window/x2_unit_vector/z",
+      "documentation": "Component along Z axis",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/x2_unit_vector/x",
+        "filter_window/x2_unit_vector/y",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "filter_window/x2_unit_vector",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window/x2_unit_vector",
+          "filter_window/x2_unit_vector/x",
+          "filter_window/x2_unit_vector/y"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/x3_unit_vector": {
+      "path": "camera_x_rays/filter_window/x3_unit_vector",
+      "documentation": "Components of the X3 direction unit vector in the (X,Y,Z) coordinate system, where X is the major radius axis for phi = 0, Y is the major radius axis for phi = pi/2, and Z is the height axis. The X3 axis is normal to the filter surface and oriented towards the plasma.",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/name",
+        "filter_window/description",
+        "filter_window/geometry_type",
+        "filter_window/curvature_type",
+        "filter_window/centre",
+        "camera/line_of_sight",
+        "filter_window",
+        "filter_window/x3_unit_vector/x",
+        "filter_window/x3_unit_vector/y",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window",
+          "filter_window/name",
+          "filter_window/description",
+          "filter_window/geometry_type",
+          "filter_window/curvature_type",
+          "filter_window/centre",
+          "filter_window/x3_unit_vector/x",
+          "filter_window/x3_unit_vector/y"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "xyz0d_static"
+    },
+    "camera_x_rays/filter_window/x3_unit_vector/x": {
+      "path": "camera_x_rays/filter_window/x3_unit_vector/x",
+      "documentation": "Component along X axis",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/x3_unit_vector/y",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "filter_window/x3_unit_vector",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window/x3_unit_vector",
+          "filter_window/x3_unit_vector/y"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/x3_unit_vector/y": {
+      "path": "camera_x_rays/filter_window/x3_unit_vector/y",
+      "documentation": "Component along Y axis",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/x3_unit_vector/x",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "filter_window/x3_unit_vector",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window/x3_unit_vector",
+          "filter_window/x3_unit_vector/x"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/x3_unit_vector/z": {
+      "path": "camera_x_rays/filter_window/x3_unit_vector/z",
+      "documentation": "Component along Z axis",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/x3_unit_vector/x",
+        "filter_window/x3_unit_vector/y",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "filter_window/x3_unit_vector",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window/x3_unit_vector",
+          "filter_window/x3_unit_vector/x",
+          "filter_window/x3_unit_vector/y"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/x1_width": {
+      "path": "camera_x_rays/filter_window/x1_width",
+      "documentation": "Full width of the filter in the X1 direction, used only if geometry_type/index = 3",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/name",
+        "filter_window/description",
+        "filter_window/geometry_type",
+        "filter_window/curvature_type",
+        "filter_window/centre",
+        "camera/line_of_sight",
+        "filter_window",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window",
+          "filter_window/name",
+          "filter_window/description",
+          "filter_window/geometry_type",
+          "filter_window/curvature_type",
+          "filter_window/centre"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/x2_width": {
+      "path": "camera_x_rays/filter_window/x2_width",
+      "documentation": "Full width of the filter in the X2 direction, used only if geometry_type/index = 3",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/name",
+        "filter_window/description",
+        "filter_window/geometry_type",
+        "filter_window/curvature_type",
+        "filter_window/centre",
+        "camera/line_of_sight",
+        "filter_window",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window",
+          "filter_window/name",
+          "filter_window/description",
+          "filter_window/geometry_type",
+          "filter_window/curvature_type",
+          "filter_window/centre"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/outline": {
+      "path": "camera_x_rays/filter_window/outline",
+      "documentation": "Irregular outline of the filter in the (X1, X2) coordinate system, used only if geometry_type/index=1. Repeat the first point since this is a closed contour",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/name",
+        "filter_window/description",
+        "filter_window/geometry_type",
+        "filter_window/curvature_type",
+        "filter_window/centre",
+        "camera/line_of_sight",
+        "filter_window",
+        "filter_window/outline/x1",
+        "filter_window/outline/x2",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window",
+          "filter_window/name",
+          "filter_window/description",
+          "filter_window/geometry_type",
+          "filter_window/curvature_type",
+          "filter_window/centre",
+          "filter_window/outline/x1",
+          "filter_window/outline/x2"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "x1x21d_static"
+    },
+    "camera_x_rays/filter_window/outline/x1": {
+      "path": "camera_x_rays/filter_window/outline/x1",
+      "documentation": "Positions along x1 axis",
+      "units": "m",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/outline/x2",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "filter_window/outline",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window/outline",
+          "filter_window/outline/x2"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/outline/x2": {
+      "path": "camera_x_rays/filter_window/outline/x2",
+      "documentation": "Positions along x2 axis",
+      "units": "m",
+      "coordinates": [
+        "filter_window/outline/x1"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/outline/x1",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r",
+        "filter_window/outline",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window/outline",
+          "filter_window/outline/x1"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/x1_curvature": {
+      "path": "camera_x_rays/filter_window/x1_curvature",
+      "documentation": "Radius of curvature in the X1 direction, to be filled only for curvature_type/index = 2, 4 or 5",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/name",
+        "filter_window/description",
+        "filter_window/geometry_type",
+        "filter_window/curvature_type",
+        "filter_window/centre",
+        "camera/line_of_sight",
+        "filter_window",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window",
+          "filter_window/name",
+          "filter_window/description",
+          "filter_window/geometry_type",
+          "filter_window/curvature_type",
+          "filter_window/centre"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/x2_curvature": {
+      "path": "camera_x_rays/filter_window/x2_curvature",
+      "documentation": "Radius of curvature in the X2 direction, to be filled only for curvature_type/index = 3 or 5",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/name",
+        "filter_window/description",
+        "filter_window/geometry_type",
+        "filter_window/curvature_type",
+        "filter_window/centre",
+        "camera/line_of_sight",
+        "filter_window",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window",
+          "filter_window/name",
+          "filter_window/description",
+          "filter_window/geometry_type",
+          "filter_window/curvature_type",
+          "filter_window/centre"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/surface": {
+      "path": "camera_x_rays/filter_window/surface",
+      "documentation": "Surface of the filter, derived from the above geometric data",
+      "units": "m^2",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/name",
+        "filter_window/description",
+        "filter_window/geometry_type",
+        "filter_window/curvature_type",
+        "filter_window/centre",
+        "camera/line_of_sight",
+        "aperture/surface",
+        "filter_window",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/surface"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window",
+          "filter_window/name",
+          "filter_window/description",
+          "filter_window/geometry_type",
+          "filter_window/curvature_type",
+          "filter_window/centre"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/material": {
+      "path": "camera_x_rays/filter_window/material",
+      "documentation": "Material of the filter window",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/name",
+        "filter_window/description",
+        "filter_window/geometry_type",
+        "filter_window/curvature_type",
+        "filter_window/centre",
+        "camera/line_of_sight",
+        "filter_window",
+        "filter_window/material/name",
+        "filter_window/material/index",
+        "filter_window/material/description",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window",
+          "filter_window/name",
+          "filter_window/description",
+          "filter_window/geometry_type",
+          "filter_window/curvature_type",
+          "filter_window/centre",
+          "filter_window/material/name",
+          "filter_window/material/index",
+          "filter_window/material/description"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "identifier_static"
+    },
+    "camera_x_rays/filter_window/material/name": {
+      "path": "camera_x_rays/filter_window/material/name",
+      "documentation": "Short string identifier",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/material/index",
+        "filter_window/material/description",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "filter_window/material",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window/material",
+          "filter_window/material/index",
+          "filter_window/material/description"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/material/index": {
+      "path": "camera_x_rays/filter_window/material/index",
+      "documentation": "Integer identifier (enumeration index within a list). Private identifier values must be indicated by a negative index.",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "INT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/material/name",
+        "filter_window/material/description",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "filter_window/material",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window/material",
+          "filter_window/material/name",
+          "filter_window/material/description"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/material/description": {
+      "path": "camera_x_rays/filter_window/material/description",
+      "documentation": "Verbose description",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/material/name",
+        "filter_window/material/index",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "filter_window/material",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window/material",
+          "filter_window/material/name",
+          "filter_window/material/index"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/thickness": {
+      "path": "camera_x_rays/filter_window/thickness",
+      "documentation": "Thickness of the filter window",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/name",
+        "filter_window/description",
+        "filter_window/geometry_type",
+        "filter_window/curvature_type",
+        "filter_window/centre",
+        "camera/line_of_sight",
+        "filter_window",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window",
+          "filter_window/name",
+          "filter_window/description",
+          "filter_window/geometry_type",
+          "filter_window/curvature_type",
+          "filter_window/centre"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/wavelength_lower": {
+      "path": "camera_x_rays/filter_window/wavelength_lower",
+      "documentation": "Lower bound of the filter wavelength range",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/name",
+        "filter_window/description",
+        "filter_window/geometry_type",
+        "filter_window/curvature_type",
+        "filter_window/centre",
+        "camera/line_of_sight",
+        "filter_window",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window",
+          "filter_window/name",
+          "filter_window/description",
+          "filter_window/geometry_type",
+          "filter_window/curvature_type",
+          "filter_window/centre"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/wavelength_upper": {
+      "path": "camera_x_rays/filter_window/wavelength_upper",
+      "documentation": "Upper bound of the filter wavelength range",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/name",
+        "filter_window/description",
+        "filter_window/geometry_type",
+        "filter_window/curvature_type",
+        "filter_window/centre",
+        "camera/line_of_sight",
+        "filter_window",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window",
+          "filter_window/name",
+          "filter_window/description",
+          "filter_window/geometry_type",
+          "filter_window/curvature_type",
+          "filter_window/centre"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/wavelengths": {
+      "path": "camera_x_rays/filter_window/wavelengths",
+      "documentation": "Array of wavelength values",
+      "units": "m",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/name",
+        "filter_window/description",
+        "filter_window/geometry_type",
+        "filter_window/curvature_type",
+        "filter_window/centre",
+        "camera/line_of_sight",
+        "filter_window",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "aperture/centre/r"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "aperture/centre/r"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window",
+          "filter_window/name",
+          "filter_window/description",
+          "filter_window/geometry_type",
+          "filter_window/curvature_type",
+          "filter_window/centre"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/filter_window/photon_absorption": {
+      "path": "camera_x_rays/filter_window/photon_absorption",
+      "documentation": "Probability of absorbing a photon passing through the filter as a function of its wavelength",
+      "units": "1",
+      "coordinates": [
+        "filter_window/wavelengths"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "filter_window/name",
+        "filter_window/description",
+        "filter_window/geometry_type",
+        "filter_window/curvature_type",
+        "filter_window/centre",
+        "camera/line_of_sight",
+        "filter_window",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "filter_window",
+          "filter_window/name",
+          "filter_window/description",
+          "filter_window/geometry_type",
+          "filter_window/curvature_type",
+          "filter_window/centre"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/exposure_time": {
+      "path": "camera_x_rays/exposure_time",
+      "documentation": "Exposure time",
+      "units": "s",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "camera/line_of_sight",
+        "frame/time"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "frame/time"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/readout_time": {
+      "path": "camera_x_rays/readout_time",
+      "documentation": "Time used to read out each frame on the detector",
+      "units": "s",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "camera/line_of_sight",
+        "frame/time",
+        "exposure_time"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "frame/time",
+          "exposure_time"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/latency": {
+      "path": "camera_x_rays/latency",
+      "documentation": "Upper bound of the delay between physical information received by the detector and data available on the real-time (RT) network.",
+      "units": "s",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "frame/time",
+        "exposure_time"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "frame/time",
+          "exposure_time"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "camera_x_rays/detector_humidity": {
+      "path": "camera_x_rays/detector_humidity",
+      "documentation": "Fraction of humidity (0-1) measured at the detector level",
+      "units": "1",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "detector_humidity/data",
+        "detector_humidity/time",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "detector_humidity/data",
+          "detector_humidity/time"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "signal_flt_1d"
+    },
+    "camera_x_rays/detector_humidity/data": {
+      "path": "camera_x_rays/detector_humidity/data",
+      "documentation": "Data",
+      "units": "1",
+      "coordinates": [
+        "detector_humidity/time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "detector_humidity/time",
+        "camera/line_of_sight",
+        "detector_humidity",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "detector_humidity",
+          "detector_humidity/time"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "detector_humidity/time"
+    },
+    "camera_x_rays/detector_humidity/time": {
+      "path": "camera_x_rays/detector_humidity/time",
+      "documentation": "Time",
+      "units": "s",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "detector_humidity/data",
+        "camera/line_of_sight",
+        "frame/time",
+        "detector_humidity",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "exposure_time"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "frame/time",
+          "exposure_time"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "detector_humidity",
+          "detector_humidity/data"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "detector_humidity/time"
+    },
+    "camera_x_rays/detector_temperature": {
+      "path": "camera_x_rays/detector_temperature",
+      "documentation": "Temperature measured at the detector level",
+      "units": "K",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "detector_temperature/data",
+        "detector_temperature/time",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "camera/line_of_sight"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "detector_temperature/data"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "detector_temperature/data",
+          "detector_temperature/time"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "signal_flt_1d"
+    },
+    "camera_x_rays/detector_temperature/data": {
+      "path": "camera_x_rays/detector_temperature/data",
+      "documentation": "Data",
+      "units": "K",
+      "coordinates": [
+        "detector_temperature/time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "detector_temperature/time",
+        "camera/line_of_sight",
+        "detector_temperature",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "detector_temperature"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "detector_temperature",
+          "detector_temperature/time"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "detector_temperature/time"
+    },
+    "camera_x_rays/detector_temperature/time": {
+      "path": "camera_x_rays/detector_temperature/time",
+      "documentation": "Time",
+      "units": "s",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "detector_temperature/data",
+        "camera/line_of_sight",
+        "frame/time",
+        "detector_temperature",
+        "camera/pixel_position/r",
+        "aperture/x2_unit_vector/y",
+        "exposure_time"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "camera/pixel_position/r",
+          "aperture/x2_unit_vector/y",
+          "camera/line_of_sight",
+          "frame/time",
+          "exposure_time"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "detector_temperature",
+          "detector_temperature/data"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "detector_temperature/time"
+    },
+    "camera_x_rays/time": {
+      "path": "camera_x_rays/time",
+      "documentation": "Generic time",
+      "units": "s",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "frame/time",
+        "exposure_time"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "frame/time",
+          "exposure_time"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "time"
+    }
+  },
+  "semantic_groups": {
+    "misc": [
+      "camera_x_rays/name",
+      "camera_x_rays/description",
+      "camera_x_rays/energy_configuration_name",
+      "camera_x_rays/aperture",
+      "camera_x_rays/camera",
+      "camera_x_rays/filter_window",
+      "camera_x_rays/detector_humidity"
+    ],
+    "coordinates_1...N_1...N": [
+      "camera_x_rays/frame/counts_n",
+      "camera_x_rays/quantum_efficiency",
+      "camera_x_rays/pixel_status"
+    ],
+    "units_s": [
+      "camera_x_rays/frame/time",
+      "camera_x_rays/exposure_time",
+      "camera_x_rays/readout_time",
+      "camera_x_rays/latency",
+      "camera_x_rays/detector_humidity/time",
+      "camera_x_rays/detector_temperature/time",
+      "camera_x_rays/time"
+    ],
+    "units_eV": [
+      "camera_x_rays/photon_energy",
+      "camera_x_rays/energy_threshold_lower"
+    ],
+    "structure_aperture": [
+      "camera_x_rays/aperture/geometry_type",
+      "camera_x_rays/aperture/centre",
+      "camera_x_rays/aperture/x1_unit_vector",
+      "camera_x_rays/aperture/x2_unit_vector",
+      "camera_x_rays/aperture/x3_unit_vector",
+      "camera_x_rays/aperture/outline"
+    ],
+    "units_m": [
+      "camera_x_rays/aperture/centre/r",
+      "camera_x_rays/aperture/centre/z",
+      "camera_x_rays/aperture/radius",
+      "camera_x_rays/aperture/x1_unit_vector/x",
+      "camera_x_rays/aperture/x1_unit_vector/y",
+      "camera_x_rays/aperture/x1_unit_vector/z",
+      "camera_x_rays/aperture/x2_unit_vector/x",
+      "camera_x_rays/aperture/x2_unit_vector/y",
+      "camera_x_rays/aperture/x2_unit_vector/z",
+      "camera_x_rays/aperture/x3_unit_vector/x",
+      "camera_x_rays/aperture/x3_unit_vector/y",
+      "camera_x_rays/aperture/x3_unit_vector/z",
+      "camera_x_rays/aperture/x1_width",
+      "camera_x_rays/aperture/x2_width",
+      "camera_x_rays/aperture/outline/x1",
+      "camera_x_rays/aperture/outline/x2",
+      "camera_x_rays/camera/pixel_dimensions",
+      "camera_x_rays/camera/pixel_position/r",
+      "camera_x_rays/camera/pixel_position/z",
+      "camera_x_rays/camera/camera_dimensions",
+      "camera_x_rays/camera/centre/r",
+      "camera_x_rays/camera/centre/z",
+      "camera_x_rays/camera/x1_unit_vector/x",
+      "camera_x_rays/camera/x1_unit_vector/y",
+      "camera_x_rays/camera/x1_unit_vector/z",
+      "camera_x_rays/camera/x2_unit_vector/x",
+      "camera_x_rays/camera/x2_unit_vector/y",
+      "camera_x_rays/camera/x2_unit_vector/z",
+      "camera_x_rays/camera/x3_unit_vector/x",
+      "camera_x_rays/camera/x3_unit_vector/y",
+      "camera_x_rays/camera/x3_unit_vector/z",
+      "camera_x_rays/camera/line_of_sight/first_point/r",
+      "camera_x_rays/camera/line_of_sight/first_point/z",
+      "camera_x_rays/camera/line_of_sight/second_point/r",
+      "camera_x_rays/camera/line_of_sight/second_point/z",
+      "camera_x_rays/filter_window/centre/r",
+      "camera_x_rays/filter_window/centre/z",
+      "camera_x_rays/filter_window/radius",
+      "camera_x_rays/filter_window/x1_unit_vector/x",
+      "camera_x_rays/filter_window/x1_unit_vector/y",
+      "camera_x_rays/filter_window/x1_unit_vector/z",
+      "camera_x_rays/filter_window/x2_unit_vector/x",
+      "camera_x_rays/filter_window/x2_unit_vector/y",
+      "camera_x_rays/filter_window/x2_unit_vector/z",
+      "camera_x_rays/filter_window/x3_unit_vector/x",
+      "camera_x_rays/filter_window/x3_unit_vector/y",
+      "camera_x_rays/filter_window/x3_unit_vector/z",
+      "camera_x_rays/filter_window/x1_width",
+      "camera_x_rays/filter_window/x2_width",
+      "camera_x_rays/filter_window/outline/x1",
+      "camera_x_rays/filter_window/outline/x2",
+      "camera_x_rays/filter_window/x1_curvature",
+      "camera_x_rays/filter_window/x2_curvature",
+      "camera_x_rays/filter_window/thickness",
+      "camera_x_rays/filter_window/wavelength_lower",
+      "camera_x_rays/filter_window/wavelength_upper",
+      "camera_x_rays/filter_window/wavelengths"
+    ],
+    "units_rad": [
+      "camera_x_rays/aperture/centre/phi",
+      "camera_x_rays/camera/pixel_position/phi",
+      "camera_x_rays/camera/centre/phi",
+      "camera_x_rays/camera/line_of_sight/first_point/phi",
+      "camera_x_rays/camera/line_of_sight/second_point/phi",
+      "camera_x_rays/filter_window/centre/phi"
+    ],
+    "units_m^2": [
+      "camera_x_rays/aperture/surface",
+      "camera_x_rays/filter_window/surface"
+    ],
+    "structure_camera": [
+      "camera_x_rays/camera/pixel_position",
+      "camera_x_rays/camera/centre",
+      "camera_x_rays/camera/x1_unit_vector",
+      "camera_x_rays/camera/x2_unit_vector",
+      "camera_x_rays/camera/x3_unit_vector",
+      "camera_x_rays/camera/line_of_sight",
+      "camera_x_rays/camera/line_of_sight/first_point",
+      "camera_x_rays/camera/line_of_sight/second_point"
+    ],
+    "structure_filter_window": [
+      "camera_x_rays/filter_window/name",
+      "camera_x_rays/filter_window/description",
+      "camera_x_rays/filter_window/geometry_type",
+      "camera_x_rays/filter_window/geometry_type/name",
+      "camera_x_rays/filter_window/geometry_type/index",
+      "camera_x_rays/filter_window/geometry_type/description",
+      "camera_x_rays/filter_window/curvature_type",
+      "camera_x_rays/filter_window/curvature_type/name",
+      "camera_x_rays/filter_window/curvature_type/index",
+      "camera_x_rays/filter_window/curvature_type/description",
+      "camera_x_rays/filter_window/centre",
+      "camera_x_rays/filter_window/x1_unit_vector",
+      "camera_x_rays/filter_window/x2_unit_vector",
+      "camera_x_rays/filter_window/x3_unit_vector",
+      "camera_x_rays/filter_window/outline",
+      "camera_x_rays/filter_window/material",
+      "camera_x_rays/filter_window/material/name",
+      "camera_x_rays/filter_window/material/index",
+      "camera_x_rays/filter_window/material/description"
+    ],
+    "units_K": [
+      "camera_x_rays/detector_temperature",
+      "camera_x_rays/detector_temperature/data"
+    ]
+  }
+}

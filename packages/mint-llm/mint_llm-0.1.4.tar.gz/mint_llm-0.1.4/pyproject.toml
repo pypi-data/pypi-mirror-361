@@ -1,0 +1,51 @@
+[project]
+name = "mint-llm"
+authors = [{name = "Bryan O'Malley", email = "bo122081@hotmail.com"}]
+dynamic = ["version"]
+description = "Meaning-Informed Next-token Transformation"
+requires-python = ">=3.13"
+readme = "README.md"
+classifiers = ["Development Status :: 2 - Pre-Alpha","Environment :: Console","Intended Audience :: Developers","Topic :: Scientific/Engineering :: Artificial Intelligence"]
+keywords = ["llm","machine learning","text-generation","huggingface","hf","pytorch","tools", "svd", "isvd"]
+dependencies = [
+    "huggingface-hub",
+    "numpy",
+    "peft",
+    "safetensors",
+    "torch>=2.7",
+    "tqdm",
+    "transformers",
+    "typer"
+]
+
+[project.urls]
+pypi = "https://pypi.org/project/mint-llm/"
+
+[project.scripts]
+mint = "mint.cli:app"
+
+[project.entry-points]
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "black[jupyter]",
+    "cffconvert",
+    "ipykernel",
+    "mypy",
+    "pytest",
+    "ruff",
+    "types-tqdm",
+    "vulkan"
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[build-system]
+requires = ["setuptools>=70.2.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+version = {attr = "mint.__version__"}
+

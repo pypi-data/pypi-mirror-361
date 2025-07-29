@@ -1,0 +1,100 @@
+[project]
+name = "funtypes"
+description = "FUNctional types for Python. (Backport to 0.2.1)"
+readme = "README.md"
+authors = [{ name = "luwqz1", email = "howluwqz1@gmail.com" }]
+maintainers = [{ name = "luwqz1", email = "howluwqz1@gmail.com" }]
+requires-python = '>=3.12,<4.0'
+dependencies = [
+    "typing-extensions (>=4.14.0,<5.0.0)",
+]
+
+[tool.poetry]
+version = "0.2.1"
+package-mode = true
+requires-poetry = ">=2.0.0,<3.0.0"
+
+[[tool.poetry.packages]]
+include = "fntypes"  
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.5"
+pytest-asyncio = "^1.0.0"
+ruff = ">=0.11.12,<0.12"
+pyright = "^1.1.401"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 150
+target-version = "py312"
+
+[tool.ruff.format]
+quote-style = "double"
+docstring-code-line-length = "dynamic"
+
+[tool.ruff.lint]
+select = [
+  "I",
+  "D",
+  "N",
+  "PLR",
+  "Q",
+  "COM",
+  "TC",
+  "YTT",
+  "SIM"
+]
+ignore = [
+  "COM812",
+  "N805",
+  "N818",
+  "TC001",
+  "TC002",
+  "TC003",
+  "TC004",
+  "D100",
+  "D101",
+  "D102",
+  "D103",
+  "D104",
+  "D105",
+  "D107",
+  "D202",
+  "D203",
+  "D205",
+  "D209",
+  "D211",
+  "D213",
+  "D400",
+  "D401",
+  "D404",
+  "D415",
+  "PLR2004",
+  "PLR0911",
+  "PLR0912",
+  "PLR0913"
+]
+fixable = ["ALL"]
+exclude = [".venv", ".idea"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401", "F403"]
+
+[tool.pyright]
+exclude = [
+  ".venv",
+  ".idea",
+  ".ruff_cache",
+  ".pytest_cache",
+]
+typeCheckingMode = "basic"
+pythonPlatform = "All"
+pythonVersion = "3.12"
+reportMissingImports = true
+reportMissingTypeStubs = false
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

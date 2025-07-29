@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Create temp directory for personal files
+TEMP_DIR="/tmp/connecpy_build_$$"
+mkdir -p "$TEMP_DIR"
+
+# Temporarily move personal files and directories
+mv CLAUDE.md RELEASE.md build.sh "$TEMP_DIR/" 2>/dev/null || true
+mv .claude "$TEMP_DIR/" 2>/dev/null || true
+
+# Run build
+uv build
+
+# Restore personal files and directories
+mv "$TEMP_DIR"/CLAUDE.md "$TEMP_DIR"/RELEASE.md "$TEMP_DIR"/build.sh ./ 2>/dev/null || true
+mv "$TEMP_DIR"/.claude ./ 2>/dev/null || true
+
+# Clean up temp directory
+rm -rf "$TEMP_DIR"
+
+echo "Build completed successfully!"

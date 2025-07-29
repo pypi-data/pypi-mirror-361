@@ -1,0 +1,119 @@
+Metadata-Version: 2.4
+Name: dicom_csv
+Version: 0.4.0
+Summary: Utils for gathering, aggregation and handling metadata from DICOM files.
+Home-page: https://github.com/neuro-ml/dicom-csv
+Download-URL: https://github.com/neuro-ml/dicom-csv/v0.4.0.tar.gz
+Author-email: NeuroML Group <max@ira-labs.com>
+License: MIT License
+        
+        Copyright (c) 2017-2023 NeuroML Group
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Project-URL: Homepage, https://github.com/neuro-ml/dicom_csv
+Project-URL: Issues, https://github.com/neuro-ml/dicom_csv/issues
+Project-URL: Source, https://github.com/neuro-ml/dicom_csv
+Project-URL: Docs, https://dicom-csv.readthedocs.io/en/latest/index.html
+Keywords: DICOM
+Classifier: Development Status :: 4 - Beta
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3 :: Only
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pydicom<4.0,>=3.0
+Requires-Dist: pandas
+Requires-Dist: numpy
+Requires-Dist: tqdm
+Requires-Dist: more_itertools
+Provides-Extra: nifti
+Requires-Dist: nibabel; extra == "nifti"
+Provides-Extra: all
+Requires-Dist: nibabel; extra == "all"
+Dynamic: download-url
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-python
+
+Utils for gathering, aggregation and handling metadata from DICOM files.
+
+# Installation
+
+From pip
+```
+pip install dicom-csv
+```
+
+or from GitHub
+
+```bash
+git clone https://github.com/neuro-ml/dicom-csv
+cd dicom-csv
+pip install -e .
+```
+
+# Example `join_tree`
+
+```python
+>>> from dicom_csv import join_tree
+>>> folder = '/path/to/folder/'
+>>> meta = join_tree(folder, verbose=2)
+>>> meta.head(3)
+```
+| AccessionNumber | AcquisitionDate |  ...  | WindowCenter | WindowWidth |
+| -------------: | -------------:   | :---: | --------:    | :---------: |
+|000002621237 	 |20200922          |...    |-500.0        |1500.0       |
+|000002621237 	 |20200922          |...    |-40.0         |400.0        |
+|000002621237 	 |20200922          |...    |-500.0        |1500.0       |
+3 rows x 155 columns
+
+
+# Example load 3D image
+from a series of dicom files (each containing 2D image)
+
+```python
+from dicom_csv import join_tree, order_series, stack_images
+from pydicom import dcmread
+from pathlib import Path
+
+# 1. Collect metadata from all dicom files
+folder = Path('/path/to/folder/')
+meta = join_tree(folder, verbose=2)
+
+# 2. Select series to load
+uid = '...' # unique identifier of a series you want to load,
+            # you could list them by `meta.SeriesInstanceUID.unique()`
+series = meta.query("SeriesInstanceUID==@uid")
+
+# 3. Read files & combine them into a single volume
+images2d = [dcmread(folder / row[1].PathToFolder / row[1].FileName) for row in series.iterrows()] 
+image3d = stack_images(order_series(images2d))
+```
+
+# Documentation
+
+You can find the documentation [here](https://dicom-csv.readthedocs.io/en/latest/index.html).

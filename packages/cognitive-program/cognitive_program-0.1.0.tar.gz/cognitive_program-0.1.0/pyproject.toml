@@ -1,0 +1,52 @@
+[project]
+name = "cognitive-program"
+version = "0.1.0"
+description = "Garbage-collector style context manager for LLM prompt messages."
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Sarmad Qadri", email = "sarmad@lastmileai.dev" }
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent"
+]
+requires-python = ">=3.10"
+dependencies = [
+    "mcp>=1.10.1",
+    "pydantic>=2.11.7",
+    "tiktoken>=0.9.0",
+]
+
+[project.optional-dependencies]
+openai = [
+    "openai>=1.93.3",
+]
+anthropic = [
+    "anthropic>=0.57.1",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.0.1",
+    "pydantic>=2.10.4",
+    "pyyaml>=6.0.2",
+    "ruff>=0.8.4",
+    "tomli>=2.2.1",
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.1",
+    "trio>=0.30.0",
+    "pytest-cov>=6.1.1",
+    "httpx>=0.28.1",
+]
+
+[tool.setuptools.packages.find]
+include = ["managed-context"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

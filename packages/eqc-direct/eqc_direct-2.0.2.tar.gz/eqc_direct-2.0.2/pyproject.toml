@@ -1,0 +1,73 @@
+# (C) Quantum Computing Inc., 2023.
+
+# THIS IS UNPUBLISHED PROPRIETARY SOURCE CODE of the Copyright Holder.
+# The contents of this file may not be disclosed to third parties, copied
+# or duplicated in any form, in whole or in part, without the prior written
+# permission of the Copyright Holder.
+
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = 'eqc-direct'
+description = "EQC GRPC client, and health tests"
+readme = "README.md"
+requires-python = ">=3.9, <3.11" # must be less than 3.11 because grpcio-tools build fails with 3.11 python
+keywords = []
+authors = [
+    {name = "Quantum Computing Inc.", email = "support@quantumcomputinginc.com"},
+]
+
+classifiers = []
+
+dependencies = [
+    "grpcio==1.72.1",
+    "numpy>=1.22.1, <3",
+    "protobuf==3.20.3",  # must match petalinux distribution on eqc devices
+]
+
+dynamic = [
+    "version"
+]
+
+[project.optional-dependencies]
+# required to run server sim
+dev = [
+    "black >=22.6.0, <23",
+    "build >=0.10.0, <0.11.0",
+    "check-manifest >=0.48, <0.49",
+    "coverage[toml] >=6.4.2, <7",
+    "eqc_direct[sim]",  # Server simulator used in development.
+    "grpcio-tools==1.48.2", # required to do pb2 file builds
+    "pylint >=2.14.0, <3",
+    "pytest >=7.1.0, <8",
+    "sphinx-rtd-theme >=1.3.0, <2",
+]
+
+# In order to minimize dependency installs for the server simulator in backend 
+# development environments, multiprocess is double tracked in a separate "sim" extras.
+sim = [
+    "multiprocess>=0.70.14, <1",
+]
+
+[tool.setuptools]
+packages = ["eqc_direct"]
+
+[tool.setuptools_scm]
+
+[tool.coverage.report]
+# FUTURE Get 100% coverage.
+# fail_under = 100
+
+[tool.pylint]
+max-line-length = 88
+recursive = true
+ignore = ["build", "docs", "eqc_pb2.py", "eqc_pb2_grpc.py"]
+
+[tool.black]
+extend-exclude = """
+(
+  eqc_pb2.py | eqc_pb2_grpc.py
+)
+"""

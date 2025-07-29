@@ -1,0 +1,51 @@
+[project]
+name = "dstm"
+version = "0.1.4"
+description = "DSTM - a simple message broker interface + task queue"
+readme = "README.md"
+authors = [
+    { name = "Anthony Carapetis", email = "anthony.carapetis@gmail.com" }
+]
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+amqp = [
+    "pika>=1.3.2",
+]
+sqs = [
+    "boto3>=1.39.3",
+]
+cli = [
+    "typer-slim>=0.16.0",
+]
+
+[dependency-groups]
+dev = [
+    "boto3-stubs[sqs]>=1.39.3",
+    "pytest>=8.4.1",
+    "pytest-xdist>=3.8.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.7.19,<0.8.0"]
+build-backend = "uv_build"
+
+[tool.pyright]
+pythonVersion = "3.10"
+venvPath = "."
+venv = ".venv"
+
+[tool.pytest.ini_options]
+# boto3 still hasn't moved off utcnow, ignore those deprecation warnings
+filterwarnings = """
+    error
+    ignore:.*utcnow.*:DeprecationWarning
+"""
+addopts = "--log-level INFO"
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+]
+
+[tool.ruff.lint]
+select = ["I", "E", "W", "F", "RUF", "FURB"]

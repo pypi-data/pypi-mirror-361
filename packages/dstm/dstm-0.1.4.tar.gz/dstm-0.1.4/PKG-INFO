@@ -1,0 +1,31 @@
+Metadata-Version: 2.3
+Name: dstm
+Version: 0.1.4
+Summary: DSTM - a simple message broker interface + task queue
+Author: Anthony Carapetis
+Author-email: Anthony Carapetis <anthony.carapetis@gmail.com>
+Requires-Dist: pika>=1.3.2 ; extra == 'amqp'
+Requires-Dist: typer-slim>=0.16.0 ; extra == 'cli'
+Requires-Dist: boto3>=1.39.3 ; extra == 'sqs'
+Requires-Python: >=3.10
+Provides-Extra: amqp
+Provides-Extra: cli
+Provides-Extra: sqs
+Description-Content-Type: text/markdown
+
+# dstm
+
+[![PyPI](https://img.shields.io/pypi/v/dstm)](https://pypi.org/project/dstm/)
+
+A very simple task queue library compatible with AWS SQS or AMQP.
+
+## Examples
+
+```python
+from dstm import TaskBackend, task, run_worker
+
+@task(queue="high_priority")
+def send_email(recipient: str, content: str):
+    ...
+
+send_email.

@@ -1,0 +1,28 @@
+# langak/alphabets.py
+
+alphabets = {
+    "english": set("abcdefghijklmnopqrstuvwxyz"),
+    "russian": set("абвгдеёжзийклмнопрстуфхцчшщъыьэюя"),
+    "ukrainian": set("абвгґдеєжзийікїлмнопрстуфхцчшщьюя"),
+    "belarusian": set("абвгдеёжзійклмнопрстуўфхцчшьыэюя"),
+    "greek": set("αβγδεζηθικλμνξοπρστυφχψω"),
+    "georgian": set("აბგდევზთიკლმნოპჟრსტუფქღყშჩცძწჭხჯჰ"),
+    "armenian": set("աբգդեզէըթժիլխծկհձղճմյնշչպջռսվտրցւփքևօֆ"),
+    "hebrew": set("אבגדהוזחטיכלמנסעפצקרשת"),
+    "arabic": set("ابتثجحخدذرزسشصضطظعغفقكلمنهويء"),
+    "persian": set("اآبپتثجچحخدذرزژسشصضطظعغفقلمنوهی"),
+    "urdu": set("اآبپتٹثجچحخدڈذرڑزژسشصضطظعغفقکگلمنںوہھیے"),
+    "devanagari": set("अआइईउऊऋऌऍएऐऑओऔअंअःकखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह"),
+    "korean": set("가나다라마바사아자차카타파하거너더러머버서어저처커터퍼허"),
+    "japanese_hiragana": set("あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん"),
+    "japanese_katakana": set("アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン"),
+    "chinese": set("的一是不了人我在有他这中大来上国个到说们为子和你地出道也时年得就那要下以生会着"),
+    "thai": set("กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรฤลฦวศษสหฬอฮ"),
+    "lao": set("ກຂຄງຈສຊຍດຕຖທນບປຜຝພຟມຢຣລວຫອຮ"),
+    "vietnamese": set("aăâbcdđeêghiklmnoôơpqrstuưvxy"),
+    "polish": set("aąbcćdeęfghijklłmnńoópqrsśtuvwxyzźż"),
+    "czech": set("aábcčdďeéěfghchiíjklmnňoópqrřsšťuúůvwxyýzž"),
+    "turkish": set("abcçdefgğhıijklmnoöprsştuüvyz"),
+    "hungarian": set("aábcdeéfghiíjklmnoóöőpqrstuúüűvwxyz"),
+    "german": set("abcdefghijklmnopqrstuvwxyzäöüß"),
+}

@@ -1,0 +1,239 @@
+Metadata-Version: 2.4
+Name: veris-ai
+Version: 1.0.0
+Summary: A Python package for Veris AI tools
+Project-URL: Homepage, https://github.com/veris-ai/veris-python-sdk
+Project-URL: Bug Tracker, https://github.com/veris-ai/veris-python-sdk/issues
+Author-email: Mehdi Jamei <mehdi@veris.ai>
+License-Expression: MIT
+License-File: LICENSE
+Requires-Python: >=3.11
+Requires-Dist: httpx>=0.24.0
+Provides-Extra: dev
+Requires-Dist: black>=23.7.0; extra == 'dev'
+Requires-Dist: mypy>=1.5.1; extra == 'dev'
+Requires-Dist: pre-commit>=3.3.3; extra == 'dev'
+Requires-Dist: pytest-asyncio>=0.21.1; extra == 'dev'
+Requires-Dist: pytest-cov>=4.1.0; extra == 'dev'
+Requires-Dist: pytest>=7.4.0; extra == 'dev'
+Requires-Dist: ruff>=0.11.4; extra == 'dev'
+Provides-Extra: fastapi
+Requires-Dist: fastapi; extra == 'fastapi'
+Requires-Dist: fastapi-mcp; extra == 'fastapi'
+Description-Content-Type: text/markdown
+
+# Veris AI Python SDK
+
+A Python package for Veris AI tools with simulation capabilities and FastAPI MCP (Model Context Protocol) integration.
+
+## Installation
+
+You can install the package using `uv`:
+
+```bash
+# Install the package
+uv add veris-ai
+
+# Install with development dependencies
+uv add "veris-ai[dev]"
+
+# Install with FastAPI MCP integration
+uv add "veris-ai[fastapi]"
+```
+
+## Environment Setup
+
+The package requires the following environment variables:
+
+```bash
+# Required: URL for the mock endpoint
+VERIS_MOCK_ENDPOINT_URL=http://your-mock-endpoint.com
+
+# Optional: Timeout in seconds (default: 30.0)
+VERIS_MOCK_TIMEOUT=30.0
+
+# Optional: Set to "simulation" to enable mock mode
+ENV=simulation
+```
+
+## Python Version
+
+This project requires Python 3.11 or higher. We use [pyenv](https://github.com/pyenv/pyenv) for Python version management.
+
+To set up the correct Python version:
+
+```bash
+# Install Python 3.11.0 using pyenv
+pyenv install 3.11.0
+
+# Set the local Python version for this project
+pyenv local 3.11.0
+```
+
+## Usage
+
+```python
+from veris_ai import veris
+
+@veris.mock()
+async def your_function(param1: str, param2: int) -> dict:
+    """
+    Your function documentation here.
+    
+    Args:
+        param1: Description of param1
+        param2: Description of param2
+        
+    Returns:
+        A dictionary containing the results
+    """
+    # Your implementation here
+    return {"result": "actual implementation"}
+```
+
+When `ENV=simulation` is set, the decorator will:
+1. Capture the function signature, type hints, and docstring
+2. Send this information to the mock endpoint
+3. Convert the mock response to the expected return type
+4. Return the mock result
+
+When not in simulation mode, the original function will be executed normally.
+
+## FastAPI MCP Integration
+
+The SDK provides integration with FastAPI applications through the Model Context Protocol (MCP). This allows your FastAPI endpoints to be exposed as MCP tools that can be used by AI agents.
+
+```python
+from fastapi import FastAPI
+from veris_ai import veris
+
+app = FastAPI()
+
+# Set up FastAPI MCP with automatic session handling
+veris.set_fastapi_mcp(
+    fastapi=app,
+    name="My API Server",
+    description="My FastAPI application exposed as MCP tools",
+    describe_all_responses=True,
+    include_operations=["get_users", "create_user"],
+    exclude_tags=["internal"]
+)
+
+# The MCP server is now available at veris.fastapi_mcp
+mcp_server = veris.fastapi_mcp
+```
+
+### Configuration Options
+
+The `set_fastapi_mcp()` method accepts the following parameters:
+
+- **fastapi** (required): Your FastAPI application instance
+- **name**: Custom name for the MCP server (defaults to app.title)
+- **description**: Custom description (defaults to app.description)
+- **describe_all_responses**: Whether to include all response schemas in tool descriptions
+- **describe_full_response_schema**: Whether to include full JSON schema for responses
+- **http_client**: Optional custom httpx.AsyncClient instance
+- **include_operations**: List of operation IDs to include as MCP tools
+- **exclude_operations**: List of operation IDs to exclude (can't use with include_operations)
+- **include_tags**: List of tags to include as MCP tools
+- **exclude_tags**: List of tags to exclude (can't use with include_tags)
+- **auth_config**: Optional FastAPI MCP AuthConfig for custom authentication
+
+### Session Management
+
+The SDK automatically handles session management through OAuth2 authentication:
+- Session IDs are extracted from bearer tokens
+- Context is maintained across API calls
+- Sessions can be managed programmatically:
+
+```python
+# Get current session ID
+session_id = veris.session_id
+
+# Set a new session ID
+veris.set_session_id("new-session-123")
+
+# Clear the session
+veris.clear_session_id()
+```
+
+## Project Structure
+
+```
+src/veris_ai/
+├── __init__.py        # Main entry point, exports the veris instance
+├── tool_mock.py       # VerisSDK class with @veris.mock() decorator
+└── utils.py           # Type conversion utilities
+
+tests/
+├── conftest.py        # Pytest fixtures
+├── test_tool_mock.py  # Tests for VerisSDK functionality
+└── test_utils.py      # Tests for type conversion utilities
+```
+
+## Development
+
+This project uses `pyproject.toml` for dependency management and `uv` for package installation.
+
+### Development Dependencies
+
+To install the package with development dependencies:
+
+```bash
+uv add "veris-ai[dev]"
+```
+
+This will install the following development tools:
+- **Ruff**: Fast Python linter
+- **pytest**: Testing framework
+- **pytest-asyncio**: Async support for pytest
+- **pytest-cov**: Coverage reporting for pytest
+- **black**: Code formatter
+- **mypy**: Static type checker
+- **pre-commit**: Git hooks for code quality
+
+### Code Quality
+
+This project uses [Ruff](https://github.com/charliermarsh/ruff) for linting and code quality checks. Ruff is a fast Python linter written in Rust.
+
+To run Ruff:
+
+```bash
+# Lint code
+ruff check .
+
+# Auto-fix linting issues
+ruff check --fix .
+
+# Format code
+ruff format .
+
+# Check formatting only
+ruff format --check .
+```
+
+The Ruff configuration is defined in `pyproject.toml` under the `[tool.ruff]` section.
+
+### Running Tests
+
+```bash
+# Run all tests with coverage
+pytest tests/ --cov=veris_ai --cov-report=xml --cov-report=term-missing
+
+# Run specific test file
+pytest tests/test_tool_mock.py
+
+# Run tests with verbose output
+pytest -v tests/
+```
+
+### Type Checking
+
+```bash
+# Run static type checking
+mypy src/veris_ai tests
+```
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details. 

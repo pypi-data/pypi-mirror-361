@@ -1,0 +1,134 @@
+[tool.poetry]
+authors = [
+    "Max Wolschlager <wolschlager@iiasa.ac.at>",
+    "Fridolin Glatter <glatter@iiasa.ac.at>",
+    "Daniel Huppmann <huppmann@iiasa.ac.at>",
+    "Philip Hackstock <hackstock@iiasa.ac.at>",
+]
+name = "ixmp4"
+version = "0.9.10"
+description = "a data warehouse for scenario analysis"
+license = "MIT"
+readme = "README.md"
+packages = [{ include = "ixmp4" }, { include = "ixmp4/py.typed" }]
+homepage = "https://software.ece.iiasa.ac.at"
+repository = "https://github.com/iiasa/ixmp4"
+documentation = "https://docs.ece.iiasa.ac.at/projects/ixmp4"
+
+[tool.poetry.dependencies]
+PyJWT = ">=2.4.0"
+SQLAlchemy = { extras = ["mypy"], version = ">=2.0.22" }
+SQLAlchemy-Utils = ">=0.41.0"
+alembic = ">=1.12.0"
+fastapi = ">=0.100.0"
+httpx = { extras = ["http2"], version = ">=0.25.0" }
+openpyxl = ">=3.0.9"
+# remove legacy-handling in timeseries- and meta-repositories when dropping pandas < 2.2
+pandas = ">=2.1.0"
+pandera = ">=0.17.0"
+pydantic = ">=2.3.0"
+python = ">=3.10, <3.14"
+python-dotenv = ">=1.0.1"
+typer = ">=0.9.0"
+toml = ">=0.10.2"
+psycopg = { extras = ["binary"], version = ">=3.1.12" }
+pydantic-settings = ">=2.1.0"
+rich = ">=13.5.2"
+
+[tool.poetry.group.docs]
+optional = true
+
+[tool.poetry.group.docs.dependencies]
+sphinx = ">=7.2.4"
+sphinx-multiversion = ">=0.2.4"
+sphinx-rtd-theme = ">=2.0.0"
+sphinxcontrib-bibtex = ">=2.6.1"
+sphinxcontrib-openapi = ">=0.8.1"
+setuptools = ">=69.2.0"
+
+[tool.poetry.group.server]
+optional = true
+
+[tool.poetry.group.server.dependencies]
+uvicorn = { extras = ["standard"], version = ">=0.24.0" }
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+build = ">=1.0.3"
+mypy = ">=1.0.0"
+pandas-stubs = ">=2.0.0.230412"
+pre-commit = ">=3.3.3"
+ptvsd = ">=4.3.2"
+pytest = ">=8.0.0"
+pytest-benchmark = ">=4.0.0"
+pytest-cov = ">=4.1.0"
+ruff = ">=0.2.0"
+snakeviz = ">=2.1.1"
+types-toml = ">=0.10.8.7"
+
+[tool.poetry.group.tutorial]
+optional = true
+
+[tool.poetry.group.tutorial.dependencies]
+ipykernel = ">=6.27.1"
+
+[tool.poetry.scripts]
+ixmp4 = "ixmp4.__main__:app"
+
+[build-system]
+build-backend = "poetry_dynamic_versioning.backend"
+requires = ["poetry-core>=1.2.0", "poetry-dynamic-versioning"]
+
+[tool.mypy]
+exclude = [
+    '^example\.py$',
+    '^import\.py$',
+    '^tests\/',
+    '^doc\/',
+    '^ixmp4\/db\/migrations\/',
+]
+disable_error_code = ['override']
+implicit_reexport = true
+plugins = ['sqlalchemy.ext.mypy.plugin']
+
+[[tool.mypy.overrides]]
+module = ["pandas", "uvicorn.workers", "sqlalchemy_utils"]
+ignore_missing_imports = true
+
+[tool.ruff]
+exclude = [
+    ".git",
+    "__pycache__",
+    "*.egg-info",
+    ".pytest_cache",
+    ".mypy_cache",
+    ".venv",
+    "example.py",
+    "import.py",
+]
+line-length = 88
+
+[tool.ruff.format]
+# Enable reformatting of code snippets in docstrings.
+docstring-code-format = true
+
+[tool.ruff.lint]
+select = ["C9", "E", "F", "I", "W"]
+ignore = ["B008"]
+
+[tool.ruff.lint.per-file-ignores]
+# Ignore unused imports:
+"__init__.py" = ["F401"]
+"ixmp4/data/db/optimization/base.py" = ["F401"]
+# Ignore importing * and resulting possibly missing imports:
+"ixmp4/db/__init__.py" = ["F403", "F405"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.poetry-dynamic-versioning]
+enable = false
+style = "pep440"
+vcs = "git"

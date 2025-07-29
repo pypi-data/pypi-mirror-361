@@ -1,0 +1,100 @@
+Metadata-Version: 2.4
+Name: cinereader
+Version: 1.4.1
+Summary: Python based Cine Decoder to get a Phantom cine file metadata and pixel arrays
+Author-email: Vision Research <phantom-support@ametek.com>
+License-Expression: GPL-3.0-or-later
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy>=2.2
+Requires-Dist: pandas
+Requires-Dist: numba
+Dynamic: license-file
+
+
+# CineReader
+
+**CineReader** is a Python module for reading [Vision Research Phantom](https://www.phantomhighspeed.com/) `.cine` files. It allows you to extract metadata, image frames, and precise timestamps from high-speed camera recordings.
+
+### Features
+
+- **Read Phantom Cine Metadata:** Extracts detailed acquisition and camera information from `.cine` files.
+- **Image Extraction:** Efficiently reads single frames or ranges of frames as NumPy arrays, supporting various bit depths and compression formats (including 10-bit and 12-bit packed data).
+- **Timestamp Handling:** Retrieves precise per-frame timestamps and computes time-from-trigger arrays.
+- **NumPy & Pandas Integration:** Returns data in familiar scientific Python formats for easy analysis.
+- **Optimized Performance:** Uses Numba for fast unpacking of compressed image data.
+
+### Typical Usage
+
+```python
+import cinereader as cr
+
+path = "example.cine"
+
+metadata = cr.read_metadata(path)
+metadata, images, timestamps = cr.read(path, start=metadata.FirstImageNo)
+```
+
+- **metadata**: Detailed information about the cine file and acquisition.
+- **images**: List of NumPy arrays, each representing a frame.
+- **timestamps**: Array of timestamps for each frame, relative to trigger.
+
+### Requirements
+- Python 3.10+
+- numpy 2.2+
+- pandas
+- numba
+
+***Developed by AMETEK Vision Research.***
+
+## Changelog
+
+### 06-16-2025, v1.4.1
+- minor clean up and repackage after initial release of CineAnalyzer
+
+### 02-13-2025, v1.1.0
+- Added DecimatedFrameRate variable to access the effective frame rate of decimated cines
+
+### 10-30-2024, v1.0.0
+- Clean up for beta release
+
+### 10-24-2024, v0.12.0
+- EDR, Exposure time now floats
+
+### 10-10-2024, v0.11.0
+- apply P10 LUT
+- fix unit tests
+
+### 09-05-2024, v0.9.1
+- few tweaks to improve speed 
+
+### 09-04-2024, v0.9.0
+- reason: improve performance when the cine is read
+- add numba njit for unpack functions
+- refactor read images function to use less variables
+
+### 07-19-2024, v0.8.0
+- rebuild with correct naming
+- update deprecated utc time call
+
+### 07-18-2024, v0.7.0
+- add time from trigger array, trigger time string
+- unit test fixes
+
+### 07-15-2024, v0.5.0
+- remove some params from the print metadata function
+
+### 07-11-2024, v0.4.0
+- added print metadata function for output subset of the metadata object to a 2D string array
+
+### Initial release
+- fixed: few utf related metadata fixed,some metadata naming changed, a loop in cine read fixed, 
+         some list-type metadata fixed resulin correcting more 
+- added: trigger time stamp added, test_cinereader functions(metadata and pixel values for different cine types), list components
+  for multiple element of one metadata(such as reccrop, imfilter, etc), some loops for list-type metadata, 
+- added: realbpp metadata output for image display in gui
+
+

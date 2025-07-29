@@ -1,0 +1,97 @@
+Metadata-Version: 2.4
+Name: musicgen-minimal
+Version: 1.0.0
+Summary: Simple text-to-music generation that actually works - no enterprise complexity
+Author-email: MusicGen Minimal Team <hello@musicgen-minimal.dev>
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/musicgen-minimal/musicgen-minimal
+Project-URL: Repository, https://github.com/musicgen-minimal/musicgen-minimal
+Project-URL: Issues, https://github.com/musicgen-minimal/musicgen-minimal/issues
+Project-URL: Documentation, https://github.com/musicgen-minimal/musicgen-minimal#readme
+Project-URL: Changelog, https://github.com/musicgen-minimal/musicgen-minimal/releases
+Keywords: music,generation,ai,text-to-music,musicgen,audio,transformers
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Multimedia :: Sound/Audio
+Classifier: Topic :: Multimedia :: Sound/Audio :: Analysis
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: torch>=2.0.0
+Requires-Dist: transformers>=4.35.0
+Requires-Dist: soundfile>=0.12.0
+Requires-Dist: numpy>=1.21.0
+Requires-Dist: typer>=0.9.0
+Requires-Dist: rich>=13.0.0
+Requires-Dist: requests>=2.25.0
+Provides-Extra: api
+Requires-Dist: fastapi>=0.100.0; extra == "api"
+Requires-Dist: uvicorn[standard]>=0.23.0; extra == "api"
+Requires-Dist: pydantic>=2.0.0; extra == "api"
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: isort>=5.12.0; extra == "dev"
+Requires-Dist: flake8>=6.0.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Provides-Extra: all
+Requires-Dist: musicgen-minimal[api,dev]; extra == "all"
+Dynamic: license-file
+
+# MusicGen-Minimal
+
+Text-to-music generation in 200 lines of code. No bullshit, just music.
+
+## What This Does
+- Generates music from text descriptions
+- Uses Facebook's MusicGen model  
+- Works on CPU (slow) or GPU (fast)
+- Outputs WAV files
+
+## What This Doesn't Do
+- No web interface (yet)
+- No real-time generation
+- No style transfer
+- No complex features
+- Maximum 120 seconds per generation
+
+## Installation
+```bash
+pip install musicgen-minimal
+```
+
+## Usage
+```bash
+# Generate music
+musicgen generate "upbeat jazz piano" --duration 10
+
+# Test your setup
+musicgen test
+```
+
+## Performance (Real Numbers)
+
+- **Model loading**: ~30 seconds first time
+- **Generation**: ~12 seconds per 1 second of audio (CPU)
+- **Generation**: ~0.5 seconds per 1 second of audio (GPU)
+- **Memory usage**: ~4GB
+
+## Why So Simple?
+
+Because it actually works. The original project had 343 files and didn't run.
+This has 4 files and ships music.
+
+## Contributing
+
+Keep it simple. If your PR adds more than 50 lines, it's too complex.

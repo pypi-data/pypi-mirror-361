@@ -1,0 +1,84 @@
+name: Orchestrate Builds
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      trigger_downstream:
+        description: 'Trigger downstream builds'
+        required: false
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+jobs:
+  # Trigger Rust build
+  trigger-rust:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger uubed-rs workflow
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.PAT_TOKEN }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: 'uubed-rs',
+              workflow_id: 'rust.yml',
+              ref: 'main'
+            });
+
+  # Trigger Python build (depends on Rust)
+  trigger-python:
+    needs: trigger-rust
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for Rust build
+        run: sleep 30
+        
+      - name: Trigger uubed-py workflow
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.PAT_TOKEN }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: 'uubed-py',
+              workflow_id: 'python.yml',
+              ref: 'main'
+            });
+
+  # Trigger Documentation build (depends on Python)
+  trigger-docs:
+    needs: trigger-python
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for Python build
+        run: sleep 30
+        
+      - name: Trigger uubed-docs workflow
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.PAT_TOKEN }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: 'uubed-docs',
+              workflow_id: 'docs.yml',
+              ref: 'main'
+            });
+
+  # Aggregate status check
+  status-check:
+    needs: [trigger-rust, trigger-python, trigger-docs]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check downstream builds
+        run: |
+          echo "All downstream builds triggered successfully"
+          echo "Check individual repository workflows for detailed status"

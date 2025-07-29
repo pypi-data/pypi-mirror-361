@@ -1,0 +1,451 @@
+name: Community Metrics Tracking
+
+on:
+  schedule:
+    # Daily at 6 AM UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  collect-community-metrics:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install requests python-dateutil
+
+      - name: Collect community metrics
+        run: |
+          cat > collect_community_metrics.py << 'EOF'
+          import os
+          import json
+          import requests
+          from datetime import datetime, timedelta
+          from typing import Dict, List, Any
+          import csv
+
+          class CommunityMetricsCollector:
+              def __init__(self, github_token: str):
+                  self.token = github_token
+                  self.headers = {
+                      'Authorization': f'token {github_token}',
+                      'Accept': 'application/vnd.github.v3+json'
+                  }
+                  self.owner = 'twardoch'
+                  self.repositories = ['uubed', 'uubed-rs', 'uubed-py', 'uubed-docs']
+              
+              def get_repository_metrics(self, repo: str) -> Dict[str, Any]:
+                  """Collect comprehensive metrics for a repository."""
+                  
+                  metrics = {
+                      'repository': repo,
+                      'timestamp': datetime.now().isoformat(),
+                      'error': None
+                  }
+                  
+                  try:
+                      # Basic repository info
+                      repo_url = f'https://api.github.com/repos/{self.owner}/{repo}'
+                      repo_response = requests.get(repo_url, headers=self.headers)
+                      
+                      if repo_response.status_code != 200:
+                          metrics['error'] = f"Failed to fetch repository info: {repo_response.status_code}"
+                          return metrics
+                      
+                      repo_data = repo_response.json()
+                      
+                      # Basic stats
+                      metrics.update({
+                          'stars': repo_data['stargazers_count'],
+                          'forks': repo_data['forks_count'],
+                          'watchers': repo_data['watchers_count'],
+                          'size': repo_data['size'],
+                          'language': repo_data['language'],
+                          'open_issues': repo_data['open_issues_count'],
+                          'created_at': repo_data['created_at'],
+                          'updated_at': repo_data['updated_at'],
+                          'pushed_at': repo_data['pushed_at']
+                      })
+                      
+                      # Contributors
+                      contributors_url = f'https://api.github.com/repos/{self.owner}/{repo}/contributors'
+                      contributors_response = requests.get(contributors_url, headers=self.headers)
+                      
+                      if contributors_response.status_code == 200:
+                          contributors = contributors_response.json()
+                          metrics['contributors_count'] = len(contributors)
+                          metrics['top_contributors'] = [
+                              {
+                                  'login': c['login'],
+                                  'contributions': c['contributions']
+                              }
+                              for c in contributors[:5]  # Top 5 contributors
+                          ]
+                      
+                      # Recent activity (last 30 days)
+                      thirty_days_ago = (datetime.now() - timedelta(days=30)).isoformat()
+                      
+                      # Commits
+                      commits_url = f'https://api.github.com/repos/{self.owner}/{repo}/commits'
+                      commits_response = requests.get(
+                          commits_url, 
+                          headers=self.headers,
+                          params={'since': thirty_days_ago, 'per_page': 100}
+                      )
+                      
+                      if commits_response.status_code == 200:
+                          commits = commits_response.json()
+                          metrics['commits_last_30_days'] = len(commits)
+                          
+                          # Unique committers
+                          committers = set()
+                          for commit in commits:
+                              if commit.get('author') and commit['author'].get('login'):
+                                  committers.add(commit['author']['login'])
+                          metrics['unique_committers_last_30_days'] = len(committers)
+                      
+                      # Issues and PRs
+                      issues_url = f'https://api.github.com/repos/{self.owner}/{repo}/issues'
+                      
+                      # Open issues (excluding PRs)
+                      open_issues_response = requests.get(
+                          issues_url,
+                          headers=self.headers,
+                          params={'state': 'open', 'per_page': 100}
+                      )
+                      
+                      if open_issues_response.status_code == 200:
+                          open_issues = [i for i in open_issues_response.json() if not i.get('pull_request')]
+                          metrics['open_issues_count'] = len(open_issues)
+                      
+                      # Recently closed issues
+                      closed_issues_response = requests.get(
+                          issues_url,
+                          headers=self.headers,
+                          params={
+                              'state': 'closed',
+                              'since': thirty_days_ago,
+                              'per_page': 100
+                          }
+                      )
+                      
+                      if closed_issues_response.status_code == 200:
+                          closed_issues = [i for i in closed_issues_response.json() if not i.get('pull_request')]
+                          metrics['issues_closed_last_30_days'] = len(closed_issues)
+                      
+                      # Pull requests
+                      pulls_url = f'https://api.github.com/repos/{self.owner}/{repo}/pulls'
+                      
+                      # Open PRs
+                      open_prs_response = requests.get(
+                          pulls_url,
+                          headers=self.headers,
+                          params={'state': 'open', 'per_page': 100}
+                      )
+                      
+                      if open_prs_response.status_code == 200:
+                          metrics['open_prs_count'] = len(open_prs_response.json())
+                      
+                      # Recently merged PRs
+                      merged_prs_response = requests.get(
+                          pulls_url,
+                          headers=self.headers,
+                          params={
+                              'state': 'closed',
+                              'sort': 'updated',
+                              'direction': 'desc',
+                              'per_page': 100
+                          }
+                      )
+                      
+                      if merged_prs_response.status_code == 200:
+                          merged_prs = [
+                              pr for pr in merged_prs_response.json()
+                              if pr['merged_at'] and 
+                                 datetime.fromisoformat(pr['merged_at'].replace('Z', '+00:00')) > 
+                                 datetime.now().replace(tzinfo=None) - timedelta(days=30)
+                          ]
+                          metrics['prs_merged_last_30_days'] = len(merged_prs)
+                      
+                      # Releases
+                      releases_url = f'https://api.github.com/repos/{self.owner}/{repo}/releases'
+                      releases_response = requests.get(releases_url, headers=self.headers)
+                      
+                      if releases_response.status_code == 200:
+                          releases = releases_response.json()
+                          metrics['total_releases'] = len(releases)
+                          
+                          if releases:
+                              latest_release = releases[0]
+                              metrics['latest_release'] = {
+                                  'tag_name': latest_release['tag_name'],
+                                  'published_at': latest_release['published_at'],
+                                  'prerelease': latest_release['prerelease']
+                              }
+                              
+                              # Recent releases (last 90 days)
+                              ninety_days_ago = datetime.now() - timedelta(days=90)
+                              recent_releases = [
+                                  r for r in releases
+                                  if datetime.fromisoformat(r['published_at'].replace('Z', '+00:00')) > ninety_days_ago
+                              ]
+                              metrics['releases_last_90_days'] = len(recent_releases)
+                      
+                      # Traffic (requires push access, may fail)
+                      try:
+                          views_url = f'https://api.github.com/repos/{self.owner}/{repo}/traffic/views'
+                          views_response = requests.get(views_url, headers=self.headers)
+                          
+                          if views_response.status_code == 200:
+                              views_data = views_response.json()
+                              metrics['views_last_14_days'] = views_data.get('count', 0)
+                              metrics['unique_visitors_last_14_days'] = views_data.get('uniques', 0)
+                          
+                          clones_url = f'https://api.github.com/repos/{self.owner}/{repo}/traffic/clones'
+                          clones_response = requests.get(clones_url, headers=self.headers)
+                          
+                          if clones_response.status_code == 200:
+                              clones_data = clones_response.json()
+                              metrics['clones_last_14_days'] = clones_data.get('count', 0)
+                              metrics['unique_cloners_last_14_days'] = clones_data.get('uniques', 0)
+                      
+                      except Exception as e:
+                          print(f"Traffic data not available for {repo}: {e}")
+                      
+                      # Community health score calculation
+                      health_score = self.calculate_health_score(metrics)
+                      metrics['community_health_score'] = health_score
+                      
+                  except Exception as e:
+                      metrics['error'] = str(e)
+                      print(f"Error collecting metrics for {repo}: {e}")
+                  
+                  return metrics
+              
+              def calculate_health_score(self, metrics: Dict[str, Any]) -> float:
+                  """Calculate a community health score (0-100)."""
+                  score = 0.0
+                  max_score = 100.0
+                  
+                  # Recent activity (30 points)
+                  commits = metrics.get('commits_last_30_days', 0)
+                  if commits > 0:
+                      score += min(30, commits * 2)  # 2 points per commit, max 30
+                  
+                  # Community engagement (25 points)
+                  contributors = metrics.get('contributors_count', 0)
+                  if contributors > 1:
+                      score += min(15, (contributors - 1) * 3)  # 3 points per contributor beyond 1
+                  
+                  issues_closed = metrics.get('issues_closed_last_30_days', 0)
+                  score += min(10, issues_closed * 2)  # 2 points per closed issue, max 10
+                  
+                  # Project popularity (20 points)
+                  stars = metrics.get('stars', 0)
+                  if stars > 0:
+                      score += min(20, stars / 5)  # 1 point per 5 stars, max 20
+                  
+                  # Code quality indicators (15 points)
+                  open_issues = metrics.get('open_issues_count', 0)
+                  if open_issues < 10:
+                      score += 10  # Good issue management
+                  elif open_issues < 20:
+                      score += 5   # Acceptable issue management
+                  
+                  prs_merged = metrics.get('prs_merged_last_30_days', 0)
+                  score += min(5, prs_merged)  # 1 point per merged PR, max 5
+                  
+                  # Release management (10 points)
+                  releases_recent = metrics.get('releases_last_90_days', 0)
+                  if releases_recent > 0:
+                      score += min(10, releases_recent * 5)  # 5 points per recent release, max 10
+                  
+                  return min(max_score, score)
+              
+              def save_metrics(self, all_metrics: List[Dict[str, Any]]):
+                  """Save metrics to JSON and CSV files."""
+                  
+                  timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+                  
+                  # Save detailed JSON
+                  json_filename = f'community_metrics_{timestamp}.json'
+                  with open(json_filename, 'w') as f:
+                      json.dump({
+                          'collection_timestamp': datetime.now().isoformat(),
+                          'repositories': all_metrics
+                      }, f, indent=2)
+                  
+                  # Save summary CSV
+                  csv_filename = f'community_metrics_summary_{timestamp}.csv'
+                  
+                  # Define CSV fields
+                  csv_fields = [
+                      'repository', 'timestamp', 'stars', 'forks', 'watchers',
+                      'contributors_count', 'commits_last_30_days', 'open_issues_count',
+                      'issues_closed_last_30_days', 'open_prs_count', 'prs_merged_last_30_days',
+                      'total_releases', 'releases_last_90_days', 'community_health_score',
+                      'views_last_14_days', 'unique_visitors_last_14_days'
+                  ]
+                  
+                  with open(csv_filename, 'w', newline='') as f:
+                      writer = csv.DictWriter(f, fieldnames=csv_fields)
+                      writer.writeheader()
+                      
+                      for metrics in all_metrics:
+                          row = {field: metrics.get(field, '') for field in csv_fields}
+                          writer.writerow(row)
+                  
+                  # Create latest snapshot (for dashboard)
+                  with open('community_metrics_latest.json', 'w') as f:
+                      json.dump({
+                          'collection_timestamp': datetime.now().isoformat(),
+                          'repositories': all_metrics
+                      }, f, indent=2)
+                  
+                  print(f"Metrics saved to {json_filename} and {csv_filename}")
+                  
+                  return json_filename, csv_filename
+              
+              def generate_summary_report(self, all_metrics: List[Dict[str, Any]]) -> str:
+                  """Generate a human-readable summary report."""
+                  
+                  total_stars = sum(m.get('stars', 0) for m in all_metrics if not m.get('error'))
+                  total_forks = sum(m.get('forks', 0) for m in all_metrics if not m.get('error'))
+                  total_contributors = sum(m.get('contributors_count', 0) for m in all_metrics if not m.get('error'))
+                  avg_health_score = sum(m.get('community_health_score', 0) for m in all_metrics if not m.get('error')) / len([m for m in all_metrics if not m.get('error')])
+                  
+                  report = f"""# uubed Community Metrics Report
+          
+          **Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M UTC')}
+          
+          ## Project Overview
+          
+          - **Total Stars:** {total_stars}
+          - **Total Forks:** {total_forks}
+          - **Total Contributors:** {total_contributors}
+          - **Average Health Score:** {avg_health_score:.1f}/100
+          
+          ## Repository Details
+          
+          """
+                  
+                  for metrics in all_metrics:
+                      if metrics.get('error'):
+                          report += f"### {metrics['repository']} ❌\n**Error:** {metrics['error']}\n\n"
+                          continue
+                      
+                      health_emoji = "🟢" if metrics.get('community_health_score', 0) >= 75 else "🟡" if metrics.get('community_health_score', 0) >= 50 else "🔴"
+                      
+                      report += f"""### {metrics['repository']} {health_emoji}
+          
+          - **Stars:** {metrics.get('stars', 0)} | **Forks:** {metrics.get('forks', 0)}
+          - **Contributors:** {metrics.get('contributors_count', 0)}
+          - **Recent Activity:** {metrics.get('commits_last_30_days', 0)} commits (30d)
+          - **Issues:** {metrics.get('open_issues_count', 0)} open, {metrics.get('issues_closed_last_30_days', 0)} closed (30d)
+          - **Pull Requests:** {metrics.get('open_prs_count', 0)} open, {metrics.get('prs_merged_last_30_days', 0)} merged (30d)
+          - **Health Score:** {metrics.get('community_health_score', 0):.1f}/100
+          
+          """
+                  
+                  return report
+              
+              def run(self):
+                  """Run the complete metrics collection process."""
+                  print("Starting community metrics collection...")
+                  
+                  all_metrics = []
+                  
+                  for repo in self.repositories:
+                      print(f"Collecting metrics for {repo}...")
+                      metrics = self.get_repository_metrics(repo)
+                      all_metrics.append(metrics)
+                  
+                  # Save metrics
+                  json_file, csv_file = self.save_metrics(all_metrics)
+                  
+                  # Generate summary report
+                  report = self.generate_summary_report(all_metrics)
+                  with open('community_metrics_report.md', 'w') as f:
+                      f.write(report)
+                  
+                  print("Community metrics collection completed!")
+                  print(f"Files created: {json_file}, {csv_file}, community_metrics_report.md")
+                  
+                  return all_metrics
+
+          if __name__ == "__main__":
+              github_token = os.environ.get('GITHUB_TOKEN')
+              if not github_token:
+                  print("GITHUB_TOKEN environment variable is required")
+                  exit(1)
+              
+              collector = CommunityMetricsCollector(github_token)
+              metrics = collector.run()
+          EOF
+
+          python collect_community_metrics.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+
+      - name: Upload metrics artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: community-metrics-${{ github.run_number }}
+          path: |
+            community_metrics_*.json
+            community_metrics_*.csv
+            community_metrics_report.md
+            community_metrics_latest.json
+          retention-days: 90
+
+      - name: Commit latest metrics (if scheduled)
+        if: github.event_name == 'schedule'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          # Only commit the latest snapshot for the dashboard
+          git add community_metrics_latest.json
+          
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: update community metrics snapshot
+
+            🤖 Automated community metrics update
+            
+            Generated on $(date -u +'%Y-%m-%d %H:%M UTC')
+            
+            Co-Authored-By: GitHub Actions <action@github.com>"
+            
+            git push
+            echo "Community metrics snapshot updated"
+          fi
+
+      - name: Create summary comment
+        uses: actions/github-script@v7
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          script: |
+            const fs = require('fs');
+            
+            try {
+              const report = fs.readFileSync('community_metrics_report.md', 'utf8');
+              
+              github.rest.repos.createCommitComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                commit_sha: context.sha,
+                body: `## 📊 Community Metrics Report\n\n${report}\n\n*Generated by [Community Metrics workflow](${context.payload.repository.html_url}/actions/runs/${context.runId})*`
+              });
+            } catch (error) {
+              console.log('Could not create commit comment:', error.message);
+            }

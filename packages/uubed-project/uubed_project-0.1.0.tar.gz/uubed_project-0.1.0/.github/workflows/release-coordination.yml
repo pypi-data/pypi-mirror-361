@@ -1,0 +1,126 @@
+name: Release Coordination
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., 1.1.0)'
+        required: true
+        type: string
+      release_type:
+        description: 'Type of release'
+        required: true
+        default: 'minor'
+        type: choice
+        options:
+          - 'major'
+          - 'minor'
+          - 'patch'
+
+jobs:
+  prepare-release:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set version
+        id: version
+        run: echo "version=${{ inputs.version }}" >> $GITHUB_OUTPUT
+
+      - name: Create release branch
+        run: |
+          git checkout -b release/v${{ inputs.version }}
+          git push origin release/v${{ inputs.version }}
+
+  # Release order: rs → py → docs
+  release-rust:
+    needs: prepare-release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Rust release
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.PAT_TOKEN }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: 'uubed-rs',
+              workflow_id: 'release.yml',
+              ref: 'main',
+              inputs: {
+                version: '${{ needs.prepare-release.outputs.version }}'
+              }
+            });
+
+  release-python:
+    needs: [prepare-release, release-rust]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for Rust release
+        run: sleep 60
+
+      - name: Trigger Python release
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.PAT_TOKEN }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: 'uubed-py',
+              workflow_id: 'release.yml',
+              ref: 'main',
+              inputs: {
+                version: '${{ needs.prepare-release.outputs.version }}'
+              }
+            });
+
+  release-docs:
+    needs: [prepare-release, release-python]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for Python release
+        run: sleep 60
+
+      - name: Trigger Docs release
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.PAT_TOKEN }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: 'uubed-docs',
+              workflow_id: 'release.yml',
+              ref: 'main',
+              inputs: {
+                version: '${{ needs.prepare-release.outputs.version }}'
+              }
+            });
+
+  finalize-release:
+    needs: [release-rust, release-python, release-docs]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ needs.prepare-release.outputs.version }}
+          release_name: Release v${{ needs.prepare-release.outputs.version }}
+          body: |
+            # uubed v${{ needs.prepare-release.outputs.version }}
+            
+            This release includes updates across all uubed components:
+            - uubed-rs: Core Rust implementation
+            - uubed-py: Python bindings
+            - uubed-docs: Documentation updates
+            
+            See individual repository releases for detailed changelogs.
+          draft: false
+          prerelease: false

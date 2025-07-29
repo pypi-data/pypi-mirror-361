@@ -1,0 +1,425 @@
+name: Aggregate Changelogs
+
+on:
+  schedule:
+    # Weekly aggregation on Sundays at 2 AM UTC
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+    inputs:
+      force_update:
+        description: 'Force update even if no changes detected'
+        required: false
+        default: 'false'
+        type: boolean
+
+jobs:
+  aggregate-changelogs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install requests python-dateutil gitpython
+
+      - name: Aggregate changelogs from sub-repositories
+        run: |
+          cat > aggregate_changelogs.py << 'EOF'
+          import os
+          import json
+          import requests
+          from datetime import datetime, timedelta
+          import re
+          from typing import Dict, List, Any
+          import subprocess
+
+          class ChangelogAggregator:
+              def __init__(self, github_token: str):
+                  self.token = github_token
+                  self.headers = {
+                      'Authorization': f'token {github_token}',
+                      'Accept': 'application/vnd.github.v3+json'
+                  }
+                  self.owner = 'twardoch'
+                  self.repositories = ['uubed-rs', 'uubed-py', 'uubed-docs']
+                  self.main_repo = 'uubed'
+              
+              def fetch_repository_changelog(self, repo: str) -> Dict[str, Any]:
+                  """Fetch changelog content from a repository."""
+                  try:
+                      # Try to fetch CHANGELOG.md
+                      url = f'https://api.github.com/repos/{self.owner}/{repo}/contents/CHANGELOG.md'
+                      response = requests.get(url, headers=self.headers)
+                      
+                      if response.status_code == 200:
+                          content = response.json()
+                          import base64
+                          changelog_content = base64.b64decode(content['content']).decode('utf-8')
+                          
+                          return {
+                              'repository': repo,
+                              'content': changelog_content,
+                              'last_modified': content.get('commit', {}).get('committer', {}).get('date'),
+                              'sha': content.get('sha'),
+                              'found': True
+                          }
+                      else:
+                          print(f"No CHANGELOG.md found in {repo}")
+                          return {
+                              'repository': repo,
+                              'content': None,
+                              'found': False,
+                              'error': f"HTTP {response.status_code}"
+                          }
+                  
+                  except Exception as e:
+                      print(f"Error fetching changelog for {repo}: {e}")
+                      return {
+                          'repository': repo,
+                          'content': None,
+                          'found': False,
+                          'error': str(e)
+                      }
+              
+              def parse_changelog_sections(self, content: str) -> List[Dict[str, Any]]:
+                  """Parse changelog content into structured sections."""
+                  if not content:
+                      return []
+                  
+                  sections = []
+                  current_section = None
+                  
+                  lines = content.split('\n')
+                  for line in lines:
+                      # Match version headers (## [1.0.0] - 2024-01-01 or ## v1.0.0 or ## Unreleased)
+                      version_match = re.match(r'^##\s*(?:\[([^\]]+)\]|v?([0-9]+\.[0-9]+\.[0-9]+(?:-[a-zA-Z0-9.-]+)?)|([Uu]nreleased))', line)
+                      
+                      if version_match:
+                          if current_section:
+                              sections.append(current_section)
+                          
+                          version = version_match.group(1) or version_match.group(2) or version_match.group(3)
+                          date_match = re.search(r'(\d{4}-\d{2}-\d{2})', line)
+                          
+                          current_section = {
+                              'version': version,
+                              'date': date_match.group(1) if date_match else None,
+                              'content': [],
+                              'raw_header': line
+                          }
+                      elif current_section:
+                          current_section['content'].append(line)
+                  
+                  if current_section:
+                      sections.append(current_section)
+                  
+                  return sections
+              
+              def get_recent_releases(self, repo: str, days: int = 30) -> List[Dict[str, Any]]:
+                  """Get recent releases from GitHub API."""
+                  try:
+                      url = f'https://api.github.com/repos/{self.owner}/{repo}/releases'
+                      response = requests.get(url, headers=self.headers)
+                      
+                      if response.status_code == 200:
+                          releases = response.json()
+                          cutoff_date = datetime.now() - timedelta(days=days)
+                          
+                          recent_releases = []
+                          for release in releases:
+                              published_at = datetime.fromisoformat(release['published_at'].replace('Z', '+00:00'))
+                              if published_at >= cutoff_date:
+                                  recent_releases.append({
+                                      'tag_name': release['tag_name'],
+                                      'name': release['name'],
+                                      'published_at': release['published_at'],
+                                      'body': release['body'],
+                                      'prerelease': release['prerelease'],
+                                      'html_url': release['html_url']
+                                  })
+                          
+                          return recent_releases
+                      
+                  except Exception as e:
+                      print(f"Error fetching releases for {repo}: {e}")
+                  
+                  return []
+              
+              def generate_aggregated_changelog_section(self, repo_data: List[Dict[str, Any]]) -> str:
+                  """Generate aggregated changelog section for main repository."""
+                  
+                  current_date = datetime.now().strftime('%Y-%m-%d')
+                  
+                  aggregated_content = f"""
+          ## Weekly Update - {current_date}
+
+          This section aggregates recent changes from all uubed sub-repositories.
+
+          """
+                  
+                  for repo_info in repo_data:
+                      repo = repo_info['repository']
+                      
+                      if not repo_info.get('found'):
+                          aggregated_content += f"""
+          ### {repo.title().replace('-', ' ')} Repository
+          
+          - ⚠️ No changelog available or error accessing: {repo_info.get('error', 'Unknown error')}
+          
+          """
+                          continue
+                      
+                      # Parse recent sections
+                      sections = self.parse_changelog_sections(repo_info['content'])
+                      recent_sections = []
+                      
+                      # Get sections from last 30 days or unreleased
+                      cutoff_date = datetime.now() - timedelta(days=30)
+                      
+                      for section in sections:
+                          if section['version'].lower() == 'unreleased':
+                              recent_sections.append(section)
+                          elif section['date']:
+                              try:
+                                  section_date = datetime.strptime(section['date'], '%Y-%m-%d')
+                                  if section_date >= cutoff_date:
+                                      recent_sections.append(section)
+                              except ValueError:
+                                  pass
+                          
+                          # Limit to 3 most recent sections
+                          if len(recent_sections) >= 3:
+                              break
+                      
+                      # Get recent releases
+                      recent_releases = self.get_recent_releases(repo, days=30)
+                      
+                      aggregated_content += f"""
+          ### [{repo}](https://github.com/{self.owner}/{repo}) Repository
+          
+          """
+                      
+                      if recent_releases:
+                          aggregated_content += "**Recent Releases:**\n"
+                          for release in recent_releases[:3]:  # Limit to 3 most recent
+                              release_date = datetime.fromisoformat(release['published_at'].replace('Z', '+00:00')).strftime('%Y-%m-%d')
+                              aggregated_content += f"- [{release['tag_name']}]({release['html_url']}) - {release_date}\n"
+                          aggregated_content += "\n"
+                      
+                      if recent_sections:
+                          aggregated_content += "**Recent Changes:**\n"
+                          for section in recent_sections:
+                              content_lines = [line for line in section['content'] if line.strip()]
+                              if content_lines:
+                                  # Take first few meaningful lines
+                                  meaningful_lines = []
+                                  for line in content_lines[:10]:  # Limit lines
+                                      if line.strip() and not line.startswith('#'):
+                                          meaningful_lines.append(line)
+                                  
+                                  if meaningful_lines:
+                                      version_info = f"v{section['version']}" if section['version'] != 'unreleased' else 'Unreleased'
+                                      aggregated_content += f"*{version_info}:*\n"
+                                      aggregated_content += '\n'.join(meaningful_lines[:5]) + "\n\n"
+                      else:
+                          aggregated_content += "- No recent changes in changelog\n\n"
+                  
+                  aggregated_content += f"""
+          ---
+          
+          *This aggregation was automatically generated on {current_date}. For detailed changelogs, visit the individual repository links above.*
+          
+          """
+                  
+                  return aggregated_content
+              
+              def update_main_changelog(self, aggregated_section: str) -> bool:
+                  """Update the main repository changelog with aggregated content."""
+                  
+                  try:
+                      # Read current changelog
+                      with open('CHANGELOG.md', 'r') as f:
+                          current_content = f.read()
+                      
+                      # Find insertion point (after [Unreleased] section)
+                      lines = current_content.split('\n')
+                      insertion_index = None
+                      
+                      for i, line in enumerate(lines):
+                          if line.startswith('## [Unreleased]') or line.startswith('## Unreleased'):
+                              # Find the next section or end
+                              for j in range(i + 1, len(lines)):
+                                  if lines[j].startswith('## ') and not lines[j].startswith('## Weekly Update'):
+                                      insertion_index = j
+                                      break
+                              if insertion_index is None:
+                                  insertion_index = len(lines)
+                              break
+                      
+                      if insertion_index is None:
+                          # No [Unreleased] section found, add after first ## heading
+                          for i, line in enumerate(lines):
+                              if line.startswith('## '):
+                                  insertion_index = i + 1
+                                  break
+                      
+                      if insertion_index is None:
+                          print("Could not find appropriate insertion point in CHANGELOG.md")
+                          return False
+                      
+                      # Remove any existing weekly update sections
+                      filtered_lines = []
+                      skip_section = False
+                      
+                      for line in lines:
+                          if line.startswith('## Weekly Update'):
+                              skip_section = True
+                              continue
+                          elif line.startswith('## ') and skip_section:
+                              skip_section = False
+                          
+                          if not skip_section:
+                              filtered_lines.append(line)
+                      
+                      # Insert new aggregated section
+                      new_lines = (
+                          filtered_lines[:insertion_index] + 
+                          aggregated_section.split('\n') + 
+                          filtered_lines[insertion_index:]
+                      )
+                      
+                      # Write updated changelog
+                      with open('CHANGELOG.md', 'w') as f:
+                          f.write('\n'.join(new_lines))
+                      
+                      return True
+                  
+                  except Exception as e:
+                      print(f"Error updating main changelog: {e}")
+                      return False
+              
+              def run(self) -> bool:
+                  """Run the complete aggregation process."""
+                  print("Starting changelog aggregation...")
+                  
+                  # Fetch changelogs from all repositories
+                  repo_data = []
+                  for repo in self.repositories:
+                      print(f"Fetching changelog for {repo}...")
+                      changelog_info = self.fetch_repository_changelog(repo)
+                      repo_data.append(changelog_info)
+                  
+                  # Generate aggregated section
+                  print("Generating aggregated changelog section...")
+                  aggregated_section = self.generate_aggregated_changelog_section(repo_data)
+                  
+                  # Update main changelog
+                  print("Updating main repository changelog...")
+                  success = self.update_main_changelog(aggregated_section)
+                  
+                  if success:
+                      print("Changelog aggregation completed successfully!")
+                      
+                      # Check if there are actual changes
+                      result = subprocess.run(['git', 'diff', '--exit-code', 'CHANGELOG.md'], 
+                                            capture_output=True, text=True)
+                      
+                      if result.returncode != 0:
+                          print("Changes detected in CHANGELOG.md")
+                          return True
+                      else:
+                          print("No changes detected in CHANGELOG.md")
+                          force_update = os.environ.get('FORCE_UPDATE', 'false').lower() == 'true'
+                          return force_update
+                  else:
+                      print("Failed to update changelog")
+                      return False
+
+          if __name__ == "__main__":
+              github_token = os.environ.get('GITHUB_TOKEN')
+              if not github_token:
+                  print("GITHUB_TOKEN environment variable is required")
+                  exit(1)
+              
+              aggregator = ChangelogAggregator(github_token)
+              success = aggregator.run()
+              
+              # Set output for next step
+              with open('changelog_updated.txt', 'w') as f:
+                  f.write('true' if success else 'false')
+          EOF
+
+          python aggregate_changelogs.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+          FORCE_UPDATE: ${{ github.event.inputs.force_update }}
+
+      - name: Check if changelog was updated
+        id: check-changes
+        run: |
+          if [ -f changelog_updated.txt ]; then
+            UPDATED=$(cat changelog_updated.txt)
+            echo "updated=$UPDATED" >> $GITHUB_OUTPUT
+          else
+            echo "updated=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push changes
+        if: steps.check-changes.outputs.updated == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          git add CHANGELOG.md
+          
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "docs: aggregate weekly changelog updates
+
+          🤖 Automated changelog aggregation from sub-repositories
+          
+          This commit aggregates recent changes from:
+          - uubed-rs: Rust implementation updates
+          - uubed-py: Python package updates  
+          - uubed-docs: Documentation updates
+          
+          Generated with GitHub Actions on $(date -u +'%Y-%m-%d %H:%M UTC')
+          
+          Co-Authored-By: GitHub Actions <action@github.com>"
+            
+            git push
+            echo "Changes committed and pushed"
+          fi
+
+      - name: Create summary
+        run: |
+          if [ "${{ steps.check-changes.outputs.updated }}" == "true" ]; then
+            echo "## ✅ Changelog Aggregation Successful" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "The main repository changelog has been updated with recent changes from sub-repositories." >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Updated Sections:" >> $GITHUB_STEP_SUMMARY
+            echo "- Weekly update section added/updated" >> $GITHUB_STEP_SUMMARY
+            echo "- Recent releases from sub-repositories included" >> $GITHUB_STEP_SUMMARY
+            echo "- Recent changelog entries aggregated" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "## ℹ️ No Changes Detected" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "No significant changes were found in sub-repository changelogs since the last aggregation." >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Monitored Repositories:" >> $GITHUB_STEP_SUMMARY
+          echo "- [uubed-rs](https://github.com/twardoch/uubed-rs)" >> $GITHUB_STEP_SUMMARY
+          echo "- [uubed-py](https://github.com/twardoch/uubed-py)" >> $GITHUB_STEP_SUMMARY
+          echo "- [uubed-docs](https://github.com/twardoch/uubed-docs)" >> $GITHUB_STEP_SUMMARY

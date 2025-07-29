@@ -1,0 +1,104 @@
+# ════════════════════════════════════════════════════════════════════ XCORE ══
+# Copyright (C) 2025, Xeniorn | x404bjrn
+# Lizenziert - siehe LICENSE Datei für Details
+# ─────────────────────────────────────────────────────────────────────────────
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "xcore_framework"
+version = "0.1.0a5"
+description = "CLI- und Webframework für modulare Anwendungen mit interaktiver Shell, GUI und Webinterface."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [
+    { name = "x404bjrn (Björn Häusermann)", email = "void@insomnialegion.xyz" },
+]
+urls = { Homepage = "https://github.com/x404bjrn/XCORE" }
+dependencies = [
+    "setuptools~=78.1.0",
+    "python-dotenv~=1.1.0",
+    "Flask~=3.1.1",
+    "Flask-Login~=0.6.3",
+    "Werkzeug~=3.1.3",
+    "flask-cors~=6.0.0",
+    "colorama~=0.4.6",
+    "pytest~=8.4.0",
+    "qrcode>=8.2",
+    "pillow~=11.2.1",
+    "cryptography~=45.0.4",
+    "flask-sqlalchemy~=3.1.1",
+    "click>=8.1.8",
+    "gunicorn>=23.0.0",
+    "waitress>=3.0.2",
+    "httpx>=0.28.0",
+    "httpcore>=1.0.6",
+    "h11>=0.16.0",
+    "translate>=3.6.1",
+    "tox>=4.27.0",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: OS Independent",
+    "Environment :: Console",
+    "Environment :: Web Environment",
+    "Framework :: Flask",
+    "Natural Language :: English",
+    "Natural Language :: German"
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "flake8", "black", "mypy"]
+
+[project.scripts]
+xcore = "xcore_framework.__main__:main"
+
+[tool.setuptools]
+packages = ['xcore_framework', 'xcore_framework.config', 'xcore_framework.core', 'xcore_framework.gui', 'xcore_framework.modules', 'xcore_framework.setpoint', 'xcore_framework.web', 'xcore_framework.config.i18n', 'xcore_framework.modules.ai', 'xcore_framework.modules.creative', 'xcore_framework.modules.exploitation', 'xcore_framework.modules.helper', 'xcore_framework.modules.monitor', 'xcore_framework.modules.osint', 'xcore_framework.modules.persistence', 'xcore_framework.modules.scanner', 'xcore_framework.modules.system', 'xcore_framework.modules.template', 'xcore_framework.modules.transfer', 'xcore_framework.modules.utilities', 'xcore_framework.web.app']
+include-package-data = true
+
+[tool.pdm.scripts]
+tests = "tox"
+export-req = "pdm export --format requirements --without-hashes -o requirements.txt"
+export-dev-req = "pdm export --dev --format requirements --without-hashes -o requirements-dev.txt"
+npm-install-root = "npm install"
+npm-install-frontend = "python scripts/cmd_wrapper.py npm install dev/frontend/web"
+npm-install = { composite = ["npm-install-root", "npm-install-frontend"] }
+version-patch = "npm run version:patch"
+version-minor = "npm run version:minor"
+version-major = "npm run version:major"
+version-alpha = "npm run version:alpha"
+version-beta = "npm run version:beta"
+update-changelog = "npm run changelog"
+sync-version = "npm run sync:version"
+compile-scss = "python scripts/compile_scss.py"
+copy-docs = "python scripts/copy_docs.py"
+build-frontend = "python scripts/build_and_deploy_frontend.py"
+build-xcore-package = "pdm build"
+pypi-upload-test = "pdm publish --repository testpypi"
+pypi-upload = "pdm publish"
+clean-up = "python scripts/clean_up.py"
+project-update = { composite = ["sync-version", "update-changelog", "compile-scss", "copy-docs", "build-frontend", "clean-up"] }
+build-all = { composite = ["sync-version", "compile-scss", "copy-docs", "build-frontend", "build-xcore-package"] }
+make-release-patch = { composite = ["version-patch", "build-all", "pypi-upload", "clean-up"] }
+make-release-minor = { composite = ["version-minor", "build-all", "pypi-upload", "clean-up"] }
+make-release-major = { composite = ["version-major", "build-all", "pypi-upload", "clean-up"] }
+make-release-alpha = { composite = ["version-alpha", "build-all", "pypi-upload", "clean-up"] }
+make-release-beta = { composite = ["version-beta", "build-all", "pypi-upload", "clean-up"] }
+
+[tool.mypy]
+ignore_missing_imports = true
+strict_optional = true
+# plugins = ["sqlalchemy.ext.mypy.plugin"]
+
+[tool.setuptools.package-data]
+"xcore_framework" = ["**/*.md", "**/*.txt", "**/*.json", "**/*.yaml", "**/*.ttf", "**/*.db"]
+[tool.pdm]
+distribution = true

@@ -1,0 +1,246 @@
+Metadata-Version: 2.1
+Name: rapid-kit
+Version: 1.0.7
+Summary: Real-time Audio-visual Platform for IoT Devices
+Home-page: https://tange.ai/
+Author: TANGE.AI
+Author-email: fengjun.dev@gmail.com
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Topic :: Software Development :: Libraries
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# RAPID Kit
+
+Real-time Audio-visual Platform for IoT Devices.
+> 为物联网视觉设备提供一个高效的跨平台音视频解决方案。
+
+Go to [TIVS](https://tange-ai.feishu.cn/wiki/Wb7nwi3eQiRhnYkce5hc8AAEnwA) for more details.
+
+## Change Log
+
+### 1.0.7
+2025-07-10
+* [New] p2p connection optimization.
+
+### 1.0.6
+2025-05-15
+* [New] initial release.
+
+## Example
+
+```python
+#!/usr/bin/env python3
+
+import os
+import sys
+import json
+import time
+import rapid_kit
+
+DEVICE_ID = ""
+APP_ID = ""
+PACKAGE_NAME = ""
+ACCESS_TOKEN = ""
+USER_ACCOUNT = ""
+USER_PASSWORD = ""
+CONSOLE_LOGGING = False
+
+def main():
+    print("=== 1. Initializing SDK ===")
+    # Initialize SDK
+    success = rapid_kit.initialize(
+        app_id=APP_ID,
+        package_name=PACKAGE_NAME,
+        console_logging=CONSOLE_LOGGING
+    )
+    
+    if not success:
+        print("Error: SDK initialization failed")
+        sys.exit(1)
+    
+    print("SDK initialized successfully")
+    print(f"  |__ Version: {rapid_kit.version_name()}")
+    print(f"  |__ Build ID: {rapid_kit.build_id()}")
+    print(f"  |__ Commit Hash: {rapid_kit.commit_hash()}")
+
+    print("\n=== 2. Authentication ===")
+    # Authentication
+    access_token = ACCESS_TOKEN
+    if USER_ACCOUNT and USER_PASSWORD.strip():
+        print(f"Logging in with account: {USER_ACCOUNT}")
+        login_result = rapid_kit.http_post(
+            path="/v2/user/login",
+            content=f'{{"username": "{USER_ACCOUNT}", "pwd": "{USER_PASSWORD}", "area_code": "86"}}'
+        )
+
+        if not login_result or not login_result["success"]:
+            error_message = login_result["message"] if login_result else "Unknown error"
+            error_code = login_result["code"] if login_result else -1
+            print(f"Error: Login failed: {error_message} (code: {error_code})")
+            sys.exit(1)
+
+        data = json.loads(login_result["data"])
+        access_token = data["access_token"]
+        print(f"Login successful, received access token")
+    else:
+        print("Using provided access token")
+
+    auth_result = rapid_kit.authenticate(access_token)
+    if not auth_result or not auth_result["success"]:
+        error_message = auth_result["message"] if auth_result else "Unknown error"
+        error_code = auth_result["code"] if auth_result else -1
+        print(f"Error: Authentication failed: {error_message} (code: {error_code})")
+        sys.exit(1)
+    
+    print("Authentication successful")
+
+    print("\n=== 3. Establishing Connection ===")
+    
+    connection_success = False
+    
+    def on_status_change(state):
+        nonlocal connection_success
+        state_name = rapid_kit.PipeState(state).name
+        print(f"Connection status: {state_name}")
+        
+        if state == rapid_kit.PipeState.ESTABLISHED:
+            connection_success = True
+        elif state in [rapid_kit.PipeState.FAILED, rapid_kit.PipeState.BROKEN, 
+                       rapid_kit.PipeState.SHUTDOWN_BY_REMOTE, rapid_kit.PipeState.TOKEN_NOT_AVAILABLE]:
+            print(f"Connection failed: {state_name}")
+            sys.exit(1)
+        
+    pipe = rapid_kit.Pipe(DEVICE_ID)
+    pipe.listen(on_status_change)
+    
+    pipe.establish()
+    
+    connection_timeout = 20  # seconds
+    for _ in range(connection_timeout * 10):  # Check every 100ms
+        if connection_success:
+            break
+        time.sleep(0.1)
+    
+    if not connection_success:
+        print(f"Error: Connection timed out after {connection_timeout} seconds")
+        pipe.abolish()
+        sys.exit(1)
+
+    time.sleep(1)    
+
+    print("\n=== 3.1. Testing Instruct ===")
+    instruct_success = False
+    
+    def on_instruct_response(json_data):
+        nonlocal instruct_success
+        print(f"Received instruct response: {json_data}")
+        instruct_success = True
+    
+    try:
+        instruct = rapid_kit.InstructStandard(pipe, callback=on_instruct_response)
+        print("Requesting device abilities...")
+        instruct.request("abilities")
+        
+        # Wait for the instruct response
+        instruct_timeout = 5  # seconds
+        for _ in range(instruct_timeout * 10):  # Check every 100ms
+            if instruct_success:
+                break
+            time.sleep(0.1)
+        
+        if not instruct_success:
+            print(f"Warning: Instruct request timed out after {instruct_timeout} seconds")
+            sys.exit(1)
+        else:
+            print("Instruct request completed successfully")
+    except Exception as e:
+        print(f"Error in instruct channel: {e}")
+    
+    print("\n=== 4. Play ===")
+    live_stream = rapid_kit.LiveStream(pipe)
+    player = rapid_kit.MediaPlayer()
+    
+    # 准备并启动播放器
+    player.prepare(live_stream.provider())
+    player.set_aout(rapid_kit.create_silence_aout())
+    player.set_vout(rapid_kit.create_silence_vout())
+    player.start()
+    live_stream.start()
+    
+    # 使用简单的状态检查来等待播放器启动
+    print("Waiting for player to start...")
+    start_time = time.time()
+    player_timeout = 10  # seconds
+    player_started = False
+    
+    while time.time() - start_time < player_timeout:
+        current_state = player.state()
+        state_name = rapid_kit.MediaRenderState(current_state).name
+        print(f"Current player state: {state_name}")
+        
+        if current_state == rapid_kit.MediaRenderState.STARTED:
+            player_started = True
+            print("Player started successfully")
+            break
+            
+        time.sleep(0.5)  # 每500ms检查一次状态
+    
+    # 根据播放器状态执行后续操作
+    if player_started:
+        print("\n=== 5. Capture and Record ===")
+                
+        out_dir = os.path.join(os.getcwd(), "out")
+        
+        if os.path.exists(out_dir):
+            for file in os.listdir(out_dir):
+                os.remove(os.path.join(out_dir, file))
+                
+        if not os.path.exists(out_dir):
+            os.makedirs(out_dir)
+            print(f"Created output directory: {out_dir}")
+        
+        capture_count = 30
+        player.start_record(os.path.join(out_dir, "record.mp4"))
+        for i in range(capture_count):
+            capture_path = os.path.join(out_dir, f"captured_{i}.jpg")
+            result = player.capture(capture_path)
+            status = "Success" if result else "Failed"
+            print(f"Capture {i+1}/{capture_count}: {status} - {capture_path}")
+            time.sleep(1) 
+        
+        print(f"Captured {capture_count} frames to {out_dir}")
+        record_result = player.stop_record()
+        print(f"Record result: {record_result}")
+        
+        print("\n=== 7. Cleaning Up ===")
+        print("Closing connection...")
+    else:
+        print(f"Error: Player failed to start after {player_timeout} seconds")
+    
+    # 清理资源
+    player.stop()
+    live_stream.stop()
+    pipe.abolish()
+    print("Connection closed")
+    
+    if player_started:
+        print("\n=== Demo completed successfully ===")
+    else:
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main() 
+```
+

@@ -1,0 +1,1 @@
+"""Domain layer for pytriple - multiline string indentation fixer."""

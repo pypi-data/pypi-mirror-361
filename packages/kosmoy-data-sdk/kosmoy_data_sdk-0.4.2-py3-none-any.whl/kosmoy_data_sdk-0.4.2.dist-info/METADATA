@@ -1,0 +1,206 @@
+Metadata-Version: 2.1
+Name: kosmoy-data-sdk
+Version: 0.4.2
+Summary: SDK to get all the available LLM models per Provider
+Author: Olsi Hoxha
+Author-email: olsihoxha824@gmail.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+Requires-Dist: requests
+Requires-Dist: pydantic
+
+# Fixed Data SDK Documentation
+
+## Overview
+This update adds comprehensive Pydantic schemas and API methods for all fixed data endpoints identified in the provided URL patterns. The implementation:
+
+1. Creates Pydantic v2 schemas for all fixed data models
+2. Maintains backward compatibility with the original fixed data models
+3. Implements API methods for all fixed data endpoints
+4. Uses proper type annotations and validation
+
+## Files Updated
+- `fixed_schemas_sdk.py`: Added schemas for all fixed data models
+- `updated_ai_models_sdk.py`: Added methods for all fixed data endpoints
+
+## Fixed Data Endpoints
+The SDK now supports the following fixed data endpoints:
+
+### User Status
+- `get_user_statuses()`: Get a list of all user statuses
+- `get_user_status(status_id)`: Get details for a specific user status
+
+### Assistant Types
+- `get_assistant_types()`: Get a list of all assistant types
+- `get_assistant_type(type_id)`: Get details for a specific assistant type
+
+### Assistant Scopes
+- `get_assistant_scopes()`: Get a list of all assistant scopes
+- `get_assistant_scope(scope_id)`: Get details for a specific assistant scope
+
+### Service Types
+- `get_service_types()`: Get a list of all service types
+- `get_service_type(type_id)`: Get details for a specific service type
+
+### Services
+- `get_services()`: Get a list of all services
+- `get_service(service_id)`: Get details for a specific service
+
+### Data Source Types
+- `get_data_source_types()`: Get a list of all data source types
+- `get_data_source_type(type_id)`: Get details for a specific data source type
+
+### Data Sources
+- `get_data_sources()`: Get a list of all data sources
+- `get_data_source(source_id)`: Get details for a specific data source
+
+### Channels
+- `get_channels()`: Get a list of all channels
+- `get_channel(channel_id)`: Get details for a specific channel
+
+### Assistant Types Service Types
+- `get_assistant_types_service_types()`: Get a list of all assistant types service types
+- `get_assistant_types_service_type(id)`: Get details for a specific assistant types service type
+
+### Session Types
+- `get_session_types()`: Get a list of all session types
+- `get_session_type(type_id)`: Get details for a specific session type
+
+### Connection Types
+- `get_connection_types()`: Get a list of all connection types
+- `get_connection_type(type_id)`: Get details for a specific connection type
+
+### Connection Providers
+- `get_connection_providers()`: Get a list of all connection providers
+- `get_connection_provider(provider_id)`: Get details for a specific connection provider
+
+### Vector Distance Strategies
+- `get_vector_distance_strategies()`: Get a list of all vector distance strategies
+- `get_vector_distance_strategy(strategy_id)`: Get details for a specific vector distance strategy
+
+### Connection Providers Vector Distance Strategies
+- `get_connection_providers_vector_distance_strategies()`: Get a list of all connection providers vector distance strategies
+- `get_connection_providers_vector_distance_strategy(id)`: Get details for a specific connection providers vector distance strategy
+
+### Retriever Types
+- `get_retriever_types()`: Get a list of all retriever types
+- `get_retriever_type(type_id)`: Get details for a specific retriever type
+
+### Retriever Strategies
+- `get_retriever_strategies()`: Get a list of all retriever strategies
+- `get_retriever_strategy(strategy_id)`: Get details for a specific retriever strategy
+
+### Vector Channel Strategies
+- `get_vector_channel_strategies()`: Get a list of all vector channel strategies
+- `get_vector_channel_strategy(strategy_id)`: Get details for a specific vector channel strategy
+
+### Run Statuses
+- `get_run_statuses()`: Get a list of all run statuses
+- `get_run_status(status_id)`: Get details for a specific run status
+
+### Avatars
+- `get_avatars()`: Get a list of all avatars
+- `get_avatar(avatar_id)`: Get details for a specific avatar
+
+### Guardrail Types
+- `get_guardrail_types()`: Get a list of all guardrail types
+- `get_guardrail_type(type_id)`: Get details for a specific guardrail type
+
+## Usage Example
+```python
+from kosmoy_data_sdk import kosmoy_data
+
+# Get all user statuses
+user_statuses = kosmoy_data.fixed.get_user_statuses()
+print(f"Found {len(user_statuses)} user statuses")
+
+# Get a specific assistant type
+assistant_type = kosmoy_data.fixed.get_assistant_type(1)
+print(f"Assistant type: {assistant_type.name}")
+
+# Get all guardrail types
+guardrail_types = kosmoy_data.fixed.get_guardrail_types()
+for gt in guardrail_types:
+    print(f"Guardrail type: {gt.name}, Built-in: {gt.is_built_in}")
+```
+
+
+### Models SDK
+
+# How to Use Kosmoy Data SDK
+
+This guide explains how to use the `kosmoy_data` SDK after importing it in your Python project.
+
+## Basic Usage
+
+After importing the SDK, you can access its functionality through the main `kosmoy_data` object and its `fixed` property.
+
+```python
+# The SDK should already be imported in your environment
+# from kosmoy_data_sdk import kosmoy_data
+```
+
+## Working with Models
+
+### Get Available Models
+
+```python
+# Get all available models for a specific stage
+models = kosmoy_data.get_available_models(stage_name="production")
+
+# Filter models by various parameters
+verified_models = kosmoy_data.get_available_models(
+    stage_name="production",
+    is_verified=True,
+    model_type_name="chat"
+)
+
+# Get a specific model by ID
+model = kosmoy_data.get_available_model(available_model_id=123)
+```
+
+### Providers & Creators
+
+```python
+# Get all providers
+providers = kosmoy_data.get_providers(stage_name="production")
+
+# Get providers filtered by model type
+chat_providers = kosmoy_data.get_providers(
+    stage_name="production", 
+    model_type_name="chat"
+)
+
+# Get all model creators
+creators = kosmoy_data.get_model_creators(stage_name="production")
+
+# Get a specific creator by ID
+creator = kosmoy_data.get_model_creator(creator_id=456)
+```
+
+
+## Error Handling
+
+The SDK uses the requests library internally and will raise exceptions for HTTP errors. Always handle potential exceptions:
+
+```python
+try:
+    models = kosmoy_data.get_available_models(stage_name="production")
+except requests.exceptions.HTTPError as e:
+    print(f"HTTP error occurred: {e}")
+except Exception as e:
+    print(f"An error occurred: {e}")
+```
+
+## Response Types
+
+All methods return validated Pydantic models, which means you can access fields using attribute notation:
+
+```python
+model = kosmoy_data.get_available_model(available_model_id=123)
+print(model.name)
+print(model.provider.name)
+```

@@ -1,0 +1,115 @@
+# `node-status-lib`
+
+`node-status-lib` is a lightweight Python library designed to simplify tracking the status of nodes and their internal flows in distributed systems. It is particularly useful for monitoring pipelines, workflows, and microservices by persisting status updates to a PostgreSQL database.
+
+---
+
+## Features
+
+* Track the status of an entire node
+* Monitor the status of individual flows or tasks within a node
+* Persist all status updates in a PostgreSQL database
+* Optional support for AWS Secrets Manager integration
+* Easy to integrate into any Python-based pipeline or microservice
+
+---
+
+## Installation
+
+Install from [PyPI](https://pypi.org):
+
+```bash
+pip install node-status-lib
+
+or 
+
+poetry add node-status-lib
+```
+
+---
+
+## Usage
+
+### 1. Import the Library
+
+```python
+from node_status_lib.manager import NodeStatusManager
+from node_status_lib.enums import Status
+```
+
+### 2. Initialize the Node Status Manager
+
+```python
+manager = NodeStatusManager(
+    node_id="102",
+    node_name="multispectral_node",
+    flows=["heatmap_gen", "insight_gen", "response"],
+    db_details={
+        "DB_NAME": "<your_db_name>",
+        "DB_USER": "<your_db_user>",
+        "DB_PASSWORD": "<your_db_password>",
+        "DB_HOST": "<your_db_host>",
+        "DB_PORT": "<your_db_port>"
+    }
+)
+```
+
+### 3. Update Node and Flow Status
+
+```python
+# Update the overall node status
+manager.update_node_status(
+    Status.RUNNING,
+    description="Node is active and initialized all services."
+)
+
+# Update status of individual flows
+manager.update_flow_status("heatmap_gen", Status.SUCCESS, description="Heatmap generation completed.")
+manager.update_flow_status("insight_gen", Status.NOT_RUNNING)
+manager.update_flow_status("response", Status.NOT_RUNNING, description="Awaiting input trigger.")
+```
+
+*Note: `description` is optional for both node and flow updates.*
+
+---
+
+## Status Enum Options
+
+```python
+Status.PENDING
+Status.RUNNING
+Status.SUCCESS
+Status.FAILED
+```
+
+---
+
+## Database Table Schema
+
+Ensure your PostgreSQL database includes the following table schema:
+
+```sql
+CREATE TABLE node_status (
+    node_id TEXT PRIMARY KEY,
+    node_name TEXT NOT NULL,
+    node_status TEXT NOT NULL CHECK (
+        node_status IN ('running', 'not_running', 'success', 'failed')
+    ),
+    node_description TEXT DEFAULT NULL,
+    flow_status JSONB NOT NULL,
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+* `flow_status` format:
+  `{ "flow_name": { "status": "...", "description": "..." }, ... }`
+
+---
+
+## Requirements
+
+* Python 3.7+
+* PostgreSQL
+* `psycopg2-binary`
+* `boto3` (optional, required only for AWS Secrets Manager integration)
+

@@ -1,0 +1,49 @@
+Metadata-Version: 2.4
+Name: lucagplm
+Version: 1.0.0
+Summary: LucaGPLM - The LUCA general purpose language model.
+Author-email: Yuan-Fei Pan <yfpan16@gmail.com>, Yong He <sanyuan.hy@alibaba-inc.com>
+Project-URL: Homepage, https://github.com/LucaOne/LucaOne
+Project-URL: Issues, https://github.com/LucaOne/LucaOne/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+License-File: NOTICE
+Requires-Dist: torch
+Requires-Dist: transformers
+Dynamic: license-file
+
+# LucaGPLM
+
+LucaGPLM - The LUCA general purpose language model.
+
+## Installation
+
+You can install the package from source using pip:
+
+```bash
+pip install .
+```
+
+## Usage
+
+```python
+from lucagplm import LucaGPLMModel, LucaGPLMTokenizer
+
+# Load model
+model = LucaGPLMModel.from_pretrained("Yuanfei/lucavirus-large-step3.8M")
+tokenizer = LucaGPLMTokenizer.from_pretrained("Yuanfei/lucavirus-large-step3.8M")
+
+# Example usage
+seq = "ATCG"
+inputs = tokenizer(seq, seq_type="gene",return_tensors="pt")
+outputs = model(**inputs)
+
+seq = "NSQTA"
+inputs = tokenizer(seq, seq_type="prot",return_tensors="pt")
+outputs = model(**inputs)
+
+print(outputs.last_hidden_state.shape)
+```

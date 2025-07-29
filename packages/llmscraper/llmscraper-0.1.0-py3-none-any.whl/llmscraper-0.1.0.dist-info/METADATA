@@ -1,0 +1,75 @@
+Metadata-Version: 2.4
+Name: llmscraper
+Version: 0.1.0
+Summary: LLM-powered web scraping in Python
+Author-email: defisapiens <defisapiens@protonmail.com>
+License-File: LICENSE
+Requires-Python: >=3.9
+Requires-Dist: beautifulsoup4>=4.12.3
+Requires-Dist: google-genai>=1.24.0
+Requires-Dist: html2text>=2024.2.26
+Requires-Dist: instructor>=1.9.0
+Requires-Dist: openai>=1.35.3
+Requires-Dist: playwright>=1.44.0
+Requires-Dist: pydantic>=2.7.4
+Description-Content-Type: text/markdown
+
+# LLM Scraper Python
+
+A Python port of the [LLM-powered web scraping library](https://github.com/mishushakov/llm-scraper), using `html2text` for HTML processing.
+
+## Installation
+
+1.  **Create a virtual environment and install dependencies:**
+    ```bash
+    uv sync
+    ```
+2.  **Install Playwright browser binaries:**
+    ```bash
+    uv run playwright install
+    ```
+
+## Usage
+```python
+import asyncio
+from typing import List
+from playwright.async_api import async_playwright
+from pydantic import BaseModel
+from openai import AsyncOpenAI
+from llmscraper import LLMScraper
+
+class Story(BaseModel):
+    title: str
+    url: str
+    points: int
+    by: str
+    comments: int
+
+class HackerNews(BaseModel):
+    stories: List[Story]
+
+async def main():
+    client = AsyncOpenAI()
+    scraper = LLMScraper(client)
+
+    async with async_playwright() as p:
+        browser = await p.chromium.launch()
+        page = await browser.new_page()
+        await page.goto("https://news.ycombinator.com")
+
+        result = await scraper.run(
+            page,
+            schema=HackerNews,
+            options={"limit": 5},
+        )
+        print(result)
+
+        await browser.close()
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+## Examples
+
+See the `examples/` directory for more usage examples.

@@ -1,0 +1,42 @@
+{% extends "admin/change_list.html" %}
+
+{% block messages %}
+{# overload just to ignore message with tag "token" #}
+    {% if messages %}
+        <ul class="messagelist p-0">
+            {% for message in messages %}
+                {% if message.tags != "token info" %}
+                <li {% if message.tags %} class="bg-{{ message.tags }}"{% endif %}>
+                    <div class="row">
+                        <div class="col-11">
+                            {{ message|capfirst }}
+                        </div>
+                        <div class="col-1">
+                            <i class="fas fa-times message-close"></i>
+                        </div>
+                    </div>
+                </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock messages %}
+
+{% block content %}
+{% for message in messages %}
+{% if message.tags == "token info" %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card text-white bg-warning mb3">
+            <div class="card-body">
+                <h5 class="card-title">{{ message }}</h5>
+                Token generated - save it before it is gone!
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
+
+{{ block.super }}
+{% endblock %}

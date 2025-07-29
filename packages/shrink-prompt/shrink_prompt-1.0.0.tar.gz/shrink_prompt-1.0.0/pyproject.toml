@@ -1,0 +1,67 @@
+[build-system]
+requires = ["poetry-core>=1.8.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "shrink-prompt"
+version = "1.0.0"
+description = "Lightning-fast LLM prompt compression with 30-70% token reduction. Domain-specific rules for legal, medical, technical content. Sub-20ms processing, zero external calls."
+authors = ["ShrinkPrompt Contributors <shrink-prompt@example.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/yourusername/shrink-prompt"
+repository = "https://github.com/yourusername/shrink-prompt"
+documentation = "https://github.com/yourusername/shrink-prompt"
+keywords = ["llm", "prompt", "compression", "tokens", "openai", "cost-optimization", "nlp"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Text Processing :: Linguistic",
+]
+packages = [{include = "shrinkprompt"}]
+include = [
+    "shrinkprompt/compressors/data/*.json",
+    "examples/*.json",
+    "LICENSE",
+    "README.md"
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+tiktoken = ">=0.5.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.0.0"
+pytest-cov = "^4.0.0"
+black = "^23.0.0"
+flake8 = "^6.0.0"
+mypy = "^1.0.0"
+
+[tool.poetry.scripts]
+shrink-prompt = "shrinkprompt.cli:main"
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/yourusername/shrink-prompt/issues"
+"Changelog" = "https://github.com/yourusername/shrink-prompt/blob/main/CHANGELOG.md"
+"Discussions" = "https://github.com/yourusername/shrink-prompt/discussions"
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true

@@ -1,0 +1,73 @@
+[build-system]
+requires = [
+  "setuptools >= 78.0.0, <= 80.9.0",
+  "setuptools-git-versioning >= 1.8.1, <= 2.1.0",
+  "wheel >= 0.36.1, <= 0.45.1"
+]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools-git-versioning]
+enabled = true
+template = "{tag}"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project]
+name = "ibahd-api"
+dynamic = ["version"]
+authors = [ { name = "iba AG" } ]
+description = "Package for handling Python calls to ibaHD-Servers using the ibaHD-API"
+readme = "README.md"
+requires-python = ">= 3.9, < 3.13"
+dependencies = [
+  "grpcio >= 1.72.1, <= 1.73.1",
+  "grpcio-tools >= 1.72.1, <= 1.73.1",
+  "protobuf >= 6.30.0, <= 6.31.1",
+]
+keywords = [
+  "iba_ag",
+  "ibahd_server",
+  "ibahd_api",
+  "api",
+  "grpc",
+  "protobuf"
+]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Customer Service",
+  "Intended Audience :: Developers",
+  "Intended Audience :: End Users/Desktop",
+  "Intended Audience :: Manufacturing",
+  "Intended Audience :: Science/Research",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
+license-files = [
+  "LICENSE-PROPRIETARY.txt",
+  "LICENSE-MIT.txt"
+]
+
+[project.optional-dependencies]
+tutorial = [
+  "ipykernel >= 6.14.0, <= 6.29.5",  # for running a jupyter notebook
+  "matplotlib >= 3.7.3, <= 3.9.4",   # for plotting some visualizations
+  "numpy >= 1.26.4, < 2.0",          # to ensure correct working of matplotlib
+  "tabulate >= 0.4.2, <= 0.9.0",     # for displaying TimePeriods
+]
+dev = [
+  "ipykernel >= 6.14.0, <= 6.29.5",  # for running a jupyter notebook
+]
+
+[project.urls]
+Homepage = "https://www.iba-ag.com/"
+Documentation = "https://github.com/iba-ag/ibaHD-API-Sample-Clients/tree/master/python/README.md"
+Tutorial = "https://github.com/iba-ag/ibaHD-API-Sample-Clients/tree/master/python/tutorial.ipynb"
+"License Details" = "https://www.iba-ag.com/de/license-agreement"
+Changelog = "https://github.com/iba-ag/ibaHD-API-Sample-Clients/tree/master/python/CHANGELOG.md"

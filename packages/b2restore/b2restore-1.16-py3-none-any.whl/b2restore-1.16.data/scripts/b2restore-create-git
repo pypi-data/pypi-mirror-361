@@ -1,0 +1,63 @@
+#!/bin/bash
+# Can be used to make a git repo from a B2 versioned tree copy.
+# M.Blakeney, Sep 2018.
+
+usage() {
+    echo "Usage: $(basename $0) [-options] indir outdir"
+    echo "Create git repository from given B2 rclone copy."
+    echo "Options:"
+    echo "-t YYYY-MM-DDTHH:MM.SS (start git repo from given time)"
+    echo "-e YYYY-MM-DDTHH:MM.SS (end git repo before given time)"
+    echo "-p (only process files under given path)"
+    exit 1
+}
+
+STRTTIME=""
+ENDTIME=""
+SUBPATH=""
+while getopts t:e:p: c; do
+    case $c in
+    t) STRTTIME=$OPTARG;;
+    e) ENDTIME=$OPTARG;;
+    p) SUBPATH="-p $OPTARG";;
+    \?) usage;;
+    esac
+done
+
+shift $((OPTIND - 1))
+
+if [[ $# -ne 2 ]]; then
+    usage
+fi
+
+INDIR=$(realpath "$1")
+OUTDIR="$2"
+PROGDIR=$(realpath "$(dirname $0)")
+MYPROG=$PROGDIR/b2restore
+
+mkdir -p "$OUTDIR"
+cd "$OUTDIR" || exit 1
+
+if  [[ "$(ls -A .)" ]]; then
+    echo "outdir must be empty" >&2
+    exit 1
+fi
+
+# Create git repo then iterate through all times and create a git commit
+# for each time.
+if ! git init .; then
+    exit 1
+fi
+
+$MYPROG $SUBPATH -s "$INDIR" | sed -n '/^ \+/s/^ *//p' | sort -u | while read t b; do
+    if [[ -n "$STRTTIME" && "$t" < "$STRTTIME" ]]; then
+	continue
+    fi
+    if [[ -n "$ENDTIME" && ! "$t" < "$ENDTIME" ]]; then
+	break
+    fi
+    echo "=== Creating tree at $t ==="
+    $MYPROG $SUBPATH -g -t "$t" "$INDIR" .
+    git add .
+    git commit -m "Snapshot of files at $t" --date="$t"
+done

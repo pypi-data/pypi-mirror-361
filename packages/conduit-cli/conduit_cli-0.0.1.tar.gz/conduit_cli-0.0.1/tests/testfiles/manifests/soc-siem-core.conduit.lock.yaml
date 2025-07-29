@@ -1,0 +1,46 @@
+apiVersion: conduit.warrical.com/next
+kind: LockFile
+name: soc-siem-core
+version: 1.0.0
+entrypoint:
+  script: files/soc-siem-core/install_siem_core.sh
+  mode: '0755'
+  checksum: sha256:8fdaa23a5e67c8111871156241dfd3e5ca356acc21979bc45392986eb1a76826
+  size: 2669
+manifestHash: sha256:7142d9a1fe58809f1bd19e46c2fa34d4c93c723815160f3437ff0ad7e1e5f055
+artifacts:
+- name: install-script
+  type: file
+  action: copy_local
+  origin: files/soc-siem-core/install_siem_core.sh
+  target: /opt/soc-siem-core-v1.2.3/scripts/install.sh
+  checksum: sha256:8fdaa23a5e67c8111871156241dfd3e5ca356acc21979bc45392986eb1a76826
+  size: 2669
+- name: elasticsearch-archive
+  type: http
+  action: copy_local
+  origin: https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.13.4-linux-x86_64.tar.gz
+  target: /opt/soc-siem-core-v1.2.3/downloads/elasticsearch-8.13.4.tar.gz
+  checksum: sha256:46b62db890b84cf22224838db9d38182941657f7f90a6744e8885f7ab22f900b
+  size: 575698037
+- name: kibana-archive
+  type: http
+  action: copy_local
+  origin: https://artifacts.elastic.co/downloads/kibana/kibana-8.13.4-linux-x86_64.tar.gz
+  target: /opt/soc-siem-core-v1.2.3/downloads/kibana-8.13.4.tar.gz
+  checksum: sha256:d3f4334d9eb6f9d60ce68dff783630af9d0bbf7f1fdb445fb40f58a01cbc4a4d
+  size: 318100877
+- name: keycloak-image-26.2.5
+  type: oci
+  action: copy_local
+  origin: oci://quay.io/keycloak/keycloak:26.2.5
+  target: keycloak-image-26.2.5.tar
+  checksum: sha256:77d200319e14c988ccdabaeebefcd963f998b36c25d17e13fd0646cb16b9ec35
+  size: 246026240
+- name: postgres-image-17
+  type: oci
+  action: copy_local
+  origin: oci://docker.io/library/postgres:17
+  target: postgres-image-17.tar
+  checksum: sha256:99a6e559dc01e826a487b55ddfb43acd2c535c976c374b07fe85e7c1b184c0ad
+  size: 156344320

@@ -1,0 +1,51 @@
+apiVersion: conduit.warrical.com/next
+kind: Manifest
+metadata:
+  name: soc-siem-core
+  version: 1.0.0
+variables:
+  bundle_version: "1.2.3"
+  install_base_dir: "/opt/{{metadata.name}}-v{{variables.bundle_version}}" # Base for install script logic
+  download_dir: "{{variables.install_base_dir}}/downloads"
+  config_staging_dir: "{{variables.install_base_dir}}/configs_from_manifest" # For the install script to use
+  scripts_dir: "{{variables.install_base_dir}}/scripts" # For the install script itself
+  keycloak_version: "26.2.5"
+  postgres_version: "17"
+  elasticsearch_version: "8.13.4"
+  logstash_version: "8.13.4"
+  kibana_version: "8.13.4"
+  java_version_major: "17"
+  java_version_full: "17.0.11_9" # Example: jdk-17.0.11+9
+
+entrypoint:
+  script: "./files/{{metadata.name}}/install_siem_core.sh"
+  mode: "0755"
+
+# This is a test comment
+artifacts:
+  - name: install-script
+    origin: "files/{{metadata.name}}/install_siem_core.sh"
+    target: "{{variables.scripts_dir}}/install.sh"
+
+  - name: elasticsearch-archive
+    origin: "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-{{variables.elasticsearch_version}}-linux-x86_64.tar.gz"
+    target: "{{variables.download_dir}}/elasticsearch-{{variables.elasticsearch_version}}.tar.gz"
+
+  # - name: logstash-archive
+  #   origin: "https://artifacts.elastic.co/downloads/logstash/logstash-{{variables.logstash_version}}-linux-x86_64.tar.gz"
+  #   target: "{{variables.download_dir}}/logstash-{{variables.logstash_version}}.tar.gz"
+
+  - name: kibana-archive
+    origin: "https://artifacts.elastic.co/downloads/kibana/kibana-{{variables.kibana_version}}-linux-x86_64.tar.gz"
+    target: "{{variables.download_dir}}/kibana-{{variables.kibana_version}}.tar.gz"
+
+  - name: "keycloak-image-{{variables.keycloak_version}}"
+    origin: "oci://quay.io/keycloak/keycloak:{{variables.keycloak_version}}"
+    target: "keycloak-image-{{variables.keycloak_version}}.tar"
+
+  - name: "postgres-image-{{variables.postgres_version}}"
+    origin: "oci://docker.io/library/postgres:{{variables.postgres_version}}"
+    target: "postgres-image-{{variables.postgres_version}}.tar"
+
+
+

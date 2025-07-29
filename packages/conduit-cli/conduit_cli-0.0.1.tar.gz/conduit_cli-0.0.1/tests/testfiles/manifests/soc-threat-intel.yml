@@ -1,0 +1,59 @@
+apiVersion: conduit.warrical.com/next
+kind: Manifest
+metadata:
+  name: soc-threat-intel
+  version: 1.0.0
+variables:
+  bundle_version: "0.8.1"
+  artifact_base_dir: "/opt/{{metadata.name}}_artifacts_v{{variables.bundle_version}}"
+  download_dir: "{{variables.artifact_base_dir}}/downloads"
+  rules_snapshot_dir: "{{variables.artifact_base_dir}}/rules_and_signatures"
+  config_staging_dir: "{{variables.artifact_base_dir}}/configs"
+  scripts_staging_dir: "{{variables.artifact_base_dir}}/scripts" # For any example utility scripts
+
+  yara_version: "4.5.1"
+  clamav_version: "1.3.1"
+
+artifacts:
+  # YARA - For simplicity, linking to source. Pre-built binaries often OS/distro specific.
+  - name: yara-source-archive
+    origin: "https://github.com/VirusTotal/yara/archive/refs/tags/v{{variables.yara_version}}.tar.gz"
+    target: "{{variables.download_dir}}/yara-v{{variables.yara_version}}.tar.gz"
+
+  - name: yara-community-rules-snapshot
+    origin: "https://github.com/Yara-Rules/rules/archive/refs/heads/master.zip"
+    target: "{{variables.rules_snapshot_dir}}/yara-community-rules-master.zip"
+
+  # Optional: Your custom YARA rules
+  # - name: yara-custom-rules
+  #   origin: "files/{{metadata.name}}/yara_custom_rules.yar" # Create this if needed
+  #   target: "{{variables.rules_snapshot_dir}}/yara_custom_rules.yar"
+
+  # ClamAV - Source for broader compatibility in testing unless you target a specific prebuilt package
+  - name: clamav-source-archive
+    origin: "https://www.clamav.net/downloads/production/clamav-{{variables.clamav_version}}.tar.gz"
+    target: "{{variables.download_dir}}/clamav-{{variables.clamav_version}}.tar.gz"
+
+  - name: clamav-db-main
+    origin: "http://database.clamav.net/main.cvd"
+    target: "{{variables.rules_snapshot_dir}}/main.cvd"
+  - name: clamav-db-daily
+    origin: "http://database.clamav.net/daily.cvd"
+    target: "{{variables.rules_snapshot_dir}}/daily.cvd"
+  - name: clamav-db-bytecode
+    origin: "http://database.clamav.net/bytecode.cvd"
+    target: "{{variables.rules_snapshot_dir}}/bytecode.cvd"
+
+  # Optional: ClamAV config files
+  # - name: clamav-daemon-config # Create if needed
+  #   origin: "files/{{metadata.name}}/clamd.conf"
+  #   target: "{{variables.config_staging_dir}}/clamd.conf"
+  # - name: clamav-freshclam-config # Create if needed
+  #   origin: "files/{{metadata.name}}/freshclam.conf"
+  #   target: "{{variables.config_staging_dir}}/freshclam.conf"
+
+  # Optional: Example Python script
+  # NOTE: This assumes Python and any libraries (e.g., stix2, pymisp) are already on the target system.
+  # - name: example-python-parser
+  #   origin: "files/{{metadata.name}}/example_parser.py" # Create this if needed
+  #   target: "{{variables.scripts_staging_dir}}/example_parser.py"

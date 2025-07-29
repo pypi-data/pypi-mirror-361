@@ -1,0 +1,44 @@
+apiVersion: conduit.warrical.com/next
+kind: Manifest
+metadata:
+  name: soc-training-lab
+  version: 1.0.0
+variables:
+  bundle_version: "1.0.1"
+  # {{metadata.name}} will resolve to "soc-training-lab"
+  artifact_base_dir: "/opt/{{metadata.name}}_artifacts_v{{variables.bundle_version}}"
+  download_dir: "{{variables.artifact_base_dir}}/downloads"
+  config_staging_dir: "{{variables.artifact_base_dir}}/configs" # For any local configs you provide
+  vm_images_dir: "{{variables.artifact_base_dir}}/vm_images"
+
+  juiceshop_version: "16.0.0"
+  node_version_for_juiceshop: "20" # Juice Shop often packages with a specific Node version
+  dvwa_commit_sha: "master" # Or a specific commit SHA for stability
+  metasploitable2_filename: "Metasploitable-Linux-2.0.0.zip"
+  nodejs_version: "20.14.0" # General Node.js if needed and not covered by Juice Shop's package
+
+artifacts:
+  - name: owasp-juiceshop-archive # Pre-packaged distribution
+    origin: "https://github.com/juice-shop/juice-shop/releases/download/v{{variables.juiceshop_version}}/juice-shop-{{variables.juiceshop_version}}_node{{variables.node_version_for_juiceshop}}_linux_x64.tgz"
+    target: "{{variables.download_dir}}/juice-shop-{{variables.juiceshop_version}}.tgz"
+
+  - name: dvwa-archive
+    origin: "https://github.com/digininja/DVWA/archive/{{variables.dvwa_commit_sha}}.zip"
+    target: "{{variables.download_dir}}/DVWA-{{variables.dvwa_commit_sha}}.zip"
+
+  - name: metasploitable2-vm-archive
+    origin: "https://sourceforge.net/projects/metasploitable/files/Metasploitable2/{{variables.metasploitable2_filename}}/download"
+    target: "{{variables.vm_images_dir}}/{{variables.metasploitable2_filename}}"
+
+  - name: nodejs-linux-x64-archive # If a separate Node.js is desired for general use
+    origin: "https://nodejs.org/dist/v{{variables.nodejs_version}}/node-v{{variables.nodejs_version}}-linux-x64.tar.gz"
+    target: "{{variables.download_dir}}/node-v{{variables.nodejs_version}}-linux-x64.tar.gz"
+
+  # Optional: Local config files for DVWA if you want to provide them
+  - name: dvwa-db-setup-sql # Create if needed
+    origin: "files/{{metadata.name}}/dvwa_db_setup.sql"
+    target: "{{variables.config_staging_dir}}/dvwa_db_setup.sql"
+
+  - name: dvwa-config-inc # Create if needed
+    origin: "files/{{metadata.name}}/config.inc.php"
+    target: "{{variables.config_staging_dir}}/config.inc.php"

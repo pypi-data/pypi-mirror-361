@@ -1,0 +1,67 @@
+# ---------- Conduit Configuration ----------
+# Copy to /etc/conduit/conduit.yaml   (0600 perms recommended)
+# Lines starting with '#' are comments.
+
+#############################################################
+# 1. Registry settings                                      #
+#############################################################
+registry:
+  default: registry.example.gov               # fallback registry host (host[:port])
+  auth:
+    username: ${CONDUIT_REGISTRY_USER}        # ENV override: CONDUIT_REGISTRY_USER
+    password: ${CONDUIT_REGISTRY_PASSWORD}    # ENV override: CONDUIT_REGISTRY_PASS
+  mirrors:                                    # optional list of mirror hosts
+    - airgap.mirror.lan
+  tls:
+    ca_file: /etc/pki/registry/ca.pem         # custom CA bundle (optional)
+    skip_verify: false                        # true→allow self-signed (discouraged)
+
+#############################################################
+# 2. Directories  (FHS defaults shown)                      #
+#############################################################
+paths:
+  data_dir:  ${CONDUIT_DATA_DIR}        # ENV: CONDUIT_DATA_DIR (default_root: /usr/share/conduit, default_user: [$XDG_DATA_HOME/conduit, ~/.local/share/conduit])
+  cache_dir: ${CONDUIT_CACHE_DIR}       # ENV: CONDUIT_CACHE_DIR (default_root: /usr/share/conduit/cache, default_user: [$XDG_DATA_HOME/conduit/cache, ~/.local/share/conduit/cache])
+  log_dir:   ${CONDUIT_LOG_DIR}         # ENV: CONDUIT_LOG_DIR (default_root: /var/log/conduit, default_user: ~/.local/share/conduit/logs)
+  keys_dir:   ${CONDUIT_KEYS_DIR}       # ENV: CONDUIT_KEYS_DIR public keys for sig verify (default_root: /etc/conduit/keys, default_user: ~/.config/conduit/keys)
+  config_dir: ${CONDUIT_CONFIG_DIR}     # ENV: CONDUIT_CONFIG_DIR (default_root: /etc/conduit, default_user: ~/.config/conduit)
+
+#############################################################
+# 3. Build / bundle behaviour                               #  
+#############################################################
+build:
+  # concurrent downloads/build layers (auto = CPU cores) (ENV: CONDUIT_BUILD_WORKERS) (default: 4)
+  workers: ${CONDUIT_BUILD_WORKERS} 
+  # true→disallow any network fetch during bundle (ENV: CONDUIT_BUILD_OFFLINE) (default: false)
+  offline: ${CONDUIT_BUILD_OFFLINE} 
+  # run smart prune at launch (ENV: CONDUIT_BUILD_CACHE_PRUNE_ON_START) (default: false)
+  cache_prune_on_start: ${CONDUIT_BUILD_CACHE_PRUNE_ON_START} 
+
+#############################################################
+# 4. Security & verification                                #
+#############################################################
+security:
+  # verify Sigstore/cosign signatures (ENV: CONDUIT_SECURITY_VERIFY_SIGNATURES) (default: true)
+  verify_signatures: ${CONDUIT_SECURITY_VERIFY_SIGNATURES}
+  # always compare SHA-256 hashes in lockfile (ENV: CONDUIT_SECURITY_VERIFY_HASHES) (default: true)
+  verify_hashes:     ${CONDUIT_SECURITY_VERIFY_HASHES}
+  # auto-generate SBOM if none supplied (ENV: CONDUIT_SECURITY_ATTACH_SBOM) (default: true)
+  attach_sbom:       ${CONDUIT_SECURITY_ATTACH_SBOM}
+  # auto-generate in-toto attestation (ENV: CONDUIT_SECURITY_ATTACH_ATTEST) (default: true)
+  attach_attest:     ${CONDUIT_SECURITY_ATTACH_ATTEST}
+
+#############################################################
+# 5. Logging                                                #
+#############################################################
+logging:
+  # trace|debug|info|warn|error (ENV: CONDUIT_LOG_LEVEL) (default: info)
+  level: ${CONDUIT_LOG_LEVEL}
+  # auto|always|never (ENV: CONDUIT_LOG_COLOR) (default: auto)
+  color: ${CONDUIT_LOG_COLOR}
+  file_rotation:
+    # per-file threshold (ENV: CONDUIT_LOG_FILE_ROTATION_MAX_SIZE) (default: 10GB)
+    max_size: ${CONDUIT_LOG_FILE_ROTATION_MAX_SIZE}
+    # files to keep (ENV: CONDUIT_LOG_FILE_ROTATION_MAX_BACKUPS) (default: 5)
+    max_backups: ${CONDUIT_LOG_FILE_ROTATION_MAX_BACKUPS}
+    # days to keep (ENV: CONDUIT_LOG_FILE_ROTATION_MAX_AGE) (default: 30)
+    max_age: ${CONDUIT_LOG_FILE_ROTATION_MAX_AGE}

@@ -1,0 +1,41 @@
+apiVersion: conduit.warrical.com/next
+kind: Manifest
+metadata:
+  name: soc-nids-suite
+  version: 1.0.0
+variables:
+  bundle_version: "2.5.0"
+  # {{metadata.name}} will resolve to "soc-nids-suite"
+  artifact_base_dir: "/opt/{{metadata.name}}_artifacts_v{{variables.bundle_version}}" # Target for downloaded files
+  download_dir: "{{variables.artifact_base_dir}}/downloads"
+  config_staging_dir: "{{variables.artifact_base_dir}}/configs"
+  rules_snapshot_dir: "{{variables.artifact_base_dir}}/rules_snapshots"
+
+  suricata_version: "7.0.5"
+  # EveBox: Using a direct link to a release binary is simpler for testing.
+  # The version and filename might need updating based on latest EveBox releases.
+  evebox_version_tag: "1.0.0-rc3" # Check GitHub for latest release tag
+  evebox_binary_filename: "evebox-{{variables.evebox_version_tag}}-linux-amd64.zip" # Adjust if filename pattern changes
+  et_rules_version_suffix: "suricata-7.0"
+
+artifacts:
+  - name: suricata-source-archive
+    # For testing, downloading source is fine. Installation would be manual without a script.
+    origin: "https://www.openinfosecfoundation.org/download/suricata-{{variables.suricata_version}}.tar.gz"
+    target: "{{variables.download_dir}}/suricata-{{variables.suricata_version}}.tar.gz"
+
+  - name: emerging-threats-rules-snapshot
+    origin: "https://rules.emergingthreats.net/{{variables.et_rules_version_suffix}}/et-open.tar.gz"
+    target: "{{variables.rules_snapshot_dir}}/et-open-rules.tar.gz"
+
+  - name: evebox-binary-archive
+    origin: "https://github.com/certsocietegenerale/evebox/releases/download/v{{variables.evebox_version_tag}}/{{variables.evebox_binary_filename}}"
+    target: "{{variables.download_dir}}/{{variables.evebox_binary_filename}}"
+
+  - name: suricata-config
+    origin: "files/{{metadata.name}}/suricata.yaml"
+    target: "{{variables.config_staging_dir}}/suricata.yaml"
+
+  - name: evebox-config # Optional, if you provide one
+    origin: "files/{{metadata.name}}/evebox.yaml"
+    target: "{{variables.config_staging_dir}}/evebox.yaml"

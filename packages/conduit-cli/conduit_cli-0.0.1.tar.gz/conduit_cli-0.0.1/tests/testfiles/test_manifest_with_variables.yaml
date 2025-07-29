@@ -1,0 +1,13 @@
+apiVersion: conduit.warrical.com/next
+kind: Manifest
+metadata:
+  name: test-variables
+  version: 1.0.0
+variables:
+  project_name: "my-project"
+  version: "1.0.0"
+  environment: "dev"
+artifacts:
+- name: config-file
+  origin: "test_source.txt"
+  target: "output/{{variables.project_name}}-{{variables.version}}-{{variables.environment}}.txt"

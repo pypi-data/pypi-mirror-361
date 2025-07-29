@@ -1,0 +1,16 @@
+apiVersion: conduit.warrical.com/next
+kind: Manifest
+metadata:
+  name: test-self-ref
+  version: 1.0.0
+variables:
+  base_name: "my-project"
+  version: "1.0.0"
+  environment: "dev"
+  full_name: "{{.base_name}}-v{{.version}}"
+  config_file: "{{.full_name}}-{{.environment}}.yaml"
+  complex_path: "output/{{.config_file}}"
+artifacts:
+- name: config-file
+  origin: "test_source.txt"
+  target: "{{variables.complex_path}}"

@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ManifestLock
+manifestHash: "sha256:test123"
+artifacts:
+  - name: "test-config"
+    type: "file"
+    action: "copy_local"
+    origin: "/home/jofyi/projects/workspace/conduit/README.md"
+    target: "/app/README.md"
+    checksum: "sha256:dummy"
+    size: 1000
+  - name: "remote-data"
+    type: "http"
+    action: "download"
+    origin: "https://raw.githubusercontent.com/conduitio/conduit/main/README.md"
+    target: "/app/remote-readme.md"
+    checksum: "sha256:dummy"
+    size: 5000

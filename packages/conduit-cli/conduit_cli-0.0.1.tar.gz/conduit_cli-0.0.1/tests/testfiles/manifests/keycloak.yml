@@ -1,0 +1,28 @@
+apiVersion: conduit.warrical.com/next
+kind: Manifest
+metadata:
+  name: keycloak-bundle
+  version: "8.0.0"
+variables:
+  project_name: "keycloak"
+  install_base_dir: "/opt/{{metadata.name}}-v{{metadata.version}}" # Base for install script logic
+  download_dir: "{{variables.install_base_dir}}/downloads"
+  version: "26.2.5"
+  postgres_version: "17"
+  elasticsearch_version: "8.13.4"
+artifacts:
+  - name: "keycloak-image-{{variables.version}}"
+    origin: "oci://quay.io/keycloak/keycloak:{{variables.version}}"
+    target: "keycloak-image-{{variables.version}}.tar"
+
+  - name: "postgres-image-{{variables.postgres_version}}"
+    origin: "oci://docker.io/library/postgres:{{variables.postgres_version}}"
+    target: "postgres-image-{{variables.postgres_version}}.tar"
+
+  - name: "elasticsearch-archive"
+    origin: "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-{{variables.elasticsearch_version}}-linux-x86_64.tar.gz"
+    target: "{{variables.download_dir}}/elasticsearch-{{variables.elasticsearch_version}}.tar.gz"
+
+  - name: kibana-archive
+    origin: "https://artifacts.elastic.co/downloads/kibana/kibana-{{variables.elasticsearch_version}}-linux-x86_64.tar.gz"
+    target: "{{variables.download_dir}}/kibana-{{variables.elasticsearch_version}}.tar.gz"

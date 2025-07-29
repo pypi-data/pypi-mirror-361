@@ -1,0 +1,11 @@
+apiVersion: conduit.warrical.com/next
+kind: Manifest
+metadata:
+  name: test-circular
+variables:
+  var_a: "{{.var_b}}-suffix"
+  var_b: "{{.var_a}}-prefix"
+artifacts:
+- name: config-file
+  origin: "test_source.txt"
+  target: "{{variables.var_a}}"

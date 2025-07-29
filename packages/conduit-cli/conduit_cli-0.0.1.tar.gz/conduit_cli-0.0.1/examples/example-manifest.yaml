@@ -1,0 +1,24 @@
+apiVersion: conduit.warrical.com/next
+kind: Manifest
+metadata:
+    name: reverse-proxy-manager
+    version: 0.0.4
+    description: "A bundle for using a reverse proxy with a UI on the system. Added entrypoint script"
+    category: web-server
+
+variables:
+    nginx_version: 2.1.0
+    mariadb_version: 10.4.15
+
+entrypoint:
+    script: "entrypoint.sh"
+    mode: "0755"
+
+
+artifacts:
+    - name: nginx-proxy-manager-{{metadata.version}}-{{variables.nginx_version}}
+      origin: oci://docker.io/jc21/nginx-proxy-manager:{{variables.nginx_version}}
+      target: nginx-proxy-manager-{{metadata.version}}-{{variables.nginx_version}}.tar
+    - name: mariadb-aria-{{metadata.version}}-{{variables.mariadb_version}}
+      origin: oci://docker.io/jc21/mariadb-aria:{{variables.mariadb_version}}
+      target: mariadb-aria-{{metadata.version}}-{{variables.mariadb_version}}.tar

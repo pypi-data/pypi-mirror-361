@@ -1,0 +1,27 @@
+Metadata-Version: 2.4
+Name: fast_forecast
+Version: 0.1.0
+Summary: Modelos rápidos de pronóstico lineal con tendencia, estacionalidad, LOWESS y variables exógenas.
+Author-email: Sergio Pedro Diaz Paredes <sdiazp@labdatosperu.org>
+License: MIT
+Project-URL: Homepage, https://github.com/sdiazpy/fast_forecast
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: scikit-learn
+Requires-Dist: statsmodels
+
+# fast_forecast
+
+Modelos rápidos de pronóstico lineal con tendencia (incluye LOWESS), estacionalidad y variables exógenas.
+
+## Ejemplo
+
+```python
+from fast_forecast import mco_forecast
+
+mco = mco_forecast(tendencia="lowess", estacionalidad=['dayofweek'], log_y=False)
+mco.fit(data, y_col='MX', exog=['MX_festivo'])
+preds = mco.forecast(14, exog=exog_futuro)
+````

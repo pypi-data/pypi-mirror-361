@@ -1,0 +1,179 @@
+Metadata-Version: 2.4
+Name: mcp-kyvos-server
+Version: 1.0.0a4
+Summary: mcp-kyvos-server is a server implementation that integrates the Kyvos platform with the Model Context Protocol (MCP). It enables users to query Kyvos semantic models using natural language, translating prompts into executable queries and returning results from Kyvos. The server supports both SSE and STDIO communication modes and allows secure authentication using user-provided Kyvos credentials (basic and OAuth2.0).
+Author-email: Kyvos <support@kyvos.io>
+License: MIT License
+         
+        Copyright (c) 2025 Kyvos Insights Inc
+         
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights  
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell      
+        copies of the Software, and to permit persons to whom the Software is          
+        furnished to do so, subject to the following conditions:                        
+         
+        The above copyright notice and this permission notice shall be included in     
+        all copies or substantial portions of the Software.                             
+         
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR     
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,       
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE    
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER         
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,  
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN      
+        THE SOFTWARE.
+License-File: license.txt
+Requires-Python: >=3.10
+Requires-Dist: click>=8.1.7
+Requires-Dist: colorlog>=6.9.0
+Requires-Dist: fastapi>=0.115.12
+Requires-Dist: httpx>=0.28.0
+Requires-Dist: jinja2>=3.1.6
+Requires-Dist: mcp>=1.9.1
+Requires-Dist: peewee>=3.18.1
+Requires-Dist: pydantic>=2.10.6
+Requires-Dist: pyjwt>=2.10.1
+Requires-Dist: python-dotenv>=1.0.1
+Requires-Dist: python-jose>=3.4.0
+Requires-Dist: requests-cache>=1.2.1
+Requires-Dist: requests>=2.32.3
+Requires-Dist: starlette>=0.37.1
+Requires-Dist: trio>=0.29.0
+Requires-Dist: truststore>=0.10.1
+Requires-Dist: uvicorn>=0.27.1
+Description-Content-Type: text/markdown
+
+## MCP Kyvos Server
+
+The **MCP Kyvos Server** enables agentic applications to interact with the Kyvos platform for querying business data. It supports two transport modes:
+
+- **SSE (Server-Sent Events)**: This transport is suited for remote integrations. It uses HTTP requests for communication. It allows servers to handle multiple client connections efficiently. SSE mode supports both Basic and OAuth authorization. OAuth requires users to authenticate using their Kyvos credentials before establishing a connection, providing a secure and standardized login mechanism.
+- **STDIO (Standard I/O)**: This transport is primarily used for inter-process communication within the same system. It’s particularly suitable for command-line tools and local integrations where the client and server operate within the same process. Only Basic authorization is supported in this mode.
+
+---
+
+## Tools
+
+The MCP Kyvos server exposes the following tools:
+
+1. **`kyvos_list_semantic_model`**
+   - **Description:** Lists available semantic model with schema details.
+
+2. **`kyvos_list_semantic_model_columns`**
+   - **Description:** Retrieves column metadata for a specified semantic model.
+
+3. **`kyvos_sql_generation_prompt`**
+   - **Description:** Provides the system prompt template for SQL generation.
+
+4. **`kyvos_execute_query`**
+   - **Description:** Executes a Spark SQL query on Kyvos and returns a json based result set.
+---
+
+## Installation
+
+Install the `mcp-kyvos-server` package from pip:
+
+```bash
+pip install mcp-kyvos-server==1.0.0a4
+```
+
+---
+
+## Configuration & Parameters
+
+The server can be configured via environment variables or command-line flags. CLI flags override environment variables.
+
+| Parameter        | Environment Variable   | CLI Flag                             | Required | Default Value | Description                                                                                                                                                                |                                                                                                                                                                    |
+|------------------|------------------------|--------------------------------------|:--------:|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------| ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Kyvos URL        | `KYVOS_URL`            | `--kyvos-url <url>`                  |   Yes    | —             | The base URL of the Kyvos server instance.                                                                                                                                 |                                                                                                                                                                    |
+| Kyvos Username   | `KYVOS_USERNAME`       | `--kyvos-username <username>`        |   Yes    | —             | The Kyvos account username used to authenticate and log in to the Kyvos application. It will be overridden if using OAuth or basic-auth flow.                              |                                                                                                                                                                    |
+| Kyvos Password   | `KYVOS_PASSWORD`       | `--kyvos-password <password>`        |   Yes    | —             | The corresponding password for the provided `KYVOS_USERNAME`, used for authentication with the Kyvos application. It will be overridden if using OAuth or basic-auth flow. |                                                                                                                                                                    |
+| Prompt File Path | `KYVOS_PROMPT_FILE`    | `--kyvos-prompt-file <file_path>`    |    No    | —             | Path to the `.txt` file containing the prompt for spark sql generation.                                                                                                    |                                                                                                                                                                    |
+| Default Folder   | `KYVOS_DEFAULT_FOLDER` | `--kyvos-default-folder <folder>`    |    No    | —             | Folder containing multiple semantic models used for querying and metadata management in the Kyvos platform.                                                                |                                                                                                                                                                    |
+| Transport        | —             | `--transport <stdio or sse>`         |    No    | `stdio`       | The type of communication transport to use: `stdio` for standard input/output or `sse` for Server-Sent Events.                                                             |
+| SSL Verification | `VERIFY_SSL`           | `--verify-ssl <true or false>`       |    No    | `false`       | Flag to enable or disable SSL certificate verification when making HTTP requests to Kyvos. Set to `true` to enforce verification or `false` for self-signed certs.         |
+| Max Rows         | `MAX_ROWS`             | `--max-rows <max rows>`              |    No    | 1000          | Limit the number of rows in the query response                                                                                                                             |                                                                                                                                                                    |
+| Environment File | —                      | `--env-file <file_path>`             |    No    | —             | Path to an `.env` file from which to load environment variables, if not provided via arguments.                                                                            |                                                                                                                                                                    |
+| SSL Key          | `SSL_KEY_FILE`         | `--ssl-key-file <file_path>`         |    No    | —             | Path to the SSL private key file used to enable HTTPS on the server.                                                                                                       |                                                                                                                                                                    |
+| SSL Certificate  | `SSL_CERTIFICATE_FILE` | `--ssl-certificate-file <file_path>` |    No    | —             | Path to the SSL certificate file used to enable HTTPS on the server.                                                                                                       |                                                                                                                                                                    |
+| Auth type        | `SERVER_AUTH_TYPE`     | `--server-auth-type <basic/oauth>`   |    No    | `oauth`       | Type of authorization user want to start the server                                                                                                                        |                                                                                                                                                                    |
+| Port             |   —                     | `--port <port>`                       |    No    | 8000          | Port on which user want to run the server.                                                                                                                                 |                                                                                                                                                                    |
+| Hostname             |   `MCP_SERVER_HOSTNAME`                     | `--mcp-server-hostname <machine_ip>`                       |    No    | 127.0.0.1          | The address (hostname or IP) where the user wants the MCP server to run.                                                                                                                                 |                                                                                                                                                                    |
+| MCP Kyvos Server Database Path           |   `MCP_KYVOS_DB_PATH`                     | -                       |    No    | HOME_PATH/.mcp_kyvos_server          | The path where the MCP server database will be created.                                                                                                                                 |                                                                                                                                                                    |
+
+---
+
+## Usage
+
+### SSE Mode
+
+1. **Start the MCP server** with SSE transport.
+
+   ```bash
+   mcp-kyvos-server --transport sse --env-file /path/to/.env
+   ```
+   or provide arguments directly:
+
+   ```bash
+   mcp-kyvos-server \
+     --kyvos-url https://your-kyvos-endpoint \
+     --kyvos-username user123 \
+     --kyvos-password pass123 
+   ```
+
+
+2. **Configure your client application** to include the SSE server in its MCP server configuration. For example:
+
+   ```json
+   {
+     "mcpServers": {
+       "kyvos-sse": {
+         "url": "http://<machine_ip>:<port>/sse"
+       }
+     }
+   }
+   ```
+
+---
+
+### STDIO Mode
+
+1.  **Configure your client application** For example:
+
+```json
+{
+  "mcpServers": {
+    "kyvos-stdio": {
+      "command": "mcp-kyvos-server",
+      "args": [
+        "--env-file", "/path/to/.env"
+      ]
+    }
+  }
+}
+```
+OR
+
+```json
+  {
+    "mcpServers": {
+      "kyvos-stdio": {
+        "command": "mcp-kyvos-server",
+        "args": [
+          "--kyvos-url", "https://your-kyvos-endpoint",
+          "--kyvos-username", "user123",
+          "--kyvos-password", "pass123",
+          "--kyvos-prompt-file", "./kyvos_prompt.txt"
+        ]
+      }
+    }
+  }
+  ```
+
+---
+
+## License
+
+This project is licensed under the MIT License.

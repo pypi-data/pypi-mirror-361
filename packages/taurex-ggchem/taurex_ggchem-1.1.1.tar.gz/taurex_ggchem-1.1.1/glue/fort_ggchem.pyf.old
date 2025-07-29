@@ -1,0 +1,298 @@
+!    -*- f90 -*-
+! Note: the context of this file is case sensitive.
+
+python module fort_ggchem ! in 
+    interface  ! in :fort_ggchem
+        module parameters ! in :fort_ggchem:../glue/datamod.f90
+            character(len=200) :: elements
+            character(len=200) :: abund_file
+            character(len=200) :: struc_file
+            integer :: abund_pick
+            integer :: model_dim
+            integer :: npoints
+            integer :: model_struc
+            integer :: verbose
+            logical :: model_eqcond
+            logical :: model_pconst
+            logical :: pick_mfrac
+            logical :: initchem_info
+            logical :: usedatabase
+            logical :: remove_condensates
+            logical :: phyllosilicates
+            real*8 :: tfast
+            real*8 :: tmin
+            real*8 :: tmax
+            real*8 :: pmin
+            real*8 :: pmax
+            real*8 :: nhmin
+            real*8 :: nhmax
+        end module parameters
+        module dust_data ! in :fort_ggchem:../glue/datamod.f90
+            character(len=200) :: dustchem_file
+            integer, parameter,optional :: qp=16
+            integer, parameter,optional :: nelem=41
+            integer, parameter,optional :: ndustmax=500
+            integer :: ndust
+            integer :: neps
+            character(len=2) dimension(41) :: elnam
+            character(len=20) dimension(500) :: dust_nam
+            integer dimension(41) :: elnr
+            integer dimension(41) :: elcode
+            real(kind=16) dimension(41) :: eps0
+            real*8 dimension(41) :: mass
+            real*8 dimension(500) :: dust_rho
+            real*8 dimension(500) :: dust_mass
+            real*8 dimension(500) :: dust_vol
+            real*8 dimension(500) :: tmelt
+            real*8 dimension(500) :: tcorr
+            logical dimension(500) :: is_liquid
+            integer dimension(500) :: dust_nel
+            integer dimension(500,8) :: dust_el
+            integer dimension(500,8) :: dust_nu
+            integer dimension(500) :: fit
+            real*8 dimension(500,5) :: cfit
+            real(kind=16), optional :: bk=1.380662q-16
+            real(kind=16), optional :: bar=1.q+6
+            real(kind=16), optional :: amu=1.66055q-24
+            real(kind=16), optional :: atm=1.013q+6
+            real(kind=16), optional :: rgas=8.3144598q+0
+            real(kind=16), optional :: mel=9.109389754q-28
+            real(kind=16) :: muh
+        end module dust_data
+        module chemistry ! in :fort_ggchem:../glue/datamod.f90
+            use dust_data, only: nelem
+            character(len=200) dimension(4) :: dispol_file
+            logical :: newfullit
+            integer :: newbackit
+            integer :: newfastlevel
+            integer :: newpremethod
+            real*8 :: newbackfac
+            integer :: nmoldim
+            integer :: nmole
+            integer :: nelm
+            integer, optional :: el=0
+            integer, optional :: h=0
+            integer, optional :: he=0
+            integer, optional :: li=0
+            integer, optional :: be=0
+            integer, optional :: b=0
+            integer, optional :: c=0
+            integer, optional :: n=0
+            integer, optional :: o=0
+            integer, optional :: f=0
+            integer, optional :: ne=0
+            integer, optional :: na=0
+            integer, optional :: mg=0
+            integer, optional :: al=0
+            integer, optional :: si=0
+            integer, optional :: p=0
+            integer, optional :: s=0
+            integer, optional :: cl=0
+            integer, optional :: ar=0
+            integer, optional :: k=0
+            integer, optional :: ca=0
+            integer, optional :: sc=0
+            integer, optional :: ti=0
+            integer, optional :: v=0
+            integer, optional :: cr=0
+            integer, optional :: mn=0
+            integer, optional :: fe=0
+            integer, optional :: co=0
+            integer, optional :: ni=0
+            integer, optional :: cu=0
+            integer, optional :: zn=0
+            integer, optional :: ga=0
+            integer, optional :: ge=0
+            integer, optional :: as=0
+            integer, optional :: se=0
+            integer, optional :: br=0
+            integer, optional :: kr=0
+            integer, optional :: rb=0
+            integer, optional :: sr=0
+            integer, optional :: y=0
+            integer, optional :: zr=0
+            integer, optional :: w=0
+            logical :: charge
+            character(len=2) dimension(41) :: catm
+            integer dimension(41) :: elnum
+            integer dimension(41) :: elion
+            integer, allocatable,dimension(:) :: fit
+            integer, allocatable,dimension(:) :: natom
+            integer, allocatable,dimension(:) :: source
+            integer, allocatable,dimension(:,:) :: m_kind
+            integer, allocatable,dimension(:,:) :: m_anz
+            real*8, allocatable,dimension(:,:) :: a
+            real*8, allocatable,dimension(:) :: error
+            real*8 dimension(41,14) :: b_nasa
+            integer :: i_nasa
+            integer dimension(41) :: c_nasa
+            real*8 :: th1
+            real*8 :: th2
+            real*8 :: th3
+            real*8 :: th4
+            real*8 :: tt1
+            real*8 :: tt2
+            real*8 :: tt3
+        end module chemistry
+        module structure ! in :fort_ggchem:../glue/datamod.f90
+            use dust_data, only: nelem
+            integer, parameter,optional :: qp=16
+            integer, parameter,optional :: npmax=10000
+            real*8 dimension(10000) :: tgas
+            real*8 dimension(10000) :: press
+            real*8 dimension(10000) :: pelec
+            real*8 dimension(10000) :: dens
+            real*8 dimension(10000) :: nhtot
+            real(kind=16) dimension(10000,41) :: estruc
+        end module structure
+        module exchange ! in :fort_ggchem:../glue/datamod.f90
+            use chemistry, only: nmole
+            use dust_data, only: nelem
+            integer, parameter,optional :: qp=16
+            real(kind=16) :: nel
+            real(kind=16) dimension(41) :: nat
+            real(kind=16) dimension(41) :: nion
+            real(kind=16), allocatable,dimension(:) :: nmol
+            real(kind=16), allocatable,dimension(:) :: mmol
+            integer :: hii
+            integer :: heii
+            integer :: cii
+            integer :: nii
+            integer :: oii
+            integer :: naii
+            integer :: mgii
+            integer :: liii
+            integer :: clii
+            integer :: alii
+            integer :: kii
+            integer :: tiii
+            integer :: sii
+            integer :: siii
+            integer :: feii
+            integer :: caii
+            integer, parameter,optional :: h=1
+            integer, parameter,optional :: he=2
+            integer, parameter,optional :: li=3
+            integer, parameter,optional :: be=4
+            integer, parameter,optional :: b=5
+            integer, parameter,optional :: c=6
+            integer, parameter,optional :: n=7
+            integer, parameter,optional :: o=8
+            integer, parameter,optional :: f=9
+            integer, parameter,optional :: ne=10
+            integer, parameter,optional :: na=11
+            integer, parameter,optional :: mg=12
+            integer, parameter,optional :: al=13
+            integer, parameter,optional :: si=14
+            integer, parameter,optional :: p=15
+            integer, parameter,optional :: s=16
+            integer, parameter,optional :: cl=17
+            integer, parameter,optional :: ar=18
+            integer, parameter,optional :: k=19
+            integer, parameter,optional :: ca=20
+            integer, parameter,optional :: sc=21
+            integer, parameter,optional :: ti=22
+            integer, parameter,optional :: v=23
+            integer, parameter,optional :: cr=24
+            integer, parameter,optional :: mn=25
+            integer, parameter,optional :: fe=26
+            integer, parameter,optional :: co=27
+            integer, parameter,optional :: ni=28
+            integer, parameter,optional :: cu=29
+            integer, parameter,optional :: zn=30
+            integer, parameter,optional :: ga=31
+            integer, parameter,optional :: ge=32
+            integer, parameter,optional :: as=33
+            integer, parameter,optional :: se=34
+            integer, parameter,optional :: br=35
+            integer, parameter,optional :: kr=36
+            integer, parameter,optional :: rb=37
+            integer, parameter,optional :: sr=38
+            integer, parameter,optional :: y=39
+            integer, parameter,optional :: zr=40
+            integer, parameter,optional :: w=41
+            integer*8, optional :: chemcall=0
+            integer*8, optional :: chemiter=0
+            integer*8, optional :: itransform=0
+            integer*8, optional :: ieqcond=0
+            integer*8, optional :: preiter=0
+            integer*8, optional :: preest=0
+            integer*8, optional :: preuse=0
+            integer*8, optional :: ieqconditer=0
+        end module exchange
+        subroutine init_dustchem_taurex ! in :fort_ggchem:../glue/init_dustchem_taurex.f
+            use parameters, only: model_eqcond,phyllosilicates
+            use chemistry, only: nmole,nelm,catm
+            use dust_data, only: ndustmax,neps,nelem,ndust,eps0,amu,dust_nam,dust_rho,dust_vol,dust_mass,dust_nel,dust_nu,dust_el,fit,cfit,elnr,elcode,elnam,mass,tmelt,tcorr,dustchem_file
+            use exchange, only: h,si,al,ca
+            
+        end subroutine init_dustchem_taurex
+        subroutine check_melting ! in :fort_ggchem:../glue/init_dustchem_taurex.f
+            use chemistry, only: nmole,nelm,catm
+            use dust_data, only: qp,nelem,ndust,dust_nam,tmelt,tcorr,is_liquid
+        end subroutine check_melting
+        module fort_ggchem ! in :fort_ggchem:../glue/taurex_glue.f90
+            subroutine init_lean(eps00) ! in :fort_ggchem:../glue/taurex_glue.f90:fort_ggchem
+                use parameters, only: elements
+                use dust_data, only: nelem,eps0,mass,muh,elnam,amu
+                use exchange, only: h,he,li,be,b,c,n,o,f,ne,na,mg,al,si,p,s,cl,ar,k,ca,sc,ti,v,cr,mn,fe,co,ni,cu,zn,ga,ge,as,se,br,kr,rb,sr,y,zr,w
+                real*8 dimension(41), intent(out) :: eps00
+            end subroutine init_lean
+            subroutine init_taurex_chemistry(ndispol,dispolfiles,do_charge) ! in :fort_ggchem:../glue/taurex_glue.f90:fort_ggchem
+                use parameters, only: elements,initchem_info
+                use chemistry, only: nmoldim,nmole,nelm,catm,cmol,el,dispol_file,source,fit,natom,a,error,i_nasa,m_kind,m_anz,elnum,elion,charge,h,he,li,be,b,c,n,o,f,ne,na,mg,al,si,p,s,cl,ar,k,ca,sc,ti,v,cr,mn,fe,co,ni,cu,zn,ga,ge,as,se,br,kr,rb,sr,y,zr,w
+                use dust_data, only: mass,mel,amu
+                use exchange, only: nmol,mmol
+                integer, optional,intent(in),check(shape(dispolfiles,0)==ndispol),depend(dispolfiles) :: ndispol=shape(dispolfiles,0)
+                character dimension(ndispol,200),intent(in,c) :: dispolfiles
+                logical intent(in) :: do_charge
+            end subroutine init_taurex_chemistry
+            subroutine check_double(ndispol,dispolfiles,molname,kind,anz,n,loop,ret) ! in :fort_ggchem:../glue/taurex_glue.f90:fort_ggchem
+                use parameters, only: initchem_info
+                use chemistry, only: cmol,m_kind,m_anz,source
+                integer, optional,intent(in),check(len(dispolfiles)>=ndispol),depend(dispolfiles) :: ndispol=len(dispolfiles)
+                character(len=*) dimension(ndispol),intent(in) :: dispolfiles
+                character*20 :: molname
+                integer dimension(7),intent(in) :: kind
+                integer dimension(6),intent(in) :: anz
+                integer intent(in) :: n
+                integer intent(in) :: loop
+                integer intent(out) :: ret
+            end subroutine check_double
+            subroutine copy_molecule_names(nmole,t_cmol) ! in :fort_ggchem:../glue/taurex_glue.f90:fort_ggchem
+                use chemistry, only: cmol
+                integer intent(in) :: nmole
+                character dimension(nmole,20),intent(out,c),depend(nmole) :: t_cmol
+            end subroutine copy_molecule_names
+
+            subroutine copy_dust_names(ndust,t_dustname) ! in :fort_ggchem:../glue/taurex_glue.f90:fort_ggchem
+                use dust_data, only: dust_nam
+                integer intent(in) :: ndust
+                character dimension(ndust,20),intent(out,c),depend(ndust) :: t_dustname
+            end subroutine copy_dust_names
+
+            subroutine copy_atom_names(nelm,t_cmol) ! in :fort_ggchem:../glue/taurex_glue.f90:fort_ggchem
+                use chemistry, only: catm
+                integer intent(in) :: nelm
+                character dimension(nelm,2),intent(out,c),depend(nelm) :: t_cmol
+            end subroutine copy_atom_names
+            subroutine run_ggchem(nnmol,nndust,tlayer,player,elem,mol_out,cond_out) ! in :fort_ggchem:../glue/taurex_glue.f90:fort_ggchem
+                use parameters, only: tmin,tmax,pmin,pmax,nhmin,nhmax,usedatabase,model_eqcond,model_pconst,npoints,remove_condensates,elements
+                use chemistry, only: nelm,nmole,elnum,cmol,catm,el,charge
+                use dust_data, only: nelem,ndust,elnam,eps0,bk,bar,muh,amu,dust_nel,dust_el,dust_nu,dust_nam,dust_mass,dust_vol,mass,mel
+                use structure, only: npmax,tgas,press,pelec,dens,nhtot,estruc
+                use exchange, only: nel,nat,nion,nmol,mmol,h,c,n,o,w,s,ca,si,mg,al,fe
+                integer intent(in) :: nnmol
+                integer intent(in) :: nndust
+                real*8 dimension(41), intent(in) :: elem
+                real*8 intent(in) :: tlayer
+                real*8 intent(in) :: player
+                real*8 dimension(nnmol),intent(out),depend(nnmol) :: mol_out
+                real*8 dimension(nndust),intent(out),depend(nndust) :: cond_out
+            end subroutine run_ggchem
+        end module fort_ggchem
+    end interface 
+end python module fort_ggchem
+
+! This file was auto-generated with f2py (version:2).
+! See http://cens.ioc.ee/projects/f2py2e/

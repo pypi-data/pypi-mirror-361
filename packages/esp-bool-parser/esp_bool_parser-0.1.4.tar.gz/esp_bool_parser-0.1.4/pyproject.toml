@@ -1,0 +1,106 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "esp-bool-parser"
+authors = [
+    {name = "Fu Hanxi", email = "fuhanxi@espressif.com"}
+]
+readme = "README.md"
+license = {file = "LICENSE"}
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dynamic = ["version", "description"]
+requires-python = ">=3.7"
+
+dependencies = [
+    "pyparsing",
+    "packaging",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-cov",
+]
+doc = [
+    "sphinx",
+    # theme
+    "sphinx-rtd-theme",
+    # extensions
+    "sphinx_copybutton",        # copy button
+    "myst-parser",              # markdown support
+    "sphinxcontrib-mermaid",    # mermaid graph support
+    "sphinx-argparse",          # auto-generate cli help message
+    "sphinx-tabs",              # tabs
+]
+
+[project.urls]
+homepage = "https://github.com/espressif/esp-bool-parser"
+repository = "https://github.com/espressif/esp-bool-parser"
+documentation = "https://docs.espressif.com/projects/esp-bool-parser"
+changelog = "https://github.com/espressif/esp-bool-parsers/blob/main/CHANGELOG.md"
+
+[tool.commitizen]
+name = "czespressif"
+
+annotated_tag = true
+changelog_merge_prerelease = true
+tag_format = "v$version"
+update_changelog_on_bump = true
+version = "0.1.4"
+version_files = [
+    "esp_bool_parser/__init__.py",
+]
+types_in_changelog = ["feat", "fix", "refactor", "change", "perf", "docs"]
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+]
+
+[tool.isort]
+profile = 'black'
+force_grid_wrap = 1
+
+[tool.ruff]
+line-length = 120
+target-version = "py37"
+
+[tool.ruff.lint]
+select = [
+    'F',  # Pyflakes
+    'E',  # pycodestyle
+    'W',  # pycodestyle
+    'I',  # isort
+    'UP',  # pyupgrade
+    'YTT',  # flake8-2020
+    'A',  # flake8-builtins
+    'ARG',  # flake8-unused-arguments
+    'TD',  # flake8-todos
+    'FIX',  # flake8-fixme
+    'ERA',  # eradicate
+    'FURB',  # refurb
+    'LOG',  # flake8-logging
+    'RUF',  # Ruff-specific rules
+]
+ignore = [
+    # `open` and `read` should be replaced by `Path(f).read_text()`
+    'FURB101',
+]
+
+[tool.ruff.format]
+quote-style = "single"
+
+[tool.mypy]
+python_version = "3.8"
+follow_untyped_imports = true

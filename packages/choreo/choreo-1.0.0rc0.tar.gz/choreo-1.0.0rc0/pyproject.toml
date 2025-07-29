@@ -1,0 +1,82 @@
+[build-system]
+requires = [
+    "setuptools>=77"  ,
+    "wheel"           ,
+    "Cython"          ,
+    "numpy"           ,
+    "scipy<1.14.0"    ,
+    "build"           ,
+    "pyfftw>=0.14.0.0",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "choreo"  # as it would appear on PyPI
+description = "A set of tools to compute periodic solutions to the Newtonian N-body problem"
+readme = {file = "README.md", content-type = "text/markdown"}
+license = "BSD-2-Clause"
+license-files = ["LICENSE", "LICENSES/*"]
+keywords = ["ODE","periodic","N-body","gravitation"]
+authors = [
+  {name = "Gabriel Fougeron", email = "gabriel.fougeron@hotmail.fr"},
+]
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha"             ,
+  "Programming Language :: Python :: 3"             ,
+  "Programming Language :: Cython"                  ,
+  "Programming Language :: JavaScript"              ,  
+  "Environment :: WebAssembly :: Emscripten"        ,
+  "Intended Audience :: Education"                  ,
+  "Natural Language :: English"                     ,
+  "Topic :: Scientific/Engineering :: Mathematics"  ,
+  "Topic :: Scientific/Engineering :: Physics"      ,
+]
+requires-python = ">= 3.10"
+dynamic = ["dependencies", "optional-dependencies", "version"]
+
+[tool.setuptools.dynamic.version]
+attr = "choreo.metadata.__version__"
+
+[tool.setuptools.dynamic.dependencies]
+file = ["requirements/requirements.txt"]
+
+[tool.setuptools.dynamic.optional-dependencies]
+build     = {file = ["requirements/requirements-build.txt"    ]}
+gui       = {file = ["requirements/requirements-gui.txt"      ]}
+cli       = {file = ["requirements/requirements-cli.txt"      ]}
+test-cli  = {file = ["requirements/requirements-test-cli.txt" ]}
+test-gui  = {file = ["requirements/requirements-test-gui.txt" ]}
+test      = {file = ["requirements/requirements-test.txt"     ]}
+bench     = {file = ["requirements/requirements-bench.txt"    ]}
+docs      = {file = ["requirements/requirements-docs.txt"     ]}
+full      = {file = ["requirements/requirements-full.txt"     ]}
+
+[project.scripts]
+choreo_CLI_search = "choreo.run:entrypoint_CLI_search"
+
+[project.urls]
+Homepage = "https://gabrielfougeron.github.io/choreo/"
+Documentation = "https://gabrielfougeron.github.io/choreo-docs/"
+Repository = "https://github.com/gabrielfougeron/choreo"
+Changelog = "https://github.com/gabrielfougeron/choreo/releases/"
+
+[tool.pytest.ini_options]
+timeout = 1
+minversion = "6.0"
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
+addopts = "-ra --junit-xml=docs/pytest_out/junit.xml -n 4 --dist worksteal"
+# addopts = "-ra --junit-xml=docs/pytest_out/junit.xml -n auto --dist worksteal"
+# addopts = "-ra --junit-xml=docs/pytest_out/junit.xml --dist worksteal"
+testpaths = [
+    "tests",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
+junit_family = "xunit2"
+junit_logging = "system-out"
+junit_suite_name = "Pytest test results"
+junit_log_passing_tests = true
+
+

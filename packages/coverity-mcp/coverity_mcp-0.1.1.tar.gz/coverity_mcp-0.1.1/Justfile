@@ -1,0 +1,14 @@
+publish:
+    #!/usr/bin/env bash
+    TOKEN=$(python3 - ~/.pypirc pypi password <<-END
+    import configparser, sys
+    c = configparser.ConfigParser()
+    c.read(sys.argv[1])
+    try:
+        print(c.get(sys.argv[2], sys.argv[3]))
+    except (configparser.NoSectionError, configparser.NoOptionError) as e:
+        sys.exit(e)
+    END
+    )
+    uv publish --token="$TOKEN"
+

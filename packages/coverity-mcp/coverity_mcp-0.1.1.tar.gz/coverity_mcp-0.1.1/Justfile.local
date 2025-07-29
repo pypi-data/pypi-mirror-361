@@ -1,0 +1,23 @@
+BASE_URL := 'https://coverity.cloud.yandex.net/api/v2'
+USERNAME := 'kriomant'
+KEY := 'D5131136D6EA8F1CC8B739EF4484BC9E'
+PROJECT := '[YC] VPC Overlay'
+
+RUN := 'uv run ./src/coverity_mcp' + ' ' + \
+    '--base-url ' + BASE_URL + ' ' + \
+    '--certificate-path  ~/.config/YandexInternalRootCA.crt' + ' ' + \
+    '--username ' + USERNAME + ' ' + \
+    '--key ' + KEY + ' ' + \
+    '--trim-path-prefix /contrail-yandex/'
+
+test-info:
+   {{RUN}} test-info '{{PROJECT}}' 104579 | jq .
+
+test-diagnostics:
+   {{RUN}} test-diagnostics '{{PROJECT}}' 104579 | jq .
+
+test-stream-info:
+   {{RUN}} test-stream-info contrail-control-master | jq .
+
+test-triage:
+    {{RUN}} test-triage '{{PROJECT}}' 37943 'Fix Required' 'Test2'

@@ -1,0 +1,8 @@
+#!/bin/sh
+# Checks if any of the specified processes are currently running.
+# Mark Blakeney, Jul 2020.
+
+for proc in "$@"; do
+    [ "$(pgrep -c -x "$proc")" -gt 0 ] && exit 254
+done
+exit 0

@@ -1,0 +1,12 @@
+#!/bin/sh
+# Checks if plex is currently serving media to any user.
+# Mark Blakeney, Jul 2020.
+
+MYTOKEN="$1"
+PORT=${2:-32400}
+
+nsessions=$(curl -m 10 -s "localhost:$PORT/status/sessions?X-Plex-Token=$MYTOKEN" |
+    sed -n "s/.*MediaContainer size=\"\(.*\)\".*/\1/p")
+
+[ -n "$nsessions" ] && [ "$nsessions" -gt 0 ] && exit 254
+exit 0

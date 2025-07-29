@@ -1,0 +1,131 @@
+[build-system]
+requires = [
+    "pdm-pep517>=1.0",
+]
+build-backend = "pdm.pep517.api"
+
+[project]
+name = "dicom-utils"
+description = "Utility functions for easy DICOM management."
+authors = [
+    { name = "Scott Chase Waggener", email = "tidalpaladin@protonmail.com" },
+    { name = "Tim Cogan", email = "tim@medcognetics.com" },
+]
+dependencies = [
+    "callable-registry",
+    "colorama",
+    "dicom-anon==1.0.13post2",
+    "matplotlib",
+    "numpy",
+    "opencv-python",
+    "Pillow",
+    "pydicom>=3",
+    "pylibjpeg",
+    "pylibjpeg-openjpeg",
+    "tqdm-multiprocessing",
+    "python-gdcm>=3.0.10",
+]
+requires-python = ">=3.10,<3.13"
+readme = "README.md"
+dynamic = []
+version = "1.0.8"
+
+[project.license]
+text = "Apache"
+
+[project.optional-dependencies]
+j2k = [
+    "pynvjpeg2k",
+]
+
+[project.scripts]
+dicomutils = "dicom_utils.cli.__main__:main"
+dicomcat = "dicom_utils.cli.cat:entrypoint"
+dicomfind = "dicom_utils.cli.find:entrypoint"
+dicom2img = "dicom_utils.cli.dicom2img:entrypoint"
+dicom_types = "dicom_utils.cli.dicom_types:entrypoint"
+dicom_overlap = "dicom_utils.cli.overlap:entrypoint"
+dicomstrip = "dicom_utils.cli.strip:entrypoint"
+dicomphi = "dicom_utils.cli.dicomphi:entrypoint"
+dicomcheck = "dicom_utils.cli.validate:entrypoint"
+dicomorg = "dicom_utils.cli.organize:entrypoint"
+dicom-decomp = "dicom_utils.cli.decompress:entrypoint"
+dicom-hash = "dicom_utils.cli.hash:entrypoint"
+merge_series = "dicom_utils.cli.merge_series:entrypoint"
+
+[tool.autoflake]
+remove-all-unused-imports = true
+remove-unused-variables = true
+
+[tool.autopep8]
+max_line_length = 120
+ignore = "E203,E231,E305,E402,E721,E722,E741,F401,F403,F405,F821,F841,F999,W503"
+recursive = true
+aggressive = 3
+in-place = true
+
+[tool.black]
+line-length = 120
+target-version = [
+    "py311",
+]
+
+[tool.isort]
+ensure_newline_before_comments = true
+force_grid_wrap = 0
+include_trailing_comma = true
+line_length = 119
+lines_after_imports = 2
+multi_line_output = 3
+use_parentheses = false
+
+[tool.pyright]
+include = [
+    "dicom_utils",
+    "tests",
+]
+exclude = [
+    "**/node_modules",
+    "**/__pycache__",
+    "dicom_utils/_tag_enum.py",
+    "**/*.dcm",
+]
+pythonVersion = "3.11"
+
+[tool.pdm.version]
+source = "file"
+path = "dicom_utils/version.py"
+
+[tool.pdm.scripts]
+pre_install = "util/create_version_file.py"
+
+[tool.pdm.dev-dependencies]
+test = [
+    "pytest",
+    "pytest-mock",
+    "pytest-cov",
+    "coverage",
+    "pdbpp",
+]
+quality = [
+    "autoflake",
+    "autopep8",
+    "black",
+    "flake8",
+    "isort",
+]
+dist = [
+    "build",
+    "twine",
+]
+
+[tool.pytest.ini_options]
+markers = [
+    "ci_skip",
+]
+filterwarnings = [
+    "ignore:.*Invalid value for VR.*:UserWarning",
+    "ignore:.*in the dataset does not match the component precision.*:UserWarning",
+    "ignore:.*doesn't match the JPEG 2000 data.*:UserWarning",
+    "ignore:.*The number of bytes of compressed pixel data matches the expected number for uncompressed data.*:UserWarning",
+]

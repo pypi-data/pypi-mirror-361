@@ -1,0 +1,52 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "SciCom"
+version = "1.0.0"
+authors = [
+    { name = "Bernardo S. Buarque", email = "bernardo.buarque@motu.org.nz" },
+    { name = "Malte Vogl", email = "vogl@gea.mpg.de" },
+]
+description = "Simulating various aspects of scientific communication via Agent-based models."
+readme = "README.md"
+license = { file = "LICENSE.md" }
+requires-python = ">3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "mesa >= 2",
+    "mesa-geo",
+    "shapely >=2",
+    "pandas",
+    "geopandas",
+    "networkx",
+    "numpy",
+    "igraph",
+    "solara",
+    "altair",
+    "nx_altair",
+]
+
+[project.urls]
+"Project Homepage" = "https://modelsen.gea.mpg.de"
+"Homepage" = "https://gitlab.gwdg.de/modelsen/sciencecommunicationmodels"
+"Issues" = "https://gitlab.gwdg.de/modelsen/sciencecommunicationmodels/-/issues"
+
+
+[project.optional-dependencies]
+test = ["tox", "flake8", "pytest", "pytest-cov"]
+docs = ["sphinx_rtd_theme", "sphinx", "sphinx-autoapi", "myst-parser"]
+dev = ["twine"]
+
+[tool.ruff.lint]
+select = ["ALL"]
+
+[tool.ruff]
+line-length = 120
+ignore = ["S101", "S311", "TD003", "ANN101", "N802", "N803", "N806"]

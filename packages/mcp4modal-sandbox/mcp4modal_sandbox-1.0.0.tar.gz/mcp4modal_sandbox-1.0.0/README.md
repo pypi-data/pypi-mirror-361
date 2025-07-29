@@ -1,0 +1,181 @@
+# MCP4Modal Sandbox
+
+A powerful Model Context Protocol (MCP) server that provides seamless cloud-based sandbox management using Modal.com. This project enables LLMs and AI assistants to spawn, manage, and interact with isolated compute environments in the cloud with full GPU support.
+
+##  Features
+
+### Core Sandbox Management
+- **Launch Sandboxes**: Create isolated Python environments with custom configurations
+- **Terminate Sandboxes**: Clean resource management and controlled shutdown
+- **List Sandboxes**: Monitor and track active sandbox environments
+- **App Namespacing**: Organize sandboxes within Modal app namespaces
+
+### Advanced Configuration
+- **Python Versions**: Support for multiple Python versions (default: 3.12)
+- **Package Management**: Install pip and apt packages during sandbox creation
+- **Resource Allocation**: Configure CPU cores, memory, and execution timeouts
+- **Working Directory**: Set custom working directories for sandbox environments
+
+### GPU Support
+Comprehensive GPU support for machine learning and compute-intensive workloads:
+- **T4**: Entry-level GPU, ideal for inference workloads
+- **L4**: Mid-range GPU for general ML tasks
+- **A10G**: High-performance GPU for training (up to 4 GPUs)
+- **A100-40GB/80GB**: High-end GPUs for large-scale training
+- **L40S**: Latest generation GPU for ML workloads
+- **H100**: Latest generation high-end GPU
+- **H200**: Latest generation flagship GPU
+- **B200**: Latest generation enterprise GPU
+
+### File Operations
+- **Push Files**: Upload files from local filesystem to sandboxes
+- **Pull Files**: Download files from sandboxes to local filesystem
+- **Read File Content**: View file contents directly without downloading
+- **Write File Content**: Create and edit files within sandboxes
+- **Directory Management**: Create, list, and remove directories
+
+### Command Execution
+- **Remote Execution**: Run arbitrary commands in sandbox environments
+- **Output Capture**: Capture stdout, stderr, and return codes
+- **Timeout Control**: Configure execution timeouts for long-running tasks
+- **Performance Metrics**: Track execution time and resource usage
+
+### Security & Environment Management
+- **Secrets Management**: Inject environment variables and secrets
+- **Predefined Secrets**: Reference existing secrets from Modal dashboard
+- **Volume Mounting**: Attach persistent storage volumes
+- **Isolated Environments**: Complete isolation between sandbox instances
+
+### Transport Options
+- **stdio**: Direct command-line interface (default)
+- **streamable-http**: HTTP-based communication
+- **SSE**: Server-Sent Events for real-time updates
+
+## rerequisites
+
+- Python 3.12+
+- Modal.com account and API key
+- Environment variables configured (see Configuration section)
+
+## Installation
+
+### Using UV (Recommended)
+```bash
+# Clone the repository
+git clone https://github.com/milkymap/mcp4modal_sandbox.git
+cd mcp4modal_sandbox
+
+# Install dependencies
+uv sync
+
+# Install in development mode
+uv pip install -e .
+```
+
+
+### Using Docker
+
+#### Build the Docker Image
+```bash
+# Build the Docker image
+docker build -t mcp4modal-sandbox f Dockerfile .
+```
+
+#### Run with stdio Transport (Default)
+```bash
+# Run --help to find options
+docker run -it \
+  -e MODAL_TOKEN_ID="your_modal_token_id" \
+  -e MODAL_TOKEN_SECRET="your_modal_token_secret" \
+  mcp4modal-sandbox --help
+```
+
+
+## Configuration
+
+### Environment Variables
+Create a `.env` file in the project root:
+
+```bash
+# Required: Modal.com API Configuration
+MODAL_TOKEN_ID="your_modal_token_id"
+MODAL_TOKEN_SECRET="your_modal_token_secret"
+
+# Optional: HTTP Transport Configuration (only needed for streamable-http/sse transports)
+MCP_HOST="0.0.0.0"  # Default: 0.0.0.0
+MCP_PORT=8000       # Default: 8000
+```
+
+### Modal.com Setup
+1. Create an account at [Modal.com](https://modal.com)
+2. Generate API tokens from your Modal dashboard
+3. Configure the tokens in your environment variables
+
+### Integration with Claude Desktop
+
+Add to your Claude Desktop configuration:
+
+#### uvx 
+```json
+{
+  "mcpServers": {
+    "mcp4modal-sandbox": {
+        "command": "uvx",
+        "args": [
+          "mcp4modal_sandbox",
+          "--transport", "stdio",
+          "--app_name", "namespace",
+          "--preloaded_secrets", "group0", // modal secret
+          "--preloaded_secrets", "group1" // modal secret
+          ],
+        "env": {
+          "MODAL_TOKEN_ID": "",
+          "MODAL_TOKEN_SECRET": ""
+        }
+    }
+  }
+}
+```
+
+
+#### docker
+```json
+{
+  "mcpServers": {
+    "mcp4modal-sandbox": {
+        "command": "docker",
+        "args": [
+          "run", "--rm", "-i", "--name", "modal_sandbox",
+          "-e", "MODAL_TOKEN_ID", "-e", "MODAL_TOKEN_SECRET", 
+          "-v", "/path/to/volume", 
+          "milkymap/modal_sandbox:0.1", 
+          "--transport", "stdio",
+          "--app_name", "namespace",
+          "--preloaded_secrets", "group0",
+          "--preloaded_secrets", "group1"
+          ],
+        "env": {
+          "MODAL_TOKEN_ID": "",
+          "MODAL_TOKEN_SECRET": ""
+        }
+    }
+  }
+}
+```
+
+## Available Tools
+
+The MCP server provides 11 tools for comprehensive sandbox management:
+
+1. **`launch_sandbox`** - Create new Modal sandboxes with custom configuration (Python version, packages, GPU, secrets)
+2. **`terminate_sandbox`** - Stop and clean up running sandboxes
+3. **`list_sandboxes`** - List all sandboxes in an app namespace with their status
+4. **`execute_command`** - Run shell commands in sandboxes and capture output
+5. **`push_file_to_sandbox`** - Upload files from local filesystem to sandboxes
+6. **`pull_file_from_sandbox`** - Download files from sandboxes to local filesystem
+7. **`list_directory_contents`** - List contents of directories within sandboxes
+8. **`make_directory`** - Create directories in sandboxes
+9. **`remove_path`** - Remove files or directories from sandboxes
+10. **`read_file_content_from_sandbox`** - Read file contents directly from sandboxes
+11. **`write_file_content_to_sandbox`** - Write content to files within sandboxes
+

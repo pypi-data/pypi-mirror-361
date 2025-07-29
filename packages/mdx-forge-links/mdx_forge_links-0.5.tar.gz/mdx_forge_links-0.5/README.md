@@ -1,0 +1,195 @@
+# Python-Markdown Forge-Links Extension
+
+This is[^1] a fork of the [Python-Markdown Github-Links Extension](https://pypi.org/project/mdx-gh-links/)
+for use with your [Forgejo](https://forgejo.org/) instance or hosted service,
+or any other [software forge](https://en.wikipedia.org/wiki/Forge_(software)),
+that uses the same URL patterns.
+
+[^1]: As [suggested by the author](https://github.com/Python-Markdown/github-links/issues/7#issuecomment-377251776).
+
+## Installation
+
+To install the extension, run the following command:
+
+```sh
+pip install mdx-forge-links
+```
+
+## Usage
+
+To use the extension, simply include its name in the list of extensions passed to
+Python-Markdown.
+
+```python
+import markdown
+
+markdown.markdown(src, extensions=['mdx_forge_links'])
+```
+
+Or, with [MkDocs](https://www.mkdocs.org/), add `mdx_forge_links` to the
+[`markdown_extensions` setting](https://www.mkdocs.org/user-guide/configuration/#markdown_extensions).
+
+### Configuration Options
+
+To set configuration options, you may pass them to Markdown's `exension_configs`
+keyword...
+
+```python
+markdown.markdown(
+    src,
+    extensions=['mdx_forge_links'],
+    extension_configs={
+        'mdx_forge_links': {
+            'user': 'foo',
+            'repo': 'bar',
+            'base_url': 'https://codeberg.org',
+        }
+    },
+)
+```
+
+... or you may import and pass the configs directly to an instance of the
+`mdx_forge_links.ForgeLinks` class...
+
+```python
+from mdx_forge_links import ForgeLinks
+
+markdown.markdown(
+    src,
+    extensions=[ForgeLinks(user='foo', repo='bar', base_url='https://codeberg.org')],
+)
+```
+
+... or, with MkDocs...
+
+```yaml
+markdown_extensions:
+  - mdx_forge_links:
+      user: foo
+      repo: bar
+      base_url: https://codeberg.org
+```
+
+The following configuration options are available:
+
+#### `user`
+
+A user name or organization. If no user or organization is specified in a link,
+then the value of this option will be used.
+
+#### `repo`
+
+A repository. If no repository is specified in a link, then the value of this
+option will be used.
+
+#### `base_url`
+
+The base URL of the server for the repository (e.g. `https://codeberg.org`).
+
+## Syntax
+
+This extension implements shorthand to specify links to your software forge in
+various ways.
+
+All links in the generated HTML are assigned a `forge-link` class as well as a class
+unique to that type of link. See each type for the specific class assigned.
+
+### Mentions
+
+Link directly to a user, organization or repository. Note that no verification
+is made that an actual user, organization or repository exists. As the syntax
+does not differentiate between users and organizations, all organizations are
+assumed to be users. However, this assumption is only reflected in the title of
+a link.
+
+Mentions use the format `@{user}` to link to a user or organization and
+`@{user}/{repo}` to link to a repository. The defaults defined in the
+configuration options are ignored by mentions. A mention may be escaped by
+adding a backslash immediately before the at sign (`@`).
+
+All mentions are assigned the `forge-mention` class.
+
+The following table provides some examples:
+
+| shorthand   | href                           | rendered result                                                 |
+| ----------- | ------------------------------ | ----------------------------------------------------------------|
+| `@foo`      | `https://codeberg.org/foo`     | [@foo](https://codeberg.org/foo "User: @foo")                   |
+| `@foo/bar`  | `https://codeberg.org/foo/bar` | [@foo/bar](https://codeberg.org/foo/bar "Repository: @foo/bar") |
+| `\@foo`     |                                | @foo                                                            |
+| `\@foo/bar` |                                | @foo/bar                                                        |
+
+### Issues
+
+Link directly to an issue or pull request (PR). Note that no verification is
+made that an actual issue or PR exists. As the syntax does not differentiate
+between Issues and PRs, all URLs point to "issues". Fortunately, GitHub will
+properly redirect an issue URL to a PR URL if appropriate.
+
+Issue links use the format `#{num}` or `{user}/{repo}#{num}`. `{num}` is the
+number assigned to the issue or PR. `{user}` and `{repo}` will use the
+defaults defined in the configuration options if not provided. An issue link may
+be escaped by adding a backslash immediately before the hash mark (`#`).
+
+All issue links are assigned the `forge-issue` class.
+
+The following table provides various examples (with the defaults set as
+`user='user', repo='repo', base_url='https://codeberg.org'`):
+
+| shorthand      | href                                         | rendered result                                                              |
+| -------------- | -------------------------------------------- | ---------------------------------------------------------------------------- |
+| `#123`         | `https://codeberg.org/user/repo/issues/123`  | [#123](https://codeberg.org/user/repo/issues/123 "Issue user/repo #123")     |
+| `foo/bar#123`  | `https://codeberg.org/foo/bar/issues/123`    | [foo/bar#123](https://codeberg.org/foo/bar/issues/123 "Issue foo/bar #123")  |
+| `\#123`        |                                              | #123                                                                         |
+| `foo/bar\#123` |                                              | foo/bar#123                                                                  |
+
+### Commits
+
+Link directly to a commit. Note that no verification is made that an actual
+commit exists.
+
+Commit links consist of a complete 40 character SHA hash and may optionally be
+prefaced by `{user}@` or `{user/repo}@`. `{user}` and `{repo}` will use the
+defaults defined in the configuration options if not provided. To avoid a 40
+character hash from being linked, wrap it in a code span.
+
+All commit links are assigned the `forge-commit` class.
+
+The following table provides various examples (with the defaults set as
+`user='user', repo='repo', base_url='https://codeberg.org'`):
+
+| shorthand                                          | href                                                                              | rendered result                                                                                                                                            |
+| -------------------------------------------------- | --------------------------------------------------------------------------------- | -----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `72df691791fb36f00cf5363fefe757c8d3042656`         | `https://codeberg.org/user/repo/commit/72df691791fb36f00cf5363fefe757c8d3042656`  | [72df691](https://codeberg.org/user/repo/commit/72df691791fb36f00cf5363fefe757c8d3042656 "Commit: user/repo@72df691791fb36f00cf5363fefe757c8d3042656")     |
+| `foo@72df691791fb36f00cf5363fefe757c8d3042656`     | `https://codeberg.org/foo/repo/commit/72df691791fb36f00cf5363fefe757c8d3042656`   | [foo@72df691](https://codeberg.org/foo/repo/commit/72df691791fb36f00cf5363fefe757c8d3042656 "Commit: foo/repo@72df691791fb36f00cf5363fefe757c8d3042656")   |
+| `foo/bar@72df691791fb36f00cf5363fefe757c8d3042656` | `https://codeberg.org/foo/bar/commit/72df691791fb36f00cf5363fefe757c8d3042656`    | [foo/bar@72df691](https://codeberg.org/foo/bar/commit/72df691791fb36f00cf5363fefe757c8d3042656 "Commit: foo/bar@72df691791fb36f00cf5363fefe757c8d3042656") |
+| `` `72df691791fb36f00cf5363fefe757c8d3042656` ``   |                                                                                   | `72df691791fb36f00cf5363fefe757c8d3042656`                                                                                                                 |
+
+## License
+
+The Python-Markdown Forge-Links Extension is licensed under the [BSD License] as
+defined in `LICENSE`.
+
+[BSD License]: http://opensource.org/licenses/BSD-3-Clause
+
+## Changelog
+
+### [0.5] - 2025-10-07
+
+_Initial release (based on [Python-Markdown Github-Links Extension 0.4](https://pypi.org/project/mdx-gh-links/0.4/))._
+
+#### Added
+
+- Noxfile for running linters, tests, and coverage with Nox.
+- Documentation on usage with MkDocs.
+- Support for current versions of Python.
+
+#### Changed
+
+- Package, extension, and class names.
+- Build package with Poetry instead of setuptools.
+
+#### Removed
+
+- "GitHub" from link titles.
+- GitHub workflows.
+- Support for deprecated versions of Python.

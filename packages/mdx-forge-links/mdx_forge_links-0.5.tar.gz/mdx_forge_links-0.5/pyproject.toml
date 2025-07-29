@@ -1,0 +1,68 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[project]
+name = 'mdx-forge-links'
+version = "0.5"
+description = "An extension to Python-Markdown which adds support for shorthand links to your software forge's users, repositories, issues and commits."
+readme = {file = 'README.md', content-type='text/markdown'}
+requires-python = ">=3.9,<4.0"
+authors = [
+    {name = 'Tobias Bölz', email = 'tobias@boelz.eu'}
+]
+license = 'BSD-3-Clause'
+license-files = ['LICENSE']
+dependencies = [
+    "markdown>=3.0.0"
+]
+keywords = ['markdown', 'python-markdown', 'forge']
+classifiers = [
+    'Development Status :: 4 - Beta',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: 3.13',
+    'Programming Language :: Python :: Implementation :: CPython',
+    'Programming Language :: Python :: Implementation :: PyPy',
+    'Topic :: Documentation',
+    'Topic :: Text Processing',
+    'Topic :: Text Processing :: Markup',
+    'Topic :: Text Processing :: Markup :: HTML'
+]
+
+[project.urls]
+'Homepage' = 'https://git.boelz.eu/tmb/mdx-forge-links'
+'Repository' = 'https://git.boelz.eu/tmb/mdx-forge-links'
+'Issue Tracker' = 'https://git.boelz.eu/tmb/mdx-forge-links/issues'
+'Changelog' = 'https://git.boelz.eu/tmb/mdx-forge-links#changelog'
+
+[tool.poetry]
+packages = [
+    { include = 'mdx_forge_links.py' },
+    { include = 'test_forge_links.py' },
+]
+
+[tool.poetry.group.dev.dependencies]
+nox = "^2025.5.1"
+black = "^25.1.0"
+flake8 = "^7.3.0"
+coverage = "^7.9.1"
+isort = "^6.0.1"
+flake8-quotes = "^3.4.0"
+flake8-bugbear = "^24.12.12"
+flake8-print = "^5.0.0"
+flake8-pep3101 = "^2.1.0"
+flake8-eradicate = "^1.5.0"
+flake8-builtins = "^2.5.0"
+
+[tool.black]
+target-version = ["py39"]
+skip-string-normalization = true
+
+[tool.isort]
+profile = "black"

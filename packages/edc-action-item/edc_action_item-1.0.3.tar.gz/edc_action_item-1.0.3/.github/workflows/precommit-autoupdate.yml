@@ -1,0 +1,37 @@
+---
+
+name: Pre-commit Autoupdate
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'  # Weekly on Sunday
+
+jobs:
+  autoupdate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install pre-commit
+        run: pip install pre-commit
+      - name: Run pre-commit autoupdate
+        run: pre-commit autoupdate
+
+      - name: Restore isort version
+        run: |
+          sed -i '/repo: https:\/\/github.com\/PyCQA\/isort/{n;s/rev:.*/rev: 5.13.2/}' .pre-commit-config.yaml
+
+      - name: Commit changes
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add .pre-commit-config.yaml
+          git diff --cached --quiet || git commit -m "Autoupdate pre-commit hooks (isort pinned to 5.13.2)"
+          git push

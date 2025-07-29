@@ -1,0 +1,19 @@
+# ----------------- BEGIN LICENSE BLOCK ---------------------------------
+#
+# Copyright (c) 2020-2021 Intel Corporation
+#
+# SPDX-License-Identifier: LGPL-2.1-only
+#
+# ----------------- END LICENSE BLOCK -----------------------------------
+
+"""
+Import ad_rss_map_integration module for python313
+"""
+
+import sys
+import os.path
+sys.path.append(os.path.dirname(__file__))
+
+from ad_rss import *
+from ad_map_access import *
+from ad_rss_map_integration_python313 import *

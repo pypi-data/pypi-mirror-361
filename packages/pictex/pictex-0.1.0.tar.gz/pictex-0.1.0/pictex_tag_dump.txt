@@ -1,0 +1,972 @@
+------------------------------------------------------------------------------------------
+file: src\pictex\__init__.py
+------------------------------------------------------------------------------------------
+import logging
+
+logger = logging.getLogger("pictex")
+logger.addHandler(logging.NullHandler())
+
+from .canvas import Canvas
+from .models import *
+from .image import Image
+
+__version__ = "0.1.0"
+
+__all__ = [
+    "Canvas",
+    "Style",
+    "SolidColor",
+    "LinearGradient",
+    "Background",
+    "Shadow",
+    "OutlineStroke",
+    "Font",
+    "Alignment",
+    "FontStyle",
+    "FontWeight",
+    "DecorationLine",
+    "TextDecoration",
+    "Image",
+    "CropMode",
+    "Box",
+]
+
+
+
+------------------------------------------------------------------------------------------
+file: src\pictex\canvas.py
+------------------------------------------------------------------------------------------
+from __future__ import annotations
+from typing import Optional
+
+from .models import *
+from .renderer import SkiaRenderer
+from .image import Image
+
+class Canvas:
+    """
+    The main user-facing class for creating stylized text images.
+    Implements a fluent builder pattern.
+    """
+    def __init__(
+        self,
+        style: Optional[Style] = None,
+    ):
+        self.style = style if style is not None else Style()
+        self._renderer = SkiaRenderer()
+
+    def font_family(self, family: str) -> Canvas:
+        self.style.font.family = family
+        return self
+    
+    def font_size(self, size: float) -> Canvas:
+        self.style.font.size = size
+        return self
+    
+    def font_weight(self, weight: FontWeight | int) -> Canvas:
+        self.style.font.weight = weight if isinstance(weight, FontWeight) else FontWeight(weight)
+        return self
+    
+    def font_style(self, style: FontStyle | str) -> Canvas:
+        self.style.font.style = style if isinstance(style, FontStyle) else FontStyle(style)
+        return self
+
+    def color(self, color: str | PaintSource) -> Canvas:
+        self.style.color = self.__build_color(color)
+        return self
+
+    def shadow(self, offset: tuple[float, float], blur_radius: float, color: str | SolidColor) -> Canvas:
+        shadow_color = self.__build_color(color)
+        self.style.shadows.append(Shadow(offset, blur_radius, shadow_color))
+        return self
+    
+    def box_shadow(self, offset: tuple[float, float], blur_radius: float, color: str | SolidColor) -> Canvas:
+        shadow_color = self.__build_color(color)
+        self.style.box_shadows.append(Shadow(offset, blur_radius, shadow_color))
+        return self
+    
+    def outline_stroke(self, width: float, color: str | PaintSource) -> Canvas:
+        """Adds an outline stroke to the text."""
+        self.style.outline_stroke = OutlineStroke(width=width, color=self.__build_color(color))
+        return self
+    
+    def underline(self, thickness: float = 2.0, color: Optional[str | PaintSource] = None) -> Canvas:
+        color = self.__build_color(color) if color else None
+        self.style.decorations.append(
+            TextDecoration(line=DecorationLine.UNDERLINE, color=color, thickness=thickness)
+        )
+        return self
+    
+    def strikethrough(self, thickness: float = 2.0, color: Optional[str | PaintSource] = None) -> Canvas:
+        color = self.__build_color(color) if color else None
+        self.style.decorations.append(
+            TextDecoration(line=DecorationLine.STRIKETHROUGH, color=color, thickness=thickness)
+        )
+        return self
+
+    def padding(self, left: float, top: float, right: float, bottom: float) -> Canvas:
+        self.style.padding = (left, top, right, bottom)
+        return self
+
+    def background_color(self, color: str | PaintSource) -> Canvas:
+        self.style.background.color = self.__build_color(color)
+        return self
+
+    def background_radius(self, radius: float) -> Canvas:
+        self.style.background.corner_radius = radius
+        return self
+    
+    def line_height(self, multiplier: float) -> Canvas:
+        """
+        Sets the line height as a multiplier of the font size.
+        E.g., 1.5 means 150% line spacing.
+        """
+        self.style.font.line_height = multiplier
+        return self
+    
+    def alignment(self, alignment: Alignment | str) -> Canvas:
+        self.style.alignment = alignment if isinstance(alignment, Alignment) else Alignment(alignment)
+        return self
+    
+    def render(self, text: str, crop_mode: CropMode = CropMode.NONE) -> Image:
+        """
+        Renders the image and returns a `Image` object.
+        
+        Args:
+            text: Text to render.
+            crop_mode: The cropping strategy to use for the final canvas.
+                  - SMART: Tightly crops to visible pixels.
+                  - CONTENT_BOX: Crops to the text + padding box.
+                  - NONE: No cropping, includes all effect boundaries. (Default)
+        """
+        skia_image, content_box = self._renderer.render(text, self.style, crop_mode)
+        return Image(skia_image, content_box)
+
+    def __build_color(self, color: str | PaintSource) -> PaintSource:
+        return SolidColor.from_str(color) if isinstance(color, str) else color
+
+
+
+------------------------------------------------------------------------------------------
+file: src\pictex\image.py
+------------------------------------------------------------------------------------------
+from __future__ import annotations
+import skia
+import numpy as np
+from .models import Box
+
+class Image:
+    """
+    A wrapper around a rendered Skia image.
+
+    This class provides convenient methods to access image data, save to a file,
+    or convert to other popular formats like NumPy arrays or Pillow images.
+    """
+    def __init__(self, skia_image: skia.Image, content_box: Box):
+        self._skia_image = skia_image
+        self._content_box = content_box
+
+    @property
+    def content_box(self) -> Box:
+        """
+        The bounding box of the content (text + padding), relative to the top-left corner of the final image.
+        Returns a Box(x, y, width, height) object.
+        """
+        return self._content_box
+
+    @property
+    def width(self) -> int:
+        """The width of the image in pixels."""
+        return self._skia_image.width()
+
+    @property
+    def height(self) -> int:
+        """The height of the image in pixels."""
+        return self._skia_image.height()
+
+    @property
+    def skia_image(self) -> skia.Image:
+        """
+        Returns the raw, underlying skia.Image object for advanced use cases.
+        """
+        return self._skia_image
+
+    def to_bytes(self) -> bytes:
+        """
+        Returns the pixel data as a raw byte string in BGRA format.
+        """
+        return self._skia_image.tobytes()
+
+    def to_numpy(self, rgba: bool = False) -> np.ndarray:
+        """
+        Converts the image to a NumPy array.
+
+        Args:
+            rgba: If True, returns the array in RGBA channel order.
+                  If False (default), returns in BGRA order, which is
+                  directly compatible with libraries like OpenCV.
+
+        Returns:
+            A NumPy array representing the image.
+        """
+        array = np.frombuffer(self.to_bytes(), dtype=np.uint8).reshape(
+            (self.height, self.width, 4)
+        )
+        if rgba:
+            # Swap Blue and Red channels for RGBA
+            return array[:, :, [2, 1, 0, 3]]
+        return array
+
+    def to_pillow(self):
+        """
+        Converts the image to a Pillow (PIL) Image object.
+        Requires Pillow to be installed (`pip install Pillow`).
+        """
+        try:
+            from PIL import Image as PillowImage
+        except ImportError:
+            raise ImportError("Pillow is not installed. Please install it with 'pip install Pillow'.")
+        
+        # Pillow works with RGBA arrays
+        return PillowImage.fromarray(self.to_numpy(rgba=True))
+
+    def save(self, output_path: str) -> None:
+        """
+        Saves the image to a file. The format is inferred from the extension.
+        
+        Args:
+            output_path: The path to save the output image (e.g., 'image.png').
+        """
+        self._skia_image.save(output_path)
+        
+    def show(self) -> None:
+        """
+        Displays the image using Pillow. Useful for debugging in scripts.
+        Requires Pillow to be installed.
+        """
+        self.to_pillow().show()
+
+
+
+------------------------------------------------------------------------------------------
+file: src\pictex\models\__init__.py
+------------------------------------------------------------------------------------------
+from .effects import Shadow, OutlineStroke
+from .style import Style
+from .typography import Font, Alignment, FontStyle, FontWeight
+from .background import Background
+from .paint_source import PaintSource
+from .color import SolidColor
+from .linear_gradient import LinearGradient
+from .decoration import DecorationLine, TextDecoration
+from .crop import CropMode
+from .box import Box
+
+
+
+------------------------------------------------------------------------------------------
+file: src\pictex\models\background.py
+------------------------------------------------------------------------------------------
+from dataclasses import dataclass, field
+from .color import SolidColor
+from .paint_source import PaintSource
+
+@dataclass
+class Background:
+    """Represents a background shape behind the text."""
+    color: PaintSource = field(default_factory=lambda: SolidColor(0, 0, 0, 0))
+    corner_radius: float = 0.0
+
+
+
+------------------------------------------------------------------------------------------
+file: src\pictex\models\box.py
+------------------------------------------------------------------------------------------
+from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class Box:
+    """Represents a rectangular area with position and size."""
+    x: int
+    y: int
+    width: int
+    height: int
+
+
+
+------------------------------------------------------------------------------------------
+file: src\pictex\models\color.py
+------------------------------------------------------------------------------------------
+from __future__ import annotations
+from dataclasses import dataclass
+import skia
+
+from .paint_source import PaintSource
+
+NAMED_COLORS = {
+    'black': '#000000',
+    'white': '#ffffff',
+    'red': '#ff0000',
+    'green': '#008000',
+    'blue': '#0000ff',
+    'yellow': '#ffff00',
+    'cyan': '#00ffff',
+    'magenta': '#ff00ff',
+    'silver': '#c0c0c0',
+    'gray': '#808080',
+    'maroon': '#800000',
+    'olive': '#808000',
+    'purple': '#800080',
+    'teal': '#008080',
+    'navy': '#000080',
+    'orange': '#ffa500',
+    'gold': '#ffd700',
+    'pink': '#ffc0cb',
+}
+
+@dataclass(frozen=True)
+class SolidColor(PaintSource):
+    """Represents a solid RGBA color."""
+    r: int
+    g: int
+    b: int
+    a: int = 255
+
+    @classmethod
+    def from_hex(cls, hex_str: str) -> SolidColor:
+        """Creates a Color object from a hex string (e.g., '#RRGGBB' or '#RGB')."""
+        hex_str = hex_str.lstrip('#')
+        if len(hex_str) == 3:
+            hex_str = "".join(c * 2 for c in hex_str)
+        if len(hex_str) != 6:
+            raise ValueError("Invalid hex color format.")
+        
+        r, g, b = (int(hex_str[i:i+2], 16) for i in (0, 2, 4))
+        return cls(r, g, b)
+
+    @classmethod
+    def from_str(cls, value: str) -> SolidColor:
+        """
+        Creates a Color object from a string.
+        Supports hex codes (e.g., '#ff0000') and named colors (e.g., 'red').
+        """
+        hex_code = value.strip().lower() if value.startswith('#') else NAMED_COLORS.get(value, None)
+        if hex_code:
+            return cls.from_hex(hex_code)
+        
+        raise ValueError(f"Unknown color name or format: '{value}'")
+
+    def apply_to_paint(self, paint: skia.Paint, bounds: skia.Rect) -> None:
+        """Applies this solid color to the paint object."""
+        paint.setColor(skia.Color(self.r, self.g, self.b, self.a))
+
+
+
+------------------------------------------------------------------------------------------
+file: src\pictex\models\crop.py
+------------------------------------------------------------------------------------------
+from enum import Enum
+
+class CropMode(Enum):
+    """
+    Defines how the final image canvas should be cropped.
+    """
+    SMART = "smart"
+    CONTENT_BOX = "content_box"
+    NONE = "none"
+
+
+
+------------------------------------------------------------------------------------------
+file: src\pictex\models\decoration.py
+------------------------------------------------------------------------------------------
+from __future__ import annotations
+from dataclasses import dataclass
+from enum import Enum
+from typing import Optional
+
+from .color import SolidColor
+
+class DecorationLine(Enum):
+    """The type of line to draw for the decoration."""
+    UNDERLINE = "underline"
+    STRIKETHROUGH = "strikethrough"
+
+@dataclass
+class TextDecoration:
+    """Represents a line drawn over, under, or through the text."""
+    line: DecorationLine
+    color: Optional[SolidColor] = None  # If None, use the text's color.
+    thickness: float = 4.0
+
+
+
+------------------------------------------------------------------------------------------
+file: src\pictex\models\effects.py
+------------------------------------------------------------------------------------------
+from dataclasses import dataclass, field
+from .color import SolidColor
+from .paint_source import PaintSource
+
+@dataclass
+class Shadow:
+    """Represents a drop shadow effect."""
+    offset: tuple[float, float] = (2, 2)
+    blur_radius: float = 4.0
+    color: SolidColor = field(default_factory=lambda: SolidColor(0, 0, 0, a=128))
+
+@dataclass
+class OutlineStroke:
+    """Represents an outline text stroke."""
+    width: float = 2.0
+    color: PaintSource = field(default_factory=lambda: SolidColor(0, 0, 0))
+
+
+
+------------------------------------------------------------------------------------------
+file: src\pictex\models\linear_gradient.py
+------------------------------------------------------------------------------------------
+from dataclasses import dataclass
+from typing import Sequence, Optional
+import skia
+
+from .paint_source import PaintSource
+from .color import SolidColor
+
+@dataclass
+class LinearGradient(PaintSource):
+    """
+    Represents a linear gradient fill, smoothly transitioning between colors
+    along a straight line.
+
+    The gradient's direction and color distribution are controlled by its
+    parameters. This class allows for creating rich, colorful fills for
+    text and backgrounds.
+
+    Attributes:
+        colors (Sequence[Color]): A sequence of two or more Color objects
+            that define the key colors of the gradient.
+        stops (Optional[Sequence[float]]): A sequence of numbers between 0.0
+            and 1.0 that specify the position of each color in the `colors`
+            sequence. The length of `stops` must match the length of `colors`.
+            If `None`, the colors are distributed evenly along the gradient line.
+            For example, for `colors` with 3 colors, `stops=[0.0, 0.5, 1.0]`
+            would place the second color exactly in the middle of the gradient.
+        start_point (tuple[float, float]): A tuple `(x, y)` representing the
+            starting point of the gradient line. Coordinates are relative to the
+            object's bounding box, where (0.0, 0.0) is the top-left corner and
+            (1.0, 1.0) is the bottom-right corner.
+        end_point (tuple[float, float]): A tuple `(x, y)` representing the
+            ending point of the gradient line. The gradient is drawn along the
+            line connecting `start_point` to `end_point`.
+
+    Example:
+        # A simple horizontal gradient from red to blue
+        horizontal_gradient = LinearGradient(
+            colors=['#FF0000', 'blue']
+        )
+
+        # A vertical gradient from top (yellow) to bottom (orange)
+        vertical_gradient = LinearGradient(
+            colors=['yellow', 'orange'],
+            start_point=(0.5, 0.0),
+            end_point=(0.5, 1.0)
+        )
+
+        # A diagonal gradient with a custom color stop
+        diagonal_gradient = LinearGradient(
+            colors=[
+                'magenta',
+                'cyan',
+                'yellow'
+            ],
+            stops=[0.0, 0.2, 1.0] # 'cyan' is positioned 20% along the gradient
+        )
+    """
+    colors: Sequence[SolidColor]
+    stops: Optional[Sequence[float]] = None
+    start_point: tuple[float, float] = (0.0, 0.5)
+    end_point: tuple[float, float] = (1.0, 0.5)
+
+    def __post_init__(self):
+        self.colors = [
+            SolidColor.from_str(c) if isinstance(c, str) else c
+            for c in self.colors
+        ]
+        if not all(isinstance(c, SolidColor) for c in self.colors):
+             raise TypeError("All items in 'colors' must be Color objects or valid color strings.")
+
+    def apply_to_paint(self, paint: skia.Paint, bounds: skia.Rect) -> None:
+        """Creates a linear gradient shader and applies it to the paint."""
+        if not self.colors:
+            return
+
+        skia_colors = [skia.Color(c.r, c.g, c.b, c.a) for c in self.colors]
+        
+        # Convert relative points to absolute coordinates based on the bounds
+        p1 = (
+            bounds.left() + self.start_point[0] * bounds.width(),
+            bounds.top() + self.start_point[1] * bounds.height()
+        )
+        p2 = (
+            bounds.left() + self.end_point[0] * bounds.width(),
+            bounds.top() + self.end_point[1] * bounds.height()
+        )
+
+        shader = skia.GradientShader.MakeLinear(
+            points=[p1, p2],
+            colors=skia_colors,
+            positions=self.stops
+        )
+        paint.setShader(shader)
+
+
+
+------------------------------------------------------------------------------------------
+file: src\pictex\models\paint_source.py
+------------------------------------------------------------------------------------------
+from abc import ABC, abstractmethod
+import skia
+
+class PaintSource(ABC):
+    """
+    Abstract base class for anything that can be used as a source for a skia.Paint.
+    This includes solid colors, gradients, patterns, etc.
+    """
+    
+    @abstractmethod
+    def apply_to_paint(self, paint: skia.Paint, bounds: skia.Rect) -> None:
+        """
+        Configures the given skia.Paint object to use this source.
+
+        Args:
+            paint: The skia.Paint object to modify.
+            bounds: The bounding box of the shape being painted. This is crucial
+                    for calculating relative coordinates for gradients.
+        """
+        pass
+
+
+
+------------------------------------------------------------------------------------------
+file: src\pictex\models\style.py
+------------------------------------------------------------------------------------------
+from dataclasses import dataclass, field
+from typing import Optional
+
+from .color import SolidColor
+from .effects import Shadow, OutlineStroke
+from .typography import Font, Alignment
+from .background import Background
+from .paint_source import PaintSource
+from .decoration import TextDecoration
+
+@dataclass
+class Style:
+    """
+    A comprehensive container for all text styling properties.
+    This is the core data model for the library.
+    """
+    font: Font = field(default_factory=Font)
+    alignment: Alignment = Alignment.LEFT
+    color: PaintSource = field(default_factory=lambda: SolidColor(0, 0, 0))
+    shadows: list[Shadow] = field(default_factory=list)
+    box_shadows: list[Shadow] = field(default_factory=list)
+    outline_stroke: Optional[OutlineStroke] = None
+    padding: tuple[float, float, float, float] = (5, 5, 5, 5) # Top, Right, Bottom, Left
+    background: Background = field(default_factory=Background)
+    decorations: list[TextDecoration] = field(default_factory=list)
+
+
+
+------------------------------------------------------------------------------------------
+file: src\pictex\models\typography.py
+------------------------------------------------------------------------------------------
+from dataclasses import dataclass
+from enum import Enum
+import skia
+
+class Alignment(str, Enum):
+    """Text alignment options. Useful in multi-line text blocks."""
+    LEFT = "left"
+    CENTER = "center"
+    RIGHT = "right"
+
+class FontStyle(str, Enum):
+    """Represents the style of a font. Useful for variable fonts. """
+    NORMAL = "normal"
+    ITALIC = "italic"
+    OBLIQUE = "oblique"
+
+    def to_skia_slant(self):
+        SLANT_MAP = {
+            FontStyle.NORMAL: skia.FontStyle.kUpright_Slant,
+            FontStyle.ITALIC: skia.FontStyle.kItalic_Slant,
+            FontStyle.OBLIQUE: skia.FontStyle.kOblique_Slant,
+        }
+        return SLANT_MAP[self.value]
+
+class FontWeight(int, Enum):
+    THIN = 100
+    EXTRA_LIGHT = 200
+    LIGHT = 300
+    NORMAL = 400
+    MEDIUM = 500
+    SEMI_BOLD = 600
+    BOLD = 700
+    EXTRA_BOLD = 800
+    BLACK = 900
+
+@dataclass
+class Font:
+    """Represents font properties."""
+    family: str = "Arial"
+    """
+    The font family. Can be a system font name (e.g., "Arial", "Times New Roman")
+    or a path to a font file (e.g., "path/to/my_font.ttf").
+    """
+    size: float = 50.0
+    line_height: float = 1.0  # Multiplier for the font size, like in CSS
+
+    weight: FontWeight = FontWeight.NORMAL
+    style: FontStyle = FontStyle.NORMAL
+
+
+
+------------------------------------------------------------------------------------------
+file: src\pictex\renderer.py
+------------------------------------------------------------------------------------------
+import skia
+import os
+import struct
+from dataclasses import dataclass
+from typing import Optional, Tuple
+import numpy as np
+
+from .models import Style, Alignment, FontStyle, DecorationLine, Shadow, CropMode, Box
+from . import logger
+
+@dataclass
+class RenderMetrics:
+    """A helper class to store all calculated dimensions for rendering."""
+    bounds: skia.Rect
+    background_rect: skia.Rect
+    text_rect: skia.Rect
+    draw_origin: tuple[float, float]
+
+class SkiaRenderer:
+    """Handles the drawing logic using Skia."""
+
+    def render(self, text: str, style: Style, crop_mode: CropMode) -> Tuple[skia.Image, Box]:
+        """Renders the text with the given style onto a perfectly sized Skia surface."""
+        font = self._create_font(style)
+        font.setSubpixel(True)
+
+        metrics = self._calculate_metrics(text, font, style, crop_mode)
+        canvas_width = int(metrics.bounds.width())
+        canvas_height = int(metrics.bounds.height())
+        if canvas_width <= 0 or canvas_height <= 0:
+            return skia.Image.MakeRasterN32Premul(1, 1)
+
+        image_info = skia.ImageInfo.MakeN32Premul(canvas_width, canvas_height)
+        surface = skia.Surface(image_info)
+        canvas = surface.getCanvas()
+        canvas.clear(skia.ColorTRANSPARENT)
+        canvas.translate(metrics.draw_origin[0], metrics.draw_origin[1])
+
+        self._draw_background(canvas, style, metrics)
+        
+        text_paint = skia.Paint(AntiAlias=True)
+        style.color.apply_to_paint(text_paint, metrics.text_rect)
+
+        self._draw_shadow(text_paint, style)
+        outline_stroke_paint = self._draw_outline_stroke(style, metrics)
+        self._draw_text(text, canvas, text_paint, outline_stroke_paint, font, style, metrics)
+        self._draw_decorations(text, canvas, font, style, metrics)
+        
+        final_image = surface.makeImageSnapshot()
+        return self._post_process_image(final_image, metrics, crop_mode)
+    
+    def _create_font(self, style: Style) -> skia.Font:
+        font_path_or_name = style.font.family
+
+        if not os.path.exists(font_path_or_name):
+            font_style = skia.FontStyle(
+                weight=style.font.weight,
+                width=skia.FontStyle.kNormal_Width,
+                slant=style.font.style.to_skia_slant()
+            )
+            typeface = skia.Typeface(font_path_or_name, font_style)
+            actual_font_family = typeface.getFamilyName()
+            if actual_font_family.lower() != font_path_or_name.lower():
+                logger.warning(
+                    f"Font '{font_path_or_name}' not found in the system. "
+                    f"Pictex is falling back to '{actual_font_family}'"
+                )
+            return skia.Font(typeface, style.font.size)
+        
+        typeface = skia.Typeface.MakeFromFile(font_path_or_name)
+        if not typeface:
+            raise ValueError(
+                f"Failed to load font from '{font_path_or_name}'. "
+                "The file might be corrupted or in an unsupported format."
+            )
+        
+        if typeface.getVariationDesignParameters():
+            # It's a variable font
+            variations = {
+                'wght': float(style.font.weight),
+                'ital': 1.0 if style.font.style == FontStyle.ITALIC else 0.0,
+                'slnt': -12.0 if style.font.style == FontStyle.OBLIQUE else 0.0,
+            }
+            to_four_char_code = lambda tag: struct.unpack('!I', tag.encode('utf-8'))[0]
+            available_axes_tags = { axis.tag for axis in typeface.getVariationDesignParameters() }
+            coordinates_list = [
+                skia.FontArguments.VariationPosition.Coordinate(axis=to_four_char_code(tag), value=value)
+                for tag, value in variations.items()
+                if to_four_char_code(tag) in available_axes_tags
+            ]
+
+            if coordinates_list:
+                coordinates = skia.FontArguments.VariationPosition.Coordinates(coordinates_list)
+                variation_position = skia.FontArguments.VariationPosition(coordinates)
+                font_args = skia.FontArguments()
+                font_args.setVariationDesignPosition(variation_position)
+                typeface = typeface.makeClone(font_args)
+        
+        return skia.Font(typeface, style.font.size)
+
+    def _calculate_metrics(self, text: str, font: skia.Font, style: Style, crop_mode: CropMode) -> RenderMetrics:
+        """
+        Calculates all necessary geometric properties for rendering.
+        This is the core layout engine.
+        """
+        lines = text.split('\n')
+        font_metrics = font.getMetrics()
+        line_gap = style.font.line_height * style.font.size
+
+        current_y = 0
+        text_bounds = skia.Rect.MakeEmpty()
+        decorations_bounds = skia.Rect.MakeEmpty()
+
+        for line in lines:
+            line_bounds = skia.Rect()
+            line_width = font.measureText(line, bounds=line_bounds)
+            
+            line_bounds.offset(0, current_y)
+            text_bounds.join(line_bounds)
+
+            for deco in style.decorations:
+                line_y_offset = self._decoration_line_to_line_y_offset(deco.line, font_metrics)
+                line_y = current_y + line_y_offset
+                half_thickness = deco.thickness / 2
+                deco_rect = skia.Rect.MakeLTRB(
+                    0, 
+                    line_y - half_thickness, 
+                    line_width, 
+                    line_y + half_thickness
+                )
+                decorations_bounds.join(deco_rect)
+            
+            current_y += line_gap
+
+        if style.outline_stroke:
+            text_bounds.outset(style.outline_stroke.width / 2, style.outline_stroke.width / 2)
+
+        top_pad, right_pad, bottom_pad, left_pad = style.padding
+        background_rect = skia.Rect.MakeLTRB(
+            text_bounds.left() - left_pad,
+            text_bounds.top() - top_pad,
+            text_bounds.right() + right_pad,
+            text_bounds.bottom() + bottom_pad
+        )
+        background_rect.join(decorations_bounds)
+
+        full_bounds = skia.Rect(background_rect.left(), background_rect.top(), background_rect.right(), background_rect.bottom())
+        full_bounds.join(text_bounds) # it only makes sense if padding is negative
+        
+        if crop_mode != CropMode.CONTENT_BOX:
+            shadow_filter = self._create_composite_shadow_filter(style.shadows)
+            if shadow_filter:
+                shadowed_text_bounds = shadow_filter.computeFastBounds(text_bounds)
+                full_bounds.join(shadowed_text_bounds)
+
+            box_shadow_filter = self._create_composite_shadow_filter(style.box_shadows)
+            if box_shadow_filter:
+                shadowed_bg_bounds = box_shadow_filter.computeFastBounds(background_rect)
+                full_bounds.join(shadowed_bg_bounds)
+
+        draw_origin = (-full_bounds.left(), -full_bounds.top())
+
+        return RenderMetrics(
+            bounds=full_bounds,
+            background_rect=background_rect,
+            text_rect=text_bounds,
+            draw_origin=draw_origin
+        )
+    
+    def _draw_background(self, canvas: skia.Canvas, style: Style, metrics: RenderMetrics) -> None:
+        bg_paint = skia.Paint(AntiAlias=True)
+        style.background.color.apply_to_paint(bg_paint, metrics.background_rect)
+
+        shadow_filter = self._create_composite_shadow_filter(style.box_shadows)
+        if shadow_filter:
+            bg_paint.setImageFilter(shadow_filter)
+
+        radius = style.background.corner_radius
+        if radius > 0:
+            canvas.drawRoundRect(metrics.background_rect, radius, radius, bg_paint)
+        else:
+            canvas.drawRect(metrics.background_rect, bg_paint)
+
+    def _create_composite_shadow_filter(self, shadows: list[Shadow]) -> Optional[skia.ImageFilter]:
+        if len(shadows) == 0:
+            return None
+
+        skia_shadow_filters = []
+        for shadow in shadows:
+            skia_shadow_filters.append(skia.ImageFilters.DropShadow(
+                dx=shadow.offset[0], dy=shadow.offset[1],
+                sigmaX=shadow.blur_radius, sigmaY=shadow.blur_radius,
+                color=skia.Color(
+                    shadow.color.r, shadow.color.g,
+                    shadow.color.b, shadow.color.a
+                )
+            ))
+
+        return skia.ImageFilters.Merge(skia_shadow_filters)
+
+    def _draw_shadow(self, text_paint: skia.Paint, style: Style) -> None:
+        filter = self._create_composite_shadow_filter(style.shadows)
+        if not filter:
+            return
+        text_paint.setImageFilter(filter)
+
+    def _draw_outline_stroke(self, style: Style, metrics: RenderMetrics) -> Optional[skia.Paint]:
+        if not style.outline_stroke:
+            return None
+        
+        paint = skia.Paint(
+            AntiAlias=True,
+            Style=skia.Paint.kStroke_Style,
+            StrokeWidth=style.outline_stroke.width
+        )
+        style.outline_stroke.color.apply_to_paint(paint, metrics.text_rect)
+        return paint
+
+    def _draw_text(
+            self,
+            text: str,
+            canvas: skia.Canvas,
+            text_paint: skia.Paint,
+            outline_paint: Optional[skia.Paint],
+            font: skia.Font,
+            style: Style,
+            metrics: RenderMetrics
+        ) -> None:
+        lines = text.split('\n')
+        line_gap = style.font.line_height * style.font.size
+        current_y = 0
+        
+        for line in lines:
+            line_width = font.measureText(line)
+            draw_x = self._get_line_x(style.alignment, metrics.text_rect.width(), line_width)
+
+            if outline_paint:
+                canvas.drawString(line, draw_x, current_y, font, outline_paint)
+
+            canvas.drawString(line, draw_x, current_y, font, text_paint)
+            current_y += line_gap
+
+    def _draw_decorations(
+            self,
+            text: str,
+            canvas: skia.Canvas,
+            font: skia.Font,
+            style: Style,
+            metrics: RenderMetrics
+        ) -> None:
+
+        if len(style.decorations) == 0:
+            return
+        
+        lines = text.split('\n')
+        line_gap = style.font.line_height * style.font.size
+        font_metrics = font.getMetrics()
+        
+        current_y = 0
+        for line in lines:
+            line_width = font.measureText(line)
+            
+            for deco in style.decorations:                
+                line_y_offset = self._decoration_line_to_line_y_offset(deco.line, font_metrics)
+                line_y = current_y + line_y_offset
+                line_x = self._get_line_x(style.alignment, metrics.text_rect.width(), line_width)
+
+                paint = skia.Paint(AntiAlias=True, StrokeWidth=deco.thickness)
+                half_thickness = deco.thickness / 2
+                if deco.color:
+                    color = deco.color
+                    bounds = skia.Rect.MakeLTRB(line_x, line_y - half_thickness, line_x + line_width, line_y + half_thickness)
+                    color.apply_to_paint(paint, bounds)
+                else:
+                    color = style.color
+                    color.apply_to_paint(paint, metrics.text_rect)
+
+                canvas.drawLine(line_x, line_y, line_x + line_width, line_y, paint)
+
+            current_y += line_gap
+
+    def _decoration_line_to_line_y_offset(self, decoration_line: DecorationLine, font_metrics) -> float:
+        if decoration_line == DecorationLine.UNDERLINE:
+            return font_metrics.fUnderlinePosition
+        
+        return font_metrics.fStrikeoutPosition
+
+    def _get_line_x(self, align: Alignment, block_width: float, line_width: float) -> float:
+        if align == Alignment.RIGHT:
+            return block_width - line_width
+        if align == Alignment.CENTER:
+            return (block_width - line_width) / 2
+        
+        return 0 # Alignment.LEFT
+    
+    def _post_process_image(self, image: skia.Image, metrics: RenderMetrics, crop_mode: CropMode) -> Tuple[skia.Image, Box]:
+        bg_rect = metrics.background_rect
+        content_rect = skia.Rect.MakeLTRB(bg_rect.left(), bg_rect.top(), bg_rect.right(), bg_rect.bottom())
+        content_rect.offset(metrics.draw_origin)
+        if crop_mode == CropMode.SMART:
+            crop_rect = self._get_trim_rect(image)
+            if crop_rect:
+                image = image.makeSubset(crop_rect)
+                content_rect.offset(-crop_rect.left(), -crop_rect.top())
+        
+        content_box = Box(
+            x=int(content_rect.left()),
+            y=int(content_rect.top()),
+            width=int(content_rect.width()),
+            height=int(content_rect.height())
+        )
+
+        return (image, content_box)
+
+    def _get_trim_rect(self, image: skia.Image) -> Optional[skia.Rect]:
+        """
+        Crops the image by removing transparent borders.
+        """
+        width, height = image.width(), image.height()
+        if width == 0 or height == 0:
+            return None
+        
+        pixels = np.frombuffer(image.tobytes(), dtype=np.uint8).reshape((height, width, 4))
+        alpha_channel = pixels[:, :, 3]
+        coords = np.argwhere(alpha_channel > 0)
+        if coords.size == 0:
+            # Image is fully transparent
+            return None
+
+        y_min, x_min = coords.min(axis=0)
+        y_max, x_max = coords.max(axis=0)
+        return skia.IRect.MakeLTRB(x_min, y_min, x_max + 1, y_max + 1)
+
+

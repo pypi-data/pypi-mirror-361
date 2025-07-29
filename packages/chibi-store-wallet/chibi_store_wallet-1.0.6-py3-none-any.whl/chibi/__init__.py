@@ -1,0 +1,1 @@
+from chibi import chibi_store_wallet

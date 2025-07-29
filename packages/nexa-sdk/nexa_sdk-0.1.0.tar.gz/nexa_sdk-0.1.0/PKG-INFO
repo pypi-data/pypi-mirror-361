@@ -1,0 +1,138 @@
+Metadata-Version: 2.4
+Name: nexa_sdk
+Version: 0.1.0
+Summary: Python SDK for Nexa APIs
+Author-email: Nexa <contact@nexa.com>
+License: MIT License
+        
+        Copyright (c) 2024 Nexa
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE. 
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests>=2.28.0
+Dynamic: license-file
+
+# Nexa Python SDK
+
+A modern, Pythonic SDK for the Nexa API. Effortlessly integrate Nexa's advanced voice and agent automation into your applications.
+
+[![PyPI version](https://img.shields.io/pypi/v/nexa-sdk.svg)](https://pypi.org/project/nexa-sdk/)
+[![License](https://img.shields.io/pypi/l/nexa-sdk.svg)](LICENSE)
+
+---
+
+## Overview
+
+The Nexa Python SDK provides a simple, intuitive interface for interacting with the Nexa API. It supports agent management, call automation, and more, using modern Python best practices.
+
+---
+
+## Installation
+
+Install from PyPI:
+```bash
+pip install nexa-sdk
+```
+
+Or from source:
+```bash
+pip install .
+```
+
+---
+
+## Authentication
+
+Authenticate using your Nexa API key (JWT token). The SDK uses this token for both Bearer and cookie authentication. The API base URL is set internally; you do not need to configure it.
+
+---
+
+## Quick Start
+
+```python
+from nexa_ai import NexaClient
+
+# Initialize the client with your API key (JWT token)
+nexa_client = NexaClient("your_api_key")
+
+# List agents
+agents = nexa_client.agent.list_agents()
+print(agents)
+
+# Make a call (implement your own parameters as needed)
+# call = nexa_client.call.create_call(data, org_id)
+# print(call)
+```
+
+---
+
+## Usage
+
+### Agents
+
+```python
+# List all agents
+agents = nexa_client.agent.list_agents()
+
+# Get a specific agent (provide agent_id and org_id)
+# agent = nexa_client.agent.get_agent(agent_id, org_id)
+
+# Create a new agent
+# agent = nexa_client.agent.create_agent(data, org_id)
+```
+
+### Calls
+
+```python
+# List all calls (provide org_id)
+calls = nexa_client.call.list_calls(org_id="your_org_id")
+
+# Get a specific call
+# call = nexa_client.call.get_call(call_id)
+
+# Create a new call
+# call = nexa_client.call.create_call(data, org_id)
+```
+
+---
+
+## API Reference
+
+- [Full API Reference](docs/index.md)
+- [Nexa API Docs](https://your-nexa-api-docs-url)
+
+---
+
+## Contributing
+
+Pull requests are welcome! Please open an issue or discussion first for major changes.
+
+1. Fork the repo
+2. Create your feature branch (`git checkout -b feature/your-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin feature/your-feature`)
+5. Open a Pull Request
+
+---
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details. 

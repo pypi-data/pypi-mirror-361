@@ -1,0 +1,74 @@
+##########################################
+#                PreCommit               #
+##########################################
+[tool.autoflake]
+in-place = true
+remove-all-unused-imports = true
+ignore-init-module-imports = true
+
+[tool.isort]
+profile = "black"
+skip_glob = ["__pycache__/*", "venv/*"]
+
+[tool.black]
+line-length = 88
+skip-string-normalization = true
+
+[tool.flake8]
+max-line-length = 88
+ignore = ["F821", "W503", "E701", "E226"]
+exclude = ["__pycache__/*", "venv/*"]
+
+[tool.ruff]
+exclude = ["__pycache__/*", "venv/*"]
+lint.select = ["E", "W", "F", "C", "N"]
+lint.ignore = ["F821"]
+line-length = 88
+
+
+##########################################
+#                 Package                #
+##########################################
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "universal-llm-service"
+version = "1.0.6"
+authors = [{ name = "Денис Шахбазян", email = "otbephncb@gmail.com" }]
+description = "Библиотека для работы с языковыми моделями"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+]
+dependencies = [
+    "aiohttp==3.11.18",
+    "langchain==0.3.25",
+    "langchain-openai==0.3.18",
+    "langchain-gigachat==0.3.10",
+    "langchain-anthropic==0.3.13",
+    "langchain-google-genai==2.1.5",
+    "langchain-xai==0.2.4",
+    "tiktoken==0.9.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pre_commit==4.2.0",
+    "Flake8-pyproject==1.2.3",
+    "build==1.2.2.post1",
+    "twine==6.1.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/DenisShahbazyan/LLM_Service"
+"Bug Tracker" = "https://github.com/DenisShahbazyan/LLM_Service/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["llm"]

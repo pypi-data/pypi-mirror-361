@@ -1,0 +1,161 @@
+# pimporter 🐍📦
+Clean up your code's cargo.
+
+<!-- [![Build](https://github.com/yourusername/pimporter/actions/workflows/test.yml/badge.svg)](https://github.com/yourusername/pimporter/actions) -->
+[![PyPI version](https://img.shields.io/pypi/v/pimporter.svg)](https://pypi.org/project/pimporter/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![PyPI - Stats](https://img.shields.io/badge/PyPI%20Stats-View%20on%20pypistats.org-blue)](https://pypistats.org/packages/pimporter)
+
+
+**pimporter** is a lightweight static analysis tool for inspecting and cleaning up Python import statements.
+
+It helps identify and summarize issues such as:
+
+- Aliases (`as`) used for multiple modules (conflicts)
+- Duplicate or hidden import aliases
+- Unused imports
+- Local vs external imports
+- Clean summary per file
+
+---
+
+## 🔧 Installation
+
+Install via pip (after packaging it as a wheel or locally):
+
+```bash
+pip install pimporter
+```
+
+Or from a local directory:
+
+```bash
+pip install .
+```
+
+---
+
+## 🚀 Usage
+
+```bash
+pimporter path/to/your/script_or_directory.py
+```
+
+* You can pass either a single Python file or a directory (recursively scans `.py` files).
+* The tool will display detailed line-by-line output with color-coded status.
+
+---
+
+## 🖨️ Example Output
+
+```text
+>>> Scanning 11 Python files in 'StockBot'...
+ 
+  gui/main_window.py
+
+  [!!!] Conflict: Alias 'foo' is used for multiple modules:
+    Line 10   -> bar as foo
+    Line 18   -> foo1 as foo1
+    Line 31   -> module_a.foo as foo
+  
+(...)
+    
+    Line    6 - [OK]   used                 QTabWidget from PySide6.QtWidgets.QTabWidget
+    Line    6 - [!]    duplicate (1)        QWidget from PySide6.QtWidgets.QWidget
+    Line    6 - [OK]   used                 QVBoxLayout from PySide6.QtWidgets.QVBoxLayout
+    Line    6 - [!]    duplicate (5)        QWidget from PySide6.QtWidgets.QWidget
+(...)
+    Line   10 - [!!!]  unused & duplicate   foo from bar  [conflict !!!]
+    Line   11 - [!!]   unused               QPointF from PySide6.QtCore.QPointF
+
+(...)
+    ________________________________________________________________________________
+    Line   27 - [!]    hidden duplicate     bups from PySide6.QtWidgets.QWidget
+        |  Full name: PySide6.QtWidgets.QWidget -> imported here as: bups
+        |    also imported PySide6.QtWidgets.QWidget in Line 6 as QWidget
+        |    also imported PySide6.QtWidgets.QWidget in Line 6 as QWidget
+        |    also imported PySide6.QtWidgets.QWidget in Line 6 as QWidget
+(...)
+
+Detected Import Summary:
+L4  from PySide6.QtGui import QPalette, QColor
+L6  from PySide6.QtWidgets import (QWidget,
+    QMainWindow, QTabWidget, QWidget, QVBoxLayout, QLabel, QComboBox, QWidget,
+    QHBoxLayout, QWidget, QWidget, QWidget)
+L10 import bar as foo 
+L11 from PySide6.QtCore import Qt, QTimer, QPointF, Signal
+L12 from PySide6.QtWebEngineWidgets import QWebEngineView
+
+(...)
+
+ Summary of Analysis:
+                                             Used    Hidden   Regular    Unused        Unused
+ Datei                           Total Used Local Duplicate Duplicate Duplicate Unused  Local
+ ============================================================================================
+ file1.py                           12    5     4         0         0         0      3      0
+ file2.py                            3    3     0         0         0         0      0      0
+ main.py                            23    9     1         1         5         3      3      2
+
+
+
+
+```
+
+---
+
+## ✅ Features
+
+* [x] Detects alias conflicts across imports
+* [x] Highlights hidden and explicit duplicates
+* [x] Shows unused modules
+* [x] Differentiates between local and external modules
+* [x] Colorized terminal output
+* [x] File-by-file detailed outputs
+* [x] Summary in original formatting
+* [x] Overall summary of all scanned files
+* [ ] (Planned) Automatic fixing of duplicates
+* [ ] (Planned) CLI arguments for filtering and exporting
+
+---
+
+## 📦 Dependencies
+
+* [`colorama`](https://pypi.org/project/colorama/) – for colorful terminal output
+
+---
+
+## 💡 Motivation
+
+While linters like `pylint`, `flake8`, or `ruff` cover general import cleanliness, **pimporter** focuses specifically on the **integrity and clarity of alias usage** – particularly useful for larger codebases or shared projects where import patterns can become inconsistent or ambiguous.
+
+---
+
+## 🧪 Development
+
+Clone and run:
+
+```bash
+python -m pimporter path/to/codebase/
+```
+or
+```bash
+pimporter path/to/codebase/
+```
+or
+```bash
+pimporter
+```
+
+---
+
+## 📄 License
+
+MIT License – use it, modify it, share it.
+
+---
+
+## ✍️ Author
+
+Your Name
+[optional.email@example.com](mailto:optional.email@example.com)
+

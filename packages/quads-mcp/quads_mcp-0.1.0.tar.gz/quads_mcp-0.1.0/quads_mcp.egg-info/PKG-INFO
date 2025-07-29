@@ -1,0 +1,424 @@
+Metadata-Version: 2.4
+Name: quads-mcp
+Version: 0.1.0
+Summary: A Model Context Protocol server for QUADS bare-metal server management
+Author-email: Gonzalo Rafuls <grafuls@gmail.com>
+License: MIT
+Project-URL: Homepage, https://github.com/grafuls/quads-mcp
+Project-URL: Repository, https://github.com/grafuls/quads-mcp
+Project-URL: Bug Tracker, https://github.com/grafuls/quads-mcp/issues
+Project-URL: Documentation, https://github.com/grafuls/quads-mcp/blob/main/README.md
+Keywords: mcp,quads,server,management,bare-metal,claude
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: System :: Systems Administration
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Communications
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: mcp>=1.0
+Requires-Dist: httpx>=0.24.0
+Requires-Dist: python-dotenv>=1.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: black>=23.0; extra == "dev"
+Requires-Dist: isort>=5.0; extra == "dev"
+Requires-Dist: mypy>=1.0; extra == "dev"
+Requires-Dist: ruff>=0.2.0; extra == "dev"
+Dynamic: license-file
+
+# quads-mcp
+
+A Model Context Protocol for QUADS
+
+## Overview
+
+This is a Model Context Protocol (MCP) server that exposes tools, resources, and prompts for use with LLM applications like Claude. MCP servers let you extend AI applications with custom functionality, data sources, and templated interactions.
+
+## Quick Start
+
+### Option 1: Run with uvx (Easiest)
+
+The fastest way to run the server without any setup:
+
+```bash
+# Install uv if you don't have it
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Run the server directly (from project directory)
+uvx --from . quads-mcp
+
+# Or run the module
+uvx --from . python -m quads_mcp.server
+```
+
+### Option 2: Setup with uv (Recommended)
+
+```bash
+# Set up the environment
+make setup
+
+# Check virtual environment status
+make status
+
+# Run the server (automatically uses virtual environment)
+make run
+
+# Run in development mode with MCP Inspector
+make dev
+
+# Install the server in Claude Desktop
+make install
+```
+
+**Note**: You don't need to manually activate the virtual environment when using `make` commands - they automatically use the `.venv` environment!
+
+If you encounter import errors, run `make reinstall` to refresh the package installation.
+
+### Option 3: Manual Setup
+
+```bash
+# Install uv if you don't have it
+pip install uv
+
+# Create a virtual environment
+uv venv
+
+# Activate the virtual environment
+source .venv/bin/activate  # On Unix/MacOS
+# or
+.venv\Scripts\activate     # On Windows
+
+# Install the package in development mode
+uv pip install -e .
+
+# Run in development mode
+mcp dev quads_mcp.server
+
+# Install in Claude Desktop
+mcp install quads_mcp.server
+```
+
+### uvx Configuration
+
+When running with uvx, you can configure the server using environment variables or .env files:
+
+```bash
+# Option 1: Environment variables
+MCP_QUADS__BASE_URL="https://your-quads-api.com/api/v3" \
+MCP_QUADS__AUTH_TOKEN="your-token" \
+uvx --from . quads-mcp
+
+# Option 2: .env file (recommended)
+cp .env.example .env
+# Edit .env with your configuration
+uvx --from . quads-mcp
+
+# Option 3: Development mode
+MCP_DEBUG=true uvx --from . quads-mcp
+```
+
+#### Installing as Global Tool
+
+```bash
+# Install globally with uvx
+uvx install .
+
+# Now run from anywhere
+quads-mcp
+
+# Uninstall when done
+uvx uninstall quads-mcp
+```
+
+## Containers
+
+This project uses Podman for containerization. Podman is a daemonless container engine that's compatible with OCI containers and provides better security than traditional container engines.
+
+### Quick Start with Podman
+
+```bash
+# Build the container image
+make container-build
+# or
+podman build -t quads-mcp .
+
+# Run the container
+make container-run
+# or
+podman run -p 8000:8000 quads-mcp
+```
+
+### Podman Compose (Recommended)
+
+For easier development and deployment, use Podman Compose:
+
+```bash
+# Run with Podman Compose
+make compose-up
+# or
+podman-compose up -d
+
+# View logs
+make compose-logs
+# or
+podman-compose logs -f
+
+# Stop the service
+make compose-down
+# or
+podman-compose down
+```
+
+### Development with Podman
+
+For development with live code reloading:
+
+```bash
+# Run development profile
+make compose-dev
+# or
+podman-compose --profile dev up -d quads-mcp-dev
+
+# The development container mounts your code for live updates
+```
+
+### Configuration with Podman
+
+#### Option 1: Environment Variables
+```bash
+podman run -p 8000:8000 \
+  -e MCP_QUADS__BASE_URL=https://your-quads-api.com/api/v3 \
+  -e MCP_QUADS__AUTH_TOKEN=your-token \
+  quads-mcp
+```
+
+#### Option 2: .env File
+```bash
+# Create .env file with your configuration
+cp .env.example .env
+# Edit .env with your values
+
+# Run with .env file
+podman run -p 8000:8000 \
+  -v $(pwd)/.env:/app/.env:ro \
+  quads-mcp
+```
+
+#### Option 3: Podman Compose with .env
+```bash
+# Edit podman-compose.yml to uncomment the .env volume mount
+# Then run:
+podman-compose up -d
+```
+
+### Production Builds
+
+#### Multi-stage Build (Recommended)
+
+For smaller, optimized production images:
+
+```bash
+# Build with multi-stage Containerfile
+make container-build-prod
+# or
+podman build -f Containerfile.multistage -t quads-mcp:production .
+
+# Run production image
+make container-run-prod
+# or
+podman run -p 8000:8000 quads-mcp:production
+```
+
+#### Ultra-Secure Build (Distroless)
+
+For maximum security with minimal attack surface:
+
+```bash
+# Build with distroless base image
+make container-build-distroless
+# or
+podman build -f Containerfile.distroless -t quads-mcp:distroless .
+
+# Run distroless image
+make container-run-distroless
+# or
+podman run -p 8000:8000 quads-mcp:distroless
+```
+
+### Security Features
+
+- **Alpine Linux Base**: Minimal, security-focused distribution
+- **Non-root User**: Runs as unprivileged `mcp` user (UID/GID 1001)
+- **Distroless Option**: Ultra-minimal base with no shell or package manager
+- **Security Updates**: Automatically includes latest security patches
+- **Minimal Attack Surface**: Only includes necessary dependencies
+
+## Server Architecture
+
+The server is organized into several components:
+
+- `server.py`: Main MCP server setup and configuration
+- `config.py`: Configuration management
+- `tools/`: Tool implementations (functions that LLMs can execute)
+- `resources/`: Resource implementations (data that LLMs can access)
+- `prompts/`: Prompt template implementations (reusable conversation templates)
+
+## MCP Features
+
+This server implements all three MCP primitives:
+
+1. **Tools**: Functions that the LLM can call to perform actions
+   - Example: `calculate`, `fetch_data`, `long_task`
+
+2. **Resources**: Data sources that provide context to the LLM
+   - Example: `static://example`, `dynamic://{parameter}`, `config://{section}`
+
+3. **Prompts**: Reusable templates for LLM interactions
+   - Example: `simple_prompt`, `structured_prompt`, `data_analysis_prompt`
+
+## Adding Your Own Components
+
+### Adding a New Tool
+
+Create or modify files in the `tools/` directory:
+
+```python
+@mcp.tool()
+def my_custom_tool(param1: str, param2: int = 42) -> str:
+    """
+    A custom tool that does something useful.
+    
+    Args:
+        param1: Description of first parameter
+        param2: Description of second parameter with default value
+        
+    Returns:
+        Description of the return value
+    """
+    # Your implementation here
+    return f"Result: {param1}, {param2}"
+```
+
+### Adding a New Resource
+
+Create or modify files in the `resources/` directory:
+
+```python
+@mcp.resource("my-custom-resource://{param}")
+def my_custom_resource(param: str) -> str:
+    """
+    A custom resource that provides useful data.
+    
+    Args:
+        param: Description of the parameter
+        
+    Returns:
+        The resource content
+    """
+    # Your implementation here
+    return f"Resource content for: {param}"
+```
+
+### Adding a New Prompt
+
+Create or modify files in the `prompts/` directory:
+
+```python
+@mcp.prompt()
+def my_custom_prompt(param: str) -> str:
+    """
+    A custom prompt template.
+    
+    Args:
+        param: Description of the parameter
+        
+    Returns:
+        The formatted prompt
+    """
+    return f"""
+    # Custom Prompt Template
+    
+    Context: {param}
+    
+    Please respond with your analysis of the above context.
+    """
+```
+
+## Configuration
+
+The server supports configuration via:
+
+1. **Environment Variables**: Prefix with `MCP_` (e.g., `MCP_QUADS__BASE_URL=https://quads.example.com`)
+   - Nested config: Use double underscores (`MCP_QUADS__USERNAME=myuser`)
+
+2. **Config File**: Specify via `MCP_CONFIG_FILE` environment variable
+
+3. **.env File**: Place a `.env` file in the project directory
+
+### QUADS Configuration
+
+```bash
+# Required: QUADS API URL
+MCP_QUADS__BASE_URL=https://your-quads-server.com/api/v3
+
+# Authentication (use either username/password OR token)
+MCP_QUADS__USERNAME=your-username
+MCP_QUADS__PASSWORD=your-password
+# OR
+MCP_QUADS__AUTH_TOKEN=your-auth-token
+
+# Optional settings
+MCP_QUADS__TIMEOUT=30
+MCP_QUADS__VERIFY_SSL=true  # Set to false for self-signed certificates
+```
+
+### SSL Certificates
+
+For QUADS servers with self-signed certificates, set:
+
+```bash
+MCP_QUADS__VERIFY_SSL=false
+```
+
+⚠️ **Security Note**: Only disable SSL verification for trusted internal servers. See [SSL_CONFIGURATION.md](SSL_CONFIGURATION.md) for details.
+
+### JSON Configuration Example
+
+```json
+{
+  "quads": {
+    "base_url": "https://quads.example.com/api/v3",
+    "username": "your-username",
+    "password": "your-password",
+    "timeout": 30,
+    "verify_ssl": false
+  }
+}
+```
+
+## Development
+
+```bash
+# Run tests
+make test
+
+# Format code
+make format
+
+# Type checking
+make type-check
+
+# Clean up build artifacts
+make clean
+```
+
+## License
+
+[Include your license information here]

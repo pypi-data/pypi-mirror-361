@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "quads-mcp"
+version = "0.1.0"
+description = "A Model Context Protocol server for QUADS bare-metal server management"
+authors = [
+    { name = "Gonzalo Rafuls", email = "grafuls@gmail.com" },
+]
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.12"
+dependencies = ["mcp>=1.0", "httpx>=0.24.0", "python-dotenv>=1.0.0"]
+keywords = ["mcp", "quads", "server", "management", "bare-metal", "claude"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: System :: Systems Administration",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Communications",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/grafuls/quads-mcp"
+"Repository" = "https://github.com/grafuls/quads-mcp"
+"Bug Tracker" = "https://github.com/grafuls/quads-mcp/issues"
+"Documentation" = "https://github.com/grafuls/quads-mcp/blob/main/README.md"
+
+[project.scripts]
+quads-mcp = "quads_mcp.server:main"
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0", "black>=23.0", "isort>=5.0", "mypy>=1.0", "ruff>=0.2.0"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["quads_mcp*"]
+
+[tool.black]
+line-length = 88
+target-version = ["py312"]
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+select = ["E", "F", "I"]
+
+[dependency-groups]
+dev = [
+    "build>=1.2.2.post1",
+    "twine>=6.1.0",
+]

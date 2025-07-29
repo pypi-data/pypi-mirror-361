@@ -1,0 +1,10 @@
+coverage:
+  image: python
+  script:
+    - pip install hatch
+    - hatch run test
+  coverage: '/TOTAL.*?(\d+\%)$/'
+  artifacts:
+    paths:
+      - coverage.xml
+    when: always

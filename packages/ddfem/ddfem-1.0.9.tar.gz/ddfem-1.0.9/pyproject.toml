@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["ddfem","ddfem.geometry","ddfem.transformers","ddfem.examples"]
+
+[project]
+name = "ddfem"
+version = "1.0.9"
+dependencies = [ "fenics-ufl == 2022.2.0", "numpy", "setuptools < 79.1" ]
+authors = [
+  { name="Luke Benfield", email="luke.benfield@warwick.ac.uk" },
+  { name="Andreas Dedner", email="a.s.dedner@warwick.ac.uk" },
+]
+description = "Diffuse domain finite element solver"
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+[project.optional-dependencies]
+dune = ["dune-fem==2.11.dev20250709",
+        "dune_alugrid==2.11.dev20250709",
+        "dune_common==2.11.dev20250709",
+        "dune_fem-dg==2.11.dev20250709",
+        "dune_geometry==2.11.dev20250709",
+        "dune_grid==2.11.dev20250709",
+        "dune_istl==2.11.dev20250709",
+        "dune_localfunctions==2.11.dev20250709",
+        "pygmsh"]
+doc  = ["jupyter", "jupytext", "nbsphinx", "sphinx_rtd_theme",
+        "twine", "build",
+       ]
+dev = [ "ddfem[dune,doc]" ]
+[project.urls]
+Homepage = "https://gitlab.dune-project.org/dune-fem/ddfem"
+Issues = "https://gitlab.dune-project.org/dune-fem/ddfem/-/issues"
+Documentation = "https://ddfem.readthedocs.io/en/latest/index.html"
+Repository = "https://gitlab.dune-project.org/dune-fem/ddfem.git"
+
+[tool.setuptools.package-data]
+ddfem = ["data/**"]

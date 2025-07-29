@@ -1,0 +1,391 @@
+# HACS Anthropic Integration
+
+Generic Anthropic Claude integration for HACS providing structured outputs, tool calling, conversation management, and configurable clients that work with any HACS types.
+
+## Features
+
+- **Structured Outputs**: Generate any HACS model using Claude's tool calling capabilities
+- **Tool Calling**: Native Anthropic tool calling with generic tools
+- **Conversation Management**: Multi-turn conversations with context and memory
+- **Configurable Clients**: Fully configurable Anthropic clients with custom parameters
+- **Generic Utilities**: Work with any HACS Pydantic models
+- **Batch Processing**: Efficient batch operations for high-volume use cases
+
+## Installation
+
+```bash
+pip install hacs-anthropic
+```
+
+## Quick Start
+
+### Basic Client Setup
+
+```python
+from hacs_anthropic import create_anthropic_client
+
+# Basic client with defaults
+client = create_anthropic_client()
+
+# Custom configuration
+client = create_anthropic_client(
+    model="claude-3-5-sonnet-20241022",
+    api_key="your-api-key",
+    base_url="https://api.anthropic.com",  # Custom API URL
+    temperature=0.7,
+    max_tokens=4096
+)
+```
+
+### Structured Output Generation
+
+```python
+from hacs_anthropic import create_structured_generator
+from hacs_models import Patient
+
+# Create generator
+generator = create_structured_generator(
+    model="claude-3-5-sonnet-20241022",
+    temperature=0.3,  # Lower for structured output
+    api_key="your-api-key"
+)
+
+# Generate any HACS model
+patient = generator.generate_hacs_resource(
+    resource_type=Patient,
+    user_prompt="Create a patient record for John Doe, 30 years old, male"
+)
+
+print(f"Generated: {patient.display_name}")
+```
+
+### Tool Calling
+
+```python
+from hacs_anthropic import AnthropicClient, AnthropicToolRegistry
+
+# Setup client and tool registry
+client = AnthropicClient()
+registry = AnthropicToolRegistry()
+
+# Register any function as a tool
+def process_text(text: str, operation: str) -> str:
+    operations = {
+        "upper": text.upper(),
+        "lower": text.lower(),
+        "reverse": text[::-1]
+    }
+    return operations.get(operation, text)
+
+registry.register_tool(
+    name="process_text",
+    function=process_text,
+    description="Process text with specified operation",
+    input_schema={
+        "type": "object",
+        "properties": {
+            "text": {"type": "string"},
+            "operation": {"type": "string", "enum": ["upper", "lower", "reverse"]}
+        },
+        "required": ["text", "operation"]
+    }
+)
+
+# Use tools in conversation
+response = client.tool_call(
+    messages=[
+        {"role": "user", "content": "Process the text 'Hello World' with upper operation"}
+    ],
+    tools=registry.get_tools()
+)
+```
+
+### Conversation Management
+
+```python
+from hacs_anthropic import create_conversation_manager
+
+# Create conversation manager
+manager = create_conversation_manager(
+    model="claude-3-5-sonnet-20241022",
+    api_key="your-api-key"
+)
+
+# Add context data
+manager.add_context("user_id", "user-123")
+manager.add_context("session_type", "interactive")
+
+# Have a conversation
+response1 = manager.send_message("Hello, I need help with data processing")
+response2 = manager.send_message("Can you explain the previous response?")
+
+# Get conversation history
+history = manager.get_history()
+```
+
+## Advanced Usage
+
+### Custom System Prompts
+
+```python
+from hacs_anthropic import AnthropicStructuredGenerator
+
+# Custom system prompt
+system_prompt = """You are an AI assistant that generates structured data.
+Follow the provided schema exactly and ensure all required fields are populated.
+Be precise and consistent in your outputs."""
+
+generator = AnthropicStructuredGenerator(
+    model="claude-3-5-sonnet-20241022",
+    temperature=0.3,
+    system_prompt=system_prompt
+)
+
+# Generate with custom prompt
+result = generator.generate_hacs_resource(
+    resource_type=YourModel,
+    user_prompt="Generate data based on this input"
+)
+```
+
+### Batch Processing
+
+```python
+from hacs_anthropic import create_structured_generator
+
+generator = create_structured_generator()
+
+# Generate multiple resources
+prompts = [
+    "Generate first resource",
+    "Generate second resource",
+    "Generate third resource"
+]
+
+results = generator.generate_batch_resources(
+    resource_type=YourModel,
+    prompts=prompts
+)
+
+for result in results:
+    if result:
+        print(f"Generated: {result}")
+```
+
+### Context-Aware Generation
+
+```python
+from hacs_anthropic import create_structured_generator
+
+generator = create_structured_generator()
+
+# Generate with context
+context_data = {
+    "user_id": "user-123",
+    "session_id": "session-456",
+    "preferences": {"format": "detailed", "style": "formal"},
+    "previous_data": {"last_action": "create", "timestamp": "2024-01-01"}
+}
+
+result = generator.generate_with_context(
+    resource_type=YourModel,
+    user_prompt="Generate based on user preferences",
+    context_data=context_data
+)
+```
+
+### Tool Registration with HACS Models
+
+```python
+from hacs_anthropic import AnthropicToolRegistry
+from pydantic import BaseModel
+
+registry = AnthropicToolRegistry()
+
+# Define input model
+class ProcessingInput(BaseModel):
+    data: str
+    operation: str
+    options: dict = {}
+
+def process_data(data: str, operation: str, options: dict = {}) -> dict:
+    # Generic data processing
+    return {"processed": data, "operation": operation, "options": options}
+
+# Register tool with HACS model
+registry.register_hacs_tool(
+    name="process_data",
+    function=process_data,
+    description="Process data with specified operation and options",
+    input_model=ProcessingInput
+)
+```
+
+## Configuration
+
+### Environment Variables
+
+```bash
+# Anthropic API configuration
+export ANTHROPIC_API_KEY="your-api-key"
+export ANTHROPIC_API_URL="https://api.anthropic.com"  # Custom API URL
+
+# Default model settings
+export ANTHROPIC_DEFAULT_MODEL="claude-3-5-sonnet-20241022"
+export ANTHROPIC_DEFAULT_TEMPERATURE="0.7"
+```
+
+### Client Configuration
+
+```python
+from hacs_anthropic import AnthropicClient
+
+# Fully configured client
+client = AnthropicClient(
+    model="claude-3-5-sonnet-20241022",
+    api_key="your-api-key",
+    base_url="https://api.anthropic.com",
+    timeout=30.0,
+    max_retries=3,
+    max_tokens=4096,
+    temperature=0.7,
+    top_p=1.0,
+    top_k=None
+)
+```
+
+## Error Handling
+
+```python
+from hacs_anthropic import create_structured_generator
+import anthropic
+
+generator = create_structured_generator()
+
+try:
+    result = generator.generate_hacs_resource(
+        resource_type=YourModel,
+        user_prompt="Generate data"
+    )
+except anthropic.APIError as e:
+    print(f"Anthropic API error: {e}")
+except ValueError as e:
+    print(f"Validation error: {e}")
+except Exception as e:
+    print(f"Unexpected error: {e}")
+```
+
+## Performance Optimization
+
+### Batch Operations
+
+```python
+# Process multiple requests efficiently
+results = generator.generate_batch_resources(
+    resource_type=YourModel,
+    prompts=batch_prompts,
+    max_tokens=1000,  # Limit tokens per request
+    temperature=0.1   # Lower temperature for consistency
+)
+```
+
+### Conversation Context Management
+
+```python
+from hacs_anthropic import AnthropicConversationManager
+
+manager = AnthropicConversationManager(
+    max_context_length=100000  # Manage context window
+)
+
+# Add relevant context only
+manager.add_context("current_task", task_data)
+manager.add_context("user_preferences", preferences)
+
+# Clear context when not needed
+manager.clear_context()
+```
+
+## Generic Features
+
+### Work with Any HACS Model
+
+The utilities work with any Pydantic model:
+
+```python
+from pydantic import BaseModel
+from hacs_anthropic import create_structured_generator
+
+class CustomModel(BaseModel):
+    name: str
+    value: int
+    description: str
+    metadata: dict = {}
+
+generator = create_structured_generator()
+result = generator.generate_hacs_resource(
+    resource_type=CustomModel,
+    user_prompt="Generate a custom model instance"
+)
+```
+
+### Multi-turn Workflows
+
+```python
+from hacs_anthropic import create_conversation_manager
+
+manager = create_conversation_manager()
+
+# Multi-turn workflow
+response1 = manager.send_message("Start a new task")
+response2 = manager.send_message("What are the next steps?")
+response3 = manager.send_message("Execute the plan")
+
+# Conversation maintains context throughout
+```
+
+## API Reference
+
+### Classes
+
+- `AnthropicClient`: Enhanced Anthropic client with HACS integration
+- `AnthropicStructuredGenerator`: Generate any HACS model from text
+- `AnthropicToolRegistry`: Registry for tools and functions
+- `AnthropicConversationManager`: Multi-turn conversation management
+
+### Functions
+
+- `create_anthropic_client()`: Create configured Anthropic client
+- `create_structured_generator()`: Create structured output generator
+- `create_conversation_manager()`: Create conversation manager
+
+## Model Support
+
+### Supported Claude Models
+
+- `claude-3-5-sonnet-20241022` (default) - Best for complex reasoning
+- `claude-3-5-haiku-20241022` - Fastest for simple tasks
+- `claude-3-opus-20240229` - Most capable for complex tasks
+- `claude-3-sonnet-20240229` - Balanced performance
+- `claude-3-haiku-20240307` - Fast and efficient
+
+### Model Selection Guidelines
+
+```python
+# For complex reasoning tasks
+client = create_anthropic_client(model="claude-3-5-sonnet-20241022")
+
+# For simple data extraction
+client = create_anthropic_client(model="claude-3-5-haiku-20241022")
+
+# For maximum capability
+client = create_anthropic_client(model="claude-3-opus-20240229")
+```
+
+## Contributing
+
+See [Contributing Guidelines](../../CONTRIBUTING.md) for development setup and contribution process.
+
+## License
+
+Apache License 2.0 - see [LICENSE](../../LICENSE) for details. 

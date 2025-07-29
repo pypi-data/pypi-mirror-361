@@ -1,0 +1,156 @@
+Metadata-Version: 2.4
+Name: mfd-win-registry
+Version: 1.17.0
+Summary: Module for managing Windows registry keys and values.
+Project-URL: Homepage, https://github.com/intel/mfd
+Project-URL: Repository, https://github.com/intel/mfd-win-registry
+Project-URL: Issues, https://github.com/intel/mfd-win-registry/issues
+Project-URL: Changelog, https://github.com/intel/mfd-win-registry/blob/main/CHANGELOG.md
+Requires-Python: <3.14,>=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE.md
+License-File: AUTHORS.md
+Requires-Dist: mfd-common-libs>=1.11.0
+Requires-Dist: mfd-typing>=1.23.0
+Requires-Dist: mfd-connect>=7.12.0
+Dynamic: license-file
+
+> [!IMPORTANT] 
+> This project is under development. All source code and features on the main branch are for the purpose of testing or evaluation and not production ready.
+
+# MFD Win Registry
+
+Module for managing Windows registry keys and values.
+
+## Usage
+
+```python
+from mfd_connect import RPyCConnection
+from mfd_win_registry import WindowsRegistry, PropertyType
+
+conn = RPyCConnection(ip="10.10.10.10")
+winreg_obj = WindowsRegistry(connection=conn)
+winreg_obj.get_registry_path(
+    path="hklm:\\system\\CurrentControlSet\\control\\class\\{4D36E972-E325-11CE-BFC1-08002BE10318}\\0005"
+)
+winreg_obj.add_registry_key("SLOT 2 Port 1", "FecMode", "1")
+winreg_obj.remove_registry_key("SLOT 2 Port 1", "FecMode")
+winreg_obj.check_registry_key("SLOT 2 Port 1", "FecMode", "0")
+winreg_obj.registry_exists(
+    path="hklm:\\system\\CurrentControlSet\\control\\class\\{4D36E972-E325-11CE-BFC1-08002BE10318}"
+)
+winreg_obj.set_feature('SLOT 4 Port 2', "FecMode", "1")
+winreg_obj.set_feature('SLOT 4 Port 2', "Version", "42", PropertyType.DWORD)
+winreg_obj.remove_feature("SLOT 4 Port 2", "Version")
+winreg_obj.get_feature_possible_values("SLOT 4 Port 2", "FecMode")
+winreg_obj.get_registry_childitems(path="hklm:\\system\\CurrentControlSet\\control\\class\\{4D36E972-E325-11CE-BFC1-08002BE10318}\\0005")
+winreg_obj.check_proset_registry()
+winreg_obj.remove_registry_subkeys(
+    path="hklm:\\system\\CurrentControlSet\\control\\class\\{4D36E972-E325-11CE-BFC1-08002BE10318}\\0005\\Ndi\\icea"
+)
+winreg_obj.get_rx_buffers("SLOT 4 Port 2")
+winreg_obj.get_rx_buffers("SLOT 4 Port 2", BuffersAttribute.MIN)
+winreg_obj.get_tx_buffers("SLOT 4 Port 2")
+winreg_obj.get_tx_buffers("SLOT 4 Port 2", BuffersAttribute.MAX)
+winreg_obj.get_feature_enum("SLOT 4 Port 2", "\*SpeedDuplex")
+winreg_obj.get_feature_list("SLOT 4 Port 2")
+winreg_obj.get_feature_list("SLOT 4 Port 2", False)
+```
+
+## Implemented methods
+
+- Responsible for getting the all the contents in dictionary format for the path given by the user.
+    ```python
+    get_registry_path(self, path: str, depth: int = 0) -> Dict
+    ```
+
+- Responsible for getting the features for the given interface.  
+    ```python
+    get_feature_list(self, interface: str, cached: bool = True) -> Dict
+    ```
+
+- Responsible for testing the given path exists or not.  
+    ```python
+    registry_exists(self, path: str) -> bool
+    ```
+
+- Responsible for adding the register value for a given interface and feature.  
+    ```python
+    add_registry_key(self, interface: str, feature: str, value: str) -> None
+    ```
+
+- Responsible for removing the register value for a given interface and feature.  
+    ```python
+    remove_registry_key(self, interface: str, feature: str) -> None
+    ```
+
+- Responsible for checking whether the given register value is set on the feature or not.  
+    ```python
+    check_registry_key(self, interface: str, feature: str, value: str) -> None
+    ```
+
+- Responsible for setting feature in registry based on user path or base path.  
+    ```python
+    set_feature(
+        self,
+        interface: str,
+        feature: str,
+        value: str,
+        prop_type: PropertyType = PropertyType.NONE,
+        base_path: str = None,
+        new_prop_create: bool = True,
+    ) -> None
+    ```
+
+- Responsible for removing feature entry from registry.  
+    ```python
+    remove_feature(self, interface: str, feature: str, base_path: str = None) -> None
+    ```
+
+- Responsible for getting all the feature supported values.  
+    ```python
+    get_feature_possible_values(self, interface: str, feature: str) -> List[int]
+    ```
+
+- Responsible for getting all the child items from the path.  
+    ```python
+    get_registry_childitems(self, path: str, depth: int = 0) -> Dict[str, Dict[str, str]]
+    ```
+
+- Responsible for checking if PROSET entries exist in registry.  
+    ```python
+    check_proset_registry(self) -> bool
+    ```
+
+- Responsible for removing all registry sub-keys from given path.  
+    ```python
+    remove_registry_subkeys(self, path: str) -> None
+    ```
+
+- Responsible for getting RX buffers value on the given interface.  
+    ```python
+    get_rx_buffers(self, interface: str, attr: BuffersAttribute = BuffersAttribute.NONE) -> int
+    ```
+
+- Responsible for getting TX buffers value on the given interface.  
+    ```python
+    get_tx_buffers(self, interface: str, attr: BuffersAttribute = BuffersAttribute.NONE) -> int
+    ```
+
+- Responsible for getting enum key values for the given feature.  
+    ```python
+    get_feature_enum(self, interface: str, feature: str) -> Union[Dict[str, str]]
+    ```
+
+- Set itemproperty for the feature.  
+    ```python
+    set_itemproperty(self, path: str, name: str, value: str) -> None
+    ```
+
+## OS supported:
+
+* WINDOWS
+
+## Issue reporting
+
+If you encounter any bugs or have suggestions for improvements, you're welcome to contribute directly or open an issue [here](https://github.com/intel/mfd-win-registry/issues).

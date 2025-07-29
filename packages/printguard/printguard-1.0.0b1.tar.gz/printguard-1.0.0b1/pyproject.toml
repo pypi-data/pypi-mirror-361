@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "printguard"
+version = "1.0.0b1"
+description = "PrintGuard - Real-time Defect Detection on Edge-devices"
+authors = [
+    { name = "Oliver Bravery", email = "dev@oliverbravery.uk" }
+]
+readme = "README.md"
+requires-python = ">=3.13"
+
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "pywebpush",
+    "apscheduler",
+    "python-dotenv",
+    "torch",
+    "torchvision",
+    "pillow",
+    "opencv-python",
+    "python-multipart",
+    "keyring",
+    "trustme",
+    "platformdirs",
+    "sse-starlette",
+    "ngrok"
+]
+
+[project.scripts]
+printguard = "printguard.app:run"
+
+[tool.black]
+line-length = 88
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["printguard", "printguard.*", "protonets", "protonets.*"]
+
+[tool.setuptools.package-data]
+"printguard" = [
+    "static/**/*",
+    "templates/**/*",
+    "model/**/*"
+]

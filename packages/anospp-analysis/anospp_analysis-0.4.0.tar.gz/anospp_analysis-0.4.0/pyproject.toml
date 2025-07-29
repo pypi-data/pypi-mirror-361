@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "anospp-analysis"
+version = "0.4.0"
+description = "ANOSPP data analysis"
+authors = ["Alex Makunin <am60@sanger.ac.uk>",]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "anospp_analysis"}]
+
+[tool.poetry.dependencies]
+python = "^3.10,<3.11"
+pandas = "*"
+numpy = "*"
+seaborn = "*"
+scipy = "*"
+cutadapt = "*"
+keras = "^2.12"
+tensorflow = "^2.12"
+bokeh = "*"
+pyarrow = "*"
+
+[tool.poetry.group.dev.dependencies]
+jupyter = "*"
+
+[tool.poetry.scripts]
+anospp-prep = "anospp_analysis.prep:main"
+anospp-qc = "anospp_analysis.qc:main"
+anospp-plasm = "anospp_analysis.plasm:main"
+anospp-nn = "anospp_analysis.nn:main"
+anospp-vae = "anospp_analysis.vae:main"
+anospp-agg = "anospp_analysis.agg:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

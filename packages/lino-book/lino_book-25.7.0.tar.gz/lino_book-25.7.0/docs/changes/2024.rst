@@ -1,0 +1,724 @@
+.. include:: /../docs/shared/include/defs.rst
+.. _book.changes.2024:
+
+====
+2024
+====
+
+This is the 2024 :term:`change log` for Lino.
+Learn how to read and maintain this document in :ref:`dev.changes`.
+
+2024-12-08
+==========
+
+New methods :meth:`lino.core.model.Model.as_str`  and
+:meth:`lino.core.model.Model.get_str_words` for :ticket:`5809` (Optimize
+as_summary_item()).
+
+2024-11-16
+==========
+
+Advancing with :ticket:`4381` (Uploading photos or other media files via email
+(postfix/inbox plugin)).
+When processing an inbox message, Lino no longer
+creates one comment for each attached file + one comment for the body text. It
+creates maximum one comment per incoming message. Fixed multiple issues with
+rendering uploads in comments. The Upload model now has *two* memo commands:
+:cmd:`[upload]` and :cmd:`[file]`. :cmd:`[upload]` inserts a link to the detail
+page in the web front end while :cmd:`[file]` inserts a tag representing the
+media file (for example an ``<img>`` or a ``<video>`` tag).
+
+Change in database schema:  in the :class:`lino.modlib.memo.Mention` model,
+:attr:`source` was renamed to :attr:`target`. Done :ticket:`4702` (There are no
+comments.Mention in amici though there are memo references in comments)
+
+
+2024-11-15
+==========
+
+More optimization for :ticket:`5585`:  The :class:`Previewers
+<lino.modlib.uploads.Previewers>` choicelist is replaced by a single
+:data:`lino.modlib.uploads.previewer` object and a class
+:class:`UploadMediaFile`. The `create_comment_template` attribute is replaced by
+a method :meth:`lino.modlib.comments.Commentable.get_create_comment_text`.
+
+Fixed :ticket:`4851` (Bleach is no longer being maintained). Lino no longer
+requires the `bleach` package, it now relies on `beautifulsoup4`. See
+:doc:`/dev/bleach`.
+
+Fixed a "TypeError: BaseRequest.setup() got an unexpected keyword argument
+'quick_search'" occurring in :class:`lino.modlib.search.SiteSearch`.  Removed
+the :attr:`Actor.list_layout` attribute, which is no longer used.
+
+
+2024-11-12
+==========
+
+The :mod:`lino.modlib.uploads` plugin can now build "thumbnails" of images and
+PDF files. For this purpose the plugin defines a new choicelist
+:class:`lino.modlib.uploads.Previewers`.
+
+The following tickets are now done (or almost):
+:ticket:`5585` (The albums plugin should manage thumbnails),
+:ticket:`5299` (Lino should write a comment when somebody uploads a screenshot) and
+:ticket:`4381` (Uploading photos or other media files via email (postfix/inbox plugin)).
+
+2024-11-03
+==========
+
+.. currentmodule:: lino_xl.lib.working
+
+The :mod:`lino_xl.lib.working` plugin has a new database model
+:class:`Contract`, a report :class:`ActiveContracts`, and a new system task
+procedure :func:`send_weekly_report`.
+
+2024-11-02
+==========
+
+Moved the :data:`DEMO_DATA <lino_book.DEMO_DATA>` constant from
+:mod:`lino.utils` to :mod:`lino_book`.
+
+
+
+2024-11-01
+==========
+
+New attribute :attr:`lino.core.actors.Actor.row_template`, which is a kind of a
+context-sensitive template for :meth:`__str__` . An avalanche of internal
+changes. The :attr:`lino.core.actors.Actor.group_by` attribute is back. If
+specified, it must be a callable, and it currently only for the :term:`display
+mode` "list" and only in the :term:`React front end`. Details in `my blog
+<https://luc.lino-framework.org/blog/2024/1031.html>`__.
+
+2024-10-21
+==========
+
+Add support for customized period types and *shifted years*.
+New choicelist :class:`lino.modlib.periods.PeriodTypes` and several plugin
+settings in :mod:`lino.modlib.periods`.
+
+
+2024-10-18
+==========
+
+Add a new method :meth:`lino.core.actors.Actor.table_as_html`. Move the
+:class:`DisplayColors <lino.modlib.system.DisplayColors>` choicelist from
+:mod:`lino_xl.lib.cal` to :mod:`lino.modlib.system`. Optimize
+:meth:`gen_insert_button <lino.core.requests.ActionRequest.gen_insert_button>`.
+Fix a minor bug in :meth:`BaseRequest.setup <lino.core.requests.BaseRequest.setup>`.
+
+2024-10-09
+==========
+
+New plugin :mod:`lino.modlib.periods` to make the concept of "years" and
+"periods" stored as database rows available outside of the
+:mod:`lino_xl.lib.accounting` plugin (which will be used by :ref:`prima`).
+**Requires database migration** for site that use the accounting plugin: The
+model "accounting.AccountingPeriod" was renamed to "periods.StoredPeriod" and
+model "accounting.FiscalYear" was renamed to "periods.StoredYear". New function
+:func:`lino.core.utils.overlap_range_filter`. :class:`DateStoreField` no longer
+raises a :class:`Warning` when invalid date is given.
+
+
+2024-10-04
+==========
+
+Fixed :ticket:`5768` (WorkedHours detail is broken), which was caused by
+:ticket:`5759` (Anonymous can GET private comments), which was caused by
+:ticket:`5751` (ObjectDoesNotExist: Invalid primary key 4968 for avanti.Clients)
+Fixing this ticket caused me to merge :class:`TableRequest` into
+:class:`ActionRequest`, which caused multiple internal optimizations but also
+may have introduced some regression. One of the optimizations is that
+:meth:`GridElement.showDetail` in the :term:`React front end` now passes the
+parameter values (`URL_PARAM_PARAM_VALUES`) in the GET when asking for a detail
+view. The original problem (:ticket:`5751`) was because the React front end
+didn't do this. The problem did *not* occur in the :term:`ExtJS front end`,
+which did it. For example when the user manually removes the default filter and
+then switches to detail view of a row that would be hidden under the default
+filter, Lino must *not* look up the pk in :meth:`model.objects.all` instead of
+:meth:`ar.get_request_queryset` because that would bypass user permissions. More
+details in :ref:`ticket5751`.
+
+2024-10-02
+==========
+
+Removed the :attr:`Commentable.add_comment` field because its implementation was
+quirky and caused confusion when a user had no write permission for a ticket.
+
+Release to PyPI
+
+2024-10-01
+==========
+
+Fixed :ticket:`5759` (Anonymous can GET private comments). Optimized the
+developer API for specifying the default :term:`display mode` to use in a slave
+panel. Rather than specifying a tuple of 2-tuples called :attr:`display_mode`,
+we now specify a dict called :attr:`default_display_modes
+<lino.core.tables.AbstractTable.default_display_modes>`, which maps
+available_width to display_mode. New attribute :attr:`extra_display_modes` on
+:class:`Model` and :class:`Actor`. Adapted the documentation
+:doc:`/dev/display_modes`. The :class:`RecentComments
+<lino.modlib.comments.RecentComments>` table in the dashboard is now being
+rendered in display mode ``story`` instead of ``list``.
+:meth:`lino.core.renderer.HtmlRenderer.table2story` now supports display mode
+"story". Internals: renamed :attr:`Store.list_fields` to
+:attr:`Store.grid_fields`, :attr:`Actor.get_list_layout` to
+:attr:`Actor.get_grid_layout` and :attr:`TableHandle.list_layout` to
+:attr:`TableHandle.grid_layout`. Removed ``DISPLAY_MODE_TABLE`` from
+:mod:`lino.core.constants` and  changed all usages of it to
+``DISPLAY_MODE_GRID``.
+
+In the :mod:`lino_react`, changed the icon for the "Expand this panel to own
+window" button from `external-link` (|external-link|) to `eject` (|eject|).
+
+
+2024-09-22
+==========
+
+Optimized error reporting.
+Fixed :ticket:`5755` (Remove AjaxExceptionResponse middleware).
+Added an :meth:`lino.core.model.Model.as_paragraph` method to :class:`lino_xl.lib.cal.Guest`.
+
+
+2024-09-20
+==========
+
+Fixed :ticket:`5751` (ObjectDoesNotExist: Invalid primary key 4968 for
+avanti.Clients). Disable the ``[py]`` memo command. Optimize AJAX exception
+reporting.
+
+2024-09-13
+==========
+
+Fixed a variant of :ticket:`5715` (ObjectDoesNotExist: Invalid primary key 114
+for storage.FillersByPartner). The reason was
+:meth:`lino.modlib.comments.AddCommentField.set_value_in_object`, which passed
+`ar.request` to the sub-request, which caused Lino to apply the selected pks of
+the master table to the slave table.
+
+2024-09-11
+==========
+
+The :mod:`lino` package has migrated from :xfile:`setup.py` to
+:xfile:`pyproject.toml`.
+
+We probably fixed a series of issues with invalid ObjectDoesNotExist error
+messages when saving a ticket or a client.
+
+Sites with the notify plugin but with :setting:`notify.use_push_api` set to
+`False` still caused the browser to send ``/WS/`` requests every few seconds
+(each of which caused an error message in the JS console).
+
+2024-09-08
+==========
+
+The :mod:`lino_xl.lib.inbox` plugin got some optimizations, is now documented
+and being used again in :ref:`noi`, :ref:`amici`, :ref:`cms`. :ref:`cms` now
+also uses :mod:`lino.modlib.groups`. The `cms1` demo project is the first to
+test this, it has a mailbox with a few demo emails that get processed during
+:cmd:`pm prep`.  New admin command :cmd:`pm procmail`.
+
+.. currentmodule:: lino.modlib.notify
+
+The :mod:`lino.modlib.notify` plugin has a new database field
+:attr:`Message.reply_to` and a  new method
+:meth:`ChangeNotifier.get_notify_options`.
+
+.. currentmodule:: lino.modlib.uploads
+
+The :mod:`lino.modlib.uploads` plugin no longer uses the :class:`lino.core.Site`
+attribute ``upload_to_tpl`` (Upload.file now build Django's
+:attr:`FieldField.upload_to` from constants :data:`UPLOADS_ROOT` and
+:data:`lino.utils.DATE_TO_DIR_TPL`). The plugin now manages two top-level
+subdirectories of the media_root: ``uploads`` and ``volumes``. It no longer
+creates the media directory if it doesn't exist (anyway the initdb command
+removes it again). The :class:`Volume` model no longer has a field
+:attr:`base_url` (the URL of a volume is made from its `ref`). New slave table
+`UploadsByVolume` is visible in the detail of a :class:`Volume`.
+
+Changing the :attr:`lino.modlib.users.Assignable.assigned_to` field now emits a
+customized :term:`notification message` when changed. This behavious was
+previously defined in :ref:`noi` but is not generalized.
+
+Fixed :ticket:`5728` (Status report in dashboard is rendered as html tags).
+
+2024-09-07
+==========
+
+In :ref:`avanti` we have a new database field :attr:`can_excuse
+<lino_avanti.lib.courses.Course.can_excuse>` on a course. When this checkbox is
+checked, users can select an additional presence state "excused". See
+:ref:`avanti.specs.cal` for details.
+
+
+2024-08-26
+==========
+
+Fixed :ticket:`5719` (Check for password quality in ChangePassword).  A default
+Lino site now uses the four basic password validators that are included with
+Django. See :ref:`dev.users.password_validation`.
+
+2024-08-05
+==========
+
+Fixed :ticket:`5704` (The MovementsByFiller panel in FillersByPartner detail
+doesn't work). New class method :meth:`Actor.cast_master_instance` is more
+intuitive to use and explain than :meth:`Actor.get_master_instance` for use
+cases like :class:`storage.MovementsByFiller`. Side effect is a new (internal)
+rule: when a master type ``mt`` is specified,  it now has precedence over the
+:attr:`Actor.master`. Until now, ``mt`` was ignored unless :attr:`Actor.master`
+was :class:`ContentType`.
+
+2024-08-03
+==========
+
+:ticket:`5666` (Some optimizations in Noi): Display all tickets in list mode by
+default and add workflow buttons to :meth:`tickets.Ticket.as_paragraph`.
+
+.. currentmodule:: lino_xl.lib.working
+
+Fixed :ticket:`5705` (Time credit provisions must not differentiate extra and
+regular).
+In :mod:`lino_xl.lib.working` we have a new database model
+:class:`ReportingRule`, which is now used instead of the :class:`ReportingTypes` choicelist
+to decide which product to use when invoicing a session. And
+:class:`ReportingTypes` consequently no longer uses
+:class:`lino.core.choicelists.PointingChoice`.
+Side effects:
+the :class:`lino_xl.lib.tickets.Site` model,
+the :class:`lino_xl.lib.tickets.SiteStates` choicelist,
+the :class:`lino_xl.lib.working.ServiceReport` model
+and the :meth:`lino.core.model.Model.get_typed_instance` method
+have been removed because they weren't used by anybody.
+
+2024-07-28
+==========
+
+.. currentmodule:: lino_xl.lib.tickets
+
+Continued :ticket:`5666` (Some optimizations in Noi): General reorganization of
+the :term:`detail layout` of :term:`ticket`. New field :attr:`Ticket.urgent`.
+Lino Noi no longer uses the :class:`AssignToMe` action because the
+:attr:`Ticket.quick_assign_to` field is more convenient.
+
+2024-07-12
+==========
+
+.. currentmodule:: lino.core.actors
+
+:ticket:`5685` (Review the API for get_table_summary(). Most but not all
+customized :meth:`Actor.get_table_summary` methods have been converted to
+:meth:`Actor.table_as_summary`. Minor optimizations as side effects:
+:class:`lino.utils.AttrDict` now supports *setting* an attribute. The
+:attr:`overview` field didn't yet support getting a safe html string from
+:meth:`get_overview_elems`. For more details, see
+`Luc's developer blog <https://luc.lino-framework.org/blog/2024/0712.html>`__
+
+2024-07-10
+==========
+
+First steps for :ticket:`5670` (Support e-invoices (PEPPOL)): When printing a
+sales invoice to a customer who has a :term:`VAT number`, Lino now generates an
+:term:`XML file` containing the electronic invoice in PEPPOL format. The pdf
+invoice then contains a text "e-invoice: /media/beppol/SLS/112.xml". See
+:doc:`/topics/peppol`.
+
+:meth:`lino_xl.lib.vat.VatItemBase.get_peppol_vat_category`
+:meth:`lino_xl.lib.vat.VatDocument`
+
+
+2024-06-30
+==========
+
+.. :class:`lino.modlib.printing.WriteXmlAction`
+
+:func:`lino.utils.xml.validate_xml` now acts differently depending on whether
+the given :attr:`xsdfile` ends with :file:`.xsd` or with :file:`.sch`.  When it
+ends with :file:`.xsd`, the generated :attr:`xmlfile` file is validated using
+:class:`lxml.etree.XMLSchema` (as it was until now). When it
+ends with :file:`.sch`, the generated :attr:`xmlfile` file is validated using
+:class:`lxml.isoschematron.Schematron`.
+
+2024-06-17
+==========
+
+:ticket:`5660` (logger.debug() notification messages).  The `msg_func` argument
+to :meth:`lino.modlib.notify.Message.emit_notification` is no longer called with
+two arguments `(user, mail_mode)` but without arguments.
+
+
+2024-06-14
+==========
+
+:meth:`BaseRequest.is_obvious_field` no longer fails when called on an actorless
+request.
+
+The :meth:`obj2href` and :meth:`as_summary_row` methods of :class:`Model
+<lino.api.dd.Model>` were merged into a single method named
+:meth:`as_summary_item <lino.api.dd.Model.as_summary_item>`.
+
+
+
+
+2024-06-02
+==========
+
+Lino Noi has now two major options
+:attr:`with_accounting <lino_noi.lib.noi.settings.Site.with_accounting>`
+and
+:attr:`with_cms <lino_noi.lib.noi.settings.Site.with_cms>`.
+
+:attr:`lino.modlib.publisher.Page.child_node_depth` now defaults to 1, and child
+pages are now also shown when :setting:`memo.use_markup` is True.
+
+2024-05-31
+==========
+
+The format of a :term:`textfield` must now be specified using the :attr:`format
+<lino.core.fields.RichTextField.format>` attribute. An attribute named
+:attr:`textfield_format` no longer exists on the :class:`RichTextField
+<lino.core.fields.RichTextField>` object.  Until now the attribute was named
+:attr:`textfield_format`, but an :attr:`format` was accepted as a keyword and
+stored as :attr:`textfield_format`. (The :attr:`textfield_format
+<lino.core.site.Site.textfield_format>` attribute of the :class:`Site
+<lino.core.site.Site>` class remains unchanged.)
+
+The :setting:`use_markup <memo.use_markup>` setting has been moved from
+:mod:`publisher <lino.modlib.publisher>` to :mod:`memo <lino.modlib.memo>`.
+
+
+.. _d0528:
+
+2024-05-30
+==========
+
+Merged :mod:`lino_xl.lib.pages` in to :mod:`lino.modlib.publisher`. New
+choicelist :class:`publisher.SpecialPages <lino.modlib.publisher.SpecialPages>`.
+The :setting:`pages.use_markup` setting is now :setting:`publisher.use_markup`.
+
+2024-05-28
+==========
+
+A first step towards :ticket:`5623` (Replace memo parser by markdown?): added a
+new plugin setting :setting:`pages.use_markup`. Side effect: moved
+:class:`PageFillers <lino.modlib.publisher.PageFillers>` from
+:mod:`lino_xl.lib.pages` to :mod:`lino.modlib.publisher`.
+
+Done :ticket:`5632` (We can always talk about a ticket).
+
+2024-05-24
+==========
+
+The :attr:`master_key` of a :term:`slave table` is no longer automatically added
+as a simple parameter field. For example
+:class:`lino.modlib.dashboard.WidgetsByUser`.
+
+2024-05-21
+==========
+
+The functionality for verifying the email address of a user is now available
+also when `allow_online_registration` is `False`.
+
+2024-05-18
+==========
+
+The :meth:`as_paragraph <lino.core.model.Model.as_paragraph>` of
+:class:`contacts.Partner` did not always return a safe string. Such a stupid bug
+should not have slipped through our test suite! So
+:mod:`lino_react.react.views` now uses :func:`lino.utils.html.assert_safe` and
+the :func:`lino.api.doctest.walk_menu_items` function now also calls every table
+with :attr:`display_mode` set to ``'list'``. This detected two more models whose
+:meth:`as_paragraph <lino.core.model.Model.as_paragraph>` doesn't yet return a
+safe string (:class:`working.Session` and :class:`contacts.Role`).
+
+The :attr:`lino.core.site.Site.remote_user_header` is no longer being used.
+:ticket:`5618` (Stop supporting HTTP authentication (Site.remote_user_header))
+
+2024-05-16
+==========
+
+Lino no longer sets a default time when inserting a :term:`calendar entry`. New
+function  :func:`show_change_watchers <lino.api.doctest.show_change_watchers>`
+for usage in :term:`tested documents <tested document>`.
+
+2024-05-13
+==========
+
+New plugin :mod:`lino_xl.lib.agenda`. Visible in :ref:`amici` where calendar
+entries have a new tab "Agend" in their detail view and when you print an entry.
+Lino will also list the agenda items.
+
+2024-05-11
+==========
+
+Rename plugin: **ledger** (:mod:`lino_xl.lib.ledger <lino_xl.lib.accounting>`)
+to **accounting** (:mod:`lino_xl.lib.accounting`).
+
+
+2024-05-11
+==========
+
+A series of internal optimizations: Fixed a bug in :mod:`lino.modlib.jinja` :
+the :xfile:`config` directory of the :attr:`site_dir
+<lino.core.site.Site.site_dir>` was searched last when looking for a template,
+but it should get searched first. The :mod:`polls <lino_book.projects.polls>`
+and  :mod:`polls2 <lino_book.projects.polls2>` demo sites were probably the only
+victims of that bug. :func:`show_menu <lino.api.doctest.show_menu>` no longer
+requires a username. :meth:`ar.action_link
+<lino.core.requests.BaseRequest.action_link>`. The :xfile:`docutils.conf` of the
+Developer Guide no longer sets ``smart_quotes`` to False; this might cause a
+series of help texts to get marked as needing work in the :xfile:`.po` files.
+:ticket:`5600` (react plugin no longer needs lino.modlib.system).
+
+2024-05-10
+==========
+
+.. currentmodule:: lino.core.model
+
+Work in progress for :ticket:`#5596` (Better names for obj2href() and
+obj2html()): :meth:`Model.as_summary_row` and :meth:`Model.as_paragraph` now
+call :meth:`Model.obj2href` instead of :meth:`ar.obj2html`. Some more internal
+optimizations: The :func:`lino.utils.html.tostring` function is now a copy of
+:func:`etgen.html.tostring` and it now escapes the value when it is an unsafe
+:class:`str`.
+
+2024-05-08
+==========
+
+Fixing :ticket:`5576` (My teams should show description in only one language)
+was trivial but caused an avalanche of internal optimizations. The default
+implementation of :attr:`detail_link <lino.core.actors.Actor.detail_link>` now
+uses :meth:`lino.core.model.Model.as_paragraph` as default text instead of
+:meth:`ar.obj2htmls`. :ticket:`5353` (Use mark_safe instead of ElementTree). New
+feature: :ticket:`5589` (Simple parameters should be considered obvious fields).
+Optimization: :ticket:`5590` (Render href in tested docs more consistently). To
+avoid making :ref:`etgen` depend on Django, I created a new module
+:mod:`lino.utils.html` with a function  :func:`tostring
+<lino.utils.html.tostring>` that wraps Django's safestring tools around
+:func:`etgen.html.tostring`. All Lino code now imports :func:`tostring` from
+this new :mod:`lino.utils.html` module. I started a topic guide
+:doc:`/topics/html`.
+
+
+2024-04-30
+==========
+
+New feature :ref:`Job providers with multiple workplaces <art60_workplace>` for
+:ref:`welcht` (:ticket:`5567`). New database fields :attr:`jobs.Job.workplace
+<lino_welfare.modlib.jobs.Job.workplace>` and
+:attr:`contacts.Company.job_provider
+<lino_welfare.modlib.contacts.Company.job_provider>`. New :term:`slave table`
+:class:`WorkplacesByProvider <lino_welfare.modlib.jobs.WorkplacesByProvider>` in
+the detail view of a :term:`job provider`.
+
+2024-04-25
+==========
+
+Internal optimizations: the :class:`lino_xl.lib.contacts.Partner` model now
+inherits from :class:`Commentable <lino.modlib.comments.Commentable>`. This
+fixes :ticket:`5578` (Amici says 'Household' object has no attribute
+'is_comment_private'). Optimized :meth:`Plugin.__repr__`.
+
+2024-04-24
+==========
+
+Fixed several bugs that caused the :term:`background task runner` to get stuck.
+:command:`pm linod` now also starts a log server when
+:data:`lino.modlib.linod.use_channels` is `False`.
+
+Database needs migration because  :class:`lino.modlib.linod.SystemTask` and
+:class:`lino_xl.lib.invoicing.Task` have a new field :attr:`name`.
+
+
+2024-04-22
+==========
+
+Done :ticket:`5565` (Replace "Project" by "Topics" in Noi).
+Fixed a database design bug in :mod:`lino_xl.lib.topics`: New model
+:class:`lino_xl.lib.topics.Tag`, and :class:`lino_xl.lib.topics.Interest` no
+longer has an :attr:`owner` field. `InterestsByController` has become
+`TagsByOwner`, `InterestsByPartner` has become `TagsByTopic`.
+:class:`Topic` is no longer a BabelNamed.
+The :class:`Interesting` mixin has been renamed to :class:`Taggable`. The
+:setting:`topics.partner_model` can now be `None`, which means that there is no
+:class:`Interest` model, use cases are :ref:`tera` and :ref:`cms`.
+
+
+2024-04-15
+==========
+
+Fixed :ticket:`5553` (Invalid panel spec. start_invoicing_1 POST null). The
+:mod:`lino_xl.lib.invoicing` plugin now creates a single menu command "My
+invoicing plan" instead of creating one command per invoicing task.
+
+Started documentation about :doc:`/topics/singlerow`.
+
+2024-04-08
+==========
+
+Lino now supports the new Estonian VAT rate. (Not already since Januar because
+there is no production site yet in Estonia). Changes are visible in
+:ref:`dg.plugins.eevat`. Side effect:
+:meth:`lino.mixins.periods.DateRange.get_period_text` is now more generally
+available as :func:`lino.mixins.periods.rangetext` and used by
+:mod:`lino_xl.lib.vat`.
+
+2024-04-07
+==========
+
+New actions :attr:`reset_password <lino.modlib.about.About.reset_password>` and
+:attr:`verify_user <lino.modlib.about.About.verify_user>`.  The "Verify" action
+on :class:`lino.modlib.users.User` is now named :class:`verify_me
+<lino.modlib.users.User.verify_me>`.  New database field
+:attr:`lino.modlib.users.User.verification_password`. Interesting to note how
+:class:`lino.modlib.users.User.verify_me` inherits from
+:attr:`lino.modlib.about.About.verify_user` and how they do almost the same in
+different situations.
+
+The :class:`react.UserSettings` view no longer sets ``require_verification`` and
+``code_expiry``.
+
+
+2024-04-05
+==========
+
+Renamed model :class:`linod.BackgroundTask` to :class:`linod.SystemTask`.
+Requires database migration.
+
+
+2024-04-02
+==========
+
+Optimize :term:`background tasks <background task>`: add possibility to have
+multiple task classes (django models); run separate task classes in separate
+coroutines.
+
+
+2024-03-30
+==========
+
+The :class:`ChangesByMaster <lino.modlib.changes.ChangesByMaster>` and
+:class:`ChangesByObject <lino.modlib.changes.ChangesByObject>` tables are now
+available on every watched model as toolbar button (:guilabel:`≅`). For this to
+work, applications must call :func:`lino.modlib.changes.watch_changes` from
+:meth:`setup_actions <lino.core.site.Site.setup_actions>` rather than from
+:meth:`do_site_startup <lino.core.site.Site.do_site_startup>`. Side effects:
+Renamed :meth:`Plugin.on_site_startup
+<lino.core.plugins.Plugin.on_site_startup>` to :meth:`Plugin.pre_site_startup
+<lino.core.plugins.Plugin.pre_site_startup>`. The :func:`watch_all_changes`
+feature has been removed because it was not used. Moved :mod:`lino.utils.watch`
+to :mod:`lino.modlib.changes.utils`. Updated documentation pages:
+:doc:`/dev/startup`, :doc:`/plugins/changes`, :doc:`/dev/watch` and
+:doc:`/dev/plugins`.
+
+
+2024-03-27
+==========
+
+.. currentmodule:: lino.core.site
+
+I renamed :meth:`Site.get_installed_apps` to :meth:`Site.get_installed_plugins`
+and :meth:`Site.get_apps_modifiers` to :meth:`Site.get_plugin_modifiers`. A
+technically simple change to improve readability for newcomers. But it will
+require local :xfile:`settings.py` files to get updated. Lino raises an
+:class:`ChangedAPI` exception if you forget to do it.
+
+2024-03-26
+==========
+
+.. currentmodule:: lino.modlib.users
+
+New field :attr:`User.nickname` and :setting:`users.with_nickname`.
+The :class:`CreateAccount` action is now
+presented in the :xfile:`admin_main.html`, and its dialog no longer shows the
+third-party auth providers because we have them in the :class:`SignIn` action.
+
+
+
+2024-03-25
+==========
+
+Renamed :mod:`lino_xl.lib.sales` to :mod:`lino_xl.lib.trading` because it can be
+used for any trade type, not only for sales. Requires database migration.
+
+2024-03-24
+==========
+
+Fixed #5520 (Recent comments shows comments to tickets that the user cannot
+see).
+In :class:`lino.modlib.comments.Commentable`, :meth:`get_comments_filter` has been
+changed to :meth:`add_comments_filter
+<lino.modlib.comments.Commentable.add_comments_filter>`.
+New database field :attr:`lino_xl.lib.groups.Group.private`.
+The `ar` argument to :attr:`lino.core.actors.Actor.get_request_summary`
+and :attr:`lino.core.model.Model.get_request_summary` can now be a :class:`BaseRequest`.
+
+
+Noi no longer adds a group owner to (database field `Group.user` has been
+removed). And the view parameter `subscriber` has been removed.
+
+
+2024-03-17
+==========
+
+Some subtle optimizations in Lino core: Default value for
+:attr:`lino.core.actors.Actor.summary_sep` changed from ``"<br/>"`` to ``", "``.
+New keyword argument `max_width` for :meth:`TableRequest.show`. React renderer
+still used ``mjames`` icons for renderering actions even when a PrimeIcon icon
+exists. Clickable links sometimes had no ``style="text-decoration:none"``.
+
+2024-03-14
+==========
+
+New method :meth:`lino.core.site.Site.get_config_value` for
+:ticket:`5497` (SITE.site_config is sometimes None on asgi server).
+
+2024-03-10
+==========
+
+Resurrection of the :mod:`commondata` package. They had been sleeping for many
+years because the original idea assumed that people who know the data would site
+down and write Python code. A first example is :mod:`commondata.countries`.
+Because :mod:`commondata` was a namespace package and no longer is, you need to
+**manually uninstall the old commondata packages** by removing
+:cmd:`commondata*-nspkg.pth` from your :file:`site-packages` directory.
+
+
+2024-03-08
+==========
+
+A developer in Uruguay started an internship, so we added Uruguayan demo data in
+:doc:`/projects/cosi4`.
+
+2024-02-26
+==========
+
+Added the new plugin :mod:'lino_xl.lib.sources' (:ticket:`5214`).
+
+2024-02-14
+==========
+
+Automatically run invoicing plans as background tasks (:ticket:`5399`).
+Replace ``InvoicingAreas`` by :class:`lino_xl.lib.invoicing.Task`
+
+
+2024-01-24
+==========
+
+rename StorageState to ProvisionState
+
+
+2024-01-23
+==========
+
+New field :attr:`lino_xl.lib.products.Product.pieces_per_unit`
+
+2024-01-14
+==========
+
+Add the :mod:`lino_xl.lib.nicknames` plugin.
+
+2024-01-11
+==========
+
+Review socket file of log server (:ticket:`5379`).

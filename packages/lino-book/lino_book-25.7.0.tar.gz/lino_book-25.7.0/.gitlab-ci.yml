@@ -1,0 +1,80 @@
+# Official language image. Look for the different tagged releases at:
+# https://hub.docker.com/r/library/python/tags/
+# image: debian:bullseye
+# image: debian:latest
+image: python:3.12
+
+# Change pip's cache directory to be inside the project directory since we can
+# only cache local items.
+variables:
+  DEBIAN_FRONTEND: noninteractive
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  TERM: linux
+  PYTHONUNBUFFERED: 1
+  LC_ALL: en_GB.UTF-8
+  LANG: en_GB.UTF-8
+  TZ: Europe/Brussels
+
+# Pip's cache doesn't store the python packages
+# https://pip.pypa.io/en/stable/reference/pip_install/#caching
+#
+# If you want to also cache the installed packages, you have to install
+# them in a virtualenv and cache it as well.
+# cache:
+#   paths:
+#    - .cache/pip
+#    - venv/
+
+before_script:
+  - uname -a
+  - cat /etc/debian_version
+  - apt-get update
+  - apt-get -y upgrade
+
+  # - apt-get install -y wget lsb-base
+
+  # https://www.elastic.co/guide/en/elasticsearch/reference/7.15/deb.html#install-deb
+  # - wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.15.2-amd64.deb
+  # - wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.15.2-amd64.deb.sha512
+  # - shasum -a 512 -c elasticsearch-7.15.2-amd64.deb.sha512
+  # - dpkg -i elasticsearch-7.15.2-amd64.deb
+  # - /etc/init.d/elasticsearch start
+  # - cat /etc/elasticsearch/elasticsearch.keystore
+  # - update-rc.d elasticsearch defaults 95 10
+  # - service elasticsearch start
+
+  - apt-get install -y tzdata locales-all python3 python3-dev python3-setuptools python3-pip apt-utils build-essential libldap2-dev libsasl2-dev slapd ldap-utils tox lcov valgrind git subversion sqlite3 swig graphviz tidy
+  - apt-get install -y libgconf-2-4 # Required for cypress with Ubuntu 16.04
+  - apt-get install -y redis-server ; redis-server &
+  - apt-get install -y libreoffice python3-uno
+  - libreoffice --accept="socket,host=localhost,port=8100;urp;" &
+  # Trying to understand func=xmlSecCheckVersionExt:file=xmlsec.c:line=188:obj=unknown:subj=unknown:error=19:invalid version:mode=abi compatible;expected minor version=2;real minor version=2;expected subminor version=25;real subminor version=26
+  # https://bugs.documentfoundation.org/show_bug.cgi?id=118373
+  - libreoffice --version
+  - python3 -V  # Print out python version for debugging
+  - virtualenv --python=python3 venv
+  - source venv/bin/activate
+  - pip install -r requirements.txt
+  - pip install -e ".[testing]"
+  # - inv install
+
+test:
+  # services:
+  #   - name: "docker.elastic.co/elasticsearch/elasticsearch:7.15.0"
+  #     alias: "elasticsearch"
+  #     command: ["bin/elasticsearch", "-Expack.security.enable=false", "-Ediscovery.type=single-node"]
+  script:
+    - touch venv/.getlino.conf
+    - inv prep -v
+    - inv test
+
+pages:
+  stage: deploy
+  script:
+    - inv bd
+    - mv docs/.build/ public/
+  artifacts:
+    paths:
+      - public
+  only:
+    - master

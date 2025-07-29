@@ -1,0 +1,90 @@
+.. doctest docs/tested/e006.rst
+.. _lino.tested.e006:
+
+Django 1.7 complains about clashing fields
+==========================================
+
+This document describes the main issue in :ticket:`38` (Make Lino run
+with Django 1.8).
+
+>>> from lino import startup
+>>> startup('lino_book.projects.min9.settings')
+>>> from lino.api.doctest import *
+
+
+How to reproduce it:
+
+- Get the latest development version of Lino (see :doc:`/dev/install/index`).
+
+- In your copy of file :srcref:`lino/setup_info.py`, change
+  `install_requires=['django<1.7'...` to
+  `install_requires=['django'...`.
+
+- In the top-level directory of your Lino repository, run ``$ inv prep test``
+
+It fails already during *initdb*, more precisely the *prep* of
+:mod:`lino_book.projects.min2`. So you can avoid running the whole test
+suite by doing e.g.::
+
+  $ go lino
+  $ cd lino_book.projects/min2
+  $ ./initdb_tmp
+
+The problem there is that Django 1.7+ complains about clashing
+fields::
+
+   contacts.Person.FOO: (models.E006) The field 'FOO' clashes with the field 'addr1' from model 'contacts.partner'.
+
+These are the fields defined in the :class:`AddressLocation
+<lino_xl.lib.countries.mixins.AddressLocation>` mixin, inherited by
+the abstract :class:`Partner <lino_xl.lib.contacts.models.Partner>`
+and :class:`Person <lino_xl.lib.contacts.models.Person>` models of
+:mod:`lino_xl.lib.contacts`, which are then themselves inherited by
+:class:`Partner <lino_book.projects.min2.modlib.contacts.models.Partner>`
+and :class:`Person <lino_book.projects.min2.modlib.contacts.models.Person>`
+in :mod:`lino_book.projects.min2.modlib.contacts`.
+
+The following diagram shows the structure for `Person` (for `Company`
+it is analog):
+
+.. graphviz::
+
+   digraph foo  {
+
+        AddressLocation -> "modlib.Partner";
+        "modlib.Partner" -> "modlib.Person";
+        "modlib.Partner" -> "min2.Partner";
+        "min2.Partner" -> "min2.Person";
+        "modlib.Person" -> "min2.Person";
+
+  }
+
+It might be useful to understand
+:mod:`lino_book.projects.diamond`,
+:mod:`lino_book.projects2.diamond`,
+and the code of :mod:`lino.core.inject`
+before working on this problem.
+
+The problem might be related to the fact that `AFTER17` the `name`
+field occurs *twice* in the list of fields:
+
+>>> Person = rt.models.contacts.Person
+>>> from lino import AFTER17
+>>> from lino.core.fields import VirtualField
+>>> [f.name for f in Person._meta._get_fields(reverse=False)
+...     if not isinstance(f, VirtualField)]
+['id', 'email', 'language', 'url', 'phone', 'gsm', 'fax', 'modified', 'created', 'country', 'city', 'zip_code', 'region', 'addr1', 'street_prefix', 'street', 'street_no', 'street_box', 'addr2', 'vat_regime', 'vat_id', 'prefix', 'name', 'remarks', 'purchase_account', 'partner_ptr', 'title', 'first_name', 'middle_name', 'last_name', 'gender', 'birth_date']
+
+See the :meth:`._get_fields` method of
+:class:`django.db.models.options.Options` (in Django 1.7+).
+
+When trying to test this document `AFTER17`, we even get a traceback
+at the first line::
+
+    from lino.api.doctest import *
+    Exception raised:
+        Traceback (most recent call last):
+          ...
+          File "django/apps/registry.py", line 131, in check_models_ready
+            raise AppRegistryNotReady("Models aren't loaded yet.")
+        AppRegistryNotReady: Models aren't loaded yet.

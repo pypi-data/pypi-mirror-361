@@ -1,0 +1,313 @@
+.. include:: /../docs/shared/include/defs.rst
+.. _dev.lets.lets1:
+
+=====================================
+Version 1
+=====================================
+
+.. contents::
+   :local:
+
+.. _data_model_diagram:
+
+Database structure
+==================
+
+The database structure is one of the first things you can do together with your
+customer.
+
+Here is a **textual representation** of the database structure:
+
+- **Products** : one row for every product or service. A product has a name
+  (description) and a delivery unit.
+
+- **Members** : the people who use this site to register their offers and
+  demands. For each member we record their name and email, and the place where
+  they are located.
+
+- An **Offer** is when a given member declares that they want to *sell*
+  a given product.
+
+- A **Demand** is when a given member declares that they want to *buy* a
+  given product.
+
+- Each member is located in a given **Place** because we want to add filtering
+  on offers and demands limited to a place.
+
+Here is a **graphical representation** of the database structure. There are many
+methodologies for visualizing a database model (`UML
+<https://en.wikipedia.org/wiki/Unified_Modeling_Language>`_, `IDEF1X
+<https://en.wikipedia.org/wiki/IDEF1X>`__), but the following is our favourite
+because it is simple, intuitive and useful.
+
+.. graphviz::
+
+   digraph foo  {
+
+       graph [renderer="neato"]
+
+       node [shape=box]
+       node [style=filled]
+           node [fontname="times bold", fillcolor=red]
+              Product Member
+           node [fontname="times" fillcolor=gold]  Offer  Demand
+           node [fontname="times italic" fillcolor=lightblue]  Place
+
+       Product -> Offer[arrowhead="inv"]
+       Product -> Demand[arrowhead="inv"]
+
+       Offer -> Member[taillabel="provider", labelangle="-90", labeldistance="2"];
+       Demand -> Member[taillabel="customer", labelangle="90", labeldistance="2"];
+       Member ->  Place;
+
+  }
+
+Remarks about above diagram:
+
+- Every **node** on the diagram represents a database model.
+
+- Every **arrow** on the diagram represents a :term:`foreign key` (we sometimes
+  use the word **pointer** instead of *foreign key* because that's more
+  intuitive).
+
+- We display the **name of a pointer** only if it differs from the
+  model it points to. For example the arrow from *Offer* to *Product*
+  is a FK field called `product`, defined on the *Offer* model. We do
+  not display the name `product` on our diagram because that would be
+  a waste of place.
+
+- We use three colors for grouping the models into three "data categories":
+
+  - **red** is for **master data** (i.e. relatively stable data)
+
+  - **yellow** is for **moving data** (i.e. data that changes relatively often)
+
+  - **blue** is for **configuration data** (i.e. data that is rather in
+    background and accessible only to site managers)
+
+Above picture has been realized using `graphviz
+<https://www.sphinx-doc.org/en/master/usage/extensions/graphviz.html>`__.  You
+might prefer `Dia <http://dia-installer.de/>`_, which produces output like this:
+
+.. image:: models.png
+
+
+User interface
+==============
+
+The **main page** or "dashboard"  is another thing that you can discuss with
+your customer before even starting to write code. Let's say that they want it to
+show a list of products available for exchange.
+
+And a last thing to discuss is the **main menu**. For the LETS website it will
+be fairly simple:
+
+- **Master**:
+
+  - Products -- show the list of products
+  - Members -- show the list of members
+
+- **Market**
+
+  - Offers  -- show the full list of all offers
+  - Demands  -- show the full list of all demands
+
+
+
+Writing a prototype
+===================
+
+With above information a Lino application developer is able to write a "first
+draft" or "prototype". Of course you are only about to learn how to do that. So
+for this tutorial we wrote that prototype for you.  You can run by saying::
+
+  $ go lets1
+  $ pm prep
+  $ runserver
+
+Please play with it before going on, in order to make sure that you understood
+the *question*. Because until here we have been **analysts**. The job of an
+analyst is to describe what the programmer is supposed to do.
+
+Now that you know what you are asked to do,  let's see how to write an
+application with the  given database structure and user interface,
+
+Use the source, Luke!
+=====================
+
+To be honest: there is no simple recipe from now on.
+You need to learn the possibilities of the framework. That's called "experience".
+You get experience using exercise and training.
+To help you on this journey, this tutorial will look
+at the source code and make remarks about it.
+
+The ``settings.py`` file
+========================
+
+The `settings.py
+<https://gitlab.com/lino-framework/book/-/blob/master/lino_book/projects/lets1/settings.py>`__
+file is the first place to look when you want to discover a Django application .
+Here you can see for example which plugins are installed.
+
+Our file says::
+
+    def get_installed_plugins(self):
+        yield super().get_installed_plugins()
+        yield 'lino_book.projects.lets1.lib.users'
+        yield 'lino_book.projects.lets1.lib.market'
+
+So theoretically our LETS application has two plugins, "users" and "market". Let's verify this.
+
+.. .. include:: /../docs/shared/include/tested.rst
+
+You can run the following code snippets in a Django shell session.
+If this was new for you, read :ref:`pm_shell`.
+
+..
+  >>> import lino
+  >>> lino.startup('lino_book.projects.lets1.settings')
+
+>>> from lino.api.doctest import *
+
+>>> pprint(settings.SITE.installed_plugins)
+(<lino.core.plugin.Plugin lino>,
+ <lino.modlib.about.Plugin lino.modlib.about>,
+ <lino.modlib.jinja.Plugin lino.modlib.jinja(needed by lino_react.react)>,
+ <lino_react.react.Plugin lino_react.react(needs ['lino.modlib.jinja'])>,
+ <lino.modlib.printing.Plugin lino.modlib.printing(needed by lino.modlib.system)>,
+ <lino.modlib.system.Plugin lino.modlib.system(needed by lino_book.projects.lets1.lib.users, needs ['lino.modlib.printing'])>,
+ <lino_book.projects.lets1.lib.users.Plugin lino_book.projects.lets1.lib.users(needs ['lino.modlib.system'])>,
+ <lino_book.projects.lets1.lib.market.Plugin lino_book.projects.lets1.lib.market>,
+ <lino.core.plugin.Plugin django.contrib.staticfiles>,
+ <lino.core.plugin.Plugin django.contrib.sessions>)
+
+In reality is has more plugins because Lino installs certain plugins
+automatically, and because one plugin can require other plugins.
+
+
+- `lib/market/__init__.py <https://gitlab.com/lino-framework/book/-/blob/master/lino_book/projects/lets1/lib/market/__init__.py>`__
+- `lib/market/models.py <https://gitlab.com/lino-framework/book/-/blob/master/lino_book/projects/lets1/lib/market/models.py>`__
+- `lib/market/ui.py <https://gitlab.com/lino-framework/book/-/blob/master/lino_book/projects/lets1/lib/market/ui.py>`__
+- `fixtures/demo.py <https://gitlab.com/lino-framework/book/-/blob/master/lino_book/projects/lets1/fixtures/demo.py>`__
+- `lib/users/__init__.py <https://gitlab.com/lino-framework/book/-/blob/master/lino_book/projects/lets1/lib/users/__init__.py>`__
+- `lib/users/models.py <https://gitlab.com/lino-framework/book/-/blob/master/lino_book/projects/lets1/lib/users/models.py>`__
+- `lib/users/ui.py <https://gitlab.com/lino-framework/book/-/blob/master/lino_book/projects/lets1/lib/users/ui.py>`__
+- `lib/users/fixtures/demo.py <https://gitlab.com/lino-framework/book/-/blob/master/lino_book/projects/lets1/lib/fixtures/demo.py>`__
+
+
+Not finished
+============
+
+The remaining sections are work in progress. Sorry.
+
+The :attr:`delivery_unit` field is a choicelist field. This is similar to a
+:term:`foreign key`, but instead of pointing to a database row, it points to a
+choice in a hard-coded table, which we call a choicelist. See
+:doc:`/dev/choicelists`.
+
+..
+  Note the difference between "code" and "documentation". The **code** directory
+  contains runnable Python code and application-specific configuration files. A
+  copy of this would be needed on a production site.  The **documentation** is a
+  Sphinx documentation tree and contains mainly :file:`.rst` files. These docs are
+  not needed on a production site.  Their first purpose is to contain tests.
+
+
+.. We have a the second variant
+  :mod:`lino_book.projects.lets2`
+  where the members are "polymorphic": they can be
+  either customers or suppliers, or both. This is an example of multi-table
+  inheritance and how you can use it with Lino's :class:`Polymorphic
+  <lino.mixins.polymorphic.Polymorphic>` mixin.
+  TODO: move also lets2 into new repository to make things more easy to copy.
+
+Members
+=======
+
+For storing what the customer calls "members", we decided to use the standard
+library plugin :mod:`lino.modlib.users`.  But we extend it:
+
+- we change the verbose model name from "User" to "Member"
+- we add a field :attr:`place`, which is a pointer to our table of places.
+
+Form layouts
+============
+
+Note the `detail_layout` attributes of certain tables.  They define the
+**layout** of the **detail window** for these database models (a detail window
+is what Lino opens when the user double-clicks on a given row).
+
+
+.. image:: t3a-3.jpg
+  :align: right
+  :scale: 50%
+
+The detail window of a **Product** should show the data fields and two slave
+tables, one showing the the **offers** and another with the **demands** for this
+product.
+
+Here is the application code that produces the picture on the right ::
+
+    detail_layout = """
+    id name
+    OffersByProduct DemandsByProduct
+    """
+
+The dashboard
+=============
+
+.. image:: a.png
+    :scale: 40
+    :align: right
+
+The dashboard shows the `ActiveProducts` table. The definition of that table is
+`here <https://gitlab.com/lino-framework/lets/-/blob/master/lino_lets/lib/market/ui.py#L25>`__,
+and the :meth:`get_dashboard_items <lino.core.site.Site.get_dashboard_items>` method is defined
+`here <https://gitlab.com/lino-framework/lets/-/blob/master/lino_lets/lib/lets/settings.py#L41>`__)
+
+More screenshots
+=================
+
+Here are some screenshots.
+
+.. image:: b.png
+    :scale: 70
+
+.. image:: c.png
+    :scale: 70
+
+.. image:: d.png
+    :scale: 70
+
+.. image:: e.png
+    :scale: 70
+
+.. image:: members_insert.png
+    :scale: 30
+
+Filtering
+=========
+
+Some hints:
+
+- Note that the Offers, Demands and Products tables now have a |gear| icon in
+  their toolbar. This is the main new feature. Play with it.
+
+- The :meth:`Model.get_simple_parameters
+  <lino.core.fields.TableRow.get_simple_parameters>` method (a class method on a
+  database model) yields the name of database fields to be used as "table
+  parameters", i.e. the fields that appear in the "parameter panel" (the panel
+  that expands and collapses when you hit the |gear| button). See
+  :doc:`/dev/parameters`.
+
+
+More
+====
+
+Maybe some helpful hints:
+
+:doc:`/dev/menu`
+:doc:`/dev/xlmenu`
+
+:doc:`/specs/appypod`
+:doc:`/plugins/export_excel`

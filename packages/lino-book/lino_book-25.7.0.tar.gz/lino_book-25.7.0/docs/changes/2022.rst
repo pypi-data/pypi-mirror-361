@@ -1,0 +1,306 @@
+.. include:: /../docs/shared/include/defs.rst
+.. _book.changes.2022:
+
+====
+2022
+====
+
+This is the 2022 :term:`change log` for Lino. General information about how to
+read and maintain this document in :ref:`dev.changes`.
+
+2022-12-31
+==========
+
+Bugfixes in lino: collectstatic didn't build site cache. Removed a call to :func:`Actor.request_from`.
+Bugfix in xl: removed two calls to :func:`Actor.request_from`.
+
+
+
+2022-12-30
+==========
+
+Release to pypi: noi, lino, xl
+
+
+2022-12-29
+==========
+
+Lino has a new plugin :mod:`lino_xl.lib.subscriptions`.   Tickets are no longer
+assigned to the service report via their project (:attr:`Ticket.site
+<lino_xl.lib.tickets.Ticket.site>`) but via the new field :attr:`Ticket.order
+<lino_xl.lib.tickets.Ticket.order>` (:ticket:`4757`). Service reports are now
+made by generating an invoice instead of using the
+:class:`working.ServiceReport` model (:ticket:`3301`).
+
+After this upgrade it's important to run :manage:`checkdata` with ``--fix`` in
+order to fill the new field :attr:`order` of existing tickets. After this we can
+remove all projects named for their customer.
+
+As a side effect there are a series of changes:
+
+In the core: :func:`lino.core.requests.BaseRequest.show` (used in doctests)
+didn't work for :term:`display mode` "list".
+:func:`lino.core.actors.Actor.request_from` now raises an exception, and the
+last remaining usages have been removed from our code base. The :func:`repr` of
+a :class:`lino.core.plugins.Plugin` now also shows the value of
+:attr:`needs_plugins`. The commands :cmd:`pm prep` and :manage:`makehelp` now do
+nothing on a slave site (i.e. when :attr:`lino.core.site.Site.master_site` is
+set). (:ticket:`4757`) :class:`lino.modlib.memo.Previewable` no has a
+:meth:`lino.core.fields.TableRow.as_paragraph` method. The :cmd:`pm dump2py`
+command no longer writes checkdata messages (:term:`data problem message`) to
+the dump.
+
+In the XL: invoicing areas are now a choicelist
+``lino_xl.lib.invoicing.InvoicingAreas``, no longer a model. The invoice
+generator that generated a target invoice item is now stored only for rows with
+the invoicing product. New model mixins :class:`InvoicingTargetVoucher
+<lino_xl.lib.invoicing.InvoicingTargetVoucher>` and :class:`InvoicingTargetItem
+<lino_xl.lib.invoicing.InvoicingTargetItem>` instead of :func:`inject_field`
+(this makes :mod:`lino_presto.lib.invoicing` useless). The
+:mod:`lino_xl.lib.thirds` plugin has been removed. Renamed
+:class:`lino_xl.lib.accounting.PartnerRelated` to
+:class:`lino_xl.lib.accounting.PayableRelated`. Removed model mixin
+:class:`lino_xl.lib.contacts.PartnerDocument`, which wasn't used anywhere. New
+model mixins :class:`lino_xl.lib.contacts.PartnerRelated` and
+:class:`lino_xl.lib.contacts.PartnerPrintable` (extracted from
+:class:`lino_xl.lib.trading.TradingVoucher` and
+:class:`lino_xl.lib.accounting.PayableRelated`)
+
+
+
+2022-12-10
+==========
+
+Theoretical optimizations in :cmd:`getlino startsite` when doing linod using
+daphne and asgi.
+
+2022-10-23
+==========
+
+The :mod:`lino_xl.lib.reception` plugin now injects another field
+:attr:`lino_xl.lib.cal.Guest.waiting_number`.
+
+Release to pypi: xl, welfare
+
+2022-10-18
+==========
+
+:attr:`lino.core.site.Site.project_dir` is now a :class:`pathlib.Path` object
+(no longer :class:`unipath.Path`).
+
+New attribute :attr:`lino.core.site.Site.master_site` replaces the "manual"
+inheriting of :setting:`DATABASE` and :setting:`SECRET_KEY` when running a Lino
+site with multiple front ends.
+
+Release to pypi: lino, xl, ...
+
+
+
+2022-10-16
+==========
+
+Implement `DISPLAY_MODE_LIST` to call :meth:`row_as_paragraph
+<lino.core.tables.AbstractTable.row_as_paragraph>` on every row and return html
+string.
+
+2022-09-29
+==========
+
+:mod:`lino.modlib.publisher` no longer uses templates. The
+:attr:`publisher_page_template` is replaced by
+:meth:`get_publisher_chunks` and
+:attr:`publisher_item_template` by
+:meth:`lino.core.fields.TableRow.as_paragraph`.
+
+The :meth:`lino.core.model.Model.as_list_item` method has been renamed to
+:meth:`lino.core.fields.TableRow.as_paragraph` and is now expected to return a
+HTML *string*, not an etree element, and this string must no longer include the
+enclosing ``<li>`` tag. Instead of writing a custom :meth:`as_paragraph` method
+on the Model, you can now write a :meth:`row_as_paragraph
+<lino.core.tables.AbstractTable.row_as_paragraph>` method on the actor. New
+shortcut method :meth:`row_as_paragraph
+<lino.core.tablerequests.TableRequest.row_as_paragraph>`.
+
+
+2022-09-27
+==========
+
+.. currentmodule:: lino.core.tables
+
+Replace :attr:`AbstractTable.display_mode_main` and :attr:`AbstractTable.display_mode_slave` by
+:attr:`AbstractTable.display_mode <lino.core.tables.AbstractTable.display_mode>`, which now takes a "tuple of tuples"
+as the value instead of "string", where the inner tuples must contain only two values where the first value shell be
+an integer that indecates the max width (in characters) of the table view and the second value contains the actual
+display mode.
+
+2022-09-22
+==========
+
+Release to PyPi: Lino, XL, welfare, welcht
+
+2022-09-18
+==========
+
+.. currentmodule:: lino.modlib.comments
+
+Lino now automatically generates a comment of style "Created a new ticket" when
+a :class:`Commentable` database row has been created. New attribute
+:attr:`Commentable.create_comment_template`. This functionally replaces what has been done until now by
+:class:SpawnTicket
+
+2022-09-13
+==========
+
+Stop importing dd and rt in notify consumers.
+
+Release to pypi: Lino 22.9.2
+
+
+2022-09-06
+==========
+
+Release to pypi: xl 22.9.0, noi 22.9.0
+
+Rename :class:`checkdata.Problem` to :class:`lino.modlib.checkdata.Message`.
+
+Release to pypi: lino 22.9.0 (e.g. to make presto test suite pass on GitLab)
+
+
+2022-09-02
+==========
+
+Remove the :class:`Link` model in :mod:`lino_xl.lib.tickets`.
+
+2022-08-30
+==========
+
+Release to pypi: lino, xl, welfare, welcht, noi.
+
+2022-08-22
+==========
+
+Release to pypi: lino, xl, react, amici, noi.
+
+2022-08-11
+==========
+
+The :setting:`notify.use_websockets` has been removed and the dependent
+functionalities are moved to a new plugin :mod:`lino.modlib.linod`, which will
+be activated when :setting:`site.use_linod` is set to `True`.
+
+
+2022-07-31
+==========
+
+The :xfile:`pull.sh` generated by :cmd:`getlino` now updates *all* Python
+packages of the environment.  See :ticket:`4590`.
+
+Fixed: :manage:`install` caused a `NameError: name 'sys' is not defined` error.
+
+
+2022-07-27
+==========
+
+Fix a regression that caused :term:`ExtJS front end` to break when
+:setting:`help.make_help_pages` was `True`.
+
+Release to PyPI: lino
+
+
+2022-07-25
+==========
+
+The Lino version of :manage:`collectstatic` now runs Django's collectstatic
+before :manage:`makehelp` and buildcache.
+
+Release to PyPI: lino, xl, welfare, react, noi
+
+2022-07-19
+==========
+
+Fixed :ticket:`4581` (makehelp for welcht says "Tried to get static handle for
+debts.PrintEntriesByBudget")
+
+2022-07-11
+==========
+
+The :mod:`lino_book.projects.cosi5` demo project is our first proof of concept
+for a :term:`point of sale`. New plugin settings
+:setting:`accounting.sales_method`,
+:setting:`accounting.has_payment_methods` and
+:setting:`invoicing.voucher_type`.
+New function :func:`dd.get_plugin_setting`.
+
+The :class:`lino_xl.lib.accounting.PaymentMethod` model now exists only when
+:setting:`accounting.has_payment_methods` is `True`.
+
+Removed: The :setting:`invoicing.delivery_notes_demo` setting is replaced by
+:setting:`accounting.sales_method`. The :func:`lino.core.site.configure_plugin`
+function is removed as it was no longer used anywhere.
+
+2022-06-29
+==========
+
+The :setting:`notify.use_websockets` now works out of the box for :term:`React
+front end`.
+
+2022-06-06
+==========
+
+Release to PyPI: lino, xl, cosi, react
+
+2022-05-24
+==========
+
+Reimplement the :term:`site features <site feature>`. They are now plain
+strings; description is expected be in the Sphinx docs.
+
+Release to PyPI: lino 22.5.1, xl, noi, getlino
+
+Adapt after sphinxconf was moved from atelier to rstgen.
+
+Release to PyPI: lino 22.5.2
+
+2022-05-19
+==========
+
+Release to PyPI: welfare and welcht
+
+2022-05-09
+==========
+
+The :mod:`lino_xl.lib.invoicing` plugin now supports delivery notes as a new
+type of :term:`invoice generator`. Partial invoicing is possible. New field
+:attr:`accounting.Journal.make_ledger_movements`.
+
+
+2022-05-07
+==========
+
+Release to pypi: lino, lino_xl, lino_react
+
+2022-03-26
+==========
+
+Renamed cal.EventRepeater to cal.EntryRepeater.
+Replaced :attr:`cal.Event.repeater` by :attr:`cal.EntryRepeater.cal_entry`.
+
+2022-03-10
+==========
+
+Replace :attr:`AbstractTable.display_mode <lino.core.tables.AbstractTable.display_mode>`
+with :attr:`display_mode_main` and also add another attribute
+:attr:`display_mode_slave` to use when the :class:`Table <lino.core.dbtables.Table>`
+is rendered as an element of another Table's layout.
+
+Add new module :mod:`lino.core.classproperty`.
+
+2022-01-22
+==========
+
+Release to PYPI: lino, xl, react
+
+2022-01-06
+==========
+
+Release to PYPI: lino, xl, react, noi

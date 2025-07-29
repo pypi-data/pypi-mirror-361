@@ -1,0 +1,788 @@
+.. include:: /../docs/shared/include/defs.rst
+.. _book.changes.2021:
+
+====
+2021
+====
+
+This is the 2021 :term:`change log` for :ref:`book`. General information about
+how to read and maintain this document in :ref:`dev.changes`.
+
+2021-12-30
+==========
+
+New virtual field :class:`DelayedHtmlBox <lino.core.fields.DelayedHtmlBox>` to
+the fields collection.
+
+2021-12-xx
+==========
+
+New feature: a :class:`HtmlBox <lino.core.fields.HtmlBox>` can now be
+`collapsible`. See :ref:`layouts.widget_options`.
+
+2021-11-12
+==========
+
+New plugin :mod:`lino.modlib.search`. First use case will be :ref:`noi`.
+
+2021-10-17
+==========
+
+.. currentmodule:: lino.core.site
+
+Add :class:`Site` attribute :attr:`Site.use_elasticsearch` which when set to
+`True` makes the class :class:`lino.core.model.Model` inherit from necessary
+mixins related to ElasticSearch.
+
+2021-10-13
+==========
+
+Add :mod:`lino.modlib.elastic` plugin (draft) for more intelligent search
+capabilities.
+
+Release to PyPI: lino, lino_react, lino_noi, lino_xl
+
+2021-09-24
+==========
+
+Bugfix third-party auth buttons didn't work in ExtJS.
+:ref:`noi` no longer uses :mod:`lino_xl.lib.votes` (we will soon add a new plugin :mod:`nicknames` instead).
+New field type :class:`lino.core.fields.PreviewTextField`.
+
+Release to PyPI: lino xl, react and noi
+
+
+2021-09-19
+==========
+
+WIP in :mod:`lino_xl.lib.votes`: :meth:`get_vote_raters` and
+:attr:`use_candidatures`.
+
+notify.remove_after now in days (no longer in hours)
+
+
+2021-09-18
+==========
+
+.. currentmodule:: lino.modlib.users
+
+Optimize blogs, `display_mode` 'story', react cosmetics, use votes in noi
+tickets, add third party authentication actions in :class:`SignIn` and :class:`CreateAccount`
+window. Fix a breaking bug in :ref:`noi` (cannot create ticket).
+
+Release to PyPI: xl lino react
+
+
+2021-09-16
+==========
+
+Remove :class:`Actor<lino.core.actors.Actor>` attribute
+:attr:`borderless_list_mode` and implement :class:`StoryElement
+<lino.core.elems.StoryElement>`
+as a substitute, with usage trigger `display_mode` as 'story'.
+
+2021-09-10
+==========
+
+Add the :mod:`lino_xl.lib.votes` plugin to :ref:`noi`. Optimize how :ref:`noi`
+looks for anonymous users. Fix a bug that caused :ref:`noi` to not send
+notifications to all team members.
+
+2021-09-07
+==========
+
+Cosmetic optimization: The :attr:`button_text
+<lino.core.actions.Action.button_text>` of the
+:attr:`LedgerRegistrable.toggle_state
+<lino_xl.lib.accounting.LedgerRegistrable.toggle_state>` and
+:attr:`UploadController.show_uploads
+<lino.modlib.uploads.UploadController.show_uploads>` actions used unicode
+symbols that weren't being rendered correctly in some browsers.
+
+Release to pypi: lino, xl, cosi, amici, react
+
+2021-09-03
+==========
+
+After upgrading you might need to review your :xfile:`settings.py` file: The
+:attr:`max_file_size <Site.max_file_size>` and :attr:`upload_to_tpl
+<Site.upload_to_tpl>` settings are now an attribute of
+:class:`lino.core.site.Site`  and no longer a plugin attribute in
+:mod:`lino.modlib.uploads`.
+
+The :mod:`lino_xl.lib.bevat` plugin had some bugs in the :term:`VAT rules <VAT rule>`, and
+it now can export a :term:`intra-community statement` to XML.
+
+
+2021-08-28
+==========
+
+.. currentmodule:: lino_xl.lib.cal
+
+In :mod:`lino_xl.lib.cal`, added a three new fields to :class:`Event` model:
+:attr:`Event.notify_before`,  :attr:`Event.notify_unit` and
+:attr:`Event.notified`. Added a scheduler function
+:func:`event_notification_scheduler` to send out notifications for the scheduled
+events.
+
+2021-08-23
+==========
+
+The model :class:`VatSubjectable
+<lino_xl.lib.vat.choicelists.VatSubjectable>` has a new property
+:attr:`vid_manager` which is essentially a :class:`VatNumberManager
+<lino_xl.lib.vat.choicelists.VatNumberManager>` instance that facilitates VAT
+identification number validation, both online and local, and generation of
+fake VAT identification number for demo purposes.
+
+A new data :class:`Checker
+<lino.modlib.checkdata.choicelists.Checker>` :class:`VatIdChecker
+<lino_xl.lib.vat.choicelists.VatIdChecker>` on :class:`VatSubjectable
+<lino_xl.lib.vat.choicelists.VatSubjectable>` is active when the plugin vat is
+installed and reports non-existent VAT identification number by doing online
+registry checks to the corresponding user.
+
+These additions are available/published on (and above) `lino_xl-21.8.2
+<https://pypi.org/project/lino-xl/21.8.2/>`_.
+
+2021-08-22
+==========
+
+Release to PyPI : xl, noi and react
+
+2021-08-19
+==========
+
+Release to PyPI : lino, xl, cosi and react
+
+Bugfix: Lino failed to print the customer's :term:`VAT id` in :term:`sales
+invoice` when using the default weasyprint template.
+
+
+2021-08-18
+==========
+
+Minor optimization for registering :ref:`purchase invoices <ug.howto.purchases>`
+with  partly deducible VAT: when you manually change the :attr:`vat_class` of an
+invoice item, then Lino now re-computes all amounts of that item, based on the
+invoices total amount and the new :term:`VAT class`.
+
+
+2021-08-17
+==========
+
+Inject field `default_color` into :class:`SiteConfig
+<lino.modlib.system.SiteConfig>` model from :mod:`cal <lino_xl.lib.cal>`
+plugin.
+
+2021-08-13
+==========
+
+Add a plugin attribute :attr:`lino.modlib.help.Plugin.make_help_pages`.
+
+2021-08-11
+==========
+
+Release to pypi: lino-cosi lino-react
+
+2021-08-09
+==========
+
+Release to pypi: lino-xl
+
+2021-08-06
+==========
+
+Release to pypi: lino, lino-react
+
+2021-08-05
+==========
+
+The :mod:`lino_xl.lib.invoicing` plugin now supports "periodic" invoice
+generators, a new feature used in :ref:`noi` for automatically generating yearly
+or monthly invoices for membership fees.  Implemented by
+:mod:`lino_xl.lib.orders`.
+
+2021-08-04
+==========
+
+Renamed to :class:`WrappedAction <lino.core.actions.WrappedAction>` from
+QuickLinkAction.
+
+Extended :class:`Action<lino.core.actions.Action>` attribute :attr:`js_handler
+<lino.core.actions.Action.js_handler>` to have the possibility to have it defined
+as a class method.
+
+2021-07-30
+==========
+
+Renamed :attr:`Renderer.hide_dashboard_items
+<lino.core.renderer.Renderer.hide_dashboard_items>` to
+`Renderer.support_dashboard_layout`.
+
+Release to PyPI: lino, react
+
+2021-07-29
+==========
+
+Extended :manage:`collectstatic` to run :manage:`makehelp` as a sub task.
+
+Added, :attr:`Kernel.lino_version <lino.core.kernel.Kernel.lino_version>`,
+functionally similar to
+:attr:`Kernel.code_mtime<lino.core.kernel.Kernel.code_mtime>` to use as
+production site modification stamps.
+
+Release to PyPI: lino
+
+2021-07-25
+==========
+
+Added :meth:`Site.build_site_cache_url` and :attr:`Site.site_cache_root` to
+:class:`Site <lino.core.site.Site>` object.
+
+Also, extended the `django.contrib.staticfiles` command :manage:`collectstatic`
+to build the site cache before executing :meth:`collect` on static dirs.
+
+Release to PyPI: lino
+
+2021-07-21
+==========
+
+.. currentmodule:: lino.modlib.users
+
+Renamed plugin option :data:`use_verify` to :data:`allow_online_registration`.
+
+Release to PyPI: lino
+
+
+2021-07-15
+==========
+
+Release to PyPI: getlino, lino, xl, react, cosi, amici, noi
+
+
+2021-07-13
+==========
+
+- Optimizations in the :term:`React front end`
+- extracted help texts are now implemented by separate plugin :mod:`lino.modlib.help`.
+- users.User didn't have a merge action
+
+2021-07-03
+==========
+
+Release to PyPI: lino, xl, react, cosi, amici, noi, getlino
+
+2021-06-23
+==========
+
+Release to PyPI: lino, xl, react, cosi, amici
+
+
+2021-06-12
+==========
+
+The :attr:`lino.modlib.system.SiteConfig.pupil_guestrole` field is now
+injected by the :mod:`lino_xl.lib.courses` and no longer by :ref:`voga`.
+
+The SiteConfig detail layout in :ref:`amici` now shows the fields injected by
+cal and courses.
+
+The Help button (?) now also works in ExtJS, and it now links to the appropriate
+page of the docs.
+
+2021-06-09
+==========
+
+The email notification caused by  AjaxExceptionResponse on a production site no
+longer includes the whole traceback in the message's subject.
+
+2021-06-08
+==========
+
+:ticket:`4195` (Lost connection to MySQL server during query)
+:ticket:`4194` (insert window doesn't close after submitting)
+
+Release to PyPI: :mod:`lino` 21.6.1, :mod:`lino_react` 21.6.1.
+and :mod:`lino_noi` 21.6.1.
+
+2021-06-05
+==========
+
+Release to PyPI : lino 21.6.0, xl 21.6.0, noi 21.6.0 and react 21.6.0.
+
+
+
+2021-05-21
+==========
+
+Release Lino 21.5.0 to PyPI.
+
+2021-05-16
+==========
+
+Internal optimizations: :meth:`lino.core.store.StoreField.value2dict` now takes
+the field name as an argument.  New utility function
+:func:`lino.api.doctest.walk_store_fields`. :meth:`get_complexity_factors
+<lino.utils.diag.Analyzer.get_complexity_factors>` now uses
+:meth:`lino.core.actors.Actor.is_abstract`
+
+2021-05-15
+==========
+
+New plugin option :attr:`lino.modlib.notify.mark_seen_when_sent` When this is
+`True`, Lino marks notification messages as `seen` as soon as they have been
+sent via email.
+
+The default implementation of :meth:`lino.core.actors.Actor.get_table_summary`
+now uses :meth:`lino.core.requests.BaseRequest.plain_toolbar_buttons`.
+
+
+2021-05-03
+==========
+
+.. currentmodule:: lino.modlib.users
+
+Added a new field :attr:`User.date_format` for all applications. New plugin
+option :data:`use_verify`. :attr:`User.send_welcome_email` is no longer a window
+action.
+
+Release to PyPI: Lino 21.4.2, xl 21.4.2, Noi 21.4.1, Voga 21.4.0, Così 21.4.1
+
+Release to PyPI: React 21.5.0
+
+Added a new function :func:`lino.core.auth.utils.activate_social_auth_testing`,
+which does what was priviously done only in  :mod:`lino_book.projects.noi1e` and
+which is now used also for :mod:`lino_shop.projects.shop1`.
+
+2021-05-01
+==========
+
+New actor attribute :attr:`lino.core.actors.Actor.params_panel_pos`.
+
+2021-04-30
+==========
+
+New actor attribute :attr:`lino.core.actors.Actor.params_panel_pos`.
+
+2021-04-29
+==========
+
+Release to PyPI : Lino 21.4.1, XL 21.4.1, Lino Noi 21.4.0 and React 21.4.0.
+
+2021-04-24
+==========
+
+New mixin :class:`lino.modlib.memo.BabelPreviewable`. First use case is
+:mod:`lino_xl.lib.products`, where :class:`Product` and :class:`Category` now
+inherit from it. Their database structure is changed: renamed field
+`description` to `body`. The read-only fields `short_preview` and `full_preview`
+of :class:`lino.modlib.memo.Previewable` are now named `body_short_preview` and
+`body_full_preview`.
+
+Release to pypi: lino 21.4.0, lino-xl 21.4.0
+
+2021-04-23
+==========
+
+The :mod:`lino_xl.lib.products` plugin now adds card and list layouts for
+product, and it adds quick links.
+
+2021-04-16
+==========
+
+:class:`lino_xl.lib.cal.MyTasks` is now sorted in ascending chronological order.
+
+A :class:`lino_xl.lib.notes.SpecialType` now has methods :meth:`get_object` and
+:meth:`set_object`.
+
+2021-04-12
+==========
+
+Calling :func:`lino.sphinxcontrib.configure` in a Sphinx :xfile:`conf.py` file
+now uses the `insipid <https://insipid-sphinx-theme.readthedocs.io>`__ theme
+instead of the `pydata_sphinx_theme
+<https://pydata-sphinx-theme.readthedocs.io>`__.
+
+2021-04-08
+==========
+
+Adapted Lino to changes in Django 3.2:
+Until now the value of a QuantityField was a Decimal, not a Quantity. The
+Quantity class refused to get instantiated, it was just the base class for
+Duration and Percentage.
+But now the value of a QuantityField is no longer a
+Decimal but a Quantity. The only difference between a Quantity and a Decimal is
+that a Quantity has a len() in order to satisfy Django when calling
+:meth:`Field.clean`.
+
+
+2021-04-07
+==========
+
+Started :ticket:`4085` (A common Sphinx layout for non-tech docs like cg, hg and
+sr).
+
+2021-04-02
+==========
+
+The :class:`users.MySettings` quicklink now comes automatically with the users
+plugin (:ticket:`4075`)
+
+The :attr:`lino.core.actors.Actor.get_default_action` method is now being called
+when all other standard actions have been bound.  Removed the
+:class:`lino_xl.lib.accounting.Situation` table, which was no longer used. The :meth:`lino.core.plugin.Plugin.get_quicklinks` method can
+now yield a `dict`.
+
+2021-04-01
+==========
+
+New action :attr:`lino_xl.lib.contacts.Partner.import_text`. This is
+not yet fool-proof. An experiment for :ticket:`4061` and :ticket:`3895`.
+
+.. currentmodule:: lino.core.actors
+
+.. The :attr:`Actor.hide_top_toolbar` attribute is now deprecated.  When
+  application code says ``hide_top_toolbar = True``, then you should change this
+  to ``hide_navigator = True``.  In ExtJS, :attr:`Actor.hide_top_toolbar` still
+  causes the top toolbar to become a bottom toolbar, but React does not use it any
+  more.  React mixed them up until now, but from now on now knows only at the
+  :attr:`hide_navigator` attribute. Both attributes no longer exist on
+  :class:`Action`.
+
+New actor attribute :attr:`Actor.allow_delete`. We need it e.g. for
+:class:`lino.modlib.system.SiteConfig`, which, indeed is not
+:attr:`Actor.readonly` (because every :term:`site manager` can edit the
+site parameters), but even for a :term:`site manager` it makes no sense to
+delete this record.
+
+
+2021-03-30
+==========
+
+:class:`lino_xl.lib.phones.ContactDetail` now inherits from
+:class:`lino.mixins.periods.DateRange`, i.e.:
+
+- added a field :attr:`lino_xl.lib.phones.ContactDetail.start_date`.
+- we can now filter the contact details that are active in a given date range.
+
+
+2021-03-23
+==========
+
+New database model :class:`lino_xl.lib.accounting.PaymentMethod`.
+New plugin :mod:`lino_xl.lib.shopping`.
+
+2021-03-20
+==========
+
+:attr:`lino_xl.lib.tickets.Ticket.priority` is now an `IntegerField`.  To
+migrate existing priorities correctly, simply edit the :xfile:`restore.py` of
+your :cmd:`pm dump2py` snapshot and change one line in the create_tickets_ticket() function:
+kw.update(priority=priority) --> kw.update(priority=50-int(priority))
+
+2021-03-08
+==========
+
+Release to PyPI :  welfare, weleup and welcht 21.3.0.  Followed by bugfix
+releases  lino, welfare, weleup and welcht 21.3.1
+
+
+2021-03-06
+==========
+
+:ticket:`4007`: :meth:`babelkw <lino.core.site.Site.babelkw>` now includes
+:meth:`str2kw <lino.core.site.Site.str2kw>`. This avoids us to get locked by
+code that still uses :meth:`babelkw`. Translators can now add translations for
+new languages without having to edit the German, French and Estonian
+:xfile:`.po` files. Usage: in any existing source code for which you want to
+provide new translations, replace ``babelkw("name", en="foo", de=...)`` by
+``babelkw("name", _("foo"), de=...)``.
+
+
+
+
+2021-03-03
+==========
+
+Added `zh-hant` (traditional Chinese) to the list of supported translations for
+:mod:`lino`, :mod:`lino_xl` and :mod:`lino_cosi`. Added a demo project
+:mod:`lino_book.projects.cosi4`, which uses `zh-hant`. Increased the
+`max_length` of :class:`lino.utils.mldbc.fields.LanguageField` from 5 to 7 in
+order to support languages like `zh-hant`.  Reviewed the :ref:`dev.translate`
+page.
+
+Released to PyPI: atelier 1.1.28, lino 21.3.0, lino_xl 21.3.0 and lino_cosi
+21.3.0.
+
+https://www.lino-framework.org/dev/translate/index.html
+
+2021-02-26
+==========
+
+Fixed :ticket:`3993` (session has no ticket).
+
+Added a first series of primeicon icons as Sphinx `substitution definitions
+<https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions>`__.
+No we can insert the buttons |filter|, |plus|, |refresh|, |trash| and |user|
+into doc pages. The doctree must use the :mod:`lino.sphinxcontrib.logo`
+extension, and  the page must include a file similar to our
+:file:`/shared/include/defs.rst` file.
+
+
+2021-02-25
+==========
+
+Miscellaneous bugfixes and changes regarding users of type :attr:`contributor
+<lino_noi.lib.noi.UserTypes.contributor>` in :ref:`noi`.
+
+Release to PyPI : lino 21.2.5, XL 21.2.3, Noi 21.2.0.
+
+2021-02-24
+==========
+
+Fixed :ticket:`3986`. New methods :meth:`get_request_detail_action
+<lino.core.actors.Actor.get_request_detail_action>`  and
+:meth:`lino.core.layouts.Layout.add_datasource` to fix a subtle problem in
+:ref:`avanti`.  Also :attr:`Layout._other_datasources` is no longer a
+:class:`set` but a :class:`list`. The case is covered in
+:ref:`avanti.specs.get_request_detail_action`.
+
+Release to PyPI: Lino 21.2.4 and XL 21.2.2
+
+Fixed :ticket:`3987` (checkdata says 'SiteConfig' object has no attribute
+'pupil_guestrole'). The error occurred only when the :attr:`guest_role
+<lino_xl.lib.courses.Line.guest_role>` of an :term:`activity line` was empty,
+that's why it slipped through the test suite.
+
+
+2021-02-23
+==========
+
+Released Lino 21.2.3 and XL 21.2.1 to PyPI (to fix issues like
+`this one <https://gitlab.com/lino-framework/mentori/-/jobs/1047909420>`__).
+
+2021-02-22
+==========
+
+.. currentmodule:: lino.modlib.uploads
+
+Optimizations in :mod:`lino.modlib.uploads`: Added new
+plugin options :attr:`remove_orphaned_files <Plugin.remove_orphaned_files>`
+and :attr:`max_file_size <Plugin.max_file_size>`, and two
+data checkers :class:`UploadChecker` and :class:`UploadsFolderChecker`.
+
+
+2021-02-17
+==========
+
+API change: Rename :class:`lino.mixins.Uploadable` to
+:class:`lino.modlib.uploads.mixins.UploadBase`.
+
+Fixed a typo bug in :class:`renderer_mixin.JsCacheRenderer` which caused Lino to
+create an empty media directory "upload" (instead of "uploads") at startup. This
+bug might be the cause for missing group write permission of files that were
+uploaded to a production site.  If you encounter this problem, check whether
+your :xfile:`uploads` directory has the sticky group bit set.
+
+2021-02-15
+==========
+
+Optimizations for developers: New :term:`django-admin command`
+:manage:`demotest` increases test coverage.  Removed :class:`WebIndexTestCase`,
+which is functionally included in :manage:`demotest`. Miscellaneous cleanup and
+optimizations in the test suite. Removed Django 4 deprecation warnings.
+
+Regression danger: :meth:`lino_react.react.views.ApiElement.post` no longer
+passes `http.QueryDict(request.body)` but `request.POST` as data to
+:func:`action_request <lino.core.views.action_request>`.
+
+Release to Pypi: lino-21.2.2
+
+2021-02-14
+==========
+
+Fixed :ticket:`3968` (extjs combobox doesn't submit empty value). It is possible
+that this bugfix reopens :ticket:`3653` (Learning choosers don't work in React
+front end).
+
+2021-02-13
+==========
+
+Release to PyPI: Lino, XL and Avanti.
+
+Minor bugfixes :  SignIn failed when :attr:`lino.core.site.Site.use_ip_dict` was
+not `True`.  When :class:`lino.modli.memo.PreviewableChecker` was called with
+--fix, it fixed the problems but didn't report how many problems were fixed.
+
+Fixed a regression: Insert button was missing in
+:class:`lino.modlib.comments.CommentsByRFC`. All comment table summaries are now
+wrapped into :meth:`html_text <lino.core.requests.BaseRequest.html_text>`,
+leading to better text styling under :mod:`lino.modlib.extjs`.
+
+New feature: you can now set a new plugin setting
+:attr:`lino.modlib.comments.Plugin.emotion_range` to either "business" (default)
+or "social" to select between two alternative sets of emoticons. :ref:`avanti`
+uses the new "social" range, :ref:`noi` the default "business" range.
+
+.. currentmodule:: lino.utils.test
+
+Extend :class:`WebIndexTestCase` to use :meth:`DemoTestCase.login` instead of
+Django's client :meth:`force_login`.  So now the JavaScript files are being
+built for each user type, and a typo bug like :message:`AttrDict instance has no
+key 'ipdict'` (in Lino 21.2.0) would no longer go undetected.
+
+Release to PyPI: Lino and Avanti.
+
+2021-02-12
+==========
+
+Fixed a bug in :mod:`lino.modlib.ipdict` that caused it to not report when an IP
+had been blacklisted.
+
+2021-01-29
+==========
+
+Fixed :ticket:`3948`: Lino didn't behave correctly when (a) no weekday at all
+was selected (which for Lino means "any weekday"), and (b) caused an internal
+server error when no recursion rule was found. This was in the
+:meth:`get_next_suggested_date` of a :class:`lino.modlib.system.RecurrenceSet`.
+
+Fixed :ticket:`3946`: When a partner is :class:`lino_xl.lib.lists.Member` of
+some list, this is no longer a reason to refuse deleting the partner. When you
+confirm to delete such a partner, the list memberships now get deleted as well
+(in cascade).
+
+The title of the :class:`lino_xl.lib.contacts.RolesByPerson` slave panel was
+"Contact for of (name)", not very helpful.  Now it is "(name) is contact person
+for". Added a custom :attr:`details_of_master_template
+<lino.core.actor.Actor.details_of_master_template>`. Note that the custom
+:attr:`label`, "Contact for" is also needed for situations where the master is
+not known.
+
+
+2021-01-17
+==========
+
+The `ipdict.Connections` table has been reimplemented as
+:class:`lino.modlib.users.Sessions`.  It now uses :mod:`sessions <django.contrib.sessions>`
+and therefore works also on sites with very many users. It also features a
+"Kill" action to manually delete individual actions. :mod:`ipdict
+<lino.modlib.ipdict>` is no longer used to show the list of active user
+sessions.  The ipdict approach was not suitable for sites with very many users
+because it stores every connection in an in-memory `dict`.  ipdict is used only
+for detecting brute force attacks. It now removes every entry after a successful
+authentication.
+
+Internal changes: :class:`lino.core.auth.middleware.DeviceTypeMiddleware` has
+been merged into :class:`lino.core.auth.middleware.WithUserMiddleware` because
+it was inefficient to parse the request twice. :class:`BoundAction` has now a
+:meth:`__str__` method, which is used by user warnings "No permission to run X".
+Until now these warnings were irritating because the action name wasn't shown in
+the browser.
+
+2021-01-16
+==========
+
+New method :meth:`lino.modlib.ipdict.Plugin.pop_ip_record` removes an (ip
+address, username) pair from the registry, and Lino uses this when receiving the
+``user_logged_out`` signal.
+
+2021-01-15
+==========
+
+.. currentmodule:: lino.api.doctest
+
+Continued on :ticket:`1162` (A CMS using Lino). The
+:mod:`lino_book.projects.cms` project now has some improvement. But it is not
+finished. Internal changes: :func:`lino.core.dashboard.DashboardItem.render` now
+yields html chunks instead of etree elements.  :func:`show_dashboard` and
+:func:`show_menu` are now defined in :mod:`lino.api.doctest`, no longer as
+methods of a request. The function :func:`lino.api.doctest.rst2menu` is now used
+in :ref:`dev.admin_main`.
+
+The menu of a multilingual site now shows the languages in the main menu, and
+users can dynamically switch to another language than the on defined in their
+preferences.
+
+
+2021-01-08
+==========
+
+Fix #3921 (Journal entry mixes up debit and credit when creating the movements).
+Fix #3924 (auto_compute_amount does not always work as expected).
+
+Release to PyPI: XL 21.1.6.
+
+
+2021-01-07
+==========
+
+Release to PyPI: Lino 21.1.1.
+
+Optimizations: #3919 (No suggestions on clearable general account)
+:meth:`FinancialVoucherItem.account_changed` didn't collect suggestions after
+entering a clearable account.
+#3920 (Lino registers the voucher even when exception happens).
+
+Release to PyPI: Lino 21.1.2 and XL 21.1.5.
+
+2021-01-06
+==========
+
+Release to PyPI: :ref:`xl` 21.1.3.
+
+Fix some bugs in :mod:`lino_xl.lib.finan` : The choicelist for
+FinancialVoucherItem.match didn't respect the suggest_future_vouchers settings
+and therefore always showed all matches, including those that happen in the
+future and won't get satisfied. Visible result: you select one of these matches,
+but Lino then sets the field to blank. After selecting a partner, Lino didn't
+suggest anything (because amount was 0.00, not None).
+FillSuggestionsToVoucherItem caused an additional item to be created.
+
+Release to PyPI: :ref:`xl` 21.1.4 and Lino 21.1.0
+
+Fix :ticket:`3917` (Lino forgets the journal after saving a bank statement).
+
+2021-01-05
+==========
+
+Miscellaneous minor optimizations for entering bank statements.
+:class:`finan.DatedFinancialVoucherItem` now also fills the date field from
+last_item_date. Trying to fix surprizing behaviour after
+:class:`FillSuggestionsToVoucherItem`. Ledger movements in
+:class:`accounting.MovementsByVoucher` are now ordered by :attr:`seqno`, i.e. by
+their "natural" order of creation.
+
+Fix a typo bug in :mod:`lino_xl.lib.cal` that caused Lino to no show anything in
+cal.EntriesByGuest although the person was present in some calendar entry.
+
+2021-01-03
+==========
+
+Add new item :attr:`vatless` to :class:`lino_xl.lib.vat.VatClasses`.
+
+Fix :ticket:`3909`. After editing the entry_date of the last voucher of the
+journal we don't want its number to increase.
+
+2021-01-02
+==========
+
+Fix :ticket:`3906` (active_fields are disturbing for city and zip_code). In
+:class:`lino_xl.lib.countries.CountryCity` the fields city and zip_code are no
+longer :attr:`active_fields <lino.core.model.Model.active_fields>`.
+
+Fix :ticket:`3905` (Purchase invoice from private person suggests VAT). This
+was a bug in :mod:`lino_xl.lib.eevat` and :mod:`lino_xl.lib.bevat`.
+
+Fix :ticket:`3907` (Cannot enter into "Expense" column of bank statement)
+
+Release to PyPI: :ref:`xl` (2 versions)
+
+
+2021-01-01
+==========
+
+Optimized column layout of :class:`lino_xl.lib.trading.InvoicesByJournal`.
+
+Release to PyPI: :ref:`xl`.

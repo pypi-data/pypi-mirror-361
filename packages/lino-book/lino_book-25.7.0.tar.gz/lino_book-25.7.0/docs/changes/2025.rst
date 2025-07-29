@@ -1,0 +1,804 @@
+.. include:: /../docs/shared/include/defs.rst
+.. _book.changes.2025:
+
+====
+2025
+====
+
+This is the 2025 :term:`change log` for Lino.
+Learn how to read and maintain this document in :ref:`dev.changes`.
+
+2025-07-07
+==========
+
+Change in database structure: :class:`lino_xl.lib.trading.PaperType` is no
+longer :class:`BabelNamed` (it is a configuration object, nobody needs to render
+its name in a translated document), but now it is :class:`Referrable` (because
+tim2lino needs an internal reference to individual paper type). The
+:mod:`lino_xl.lib.cars` plugin defines a template
+:xfile:`trading/car_sale.weasy.html` for printing invoices.
+
+2025-07-04
+==========
+
+Fixed :ticket:`6177` (Issues after lxml upgrade). The :func:`truncate_comment
+<lino.utils.soup.truncate_comment>` function now also sanitizes the content.
+Reorganized the documentation, new page :doc:`/src/lino/utils/soup`. I also
+wrote a blog entry `BeautifulSoup and lxml
+<https://luc.lino-framework.org/blog/2025/0704.html>`__.
+
+2025-07-03
+==========
+
+Fixed :ticket:`6181` (Issues after uploading two PDFs to froinde). Lino made the
+directory for the thumbnail only when the file was an image, not when the file
+was a pdf.  When this happened, Lino potentially left a orphaned file in the
+uploads directory and created a comment with an invalid owner.
+UploadsFolderChecker can now fix orphaned files also when remove_orphaned_files
+is not set to True: it creates an upload entry owned by
+:meth:`lino.modlib.users.Plugin.get_demo_user`. Side effect:
+checkdata.get_responsible_user() has been replaced by
+:meth:`lino.modlib.users.Plugin.get_demo_user`
+
+2025-06-30
+==========
+
+Changes in database schema.
+
+The field "asset" on :attr:`lino_xl.lib.trading.InvoiceItem` has been removed
+because it was not needed, the partner asset is now stored in
+:attr:`lino_xl.lib.trading.InvoiceItem.invoiceable`.
+:class:`lino_xl.lib.accounting.Journal` has a new field
+:attr:`default_invoiceable_type
+<lino_xl.lib.accounting.Journal.default_invoiceable_type>`.
+:class:`lino_xl.lib.assets.PartnerAsset` is now an :class:`InvoiceGenerator`.
+New database field :attr:`trading.PaperType.columns_to_print
+<lino_xl.lib.trading.PaperType.columns_to_print>`. The :attr:`columns_to_print`
+is no longer given by the VoucherType but taken from the PaperType. The setting
+:data:`assets.asset_name_short` has been replaced by
+:data:`lino_xl.lib.invoicing.short_invoiceable_label`. New setting
+:data:`lino_xl.lib.vat.unit_price_decpos`. New setting
+:data:`lino_xl.lib.tim2lino.ignore_diffs_below`.
+
+
+2025-06-23
+==========
+
+New plugin setting :data:`lino.modlib.users.demo_username`.
+
+2025-06-22
+==========
+
+Fixed a regression caused by :ticket:`6164` (Reorganize react actions site
+data): The `help_text` of some actions were wrong. BoundAction now also has a
+`help_text` attribute.  TODO: write more explanations in :ref:`help_texts`.
+
+
+2025-06-21
+==========
+
+:ticket:`6149` (Use an integration environment rather than a sandbox for testing
+Ibanity) and :ticket:`6160` (Replace SiteConfig.site_company by
+contacts.site_owner).
+
+:attr:`lino.modlib.system.SiteConfig.site_company` has been replaced by
+:data:`lino_xl.lib.contacts.site_owner`. New django-admin command
+:manage:`list_suppliers`. New signal
+:data:`lino.core.signals.database_prepared`, which is now used by
+:mod:`lino.utils.dbhash` to behave exactly as before, and also by
+:mod:`lino_xl.lib.peppol` to write a :xfile:`data.py` file. A :cmd:`pm prep` run
+now automatically also runs the system task runner once.   The
+:func:`lino.modlib.linod.background_task` decorator has two new keyword
+arguments `run_after` and `during_initdb`. The ``checkdata.checkdata`` procedure
+uses `run_after` to say that it wants to run after
+``cal.generate_calendar_entries``, the  ``cal.generate_calendar_entries``
+procedure uses `during_initdb=False` because calling it during initdb causes a
+lot of doctests to fail and isn't needed right now. New plugin setting
+:data:`lino.modlib.checkdata.fix_in_background` so that production sites can
+optionally stick with the old behaviour of not fixing errors automatically. The
+``linod.SystemTaskChecker`` has been replaced by
+:meth:`lino.modlib.linod.Procedure.install_if_needed`, which is called by
+:func:`lino.modlib.linod.start_task_runner`. A :class:`lino.utils.cycler.Cycler`
+now reports the number of loops it has done so far. I needed this temporarily
+for understanding what's going on in a fixture.
+
+
+
+
+2025-06-10
+==========
+
+:mod:`lino_xl.lib.peppol` now supports the three new states "Acknowledged",
+"Accepted" and "Rejected" of an outbound document, which are the result of
+processing a Peppol MLR (Message Level Response).
+
+2025-06-09
+==========
+
+A new custom insert action :class:`ratings.CreateExamByCourse` is returned by
+:meth:`lino.core.actors.Actor.get_insert_action` as a shortcut to also create up
+to 3 challenges for the new exam. This revealed some internal bugs: Lino now
+calls :func:`lino.core.fields.setup_params_choosers` also for named actions.
+:attr:`lino.core.actions.Action.get_window_layout` now returns
+``self.params_layout`` if this is not `None` (i.e. if the action has
+parameters).
+
+
+
+2025-06-07
+==========
+
+Added a new documentation page :doc:`/dev/chooser` in the "More basics" section
+of :doc:`/dev/diving`.
+
+
+2025-06-07
+==========
+
+Remove `cert.CertificatesByGroup` because it is irritating to see one row per
+period. Replace this by a `display_field` "Certificates" in `EnrolmentsByGroup`
+and moving that slave table from the More tab to a separate tab.
+
+.. currentmodule:: lino_prima.lib.cert
+
+Set :attr:`CertSection.ordering` to ``["subject__seqno"]``
+
+:class:`CertificateChecker` now creates also sections that don't have any element
+("Kunst und Musik fehlen im Zeugnis")
+
+The detail_layout of :class:`SectionResponse`  has a new slave table
+:class:`cert.ExamResponsesBySection`
+
+Fixed "No permission to run ActionRequest for SetScoreValueDirectly on
+cert.SectionResponses" ("Prädikate ändern geht nicht für normale Lehrer")
+
+
+
+
+2025-06-06
+==========
+
+New feature :ticket:`6136` (Recognize and process links in comments).
+See :doc:`/dev/urls`.
+As a side effect we removed the [url] memo command.
+Added a new tempoarary admin command :manage:`removeurls` for converting existing data.
+En passant we fixed :ticket:`6142` (The short preview of a comment doesn't
+escape '<' and '>') and :ticket:`5039` (Comment with a <base> tag caused Jane to
+break).
+
+After the upgrade you probably want to run :manage:`removeurls` to convert
+existing data.
+
+
+2025-06-03
+==========
+
+.. currentmodule:: lino_l.lib.peppol
+
+New database field :attr:`lino_xl.lib.accounting.Journal.last_sending`.
+New plugin setting :data:`lino_l.lib.tim2lino.send_peppol_attr`.
+Renamed :class:`CheckPeppol` to :class:`SyncPeppol`.
+Removed :class:`Sent`, :class:`Outbox`
+now shows all outgoing invoices (we no longer move them to a different table
+when they have been sent).
+
+2025-06-02
+==========
+
+Added a new kwarg "verbose_names" to
+:meth:`lino.utils.diag.Analyzer.show_database_structure`, fixed a bug in the
+makehelp template for plugin.
+
+.. _book.changes.20250523:
+
+2025-05-28
+==========
+
+Done :ticket:`6128` (Move Site.legacy_data_path to tim2lino.tim_data_path).
+
+2025-05-26
+==========
+
+Added a new :term:`display mode` "tiles" for :ticket:`5895` (Implement cards
+with custom html instead of a card_layout).
+
+2025-05-25
+==========
+
+Fixed :ticket:`5739` (Oops, get_atomizer(...) returned None). It was because the
+html boxes created by :class:`LightWeightContainer` for rendering a slave table
+as delayed value were created lazily after :term:`site startup`. Since 20250523
+the :meth:`Kernel.kernel_startup` triggers their creation. As a side effect,
+:func:`lino.api.doctest.show_parent_layouts` now shows the complete list.
+
+
+2025-05-22
+==========
+
+Fixed :ticket:`6119` (Don't show a Duplicate button on SyncPeppol). This
+implied a subtle and maybe dangerous internal optimization: when asking an
+:class:`lino.core.actions.Action` whether it gives view permission, Lino  no
+longer calls :meth:`lino.core.actions.Action.get_view_permission` but a new
+method  :meth:`lino.core.actions.Action.get_action_view_permission`, which also
+gets the `actor` as an argument. An :class:`Action` instance (unlike a
+BoundAction) does not know on which actor it is used because a same instance can
+be used on many actors.
+
+2025-05-21
+==========
+
+Change in database schema for :ticket:`6116` (invoicing.SalesRule becomes
+trading.TradingRule). invoicing.SalesRule has been removed and is functionally
+replaced by a new model trading.TradingRule, which no longer uses a
+OneToOneField to partner, there may be multiple rows per partner, it is unique
+only for partner and trade_type together. The default payment term for invoices
+of a partner is no longer directly on the partner but on the trading rule,
+together with paper type and invoice recipient. todo: Translations for Trading
+rules
+
+Database migration: Database field
+:attr:`lino_xl.lib.contacts.Partner.payment_term` has been removed.
+
+
+
+2025-05-20
+==========
+
+Lino sets the :attr:`lino.core.site.Site.demo_password` also in the
+:fixture:`demo_users` fixture (not only in the :fixture:`demo2` fixture, which
+sets it for all users).  You can now `demo_users` without loading `demo2` if you
+want to create robin & Co without modifying the password of existing users.
+
+
+
+2025-05-18
+==========
+
+Added a new field :attr:`lino_xl.lib.accounting.PaymentTerm.informal`
+
+2025-05-17
+==========
+
+Fixed a cool bug: :meth:`dd.today <lino.core.site.Site.today>` and :meth:`dd.now
+<lino.core.site.Site.now>` shifted 24 hours into the future when called after
+9pm in Tallinn. See :ref:`bug20250517`. Side effect: :meth:`Site.today` now
+accesses the :data:`settings.TIME_ZONE`, so in two places we had to move it from
+:meth:`Plugin.on_init` to :meth:`Plugin.pre_site_startup`.
+
+2025-05-14
+==========
+
+:ref:`prima` is now more user-friendly when preparing a new school year.
+Customized behaviour when duplicating a school.Group, and support for having
+more than one year at a time active. New method
+:meth:`lino.mixins.ref.Referrable.get_next_row` and new function
+:func:`lino.utils.nextref`. Fixed a bug in Overview section of printable version
+of a certificate.
+
+
+2025-05-13
+==========
+
+Lino now lets you customize the columns to print in an invoice via the new
+plugin setting :data:`lino_xl.lib.trading.columns_to_print`, which is used
+:xfile:`trading/VatProductInvoice/default.weasy.html`. Side effects:
+:mod:`lino.modlib.jinja` now loads the `Expression Statement extension
+<https://jinja.palletsprojects.com/en/stable/extensions/#expression-statement>`__.
+New virtual field :attr:`lino_xl.lib.vat.VatItemBase.amount` so that we no
+longer need the ``{TOTAL}`` construct for
+:data:`lino_xl.lib.trading.items_column_names`. The
+:class:`lino.core.fields.VirtualField` class now has an attribute :attr:`field`,
+like a real database field (this is needed by the print template).
+:class:`lino_xl.lib.accounting.VoucherType` has a new attribute
+:attr:`columns_to_print <lino_xl.lib.accounting.VoucherType.columns_to_print>`.
+The :class:`SalesPrintable` has been renamed to :class:`TradingPrintable`. The
+`verbose_name` of the :attr:`lino_xl.lib.invoicing.InvoicingTargetItem.title`
+field is now "Designation" and no longer "Heading" (todo: also rename the field
+itself to "designation").
+
+The :fixture:`tim2lino` fixture of :mod:`lino_xl.lib.tim2lino` now keeps track
+of the timestamp of the last successful import and avoids to uselessly re-import
+:file:`.dbf` files that are older than this timestamp.
+
+
+2025-05-12
+==========
+
+Add virtual field :meth:`Sequenced.dndreorder<lino.mixins.sequenced.Sequenced.dndreorder>`
+as a place holder for drag drop row reorder column.
+
+.. currentmodule:: lino_xl.lib.polls
+
+Add support for choosers on virtual tables and on non-Model rows. There is no
+directly visible change, but the :attr:`AnswersByResponseEditor.answer` field in
+:mod:`lino_xl.lib.polls` (when :data:`USE_GFK_CHOICE` is True) now works a bit
+more than before. There is still at least one problem: the chooser context
+(which data elements to submit as arguments to the choices view) isn't passed
+into the json file.
+
+2025-05-06
+==========
+
+Added a new plugin :mod:`lino_xl.lib.assets`.
+
+2025-05-04
+==========
+
+.. currentmodule:: lino_xl.lib.trading
+
+Add a method :meth:`lino.utils.quantities.Quantity.limit_length`, and
+:class:`lino.core.fields.QuantityField` now automatically reduces the number of
+decimal places if the full number would take more space than max_length. For
+example, when the field's `max_length` is 6, Lino stores a quantity of "1234.56"
+as "1234.6".  This happened in a subtotal line during a
+:mod:`lino_xl.lib.tim2lino` data import.
+
+A new method :meth:`lino.core.model.Model.update_field` can be used to locally
+customize of database fields. Usage example is the
+:xfile:`settings.py` in :mod:`lino_book.projects.demo3`. See
+:ref:`dg.projects.cosi3.settings`.
+
+
+2025-05-02
+==========
+
+Yet another development sprint in :mod:`lino_xl.lib.peppol` and
+:mod:`lino_xl.lib.tim2lino`.
+
+In :class:`lino_xl.lib.trading.InvoiceItem` the field :attr:`discount` has been
+renamed to :attr:`discount_rate`, and a new field :attr:`discount_amount` has
+been added which, when not empty, causes a ``<cac:AllowanceCharge>`` element to
+be added in the :xfile:`vat/peppol-ubl.xml`. The :ref:`dg.discount_unit_price`
+problem has been fixed. Side effects: :class:`debts.TablesLayouts` was renamed
+to :class:`debts.EntriesLayouts`. We have a new utility function
+:func:`lino.api.doctest.show_parent_layouts` (example usage and doctest in
+:ref:`book.specs.cosi3`). :attr:`lino.core.site.Site.site_locale` is now
+initialized to :func:`locale.getlocale` and we started to use
+:meth:`dd.format_currency <lino.core.site.Site.format_currency>`.
+New plugin setting :data:`lino_xl.lib.trading.items_column_names`.
+
+A second changeset adds a database field
+:attr:`<lino_xl.lib.products.Product.subtotal>` to the
+:class:`<lino_xl.lib.products.Product>` model.
+
+
+2025-05-01
+==========
+
+.. currentmodule:: lino_xl.lib.accounting
+
+Yet another development sprint in :mod:`lino_xl.lib.peppol` and
+:mod:`lino_xl.lib.tim2lino`. Optimized journal configuration during first
+tim2lino import. :attr:`lino_xl.lib.peppol.OutboundDocument.resend_document` now
+also actually sends the document instead of just marking it for sending. Side
+effect: :meth:`create_journal` and :meth:`get_journal_kwargs` were moved from
+:class:`Voucher` to :class:`VoucherType`.
+
+
+2025-04-28
+==========
+
+The Lino daemon no longer provides a log server. Logging on a production site is
+now done using :class:`systemd.journal.JournalHandler`. Existing :term:`Lino
+server` must get adapted manually after the upgrade::
+
+  sudo apt install libsystemd-dev
+
+  # after activating the virtualenv:
+  pip install systemd-python
+
+  # remove log directory of every site:
+  rm log
+
+2025-04-21
+==========
+
+Removed :meth:`Site.get_database_settings` (:ticket:`6050`).
+
+2025-04-19
+==========
+
+Installation instructions in the Hosting Guide now recommend
+:file:`/usr/local/lino/venvs/main` instead of
+:file:`/usr/local/lino/shared/env/master` as the path for the "master
+environment", which is now called the :term:`main environment`.
+
+
+
+2025-04-17
+==========
+
+In :ref:`noi`, some fields were missing on the detail layout of a partner, e.g.
+email. And Noi now uses :mod:`lino_xl.lib.sepa`.
+
+2025-04-15
+==========
+
+A series of changes for :ticket:`5670` (Support Peppol e-invoicing using
+Ibanity).
+
+Bugfix: :ticket:`6038` (The first address of a partner should be primary).
+:mod:`lino_xl.lib.addresses`.
+
+Internal: I moved the :attr:`lino.core.kernel.Kernel.lino_version` property back
+from Site to :class:`lino.core.kernel.Kernel`, and on a devserver it now uses
+(as before) the :func:`lino.utils.code.codetime` function, a
+:xfile:`lino_version.txt` file is now created only on a :term:`production site`.
+
+Experimental: :ticket:`6040` (How to handle channels.exceptions.ChannelFull). If
+you get these exceptions, set :data:`lino.modlib.notify.api.DONT_CATCH` to
+`False`. :class:`lino.mixins.Created` now also sets a default time when
+:attr:`loading_from_dump` is True.
+
+2025-04-12
+==========
+
+Database change: The field :attr:`next_partner_id` from
+:class:`lino.modlib.system.SiteConfig` has been removed. Because this was
+actually an anti-feature. The first Lino customer needed this back in 2010.
+Meanwhile they also don't use it any more. Nobody else has ever wanted such a
+feature. Technically spoken it doesn't handle race conditions correctly. And it
+disturbed for importing data from TIM.
+
+2025-04-11
+==========
+
+Internal optimizations for #5876 (tim2lino bridge for Peppol): Renamed database
+field :attr:`lino_xl.lib.contacts.Partner.is_outbound` to
+:attr:`lino_xl.lib.contacts.Partner.send_peppol`.
+:meth:`VoucherTypes.get_for_model
+<lino_xl.lib.accounting.VoucherTypes.get_for_model>` now returns the first
+voucher type that suits the given database model (and no longer the only one).
+:meth:`VoucherTypes.get_for_table
+<lino_xl.lib.accounting.VoucherTypes.get_for_table>` now returns the first
+voucher type that uses a subclass of the specified actor.
+
+
+The :attr:`lino.modlib.system.SiteConfig.next_partner_id` field is no longer
+being used.
+
+
+2025-04-10
+==========
+
+Optimize detail layout of :class:`trading.Invoices`.
+
+2025-04-09
+==========
+
+Add :term:`React front end` feature top links. Functions that implements this feature:
+:meth:`Site.get_top_links<lino.core.site.Site.get_top_links>`
+:meth:`Site.add_top_link_generator<lino.core.site.Site.add_top_link_generator>`.
+
+.. currentmodule:: lino.utils.format_date
+
+:class:`working.MySessionsByDate` now uses display_mode ``list`` instead of
+``summary`` on a mobile device. Fix :ticket:`6025`(Stopping the session in noi1r
+causes "Cannot accept value"). Optimize
+:meth:`lino_xl.lib.working.Session.as_paragraph` to use
+:func:`lino.utils.format_date.fds` instead of :attr:`date_format_strftime
+<lino.core.site.Site.date_format_strftime>`. Side effects: Add method
+:meth:`dd.now <lino.core.site.Site.now>` and use it instead of
+:func:`timezone.now`. In :mod:`lino.utils.format_date`, rename :func:`fts` to
+:func:`fdts` and :func:`ftl` to :func:`fdtl` and add :func:`fts`. The value of
+:attr:`lino.modlib.users.User.nickname` is now ``""`` instead of `None` when
+:data:`lino.modlib.users.with_nickname` is `False`.
+:class:`lino.core.fields.DummyField` now accepts one optional argument,
+:attr:`dummy_value <lino.core.fields.DummyField.dummy_value>`.
+
+
+2025-04-08
+==========
+
+.. currentmodule:: lino_xl.lib.trading
+
+Database change in :mod:`lino_xl.lib.trading`: new field :attr:`default_discount
+<TradingVoucher.default_discount>` on the :class:`TradingVoucher` model.
+
+Renamed model mixins :class:`SalesDocument`  and :class:`ProductDocItem` to
+:class:`TradingVoucher` and :class:`TradingVoucherItem`, respectively.
+
+And I changed the default `decimal_places` of :class:`PercentageField` from 2 to
+0 because it's silly to write "10.00%" or "70.00%". Yes I remember a customer
+who wanted to give 3.75% of discount to their customers, but these cases are
+rare, if we want such flexibility, we might implement PercentField as a
+QuantityField, similar to DurationField.
+
+2025-04-07
+==========
+
+Activate feature :attr:`Actor.start_at_bottom<lino.core.actors.Actor.start_at_bottom>`,
+on :term:`React front end`, on a grid view, paginator starts at the last page.
+
+2025-04-06
+==========
+
+Add a method :meth:`lino.modlib.jinja.XMLMaker.get_xml_file`.
+
+2025-04-04
+==========
+
+Fixed :ticket:`6013` (QuerySet.exclude() argument after `**` must be a mapping,
+not Q). :attr:`lino.core.tables.AbstractTable.exclude` must now be an instance of
+:class:`django.db.models.Q`, no longer a :class:`dict`.  This had been marked as
+TODO for some time, now it became useful because in :mod:`lino_xl.lib.peppol` we
+want to use the same :class:`django.db.models.Q` object as
+:attr:`lino.core.tables.AbstractTable.filter` for :class:`lino_xl.lib.peppol.Inbox` and
+as :attr:`lino.core.tables.AbstractTable.exclude` for
+:class:`lino_xl.lib.peppol.Archive`
+
+
+2025-04-03
+==========
+
+Lino stores the value for :data:`URL_PARAM_LINO_VERSION
+<lino.core.constants.URL_PARAM_LINO_VERSION>` now as the timestamp of a file
+:xfile:`lino_version.txt` in the :attr:`lino.core.site.Site.site_dir` directory.
+If such a file doesn't yet exist, Lino creates it at startup. The content of the
+file is irrelevant, its only purpose is the timestamp. The mtime of this file is
+read only once per process when the property :attr:`Site.lino_version` is
+accessed. :attr:`Kernel.code_mtime` has been removed because it is no longer
+needed.
+
+2025-03-31
+==========
+
+The :class:`lino.modlib.linod.Runnable` mixin has a new database field
+:attr:`lino.modlib.linod.Runnable.requested_at` and a new action to cancel a
+manual request to run a job. Manual run requests are now handled a bit
+differently.
+
+The :mod:`lino.utils.format_date` module has a new function for formatting
+timestamps: :func:`lino.utils.format_date.fdtf`. See
+:ref:`dg.formatting.timestamps`.
+
+
+2025-03-25
+==========
+
+Added a new plugin setting :data:`lino.modlib.weasyprint.page_background_image`
+used to customize the pdf of an invoice.
+
+
+2025-03-25
+==========
+
+.. currentmodule:: lino.modlib.checkdata
+
+New feature "Quick-fix data checkers". We use it in :ref:`prima`  on
+:class:`Group` and :class:`Certificate`  where the combobutton with three
+actions ("Check for problems", "Fix them" and "Show the messages") feels like
+overkill, we prefer Lino to fix any problems instantly with a single button
+click. The current implementation isn't documented because it's not finished and
+might change significantly. But it works for us so far: When a model has a class
+attribute :attr:`quickfix_checkdata_label`, which is assumed to hold a
+translatable string, then Lino adds a single button that runs all checkers with
+`fix=True`, and the string is used as the label for this single button.
+Side-effect: :class:`CheckerAction` no longer requires a model at instantiation.
+
+2025-03-23
+==========
+
+.. currentmodule:: lino.modlib.users
+
+The slave panels :class:`AuthoritiesTaken` and :class:`AuthoritiesGiven` now
+have an optimized :attr:`details_of_master_template
+<lino.core.actors.Actor.details_of_master_template>` "Authorities taken by
+Username" and "Authorities given by Username"
+
+2025-03-22
+==========
+
+I removed :cmd:`pm buildsite` again, and :cmd:`pm buildcache` now also runs
+:manage:`collectstatic`.
+
+2025-03-21
+==========
+
+The methods :meth:`mark_virgin` and :meth:`check_virgin` have been moved from
+:class:`lino.core.site.Site` to a separate module :mod:`lino.utils.dbhash`
+because these things are never needed on a :term:`production site`. I wrote a
+documentation page that explains the topic: :doc:`/utils/dbhash`.
+
+2025-03-20
+==========
+
+:cmd:`pm buildsite` no longer calls :manage:`install` nor :manage:`makehelp`. It
+does exactly what :manage:`buildcache` does, plus an option :option:`-c` to also
+run :manage:`collectstatic`, and it defines `-b` or `--batch` as aliases for
+`--noinput`. The advantage is that after an upgrade you can type ``pm buildsite
+-bc`` and then focus on other things rather than waiting for ``pm buildsite`` to
+finish and then typing ``pm collectstatic --noinput``.
+
+New plugin setting :data:`lino_xl.lib.peppol.onboarding_date`.
+
+2025-03-20
+==========
+
+Optimized the behaviour of :meth:`lino.modlib.extjs.views.ApiElement.get` when
+the specified primary key isn't visible in this table. Renamed :meth:`request
+<lino.core.actors.Actor.request>` to  :meth:`create_request
+<lino.core.actors.Actor.create_request>`, on :class:`Actor
+<lino.core.actors.Actor>` and on :class:`BoundAction
+<lino.core.boundaction.BoundAction>`.
+
+
+2025-03-17
+==========
+
+Added color "Teal" to :class:`lino.modlib.system.DisplayColors`.
+The :xfile:`pull.sh` script now asks for confirmation before starting.
+New command :cmd:`pm buildsite`.
+Move :func:`lino.utils.fieldutils.fields_help` out of :mod:`lino.api.doctest` into a new module
+:mod:`lino.utils.fieldutils`.
+
+2025-03-14
+==========
+
+The :mod:`lino_xl.lib.tim2lino` plugin now supports updating a live Lino
+database from TIM legacy data. Until now the migration was a single-jump
+operation.
+
+.. currentmodule:: lino_xl.lib.accounting
+
+The :class:`Voucher` model now has its own field :attr:`Voucher.fiscal_year`,
+which is automatically set to the :attr:`year` of the
+:attr:`Voucher.accounting_period`. This makes things easier when querying the
+database and when importing vouchers from external sources.
+
+.. currentmodule:: lino.core.site
+
+The methods :meth:`Site.mark_virgin`, :meth:`Site.check_virgin` and
+:meth:`Site.get_dbhash` have been optimized and moved from :attr:`SITE.kernel`
+to :attr:`SITE`.
+
+2025-03-12
+==========
+
+It is now possible to disable all the actions of the `workflow_buttons` field by
+adding "workflow_buttons" into the set returned by :meth:`disabled_fields`. This
+optimization was originally added for :ticket:`5976` where I thought that  Lino
+should no longer permit to change the workflow state of a calendar guest when
+the calendar entry is in a fixed state ("took place") or or "suggested" (has not
+yet been user-modified). But I found a less intrusive solution: calendar entries
+are now considered "user edited" not only if their state says so but also when
+their :attr:`guests_modified` flag is set. So the new feature isn't used
+anywhere right now.
+
+Renamed :mod:`lino_xl.lib.ibanity` to :mod:`lino_xl.lib.peppol`.
+
+2025-03-06
+==========
+
+The :mod:`lino_xl.lib.accounting` plugin now defines an
+:class:`lino.modlib.uploads.Shortcuts` :attr:`source_document`, which is used by
+:mod:`lino_xl.lib.peppol` when it finds an embedded pdf file in an inbound
+:term:`Peppol document`.
+As a side effect we optimized the rendering of upload shortcut fields.
+
+2025-03-05
+==========
+
+.. currentmodule:: lino_xl.lib.peppol
+
+The :mod:`lino_xl.lib.peppol` plugin gets ready for the integration phase. The
+tables :class:`Inbox`, :class:`Archive`, :class:`Outbox` and :class:`Sent` are
+now in the menu.  It has a :term:`quick link` to the :term:`system task` that
+starts the synchronization. The :manage:`linod` daemon now runs as the user
+specified by :attr:`lino.modlib.linod.daemon_user` instead of anonymously.
+Internal optimization: :meth:`lino.core.kernel.Kernel.run_action` no longer
+treats ValidationError and IntegrityError with a traceback.
+
+
+
+2025-03-01
+==========
+
+.. currentmodule:: lino.modlib.printing
+
+The method :meth:`BuildMethod.before_printable_build` has been replaced by
+:meth:`BuildMethod.must_build_printable` is is now expected to return a boolean.
+The :meth:`filename_root` method was renamed to
+:meth:`get_printable_target_stem`. The :meth:`get_target_name` method was
+removed, we now call ``self.get_target_file().name`` or
+``self.get_target_file().path`` :class:`lino.utils.media.MediaFile` is now
+implemented differently and has a :attr:`path` attribute instead of a
+:attr:`name` property.
+
+After upgrading a production server you should test whether editable print
+actions still work.
+
+
+2025-02-27
+==========
+
+Advancing with :ticket:`5670` (Support e-invoices using PEPPOL):  The values of
+the individual choices  of :class:`lino_xl.lib.products.DeliveryUnits` are now
+the codes that are allowed in the `unitCode
+<https://docs.peppol.eu/poacc/billing/3.0/2024-Q2/syntax/ubl-invoice/cac-InvoiceLine/cbc-InvoicedQuantity/unitCode/>`__
+attribute of a  `InvoicedQuantity
+<https://docs.peppol.eu/poacc/billing/3.0/2024-Q2/syntax/ubl-invoice/cac-InvoiceLine/cbc-InvoicedQuantity/>`__
+element. Added a new attribute :attr:`lino_xl.lib.vat.VatRegime.reverse_charge`,
+which is `True` for the :term:`VAT regimes <VAT regime>` ``intracom`` and
+``cocontractor``. This is currently used only by
+:meth:`vat.VatItemBase.get_peppol_vat_category`. When migrating your database,
+you can specify a :attr:`lino.core.ChoiceList.old2new` for :class:`DeliveryUnits
+<lino_xl.lib.products.DeliveryUnits>` by adding the following line to your
+:xfile:`restore.py` file::
+
+    settings.SITE.models.products.DeliveryUnits.old2new = {"10": "HUR", "20": "XPP", "30". "KGM", "40": "XBX"}
+
+
+
+2025-02-24
+==========
+
+Advancing with :ticket:`5670` (Support e-invoices using PEPPOL).
+:attr:`lino_xl.lib.contacts.Partner.is_outbound`
+
+2025-02-12
+==========
+
+.. currentmodule:: lino_xl.lib.invoicing
+
+Fixed :ticket:`5924` (Menu "My invoicing plan" fails)". Optimize choosers for
+:attr:`FollowUpRule.invoice_generator` and :attr:`Task.procedure` (which is
+defined as :attr:`lino.modlib.linod.Runnable.procedure`.)
+:attr:`Plan.invoicing_task` may now be empty. Optimize
+:class:`lino.modlib.users.UserPlan` and :class:`lino.modlib.linod.Runnable`.
+Fine-tune error reporting during :meth:`ApiElement.get`.
+
+
+2025-02-10
+==========
+
+Fixed :ticket:`5917` (Clicking on the img rendered by file memo command doesn't
+show the image). The demo data in :ref:`noi` now includes screenshots in ticket
+descriptions in order to reproduce and verify this bug. New context manager
+:meth:`ar.override_attrs <lino.api.core.Request.override_attrs>`.
+
+
+2025-02-09
+==========
+
+Reviewed :func:`lino.utils.soup.truncate_comment` and updated
+:ref:`book.topics.truncate` to fix :ticket:`5916`.
+
+2025-02-05
+==========
+
+The :mod:`lino_xl.lib.peppol` plugin is growing. New option :attr:`no_auto
+<lino.modlib.checkdata.Checker.no_auto>` for data checkers.
+:class:`lino_xl.lib.peppol.SupplierChecker` sets this to `True` because we do
+not want this checker to run automatically during :manage:`checkdata`. It should
+run only when called manually because it requires :term:`Ibanity credentials`,
+which are not available e.g. on GitLab.
+
+2025-02-01
+==========
+
+Started working on the new plugin :mod:`lino_xl.lib.peppol`. Work in progress.
+
+2025-01-27
+==========
+
+Fixed :ticket:`5881` (Lino lets me add items to a registered invoice). Added a
+new :meth:`lino.core.model.Model.disable_create` used to disable creating rows
+on a model in a given :term:`action request` even when permission has been
+given.
+
+
+2025-01-24
+==========
+
+New setting :setting:`users.demo_password` so that the password of users on a
+:term:`demo site` is no longer a hard-coded "1234".
+
+2025-01-23
+==========
+
+The :mod:`lino_xl.lib.tim2lino` plugin was re-activated and the
+:mod:`lino.utils.dbfreader` module migrated to Python 3.
+
+The |sliders-h| button, which is used to show or hide the parameter panel of a
+table, is now in the upper right corner and no longer in the toolbar.

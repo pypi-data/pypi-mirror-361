@@ -1,0 +1,17 @@
+# -*- coding: UTF-8 -*-
+# Copyright 2014 Rumma & Ko Ltd
+# License: GNU Affero General Public License v3 (see file COPYING for details)
+"""
+The :xfile:`models` module for :ref:`estref` app.
+
+"""
+
+from lino.api import dd, rt
+from lino.core.roles import SiteUser, SiteStaff
+
+
+def site_setup(site):
+    lst = (site.modules.countries.Places, site.modules.countries.Countries)
+    for t in lst:
+        t.required_roles.discard(SiteUser)
+        t.required_roles.discard(SiteStaff)

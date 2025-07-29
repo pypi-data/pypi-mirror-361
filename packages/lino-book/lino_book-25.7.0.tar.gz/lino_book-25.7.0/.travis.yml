@@ -1,0 +1,56 @@
+dist: bionic
+language: python
+python:
+  # - 2.7
+  - 3.6
+  - 3.7
+
+os: linux
+# sudo: required
+env:
+  global:
+    secure: oAd/tAioTs5vDkc/muFDQ+klJ6zSCxMGdVUY7GBRWh8FjhU2AFXFLZAtqdWMutJoq8uBn4wvmVkbgJjzEm7QIJTkAErhdGv1yPIlsie1jifGDU7ZXCeyrZINHv0SaoG6dDPJR7dZAbBhR8JPOj1V1KsWuVBhHPKSD68oUm+hrh0m9kZf99hGKGY9BM/wEytVFaG8rA2QYgrbcpXrKlG8sjmYw2KiHK1EO+sstejev2Ry7rDL0wuV5BUK8yjZ5hG+6IDHZCVXV5jyMwbq/ztKELfBBxZrTJk+o1O69XTkSMethaAyGh/IoedcDdiSyuyyr4CFYh1fGikptd51GKWinPrV8HCz9Ya0aBzzAlsODcNJC1CoosyyZO1J3giNsZsz+NesxgbBYWq7nZAHkCT3l8oVXQkHc405yQ4+8RNfUIS3kERyPYTnBgnU1mR0BNoG90BGhUYO3E+q7TDF+sTvshRvxNmehyIOpWcinU7knFs7qjVVecSZGLhp5n/3UScb7jtttKyjf9IhNpbKWwkzji2UnGgcdwTBFjDpSdIqlNhZR6KZb1+6Z6uRIR7dXLcOhek5bdlbCeeTTDyDZlEa2JIdK4TVLU7+5QyRNwyZ3foS6hh5N4cIp9g/5uTiBq7uC2Y8Ky0LRx7nvYIge55IV+V0GcZ4qJFTz7aTKeiJI4A=
+  jobs:
+    - REQ_VERSION: dev
+    # - REQ_VERSION: stable
+
+before_install:
+  -  # sudo add-apt-repository -y ppa:libreoffice/ppa
+  - sudo apt-get update -y
+  - sudo apt-get upgrade -y
+  - sudo apt-get install -y swig
+  - sudo apt-get install -y graphviz
+  - sudo apt-get install redis-server ; redis-server &
+  - sudo apt-get install -y tidy libreoffice python3-uno
+  - sudo apt install libgconf-2-4 # Required for cypress with Ubuntu 16.04
+  - libreoffice --accept="socket,host=localhost,port=8100;urp;" &
+  # Trying to understand func=xmlSecCheckVersionExt:file=xmlsec.c:line=188:obj=unknown:subj=unknown:error=19:invalid version:mode=abi compatible;expected minor version=2;real minor version=2;expected subminor version=25;real subminor version=26
+  # https://bugs.documentfoundation.org/show_bug.cgi?id=118373
+  - libreoffice --version
+
+install:
+  - # pip install -U "setuptools<49.2"  # avoid UserWarning by 49.2.0
+  - pip install -U "setuptools"  # avoid UserWarning
+  - pip install -U pip
+  - pip install -r requirements.txt
+  - npm init -y
+  - npm install cypress
+  #  - pip install Django==$DJANGO
+  #  - if [[ $TRAVIS_PYTHON_VERSION != 2.7 ]]; then pip install -r requirements.python3.txt; else pip install -r requirements.txt;  fi
+  #  - test -e "requirements.$TRAVIS_BRANCH.txt" && ( pip install -r "requirements.$TRAVIS_BRANCH.txt" ) || ( pip install -r requirements.txt )
+  - python setup.py install_egg_info
+  - pip install -e .
+  - pip freeze
+
+script:
+  - export LINO_CACHE_ROOT=$TRAVIS_BUILD_DIR/lino_cache
+  - mkdir $LINO_CACHE_ROOT
+  -  # if [[ $TRAVIS_BRANCH == 'python3' || $TRAVIS_PYTHON_VERSION == 2.7 ]]; then inv prep test; else exit 0; fi;
+  -  # inv prep test
+  - rm -rf .eggs
+  - inv install
+  - # export DJANGO_SETTINGS_MODULE=lino_book.projects.max.settings.doctests ; python -c "import django; django.setup() ; import lino_vilma.lib.vilma.user_types"
+  - inv prep test
+  - # export DJANGO_SETTINGS_MODULE=lino_book.projects.max.settings.doctests ; python -c "import django; django.setup() ; import lino_vilma.lib.vilma.user_types"
+  - export SPHINXOPTS="-j 1" ; inv bd
+  - bash ./travis/e2e_tests.sh

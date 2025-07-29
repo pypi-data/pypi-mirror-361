@@ -1,0 +1,243 @@
+===========================================
+Lesson 2 -- Strings, functions and programs
+===========================================
+
+.. contents::
+  :local:
+
+
+Working with text
+=================
+
+A :term:`variable` can hold other values than numbers. For example chunks of
+text. Python calls such chunks of texts :term:`strings <string>` because they
+are actually strings of :term:`characters <character>`.
+
+Every letter ("a", "b", "c", ...) is a :term:`character`, but also every dot and
+comma or exclamation mark. These are called **punctation characters**. Even a
+space (``' '``) is a character.
+
+You recognize a string because it is surrounded by quotes (``'``).
+
+>>> x = 'Joe'
+>>> y = 'Jill'
+
+You can combine two strings with the ``+`` operator.
+
+>>> x + y
+'JoeJill'
+
+>>> 'Hello, ' + x
+'Hello, Joe'
+
+The ``+`` operator, when applied to strings, just concatenates the two strings,
+i.e. "glues them together one after the other".  You can do this with more than
+two strings in a single operation:
+
+>>> 'Hello, ' + x + ' and ' + y + " !"
+'Hello, Joe and Jill !'
+
+The other three :term:`operators <operator>` (``-`` and ``*`` and ``/``) are not
+allowed for strings:
+
+>>> x - y
+Traceback (most recent call last):
+...
+TypeError: unsupported operand type(s) for -: 'str' and 'str'
+
+>>> x * y
+Traceback (most recent call last):
+...
+TypeError: can't multiply sequence by non-int of type 'str'
+
+>>> x / y
+Traceback (most recent call last):
+...
+TypeError: unsupported operand type(s) for /: 'str' and 'str'
+
+Anything surrounded by quotes is a string. When a value is surrounded by quotes,
+then it's a string even when it looks like a number:
+
+>>> x = '123'
+>>> y = '456'
+
+You might expect that the sum of x and y would be 579, but look:
+
+>>> x + y
+'123456'
+
+As we said, the sum of two strings is just their concatenation.
+
+Exercise: What is the output of the following command?
+
+::
+
+  '123 + 456'
+
+Yes, Python just does not try to understand what's inside the quotes. For Python
+anything between quotes is just a string of :term:`characters <character>`. And
+even operators (like ``+``) or digits (like ``1``, ``2`` or ``3``) are just
+characters.
+
+Introducing functions
+=====================
+
+Now it's time to learn about **functions**. A :term:`function`, in Python, is
+something you can **call** in order to ask something, and which will **return**
+you the answer to your question as a :term:`value`.
+
+You recognize a function because its name is followed by a pair of parentheses
+(``()``). The values between these parentheses are called the :term:`arguments
+<argument>`. These arguments are a part of your question, of what you ask from
+the function.
+
+For example there is a function called ``len()``, which returns the lenth of a
+:term:`string`. This function expects one :term:`argument`: the string for which
+you want it to report the length.
+
+>>> x = 'Joe'
+>>> y = 'Jill'
+>>> len(x)
+3
+>>> len(y)
+4
+
+Another function is ``sqrt()``, which returns the square root of a number.  The
+``sqrt()`` function is not built-in, so you need to **import** it from the
+``math`` module.
+
+>>> from math import sqrt
+>>> sqrt(4)
+2.0
+
+Two other function are ``print()`` and ``input()``,  and we will use these in
+the following lesson.
+
+
+Your first program
+==================
+
+Until now we have been typing every command one by one into the Python
+interpreter running in our terminal. That's a nice way to talk with your
+computer, but there is better.
+
+You can write your commands into a **file**. A file that contains such commands
+is called a :term:`program file`.
+
+When the commands in a program file are written in the Python language, the file
+is usually called with the ending ".py".
+
+Let's create our first program file.  Open a terminal and type::
+
+  idle hello.py
+
+This will open a window with a text editor. Type the following text into your file::
+
+  print("Hello, world!")
+
+Now close the window. It will ask you whether you want to save the file:
+
+.. image:: idle_save.png
+
+And of course you say `Yes`.
+
+Now you are back in the terminal. From here you can *execute* your program. Type
+the following and hit :kbd:`Enter`::
+
+  python hello.py
+
+The result will be very quick. Your program will print the following text to the
+terminal::
+
+  Hello, world!
+
+And that's already the end of your first program! The terminal is already
+waiting for your next instruction.
+
+Let's make your program a bit longer.   Start your editor again on the
+:file:`hello.py` file and change the content into the following::
+
+  name = input("Please type your name and hit ENTER: ")
+  print("Hello, " + name)
+
+Once more, close the editor window, say "Yes" to save your file, and execute
+your program.
+
+Congratulations! You just wrote your first program. You might copy this file to
+another computer and execute it there. That's basically what software developers
+do: they write programs into files and sell these files to their customers.
+
+Keep in mind: When you type simply :cmd:`python` in your terminal, it starts the
+**Python interpreter**, which prompts you to enter your instructions and
+exectues them immediately one by one.  This is also called "interactive". But
+when you add the name of a file after the :cmd:`python` in your terminal, Python
+does not run interactively but reads your instructions from the file.
+
+
+Input and output
+================
+
+The ``print()`` function prints a :term:`value` to the terminal. This is
+sometimes called an **output**.
+
+The ``input()`` function does the opposite: it asks a :term:`value` from the
+terminal.  It waits patiently until the user presses :kbd:`ENTER`.
+
+When you give an argument to the ``input()`` function, it prints this argument
+to the terminal before waiting for the user input.
+
+You may call the ``input()`` function without an argument. Try it by modifying
+your program as follows::
+
+  name = input()
+  print("Hello, " + name)
+
+This version of your program is admittedly less **user-friendly**. Because it
+doesn't tell the user what they are expected to do.
+
+More about strings
+==================
+
+We said that you cannot *multiply two strings*, but you can *multiply a string
+by a number*:
+
+>>> x = '123'
+>>> x * 3
+'123123123'
+
+>>> print('=' * 80)
+================================================================================
+
+You may use **double quotes** instead of single quotes when defining a string.
+
+>>> x = "Joe's"
+>>> y = "Jill's"
+
+>>> print('This is ' + x + " book.")
+This is Joe's book.
+
+
+
+Keep in mind
+============
+
+
+.. glossary::
+
+  string
+
+    A chunk of text, a sequence of :term:`characters <character>`.
+
+  character
+
+    Every piece of a chunk of text.
+
+  function
+
+    Something you can **call** in order to ask something, and which will
+    return you the answer to your question as a :term:`value`.
+
+  program file
+
+    A file stored on a computer and containing commands to be executed by the
+    computer.

@@ -1,0 +1,370 @@
+.. include:: /../docs/shared/include/defs.rst
+.. _book.changes.2023:
+
+====
+2023
+====
+
+This is the 2023 :term:`change log` for Lino.
+Learn how to read and maintain this document in :ref:`dev.changes`.
+
+2023-12-31
+==========
+
+Changes in database schema for :ref:`noi`:
+
+- new field `Ticket.team` will be filled by :cmd:`pm checkdata -f`
+- fields :attr:`Site.company` and :attr:`Site.contact_person` have been removed.
+
+2023-12-18
+==========
+
+We removed the dash of the ``--keep-media`` and ``--remove-media`` options of
+:cmd:`pm prep --keepmedia` and :cmd:`pm initdb --removemedia`
+
+2023-12-04
+==========
+
+New feature :ticket:`5288` (table of contents of a content page). Added a new
+memo command :cmd:`[toc]`, whicih  is allowed only in the body of a
+:term:`content page`. Internal API change:
+:meth:`lino.modlib.memo.parser.MemoParser.parse` has a new optional argument
+'context'. Until now there was no way to let a :term:`memo command` handler know
+the :term:`database row` it is running on. The
+:class:`lino.modlib.memo.Previewable` mixin uses this and defines a keyword
+``self`` into the context. As a side effect, :class:`lino.modlib.uploads.Upload`
+now implements :class:`lino.modlib.publisher.Publishable`.
+
+Fixed :ticket:`4084` (Comment.owner is empty when replying to a comment). Also
+added a data checker that fixes existing data.
+
+2023-12-03
+==========
+
+Fixed :ticket:`5278` (`send_pending_emails_often` caused a
+SynchronousOnlyOperation exception)
+
+
+2023-11-15
+==========
+
+Replace ``lino_runworker`` by ``linod`` in your
+:file:`/etc/supervisor/conf.d/*.conf`  files.
+
+2023-10-23
+==========
+
+Removed the option ``--nobuildcache`` from :cmd:`pm initdb` (and :cmd:`pm prep`)
+because `initdb` no longer calls :cmd:`pm buildcache` at all. You might
+have to change the following line in your :xfile:`restore.py` file::
+
+    call_command('initdb', interactive=args.interactive, buildcache=False)
+
+into::
+
+    call_command('initdb', interactive=args.interactive)
+
+
+
+2023-10-23
+==========
+
+The short preview of a comment, page or blog entry now contains at most one
+image, and this image has a fixed size.
+
+New plugin setting :setting:`memo.short_preview_image_height`.
+
+2023-10-22
+==========
+
+:ticket:`5191` : The :xfile:`restore.py` script no longer calls :cmd:`pm buildcache`.
+New option ``--nobuildcache`` for :cmd:`pm initdb`.
+
+2023-10-20
+==========
+
+:ticket:`5172` : A series of changes in :mod:`lino.modlib.linod` : a single
+model :class:`linod.BackgroundTask` instead of :class:`JobRule` and
+:class:`Job`. In your :xfile:`restore.py` uncomment the following lines::
+
+    # execfile("linod_jobrule.py", *args)
+    # execfile("linod_job.py", *args)
+
+Update your supervisor config files: The :cmd:`django-admin` command
+``lino_runworker`` has been renamed to :manage:`linod`.
+
+
+
+:ticket:`4962` : Lino can now do *weekly* summaries. See
+:mod:`lino.modlib.summaries`.
+
+2023-09-01
+==========
+
+:cmd:`pm initdb` can now remove the :xfile:`media` directory when option
+``--remove-media`` is specified. This is used by :cmd:`pm prep`.
+
+2023-08-20
+==========
+
+.. currentmodule:: lino_xl.lib.cal
+
+In :mod:`lino_xl.lib.cal`, add setting :data:`calendar_fieldnames`,
+renamed `Event.get_calendar` to :meth:`Event._get_calendar`.
+
+2023-07-29
+==========
+
+Fixed a bug in :meth:`calview.DailyPlannerRow.get_plannable_entries` that caused
+the AM planner row to also show the PM calendar entries when both
+:attr:`start_time` and :attr:`end_time` were non-empty. The `commit
+<https://gitlab.com/lino-framework/xl/-/commit/aa82478e55fd6d675fc288abd104ceaea13747f4>`__
+is evident.
+
+2023-07-13
+==========
+
+The :func:`lino.utils.soup.truncate_comment` function has been reimplemented
+and  doctests are now in a separate document: :ref:`book.topics.truncate`.
+
+2023-07-10
+==========
+
+:func:`api.doctst.get_json_soup` now supports URIs that return a
+`delayed_value` in React.
+
+2023-05-22
+==========
+
+Remove :manage:`collectstatic` command (extended).
+Add :manage:`buildcache` command.
+
+What :manage:`collectstatic` had done so far is now saperated into
+the following three commands:
+
+#. :manage:`collectstatic`
+#. :manage:`makehelp`
+#. :manage:`buildcache`
+
+2023-05-02
+==========
+
+Some optimizations in :mod:`lino_xl.lib.calview`.
+See https://luc.lino-framework.org/blog/2023/0502.html
+
+
+2023-04-17
+==========
+
+Removed columns cal.Event.access_class and cal.Event.sequence.
+Removed choicelist cal.AccessClass
+In :mod:`lino_xl.lib.cal`, renamed plugin configuration parameter
+:attr:`demo_absences <lino_xl.lib.cal.Plugin.demo_absences>`
+to :attr:`with_demo_absences <lino_xl.lib.cal.Plugin.with_demo_absences>`.
+
+2023-04-10
+==========
+
+More changes for :ticket:`4935` (bug with picture format in [file] memo
+command). Added 6 demo photos by Luc Saffre. More documentation. New memo
+command :cmd:`[gallery]`. The `cms1` demo project now includes a page with usage
+examples of the :cmd:`[file]` and :cmd:`[gallery]` commands.
+
+2023-04-08
+==========
+
+Fixed a bug: The :cmd:`[file]` memo command did not parse format specifiers
+correctly.
+
+2023-04-07
+==========
+
+Added feature "multiple web front ends". The :attr:`Site.default_ui` attribute
+is now deprecated but currently still yields the old behaviour. The work is not
+finished, but already now in :mod:`cms1` we have publisher as "root" front end
+and react as the "admin" front end::
+
+  web_front_ends = [
+    (None, "lino.modlib.publisher"),
+    ('admin', "lino_react.react")]
+
+
+2023-04-05
+==========
+
+Refactor: moved `RecurrenceSet`, `Recurrences`, `DurationUnit`, `DurationUnits` & `Weekdays` from
+:mod:`lino_xl.lib.cal` to :mod:`lino.modlib.system`.
+
+Refactor: moved `Procedure`, `Procedures`, `Job`, `JobRule`, `Tasks` & `SetupTasks` from
+:mod:`lino.modlib.system` to :mod:`lino.modlib.linod`
+
+Added the following classes to `linod` plugin:
+:class:`lino.modlib.linod.RunJob`
+:class:`lino.modlib.linod.LogLevels`
+:class:`lino.modlib.linod.JobsByRule`
+
+A :class:`linod.Job <lino.modlib.linod.Job>` is not editable and is only a historical record of a system task.
+
+Refactor: moved :attr:`Job.cancelled <lino.modlib.linod.JobRule.cancelled>`
+to :class:`JobRule<lino.modlib.linod.JobRule>`
+
+Added :attr:`JobRule.log_level <lino.modlib.linod.JobRule.log_level>`.
+
+
+2023-04-02
+==========
+
+A series of optimizations in :mod:`lino.modlib.publisher` for  :ticket:`4872`
+(Generated content in pages.Node): Nodes with "dynamic" or "generated" content,
+e.g. the latest blog entries, now have two different ways of generating their
+content: either as a single paragraph or as a story. Node now has an insert
+dialog.
+
+2023-03-31
+==========
+
+Added the following classes to `system` plugin:
+:class:`lino.modlib.linod.Procedure`
+:class:`lino.modlib.linod.Procedures`
+:class:`lino.modlib.linod.JobRule`
+:class:`lino.modlib.linod.JobRules`
+:class:`lino.modlib.linod.Job`
+:class:`lino.modlib.linod.Jobs`
+:class:`lino.modlib.linod.tasks.Tasks`
+:class:`lino.modlib.linod.SetupTasks`
+and removed dependencies to `schedule` python package.
+
+Add :attr:`ChoiceListField.strict <lino.core.choicelists.ChoiceListField.strict>` attribute.
+
+
+2023-03-29
+==========
+
+Ticket :ticket:`4742` (Make the CMS demo more convincing). Visible result is the
+:ref:`cms1 demo project <book.projects.cms1>`. This caused a series of changes:
+In :mod:`lino.modlib.publisher` we renamed :class:`Page` to :class:`Node`.
+:class:`lino.modlib.publisher.Node` now uses Babel fields instead of separate
+database rows for each language. Internal optimizations and bugfixes in
+:mod:`lino.modlib.publisher` and the core (action requests).  New plugin setting
+:setting:`memo.short_preview_length`. The experimental :class:`UploadVCardFile`
+model exists now only when :setting:`contacts.use_vcard_export` is True. The
+:class:`ShowAsHtml` action was defined four times.
+
+2023-03-19
+==========
+
+The docs produced by makehelp made Sphinx warn about "Title overline too short"
+or "Malformed" table when awide unicode char was being used. Now rstgen uses
+docutils.utils.column_width() when generating headers and tables.
+
+
+
+2023-03-13
+==========
+
+The :mod:`synodal` package now knows our public demo servers. We added some
+usage examples in the :xfile:`README.rst`, and this file is no longer being
+generated by :cmd:`inv bd`. And it is now being tested by :cmd:`inv test`.
+
+2023-02-19
+==========
+
+Fixed :ticket:`4864` (AttributeError: 'Site' object has no attribute
+'obj2memo'), which caused a little avalanche of internal optimizations. For
+example,  :func:`lino.utils.DelayedValue` is now a function that directly
+returns a :class:`dict` rather than instantiating an object that has no other
+purpose than being converted to a dict by :func:`lino.utils.py2js`. Also
+:meth:`Layout.get_layout_handle <lino.core.layouts.Layout.get_layout_handle>` no
+longer takes an argument to specify the front end (because it was always the
+same).
+
+.. currentmodule:: lino_xl.lib.properties
+
+As a side effect, in :mod:`lino_welfare.modlib.cv` the three
+:class:`system.SiteConfig` fields :attr:`propgroup_skills`,
+:attr:`propgroup_softskills` and :attr:`propgroup_obstacles` have been replaced
+by a field :attr:`PropGroup.property_area`, which points to a choice in new
+choicelist :class:`PropertyAreas`.  Until now :mod:`lino_xl.lib.properties` was
+considered deprecated (and as a consequence the :mod:`lino_welcht.modlib.cv`
+defines three hard-coded database models Skill, SoftSkill and Obstacle), but
+this change might save the plugin from getting deprecated.  To be observed. Data
+migration: (1) edit the :xfile:`restore.py` file to remove
+:attr:`propgroup_skills`, :attr:`propgroup_softskills` and
+:attr:`propgroup_obstacles`, (2) set the :attr:`PropGroup.property_area` field
+for the three property groups "Skills", "Softskills" and "Obstacles".
+
+
+2023-02-17
+==========
+
+Fixed :ticket:`4864`, which caused disturbing regressions on two production sites.
+
+Release to pypi: Lino, XL, Noi
+
+2023-02-08
+==========
+
+The demo date in your :xfile:`settings.py` file (:attr:`the_demo_date
+<lino.core.site.Site.the_demo_date>`) can now be specified as a :class:`str` or
+`int`, i.e. without having to import :mod:`datetime`. In that case Lino will
+convert it during startup to a :class:`datetime.date` using
+:func:`rstgen.utils.i2d`.
+
+
+2023-02-04
+==========
+
+Renamed :meth:`obj2str` to :meth:`lino.core.requests.BaseRequest.obj2htmls`. The
+`s` stands for "safe".  It seems that we will move away from using etree and use
+Django's `mark_safe
+<https://docs.djangoproject.com/en/5.0/ref/utils/#django.utils.safestring.mark_safe>`__
+system instead.
+
+
+2023-02-04
+==========
+
+:meth:`settings.SITE.build_site_cache <lino.core.site.Site.build_site_cache>`
+now accepts a new keyword argument ``later``. This simply touches the
+:xfile:`settings.py`. Used in :meth:`after_ui.save` of
+:class:`lino_xl.lib.excerpts.ExcerptType`.
+
+2023-01-25
+==========
+
+Done :ticket:`4801` (Insert images into arbitrary places using memo commands).
+Details see `Luc's blog <https://luc.lino-framework.org/blog/2023/0125.html>`__.
+Data migration: in your :xfile:`restore.py` uncomment the line that loads
+``comments_mention.py``. The :class:`lino.modlib.memo.Mention` objects will be
+created by :cmd:`pm checkdata -f`.
+
+
+2023-01-18
+==========
+
+.. currentmodule:: lino_xl.lib.working
+
+The :mod:`lino_xl.lib.working` plugin now supports sub-sessions: when a user
+works on two tickets at the same time (has two sessions open), and when one of
+them encompasses the other, then the encompassing session automatically
+subtracts the duration of the sub-session. New database field
+:attr:`Session.computed_duration`
+
+:class:`invoicing.Item` now has a meaningful :attr:`allow_cascaded_delete`.
+
+
+2023-01-07
+==========
+
+.. program:: pm dump2py
+
+New option :option:`--simulate` for the :cmd:`pm dump2py` command.
+
+Fixed :ticket:`4780`.   A :term:`server administrator` can now switch the
+:term:`front end` without changing the database structure. Plugins can now
+deactivate themselves. The :class:`lino.core.plugin.Plugin` class has two new
+methods :func:`deactivate` and :func:`is_active`. When a plugin is inactive, its
+database models exist but otherwise almost everything, including its actors,
+becomes non-existent. The ``tinymce`` and ``extensible`` plugins now deactivate
+themselves in their :meth:`on_init` method when the :attr:`default_ui
+<lino.core.site.Site.default_ui>` is not extjs.

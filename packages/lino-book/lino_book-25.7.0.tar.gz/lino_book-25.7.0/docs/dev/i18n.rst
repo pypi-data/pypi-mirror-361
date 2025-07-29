@@ -1,0 +1,105 @@
+.. doctest docs/dev/i18n.rst
+
+===========================================
+Introduction to internationalization (i18n)
+===========================================
+
+Lino uses Django, and Django uses the gettext system for providing
+internationalization.
+
+Read the Django documentation about
+`Internationalization <https://docs.djangoproject.com/en/5.0/topics/i18n/>`__
+
+See also :doc:`/dev/translate/index`
+
+
+A translatable text is a text that we want to be displayed in the language of
+the end user.
+
+>>> from lino import startup
+>>> startup('lino_book.projects.min9.settings')
+>>> from lino.api.shell import *
+
+In your application code, you import Django's :func:`ugettext`
+function (usually aliased as :func:`_`) and call it on any string that
+you want the user to see in their language.
+
+>>> from django.utils.translation import gettext as _
+
+If no language is activated, :func:`ugettext` just returns the English
+text:
+
+>>> print(_("January"))
+January
+
+In Lino we usually use the :func:`translation.override` context when
+we want to translate:
+
+>>> from django.utils import translation
+>>> with translation.override('fr'):
+...     print(_("January"))
+janvier
+
+How does the :func:`ugettext` function know that "January" is
+"janvier" in French? See :cmd:`inv mm` and :ref:`dev.translate`.
+
+Note that :func:`ugettext` will do the lookup in-place. The following
+code prints English and not German:
+
+>>> s = _("January")
+>>> with translation.override('de'):
+...     print(s)
+January
+
+But Django has a lazy version of :func:`ugettext`, which does the lookup only
+when it is really needed.
+
+>>> from django.utils.translation import gettext_lazy as _
+>>> s = _("January")
+>>> with translation.override('de'):
+...     print(str(s))
+Januar
+
+This is also the version you get when you say::
+
+  from lino.api import _
+
+A lazy translation returned by :func:`ugettext_lazy` is actually not a string,
+it is rather an object that *will* be translated when needed.
+
+>>> from django.utils.translation import gettext_lazy
+>>> from django.utils.translation import gettext
+
+>>> gettext("January").__class__
+<class 'str'>
+>>> gettext_lazy("January").__class__
+<class 'django.utils.functional.lazy.<locals>.__proxy__'>
+
+
+
+The :func:`format_lazy` function
+================================
+
+Django has a function :func:`lazy_format`, which we sometimes use. Here is an
+example.
+
+>>> from lino import startup
+>>> startup('lino_book.projects.min2.settings.demo')
+>>> from django.utils.text import format_lazy
+>>> from lino.api import dd, rt, _
+>>> M = rt.models.cal.Event
+>>> s = format_lazy(
+...   _("Only for {model} instances."),
+...   model=M._meta.verbose_name)
+>>> print(s)
+Only for Calendar entry instances.
+>>> with dd.translation.override('de'):
+...     print(s)
+Only for Kalendereintrag instances.
+
+Note that we care only for the "Calendar entry" text. The surrounding
+text `Only for {model} instances.` is not translated to German because
+it is a fictive example of a translatable string for which there is no
+translation.
+
+See also :djangoticket:`14174`.

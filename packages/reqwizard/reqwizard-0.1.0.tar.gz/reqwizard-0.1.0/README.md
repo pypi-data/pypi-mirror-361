@@ -1,0 +1,61 @@
+# Python Requirements Installer - pyreqinst
+
+A smart installer for Python requirements files.  
+Checks installed packages and versions, installs or updates as needed.
+
+Um instalador inteligente para arquivos de requirements Python.  
+Verifica pacotes instalados e versões, instala ou atualiza conforme necessário.
+
+## Compatibility / Compatibilidade
+
+Requires `Python 3.10` or higher  
+Requer `Python 3.10` ou superior
+
+## How to install / Como Instalar
+<br>
+Install pyreqinst via pip from PyPI:  
+Instale o pyreqinst via pip a partir do PyPI:
+
+```bash
+pip install pyreqinst
+```
+
+_This installs the package in editable mode, so you can modify the code and test it without reinstalling._    
+_Isso instala o pacote em modo editável, permitindo modificar o código e testá-lo sem precisar reinstalar._
+<br>
+
+## Usage / Uso
+<br>
+Run pyreqinst in your project folder to install or update dependencies from the default `requirements.txt` file:  
+Execute o pyreqinst na pasta do seu projeto para instalar ou atualizar dependências a partir do arquivo padrão `requirements.txt`:
+
+```bash
+pyreqinst
+```  
+<br>
+To specify a custom requirements file, use the --file (or -f) option:  
+Para especificar um arquivo de requirements personalizado, use a opção --file (ou -f):
+
+```bash
+pyreqinst --file custom_requirements.txt
+```
+<br>
+To perform a dry run (only check and show what would be installed or updated, without changing anything), use:  
+Para fazer uma simulação (dry run), que apenas verifica e mostra o que seria instalado ou atualizado, sem alterar nada, use:
+
+```bash
+pyreqinst --dry-run
+```
+<br>
+To check the installed version of pyreqinst, use:  
+Para checar a versão instalada do pyreqinst, use:
+
+```bash
+pyreqinst --version
+```
+
+
+## License / Licença
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.  
+Este projeto está licenciado sob a licença MIT. Veja o arquivo [LICENÇA](LICENSE) para detalhes.

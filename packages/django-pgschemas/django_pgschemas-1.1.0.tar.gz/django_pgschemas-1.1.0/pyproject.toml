@@ -1,0 +1,76 @@
+[tool.poetry]
+name = "django-pgschemas"
+version = "1.1.0"
+description = "Django multi-tenancy through Postgres schemas"
+license = "MIT"
+authors = ["Lorenzo Peña <lorinkoz@gmail.com>"]
+readme = "README.md"
+repository = "https://github.com/lorinkoz/django-pgschemas"
+documentation = "https://django-pgschemas.readthedocs.io/"
+keywords = ["django", "tenants", "schemas", "multi-tenancy", "postgres"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    # "Development Status :: 5 - Production/Stable",
+    "Framework :: Django",
+    "Framework :: Django :: 5.0",
+    "Framework :: Django :: 5.1",
+    "Framework :: Django :: 5.2",
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+django = "^5.0"
+
+[tool.poetry.group.dev.dependencies]
+mypy = "*"
+pytest = "*"
+pytest-cov = "*"
+pytest-django = "*"
+pytest-asyncio = "*"
+ruff = "*"
+channels = { extras = ["daphne"], version = "*" }
+mkdocs-material = "*"
+
+[tool.ruff]
+select = ["I", "E", "F"]
+line-length = 100
+ignore = [
+    "E501", # line-too-long
+    "W191", # tab-indentation
+]
+
+[tool.ruff.isort]
+combine-as-imports = true
+known-first-party = ["django_pgschemas"]
+
+[tool.mypy]
+strict_optional = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+module = ["channels.*", "psycopg.*", "psycopg2.*", "django.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
+    "docs.*",
+    "sandbox.*",
+    "django_pgschemas.test.*",
+    "django_pgschemas.contrib.*",
+    "django_pgschemas.management.*",
+    "django_pgschemas.postgresql.*",
+]
+ignore_errors = true
+
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "sandbox.settings"
+django_find_project = false
+pythonpath = ["."]
+markers = ["bug"]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

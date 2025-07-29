@@ -1,0 +1,75 @@
+Metadata-Version: 2.4
+Name: mfd-libibverbs-utils
+Version: 1.7.0
+Summary: Module for running libibverbs tools for getting information about Remote Direct Memory Access (RDMA) devices installed in system
+Project-URL: Homepage, https://github.com/intel/mfd
+Project-URL: Repository, https://github.com/intel/mfd-libibverbs-utils
+Project-URL: Issues, https://github.com/intel/mfd-libibverbs-utils/issues
+Project-URL: Changelog, https://github.com/intel/mfd-libibverbs-utils/blob/main/CHANGELOG.md
+Requires-Python: <3.14,>=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE.md
+License-File: AUTHORS.md
+Requires-Dist: mfd-base-tool>=2.7.0
+Dynamic: license-file
+
+> [!IMPORTANT]  
+> This project is under development. All source code and features on the main branch are for the purpose of testing or evaluation and not production ready.
+
+# MFD libibverbs utils
+
+Module for libibverbs - tools to get information about RDMA devices on system.
+
+## Usage
+
+#### IBVDevices
+```python
+from mfd_libibverbs_utils import IBVDevices
+from mfd_connect import RPyCConnection
+
+conn = RPyCConnection(name='10.10.10.10')
+ibv_dev = IBVDevices(connection=conn)
+devices = ibv_dev.get_list()
+```
+example output:
+```
+[IBDevice(device='mlx5_0', node_guid='506b4b0300ccf69e'),
+IBDevice(device='cxgb4_0', node_guid='0007434742000000')]
+```
+
+#### IBVDevinfo
+```python
+from mfd_libibverbs_utils import IBVDevinfo
+from mfd_connect import RPyCConnection
+
+conn = RPyCConnection(name='10.10.10.10')
+devinfo = IBVDevinfo(connection=conn)
+devices = devinfo.get_info()
+```
+example output:
+```
+[IBDeviceInfo(name='cxgb4_0', transport='iWARP (1)', fw_ver='1.23.4.0', node_guid='0007:4347:4200:0000',
+                         sys_image_guid='0007:4347:4200:0000', vendor_id='0x1425', vendor_part_id='25608',
+                         hw_ver='0x0', board_id='1425.6408', phys_port_cnt=2, 
+                         physical_ports=[
+                                  IBDevPhysicalPort(number=1, state='PORT_DOWN (1)', max_mtu=4096, 
+                                                    active_mtu=1024, sm_lid=0, port_lid=0, 
+                                                    port_lmc='0x00', link_layer='Ethernet')])]
+```
+
+## Implemented methods
+
+#### IBVDevices
+`get_list() -> List[Optional[IBDevice]]` -  List RDMA devices available for use from userspace.
+
+#### IBVDevinfo
+`get_info(ib_device: Optional[Union[str, IBDevice]],
+                 ib_port: Optional[int]) -> List[Optional[IBDeviceInfo]]` - Get detailed info about RDMA devices available for use from userspace.
+
+## OS supported:
+* LNX
+* FREEBSD
+
+## Issue reporting
+
+If you encounter any bugs or have suggestions for improvements, you're welcome to contribute directly or open an issue [here](https://github.com/intel/mfd-libibverbs-utils/issues).

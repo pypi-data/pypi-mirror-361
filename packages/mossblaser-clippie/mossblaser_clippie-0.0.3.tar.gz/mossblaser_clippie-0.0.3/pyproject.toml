@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mossblaser-clippie"
+description = "A Numpy implementation of OpenAI's CLIP image and text encoding deep neural network"
+readme = "README.md"
+license = {file= "LICENSE"}
+dependencies = [
+    "numpy",
+    "regex",
+    "pillow",
+    "weightie >= 0.0.1, < 1.0.0",
+]
+dynamic = ["version"]
+
+[project.urls]
+source = "https://github.com/mossblaser/clippie"
+
+[project.optional-dependencies]
+convert = [
+    "torch",
+    "torchvision",
+]
+
+[project.scripts]
+clippie-convert-vocab-file = "clippie.scripts.convert_vocab_file:main"
+clippie-convert-weights-file = "clippie.scripts.convert_weights_file:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = {attr = "clippie.__version__"}
+
+[tool.mypy]
+plugins = "numpy.typing.mypy_plugin"

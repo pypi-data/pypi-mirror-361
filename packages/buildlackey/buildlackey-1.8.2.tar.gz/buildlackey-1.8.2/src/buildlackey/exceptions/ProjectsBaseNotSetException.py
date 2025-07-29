@@ -1,0 +1,3 @@
+
+class ProjectsBaseNotSetException(Exception):
+    pass

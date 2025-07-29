@@ -1,0 +1,54 @@
+[build-system]
+requires = ['setuptools', 'wheel']
+build-backend = "setuptools.build_meta"
+
+[project]
+name='buildlackey'
+dynamic = ["version"]
+description = 'Project Maintenance Scripts'
+readme = "README.md"
+license = {text = 'GNU AFFERO GENERAL PUBLIC LICENSE'}
+authors = [{name = 'Humberto A. Sanchez II', email = 'Humbert.A.Sanchez.II@gmail.com'}]
+maintainers = [{name = 'Humberto A. Sanchez II', email = 'Humbert.A.Sanchez.II@gmail.com'}]
+keywords = ['developer', 'python',]
+
+dependencies = [
+    'click>=8.1.8',
+    'html-testRunner>=1.2.1',
+]
+
+[project.optional-dependencies]
+test = [
+    "html-testRunner~=1.2.1",
+    "mypy== 1.14.0",
+    'codeallybasic==1.8.5',
+]
+
+deploy = [
+    "wheel==0.45.1",
+    "setuptools==75.7.0",
+    "twine==6.0.1",
+    "build==1.2.2.post1",
+]
+
+[project.urls]
+Repository = 'https://github.com/hasii2011/buildlackey'
+
+
+[tool.setuptools.packages.find]
+where = ['src']
+
+[tool.setuptools.package-data]
+'buildlackey.resources' = ['loggingConfiguration.json']
+
+[tool.setuptools.dynamic]
+version = {attr = 'buildlackey.__version__'}
+
+[project.scripts]
+
+unittests = "buildlackey.Commands:unittests"
+cleanup = "buildlackey.Commands:cleanup"
+runmypy = "buildlackey.Commands:runmypy"
+package = "buildlackey.Commands:package"
+prodpush = "buildlackey.Commands:prodpush"
+buildlackey = "buildlackey.Commands:buildlackey"

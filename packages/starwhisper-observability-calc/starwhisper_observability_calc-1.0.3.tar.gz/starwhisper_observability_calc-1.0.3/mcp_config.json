@@ -1,0 +1,123 @@
+{
+  "mcpServers": {
+    "starwhisper-observation": {
+      "name": "StarWhisper Observatory Calculator",
+      "command": "uvx",
+      "args": ["starwhisper-observation-calculator"],
+      "env": {},
+      "description": "StarWhisper天文可观测性计算器MCP服务器",
+      "version": "1.0.0"
+    }
+  },
+  "tools": {
+    "calculate_observability": {
+      "name": "calculate_observability",
+      "description": "计算指定天文目标的可观测性",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "latitude": {
+            "type": "number",
+            "description": "观测站纬度（度）",
+            "minimum": 0,
+            "maximum": 90
+          },
+          "longitude": {
+            "type": "number",
+            "description": "观测站经度（度）",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "target_name": {
+            "type": "string",
+            "description": "目标名称（如'Vega', 'moon', 'mars'等）"
+          },
+          "altitude": {
+            "type": "number",
+            "description": "观测站海拔（米）",
+            "default": 0.0
+          },
+          "min_altitude": {
+            "type": "number",
+            "description": "最小地平高度（度）",
+            "default": 30.0,
+            "minimum": 0,
+            "maximum": 90
+          },
+          "min_moon_separation": {
+            "type": "number",
+            "description": "最小月距（度）",
+            "default": 30.0,
+            "minimum": 0,
+            "maximum": 180
+          },
+          "time_range_hours": {
+            "type": "integer",
+            "description": "检查时间范围（小时）",
+            "default": 24,
+            "minimum": 1,
+            "maximum": 168
+          }
+        },
+        "required": ["latitude", "longitude", "target_name"]
+      }
+    }
+  },
+  "examples": [
+    {
+      "name": "查询Vega可观测性",
+      "description": "在新昌观测站查询Vega的可观测性",
+      "input": {
+        "latitude": 29.501784,
+        "longitude": 120.905740,
+        "target_name": "Vega",
+        "min_altitude": 30.0,
+        "min_moon_separation": 30.0
+      }
+    },
+    {
+      "name": "查询月球可观测性",
+      "description": "在新昌观测站查询月球的可观测性",
+      "input": {
+        "latitude": 29.501784,
+        "longitude": 120.905740,
+        "target_name": "moon",
+        "min_altitude": 20.0,
+        "min_moon_separation": 0.0
+      }
+    },
+    {
+      "name": "查询火星可观测性",
+      "description": "在新昌观测站查询火星的可观测性",
+      "input": {
+        "latitude": 29.501784,
+        "longitude": 120.905740,
+        "target_name": "M31",
+        "min_altitude": 30.0,
+        "min_moon_separation": 30.0
+      }
+    }
+  ],
+  "metadata": {
+    "name": "StarWhisper-observation-calculator",
+    "version": "1.0.0",
+    "description": "计算天文目标的可观测性，包括高度曲线和约束条件检查",
+    "author": "Cunshi Wang",
+    "license": "MIT",
+    "repository": "https://github.com/example/StarWhisper-observation-calculator",
+    "keywords": [
+      "astronomy",
+      "observability",
+      "mcp",
+      "astropy",
+      "simbad"
+    ],
+    "dependencies": [
+      "astropy>=5.0.0",
+      "astroquery>=0.4.6",
+      "astroplan>=0.8.0",
+      "numpy>=1.20.0"
+    ],
+    "python_version": ">=3.8"
+  }
+} 

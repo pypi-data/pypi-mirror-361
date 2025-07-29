@@ -1,0 +1,76 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches:
+      - "*"
+  schedule:
+    - cron: "0 0 * * 1,4"
+
+jobs:
+  Test:
+    name: ${{ matrix.os }}, ${{ matrix.environment-file }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        environment-file:
+          - .ci/310.yml
+          - .ci/311.yml
+          - .ci/312.yml
+        include:
+          - environment-file: .ci/311.yml
+            os: macos-latest
+          - environment-file: .ci/311.yml
+            os: macos-14  # Apple Silicon
+          - environment-file: .ci/311.yml
+            os: windows-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: setup micromamba
+        uses: mamba-org/setup-micromamba@v1
+        with:
+          environment-file: ${{ matrix.environment-file }}
+          micromamba-version: 'latest'
+
+      - name: Install geosnap
+        run: pip install . --no-deps ;python geosnap/tests/_dl_data.py;
+        env:
+          COMBO_DATA: ${{ secrets.COMBO_DATA }}
+  
+      - name: Test geosnap
+        run: |
+          coverage run -m pytest \
+           -v \
+           -r a \
+           -n auto \
+           --color yes \
+           --cov geosnap \
+           --cov-append \
+           --cov-report term-missing \
+           --cov-report xml \
+           geosnap
+      - name: codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml
+          name: geosnap-codecov
+
+      - name: Generate and publish the report
+        if: |
+          failure()
+          && steps.status.outcome == 'failure'
+          && github.event_name == 'schedule'
+          && github.repository_owner == 'oturns'
+        uses: xarray-contrib/issue-from-pytest-log@v1
+        with:
+          log-path: pytest-log.jsonl

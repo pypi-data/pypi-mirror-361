@@ -1,0 +1,77 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pycomment"
+description = "with repr value as comment"
+readme = "README.md"
+authors = [
+    { name = "podhmo", email = "ababjam61+github@gmail.com" },
+]
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+]
+# Version is loaded dynamically from pycomment/__version__.py
+dynamic = ["version"]
+dependencies = [
+  "black"
+]
+
+
+[project.urls]
+Homepage = "https://github.com/podhmo/pycomment"
+Repository = "https://github.com/podhmo/pycomment"
+
+[project.scripts]
+pycomment = "pycomment.__main__:main"
+
+[tool.hatch.version]
+path = "pycomment/__version__.py"
+
+# Default environment for `hatch shell`
+[tool.hatch.envs.default]
+dependencies = [
+  "pytest",
+  "flake8",
+]
+
+# Scripts for the default environment, runnable with `hatch run <script>`
+[tool.hatch.envs.default.scripts]
+# Format code using black
+format = "black pycomment pycomment/tests"
+
+# Lint code using flake8
+lint = "flake8 pycomment pycomment/tests --ignore W503,E203,E501"
+
+# Run all CI checks: matrix tests, format check, and lint
+ci = [
+  "hatch test",
+  "hatch run format --check",
+  "hatch run lint",
+]
+
+# Default tests options for pytest
+[tool.hatch.envs.hatch-test]
+dependencies = [
+  "pytest",
+]
+default-args = ["pycomment/tests"]
+
+[[tool.hatch.envs.hatch-test.matrix]]
+python = ["3.10", "3.11", "3.12", "3.13"]
+
+# e2e env
+[tool.hatch.envs.e2e]
+dependencies = [
+  "numpy" # for ./examples
+]
+[[tool.hatch.envs.e2e.matrix]]
+python = ["3.10", "3.11", "3.12", "3.13"]

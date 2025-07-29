@@ -1,0 +1,133 @@
+Metadata-Version: 2.4
+Name: mfd-mount
+Version: 1.8.0
+Summary: Module for handling mounting and unmounting fileshares on different operating systems
+Project-URL: Homepage, https://github.com/intel/mfd
+Project-URL: Repository, https://github.com/intel/mfd-mount
+Project-URL: Issues, https://github.com/intel/mfd-mount/issues
+Project-URL: Changelog, https://github.com/intel/mfd-mount/blob/main/CHANGELOG.md
+Requires-Python: <3.14,>=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE.md
+License-File: AUTHORS.md
+Requires-Dist: mfd-typing>=1.23.0
+Dynamic: license-file
+
+> [!IMPORTANT]  
+> This project is under development. All source code and features on the main branch are for the purpose of testing or evaluation and not production ready.
+
+# MFD Mount
+Module for handling mounting fileshares on OS
+
+## Usage
+
+You can create mounter objects in two ways:
+1. use generic Mount class which will automatically detect OS type based on connected setup and instantiate proper subclass
+2. use specific subclass e.g. PosixMount if you know beforehand which OS runs on connected setup
+
+```python
+from mfd_connect import LocalConnection, RPyCConnection
+from mfd_mount import Mount, ESXiMount, PosixMount, WindowsMount, FreeBSDMount
+
+mounter_generic = Mount(connection=LocalConnection())  # will automatically instantiate proper subclass
+
+mounter_windows = WindowsMount(connection=LocalConnection())
+mounter_windows.mount_nfs(mount_point="Z:", share_path="10.10.10.10:/shared")
+mounter_windows.is_mounted(mount_point="Z:")
+
+mounter_posix = PosixMount(connection=LocalConnection())
+mounter_posix.mount_nfs(mount_point="/mnt/shared", share_path="10.10.10.10:/shared")
+mounter_posix.mount_cifs(mount_point="/mnt/shared", share_path="//10.10.10.10/shared", username='user', password='pass')
+mounter_posix.mount_tmpfs(mount_point="/mnt/shared", share_path="//10.10.10.10/shared", params='-o param')
+mounter_posix.mount_hugetlbfs(mount_point="/mnt/shared", share_path="//10.10.10.10/shared", params='-o param')
+mounter_posix.is_mounted(mount_point="/mnt/shared")
+# or
+with mounter_posix.mount_nfs(mount_point="/mnt/shared", share_path="10.10.10.10:/shared"):
+    mounter_posix.is_mounted(mount_point="/mnt/shared")  # will automatically unmount share afterwards
+with mounter_posix.mount_cifs(mount_point="/mnt/shared", share_path="//10.10.10.10/shared", username='user', password='pass'):
+    mounter_posix.is_mounted(mount_point="/mnt/shared")  # will automatically unmount share afterwards
+with mounter_posix.mount_tmpfs(mount_point="/mnt/shared", share_path="//10.10.10.10/shared", params='-o param'):
+    mounter_posix.is_mounted(mount_point="/mnt/shared")  # will automatically unmount share afterwards
+with mounter_posix.mount_hugetlbfs(mount_point="/mnt/shared", share_path="//10.10.10.10/shared", params='-o param'):
+    mounter_posix.is_mounted(mount_point="/mnt/shared")  # will automatically unmount share afterwards    
+mounter_esxi = ESXiMount(connection=LocalConnection())
+mounter_esxi.mount_nfs(mount_point="NFSVolume", share_path="10.10.10.10:/shared")
+mounter_esxi.is_mounted(mount_point="NFSVolume")
+mounter_posix.umount(mount_point="/mnt/shared")
+mounter_freebsd = FreeBSDMount(connection=RPyCConnection(ip='11.11.11.11', port=18813))
+mounter_freebsd.mount_cifs(mount_point="/mnt/shared", share_path="10.10.10.10/shared", username='user', password='pass')
+# or 
+with mounter_freebsd.mount_cifs(mount_point="/mnt/shared", share_path="10.10.10.10/shared", username='user', password='pass'):
+    mounter_freebsd.is_mounted(mount_point="/mnt/shared")
+```
+## API documentation
+Mount NFS share:
+```python
+mount_nfs(self, *, mount_point: Union[Path, str],
+                  share_path: Union[Path, str],
+                  username: Optional[str],
+                  password: Optional[str]
+                  ) -> None:
+```
+Mount CIFS share:
+```python
+mount_cifs(self, *, mount_point: Union[Path, str],
+                   share_path: Union[Path, str],
+                   username: Optional[str],
+                   password: Optional[str]
+                   ) -> None:
+```
+* Currently only implemented in POSIX class.
+Mount TMPFS share:
+```python
+mount_tmpfs(self, *, mount_point: Union[Path, str],
+                   share_path: Union[Path, str],
+                   params: Optional[str]) -> None:
+```
+Mount HUGETLBFS share:
+```python
+mount_hugetlbfs(self, *, mount_point: Union[Path, str],
+                   share_path: Union[Path, str],
+                   params: Optional[str]) -> None:
+```
+
+Check if given mountpoint is mounted:
+```python
+is_mounted(self, mount_point: Union[Path, str]) -> bool:
+```
+Unmount share: 
+```python
+umount(self, mount_point: Union[Path, str]) -> None:
+```
+Raises `UnmountException` on failure
+
+### ESXi with NFS
+`Username` and `password` are unused. 
+`Mount_point` is name of new volume.
+`share_path` must be in correct format `<host>/<share> `or `<host>:/<share>` eg. `10.10.10.10:/to_share` or `10.10.10.10/to_share`
+
+### SSHFS
+
+SSHFS is not built-in system tool. It requires previous installation.
+
+On POSIX OS'es: `<package-manager> install sshfs`
+
+## OS supported:
+
+* WINDOWS
+* LINUX
+* FreeBSD
+* ESXi
+
+|      |  WINDOWS  |   LINUX   |  FreeBSD  |     ESXi      |
+|------|-----------|-----------| --------- | ------------- |
+| CIFS | Supported :white_check_mark: | Supported :white_check_mark: | Supported :white_check_mark: | Not Supported :red_circle: |
+| NFS  | Supported :white_check_mark: | Supported :white_check_mark: | Supported :white_check_mark: | Supported :white_check_mark: |
+| SSHFS| Not Supported :red_circle: | Supported :white_check_mark: | Not Supported :red_circle: | Not Supported :red_circle: |
+| TMPFS | Not Supported :red_circle: | Supported :white_check_mark: | Not Supported :red_circle: | Not Supported :red_circle: |
+| HUGELBFS | Not Supported :red_circle: | Supported :white_check_mark: | Not Supported :red_circle:| Not Supported :red_circle: |
+
+
+## Issue reporting
+
+If you encounter any bugs or have suggestions for improvements, you're welcome to contribute directly or open an issue [here](https://github.com/intel/mfd-mount/issues).

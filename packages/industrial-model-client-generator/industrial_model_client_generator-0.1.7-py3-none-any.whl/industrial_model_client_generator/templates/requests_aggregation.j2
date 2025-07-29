@@ -1,0 +1,20 @@
+from __future__ import annotations
+import datetime
+from typing import Annotated, Literal, Any
+
+from pydantic import Field
+
+from industrial_model import  InstanceId, ViewInstance, ViewInstanceConfig, WritableViewInstance, Engine, PaginatedResult, RootModel
+from industrial_model.queries import BasePaginatedQuery, BaseSearchQuery, BaseAggregationQuery, NestedQueryParam, QueryParam, BoolQueryParam
+
+{% for view_definition in view_definitions %}
+from .base import Base{{ view_definition.view_name }}Request
+{%- endfor %}
+
+
+{% for view_definition in view_definitions %}
+class Aggregation{{ view_definition.view_name }}Request(Base{{ view_definition.view_name }}Request, BaseAggregationQuery):
+    {{ view_definition.group_by_field }}
+    or_: Annotated[Aggregation{{ view_definition.view_name }}Request | None, BoolQueryParam("or")] = None
+    and_: Annotated[Aggregation{{ view_definition.view_name }}Request | None, BoolQueryParam("and")] = None
+{%- endfor %}

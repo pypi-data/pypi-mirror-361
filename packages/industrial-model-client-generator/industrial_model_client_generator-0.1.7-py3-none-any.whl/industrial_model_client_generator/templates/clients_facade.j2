@@ -1,0 +1,31 @@
+from industrial_model import Engine, AsyncEngine
+
+{%- for client in clients %}
+from .clients.{{ client.module_name }} import {{ client.module_client }}
+{%- endfor %}
+
+
+{% for view_definition in view_definitions %}
+from .clients_async import Async{{ view_definition.view_name }}Client
+from .clients_sync import {{ view_definition.view_name }}Client
+{%- endfor %}
+
+
+{% if client_mode in ["both", "sync"] %}
+class {{client_name}}:
+    def __init__(self, engine: Engine):
+        self.engine = engine
+    {%- for view_definition in view_definitions %}
+        self.{{ view_definition.view_module_name }} = {{ view_definition.view_name}}Client(engine)
+    {%- endfor %}
+{% endif %}
+
+
+{% if client_mode in ["both", "async"] %}
+class Async{{client_name}}:
+    def __init__(self, engine: AsyncEngine):
+        self.engine = engine
+    {%- for view_definition in view_definitions %}
+        self.{{ view_definition.view_module_name }} = Async{{ view_definition.view_name}}Client(engine)
+    {%- endfor %}
+{% endif %}

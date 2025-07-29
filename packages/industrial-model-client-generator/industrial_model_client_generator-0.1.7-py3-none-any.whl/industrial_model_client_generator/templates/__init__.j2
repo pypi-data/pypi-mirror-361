@@ -1,0 +1,40 @@
+{% for view_definition in view_definitions %}
+from .requests.aggregation import Aggregation{{ view_definition.view_name }}Request
+from .requests.query import Query{{ view_definition.view_name }}Request
+from .requests.search import Search{{ view_definition.view_name }}Request
+
+from .models.aggregation import {{ view_definition.view_name }}Aggregation
+from .models.entity_complete import {{ view_definition.view_name }}Complete
+from .models.entity import {{ view_definition.view_name }}
+from .models.search import {{ view_definition.view_name }}Search
+
+{%- endfor %}
+
+{% if client_mode in ["both", "sync"] %}
+from .clients_facade import {{ client_name }}
+{% endif %}
+
+{% if client_mode in ["both", "async"] %}
+from .clients_facade import Async{{ client_name }}
+{% endif %}
+
+
+__all__ = [
+    {% for view_definition in view_definitions %}
+    "Aggregation{{ view_definition.view_name }}Request",
+    "Query{{ view_definition.view_name }}Request",
+    "Search{{ view_definition.view_name }}Request",
+    "{{ view_definition.view_name }}Aggregation",
+    "{{ view_definition.view_name }}Complete",
+    "{{ view_definition.view_name }}",
+    "{{ view_definition.view_name }}Search",
+    {%- endfor %}
+    {% if client_mode in ["both", "sync"] %}
+    "{{ client_name }}",
+    {% endif %}
+    {% if client_mode in ["both", "async"] %}
+    "Async{{ client_name }}"
+    {% endif %}
+]
+
+

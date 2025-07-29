@@ -1,0 +1,51 @@
+[build-system]
+requires = ['setuptools', 'wheel']
+build-backend = "setuptools.build_meta"
+
+[project]
+name='pyut2xml'
+dynamic = ["version"]
+description = 'Pyut compressor and decompressor'
+readme = "README.md"
+authors = [{name = 'Humberto A. Sanchez II', email = 'Humberto.A.Sanchez.II@gmail.com'}]
+maintainers = [{name = 'Humberto A. Sanchez II', email = 'Humberto.A.Sanchez.II@gmail.com'}]
+keywords = ['git', 'issue management', 'markdown', 'python']
+license = 'AGPL-1.0-or-later'
+
+dependencies = [
+  'click>=8.1.8',
+]
+
+[project.optional-dependencies]
+test = [
+    'mypy==1.16.1',
+    'mypy-extensions==1.1.0',
+    'types-Deprecated==1.2.9.20240311',
+    'html-testRunner~=1.2.1',
+    'codeallybasic == 1.10.4',
+]
+
+deploy = [
+    "wheel==0.45.1",
+    "setuptools==75.7.0",
+    "twine==6.0.1",
+    "build==1.2.2.post1",
+    "pkginfo==1.12.1.2"
+]
+
+[project.urls]
+Repository = 'https://github.com/hasii2011/pyut2xml'
+
+[tool.setuptools.packages.find]
+where = ['src']
+
+[tool.setuptools.package-data]
+'pyut2xml.resources' = ['loggingConfiguration.json']
+
+[tool.setuptools.dynamic]
+version = {attr = 'pyut2xml.__version__'}
+
+[project.scripts]
+
+pyut2xml = "pyut2xml.pyut2xml:commandHandler"
+xml2pyut = "pyut2xml.xml2pyut:commandHandler"

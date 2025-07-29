@@ -1,0 +1,59 @@
+[build-system]
+requires = ['setuptools', 'wheel']
+build-backend = "setuptools.build_meta"
+
+[project]
+name='latestversions'
+dynamic = ["version"]
+description = 'Reports the latest versions of PyPi packages'
+readme = "README.md"
+authors = [{name = 'Humberto A. Sanchez II', email = 'Humbert.A.Sanchez.II@gmail.com'}]
+maintainers = [{name = 'Humberto A. Sanchez II', email = 'Humbert.A.Sanchez.II@gmail.com'}]
+keywords = ['requirements', 'versions', 'python',]
+
+classifiers = [
+  "Programming Language :: Python",
+  "Intended Audience :: Developers",
+  "Operating System :: MacOS :: MacOS X",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+dependencies = [
+  'click>=8.2.1',
+  'codeallybasic>=1.8.0',
+]
+
+[project.optional-dependencies]
+test = [
+    'mypy==1.16.1',
+    'mypy-extensions==1.1.0',
+    'types-Deprecated==1.2.9.20240311',
+    'html-testRunner~=1.2.1',
+    'codeallybasic == 1.10.4',
+]
+
+deploy = [
+    "wheel==0.45.1",
+    "setuptools==75.7.0",
+    "twine==6.0.1",
+    "build==1.2.2.post1",
+    "pkginfo==1.12.1.2"
+]
+
+
+[project.urls]
+Repository = 'https://github.com/hasii2011/latestversions'
+
+
+[tool.setuptools.packages.find]
+where = ['src']
+
+[tool.setuptools.package-data]
+'latestversions.resources' = ['loggingConfiguration.json']
+
+[tool.setuptools.dynamic]
+version = {attr = 'latestversions.__version__'}
+
+[project.scripts]
+
+latestversions = "latestversions.LatestVersions:commandHandler"

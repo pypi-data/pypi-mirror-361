@@ -1,0 +1,108 @@
+Metadata-Version: 2.1
+Name: OsmRouteScreenLib
+Version: 0.0.1
+Summary: Open Street Map route screenshot
+Home-page: https://gitlab.mobwal.com/other/routing-service
+Author: Aleksandr Krasnov
+Author-email: akrasnov87@gmail.com
+License: UNKNOWN
+Project-URL: Documentation, https://gitlab.mobwal.com/other/routing-service
+Keywords: osm route screenshot
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3.10
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+## Описание
+
+Библиотека для создания скриншотов маршрута в Open Street Map
+
+### Использование
+
+<pre>
+import OsmRouteScreenLib.startup as st
+import OsmRouteScreenLib.options as o
+
+options = o.make_options('http://tile-server.domain.com/{zoom}/{x}/{y}.png',
+               'https://route.domain.com/route/v1/driving/{startPoint};{endPoint}?overview=full&geometries=geojson')
+
+coordinates = [
+    [47.232251, 56.141821],
+    [47.232082, 56.141565],
+    [47.232037, 56.141592],
+    [47.231584, 56.141681],
+    [47.230827, 56.14183],
+    [47.230783, 56.141767],
+    [47.230494, 56.141349],
+    [47.230364, 56.141158],
+    [47.230213, 56.140941],
+    [47.230175, 56.140883],
+    [47.230068, 56.14073],
+    [47.229908, 56.140522],
+    [47.229851, 56.14047],
+    [47.2298, 56.140436],
+    [47.229752, 56.140416],
+    [47.229603, 56.140436],
+    [47.229076, 56.140548],
+    [47.228904, 56.140602],
+    [47.228479, 56.140808],
+    [47.2284, 56.140841],
+    [47.228301, 56.140874],
+    [47.226786, 56.141198],
+    [47.226285, 56.141319],
+    [47.226067, 56.141259],
+    [47.225833, 56.141189],
+    [47.225541, 56.141483],
+    [47.225303, 56.141697],
+    [47.224905, 56.141548],
+    [47.224695, 56.141477],
+    [47.224094, 56.141286],
+    [47.223779, 56.1412],
+    [47.223529, 56.141143],
+    [47.222659, 56.140979],
+    [47.222714, 56.14088],
+    [47.222761, 56.140798],
+    [47.222839, 56.140654],
+    [47.22287, 56.140594],
+    [47.222867, 56.140549],
+    [47.222809, 56.140515],
+    [47.221365, 56.140241],
+    [47.22124, 56.14022],
+    [47.221188, 56.140211],
+    [47.220531, 56.140093],
+    [47.220431, 56.140074],
+    [47.220365, 56.140047],
+    [47.220357, 56.140002],
+    [47.220387, 56.139948],
+    [47.220449, 56.139836],
+    [47.220091, 56.13978]
+]
+
+st.get_route_screen_by_points((47.232565,56.141757), (47.220063,56.139836), options)
+#st.get_route_screen_by_coordinates(coordinates, options)
+</pre>
+
+## Сборка
+
+Устанавливаем дополнительные библиотека: `sudo apt install libcairo2-dev pkg-config python3-dev`
+
+<pre>
+python3 -m venv routing-service
+source routing-service/bin/activate
+pip install -r requirements.txt
+</pre>
+
+__Примечание__: для деактивации набрать `deactivate`
+
+<pre>
+pip install setuptools wheel twine
+</pre>
+
+## Установка библиотеки
+Выполнить в корневом проекте библиотеки:
+<pre>
+pip install OsmRouteScreenLib
+

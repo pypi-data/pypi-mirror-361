@@ -1,0 +1,136 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "adef-tools"
+version = "0.6.2"
+description = "Script to work with Integrated Alert Deforestacion"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+
+authors = [
+    { name = "Luis Alfredo López Gonzales", email = "lalgonzales@gmail.com" }
+]
+
+keywords = [
+    "deforestation",
+    "alert",
+    "integrated",
+    "monitoring",
+    "geospatial",
+    "analysis",
+]
+
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "dask[distributed]>=2025.4.1",
+    "gdal>=3.11.0.1",
+    "geoalchemy2>=0.17.1",
+    "geopandas>=1.0.1",
+    "matplotlib>=3.10.1",
+    "owslib>=0.33.0",
+    "psycopg2>=2.9.10",
+    "pyarrow>=20.0.0",
+    "python-dotenv>=1.1.0",
+    "rioxarray>=0.19.0",
+    "sqlalchemy>=2.0.41",
+    "tqdm>=4.67.1",
+]
+
+[project.scripts]
+adef-tools = "adef_tools.cli:cli"
+
+[project.urls]
+repository = "https://git.icf.gob.hn/alopez/adef-integ-tools"
+homepage = "https://git.icf.gob.hn/alopez/adef-integ-tools"
+issues = "https://git.icf.gob.hn/alopez/adef-integ-tools/-/issues"
+
+[project.optional-dependencies]
+dask = [
+    "dask-geopandas>=0.5.0",
+]
+
+[tool]
+[tool.hatch.build.targets.sdist]
+packages = ["adef_tools"]
+exclude = ["docs*, data*, results*"]
+
+[tool.hatch.version]
+path = "adef_tools/__init__.py"
+
+[tool.hatch.envs.default]
+features = ["dev"]
+scripts.test = "pytest"
+
+[tool.flake8]
+exclude = ["tests", "docs"]
+max-line-length = 88
+
+[tool.commitizen]
+name = "cz_changeup"
+tag_format = "v$version"
+version_scheme = "pep440"
+version = "0.6.2"
+update_changelog_on_bump = true
+major_version_zero = true
+version_files = [
+    "adef_tools/__init__.py",
+    "pyproject.toml",
+    "uv.lock"
+]
+
+[tool.commitizen.changeup]
+types = [
+  { type = "feat", description = "A new feature" },
+  { type = "fix", description = "A bug fix" },
+  { type = "perf", description = "A performance improvement" },
+  { type = "refactor", description = "Code changes that neither fix a bug nor add a feature" },
+  { type = "docs", description = "Documentation only changes" },
+  { type = "style", description = "Changes that do not affect the meaning of the code" },
+  { type = "test", description = "Adding or updating tests" },
+  { type = "chore", description = "Other changes that don't modify src or tests" },
+  { type = "build", description = "Changes that affect the build system or external dependencies" },
+  { type = "ci", description = "Changes to CI configuration files and scripts" },
+  { type = "revert", description = "Reverts a previous commit" }
+]
+
+bump_map = [
+  { type = "feat", bump = "minor" },
+  { type = "fix", bump = "patch" },
+  { type = "perf", bump = "patch" },
+  { type = "refactor", bump = "patch" }
+]
+
+[[tool.uv.index]]
+url = "https://girder.github.io/large_image_wheels"
+
+
+[dependency-groups]
+tests = [
+    "pytest>=8.3.5",
+]
+
+dev = [
+    "bokeh>=3.7.3",
+    "commitizen>=4.7.0",
+    "cz-changeup>=1.1.2",
+    "dask>=2025.4.1",
+    "memory-profiler>=0.61.0",
+    "notebook>=7.4.2",
+    "pip>=25.1.1",
+    "pre-commit>=4.2.0",
+]
+deploy = [
+    "twine>=6.1.0",
+]

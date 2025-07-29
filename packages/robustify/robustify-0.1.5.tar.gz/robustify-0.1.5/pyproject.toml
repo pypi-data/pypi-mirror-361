@@ -1,0 +1,69 @@
+[project]
+name = "robustify"
+version = "0.1.5"
+description = "Utility tools to make the code Robust"
+authors = [{ name = "Danyal Zia Khan", email = "danyalziakhan@gmail.com" }]
+requires-python = ">=3.10,<3.14"
+readme = "README.md"
+license = "MIT"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Other Environment",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = ["colorama>=0.4.6,<0.5"]
+
+[project.urls]
+homepage = "https://github.com/danyalziakhan/robustify"
+
+[dependency-groups]
+dev = [
+    "black>=24.4.2,<25",
+    "ipykernel>=6.29.4,<7",
+    "ipython>=8.24.0,<9",
+    "isort>=5.13.2,<6",
+    "pre-commit>=3.7.1,<4",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.black]
+line-length = 88
+include = '\.py$'
+target-version = ["py310", "py311", "py312", "py313"]
+
+[tool.isort]
+profile = "black"
+line_length = 88                     # corresponds to -w  flag
+multi_line_output = 3                # corresponds to -m  flag
+include_trailing_comma = true        # corresponds to -tc flag
+skip_glob = ".venv, */build, */.git"
+float_to_top = true
+
+[tool.pyright]
+include = ["."]
+exclude = ["**/node_modules", "**/__pycache__", "**/.venv"]
+venv = ".venv"
+
+reportMissingImports = true
+reportMissingTypeStubs = false
+reportUnknownParameterType = "warning"
+reportUnknownMemberType = false
+reportUnknownVariableType = "warning"
+reportUnknownArgumentType = true
+reportPrivateUsage = true
+reportUntypedFunctionDecorator = false
+reportImportCycles = true
+reportUnusedImport = "warning"
+reportUnknownLambdaType = false

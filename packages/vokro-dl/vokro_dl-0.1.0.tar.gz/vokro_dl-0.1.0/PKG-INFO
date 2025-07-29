@@ -1,0 +1,205 @@
+Metadata-Version: 2.4
+Name: vokro-dl
+Version: 0.1.0
+Summary: A comprehensive video downloading library that surpasses yt-dlp in usability and functionality
+Project-URL: Homepage, https://github.com/vokrob/vokro-dl
+Project-URL: Documentation, https://vokro-dl.readthedocs.io
+Project-URL: Repository, https://github.com/vokrob/vokro-dl
+Project-URL: Bug Tracker, https://github.com/vokrob/vokro-dl/issues
+Author-email: Danil Borkov <106639488+vokrob@users.noreply.github.com>
+License-Expression: MIT
+License-File: LICENSE
+Keywords: download,media,streaming,video,youtube
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Topic :: Multimedia :: Video
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.8
+Requires-Dist: aiofiles>=23.0.0
+Requires-Dist: aiohttp>=3.8.0
+Requires-Dist: beautifulsoup4>=4.12.0
+Requires-Dist: click>=8.0.0
+Requires-Dist: cryptography>=41.0.0
+Requires-Dist: ffmpeg-python>=0.2.0
+Requires-Dist: httpx>=0.24.0
+Requires-Dist: lxml>=4.9.0
+Requires-Dist: m3u8>=3.5.0
+Requires-Dist: mutagen>=1.47.0
+Requires-Dist: pillow>=10.0.0
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: python-dateutil>=2.8.0
+Requires-Dist: pyyaml>=6.0
+Requires-Dist: rich>=13.0.0
+Requires-Dist: toml>=0.10.0
+Requires-Dist: tqdm>=4.65.0
+Requires-Dist: websockets>=11.0.0
+Provides-Extra: dev
+Requires-Dist: black>=23.0.0; extra == 'dev'
+Requires-Dist: build>=0.10.0; extra == 'dev'
+Requires-Dist: flake8>=6.0.0; extra == 'dev'
+Requires-Dist: isort>=5.12.0; extra == 'dev'
+Requires-Dist: mypy>=1.5.0; extra == 'dev'
+Requires-Dist: pre-commit>=3.3.0; extra == 'dev'
+Requires-Dist: pytest-asyncio>=0.21.0; extra == 'dev'
+Requires-Dist: pytest-cov>=4.1.0; extra == 'dev'
+Requires-Dist: pytest-mock>=3.11.0; extra == 'dev'
+Requires-Dist: pytest>=7.4.0; extra == 'dev'
+Requires-Dist: sphinx-rtd-theme>=1.3.0; extra == 'dev'
+Requires-Dist: sphinx>=7.1.0; extra == 'dev'
+Requires-Dist: twine>=4.0.0; extra == 'dev'
+Provides-Extra: docs
+Requires-Dist: myst-parser>=2.0.0; extra == 'docs'
+Requires-Dist: sphinx-autodoc-typehints>=1.24.0; extra == 'docs'
+Requires-Dist: sphinx-rtd-theme>=1.3.0; extra == 'docs'
+Requires-Dist: sphinx>=7.1.0; extra == 'docs'
+Provides-Extra: test
+Requires-Dist: aioresponses>=0.7.4; extra == 'test'
+Requires-Dist: pytest-asyncio>=0.21.0; extra == 'test'
+Requires-Dist: pytest-cov>=4.1.0; extra == 'test'
+Requires-Dist: pytest-mock>=3.11.0; extra == 'test'
+Requires-Dist: pytest>=7.4.0; extra == 'test'
+Requires-Dist: responses>=0.23.0; extra == 'test'
+Description-Content-Type: text/markdown
+
+# VokroDL - Advanced Video Downloading Library
+
+[![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg)](https://python.org)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Tests](https://github.com/vokrob/vokro-dl/workflows/tests/badge.svg)](https://github.com/vokrob/vokro-dl/actions)
+[![Coverage](https://codecov.io/gh/vokrob/vokro-dl/branch/main/graph/badge.svg)](https://codecov.io/gh/vokrob/vokro-dl)
+
+A comprehensive video downloading library that surpasses yt-dlp in terms of usability and functionality. VokroDL provides a modern Python API with async support, better error handling, and enhanced features for downloading videos from major platforms.
+
+## 🚀 Features
+
+### Core Capabilities
+- **Multi-Platform Support**: YouTube, Vimeo, Twitch, TikTok, Instagram, and more
+- **Modern Python API**: Type hints, async/await support, and clean interfaces
+- **Superior Error Handling**: User-friendly error messages and automatic recovery
+- **Progress Tracking**: Detailed download statistics and real-time progress
+- **Quality Selection**: Intelligent format and quality selection
+- **Metadata Extraction**: Comprehensive video information and embedding
+
+### Enhanced Usability
+- **Intuitive CLI**: Better help documentation and user experience
+- **Simple API**: Easy integration into other Python projects
+- **Configuration Support**: YAML/TOML config files for default settings
+- **Batch Downloads**: Playlist and bulk downloading capabilities
+- **Resume Downloads**: Automatic resume of interrupted downloads
+- **Smart Retry**: Exponential backoff and automatic retry mechanisms
+
+### Advanced Features
+- **Parallel Downloads**: Multi-threaded downloading for improved speed
+- **Bandwidth Awareness**: Smart quality selection based on connection speed
+- **Subtitle Support**: Download and embed subtitles in multiple languages
+- **Audio Extraction**: High-quality audio-only downloads
+- **Post-Processing**: Custom hooks and built-in format conversion
+- **Plugin System**: Extensible architecture for new platforms
+- **Memory Efficient**: Optimized for large files and batch operations
+
+## 📦 Installation
+
+```bash
+# Install from PyPI (recommended)
+pip install vokro-dl
+
+# Install with development dependencies
+pip install vokro-dl[dev]
+
+# Install from source
+git clone https://github.com/vokrob/vokro-dl.git
+cd vokro-dl
+pip install -e .
+```
+
+## 🔧 Quick Start
+
+### Command Line Interface
+
+```bash
+# Basic download
+vokro-dl "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+
+# Download with specific quality
+vokro-dl --quality 720p "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+
+# Download playlist
+vokro-dl --playlist "https://www.youtube.com/playlist?list=PLrAXtmRdnEQy6nuLMHjMZOz59Oq8VGOmm"
+
+# Audio only
+vokro-dl --audio-only --format mp3 "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+
+# Batch download from file
+vokro-dl --batch-file urls.txt --output-dir ./downloads
+```
+
+### Python API
+
+```python
+import asyncio
+from vokro_dl import VokroDL, DownloadConfig
+
+async def main():
+    # Simple download
+    downloader = VokroDL()
+    await downloader.download("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+    
+    # Advanced configuration
+    config = DownloadConfig(
+        quality="best",
+        output_dir="./downloads",
+        audio_only=False,
+        subtitles=True,
+        parallel_downloads=3
+    )
+    
+    downloader = VokroDL(config)
+    
+    # Download with progress callback
+    async def progress_callback(progress):
+        print(f"Downloaded: {progress.percent:.1f}% - {progress.speed}")
+    
+    await downloader.download(
+        "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        progress_callback=progress_callback
+    )
+
+# Synchronous API also available
+from vokro_dl.sync import VokroDLSync
+
+downloader = VokroDLSync()
+downloader.download("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+
+asyncio.run(main())
+```
+
+## 📖 Documentation
+
+- [User Guide](https://vokro-dl.readthedocs.io/en/latest/user-guide/)
+- [API Reference](https://vokro-dl.readthedocs.io/en/latest/api/)
+- [Configuration](https://vokro-dl.readthedocs.io/en/latest/configuration/)
+- [Plugin Development](https://vokro-dl.readthedocs.io/en/latest/plugins/)
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Inspired by the excellent work of yt-dlp and youtube-dl projects
+- Built with modern Python best practices and async/await support
+- Thanks to all contributors and the open-source community

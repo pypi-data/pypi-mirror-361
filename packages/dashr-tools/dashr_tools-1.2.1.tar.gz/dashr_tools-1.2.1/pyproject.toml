@@ -1,0 +1,65 @@
+[project]
+name = "dashr-tools"
+description = "Toolkit to interface with Duke Injury Biomechanics Laboratory DASHR device data."
+authors = [
+    {name="mzabrams", email="mitchell.abrams@duke.edu>"},
+]
+readme = "README.md"
+requires-python = ">=3.12.0,<3.14.0"
+dependencies = [
+    "pandas (>=2.2.0)",
+    "numpy (>=2.2)",
+    "pytest (>=8.3.4, <9.0.0)",
+    "coverage (>=7.6.10, <8.0.0)",
+    "natsort (>=8.4.0, <9.0.0)",
+    "tqdm (>=4.67.1, <5.0.0)",
+    "sphinx (>=8.2.3, <9.0.0)",
+    "myst-parser (>=4.0.1, <5.0.0)",
+    "rinohtype (>=0.5.5, <0.6.0)",
+    "pydata-sphinx-theme (>=0.16.1, <0.17.0)",
+    "matplotlib (>=3.10.1,<4.0.0)",
+]
+dynamic = ["classifiers"]
+version = "1.2.1"
+
+[project.urls]
+homepage = "https://gitlab.oit.duke.edu/biomechanics/dashr-tools"
+repository = "https://gitlab.oit.duke.edu/biomechanics/dashr-tools"
+documentation = "https://biomechanics.pages.oit.duke.edu/dashr-tools/html/"
+
+
+[build-system]
+requires = ["poetry-core", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+build-backend = "poetry_dynamic_versioning.backend"
+#build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+package-mode = true
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Topic :: Scientific/Engineering"
+]
+
+[tool.poetry.requires-plugins]
+poetry-dynamic-versioning = { version = ">=1.0.0,<2.0.0", extras = ["plugin"] }
+
+[tool.poetry.group.dev.dependencies]
+commitizen = "^4.8.3"
+
+[tool.poetry-dynamic-versioning]
+enable = true
+
+[tool.coverage.run]
+omit = ["tests/*"]
+
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "v${version}"
+version_scheme = "semver2"
+version = "1.2.1"
+version_files = [
+    "dashr_tools/__init__.py",
+    "pyproject.toml:^version"
+]
+update_changelog_on_bump = true

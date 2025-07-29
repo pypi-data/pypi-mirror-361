@@ -1,0 +1,124 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "project-odysseus"
+version = "1.0.0"
+description = "Palantir-style Ontology Infrastructure Library for Enterprise Data Intelligence"
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+authors = [
+    {name = "Project Odysseus Team", email = "odysseus@example.com"}
+]
+keywords = ["ontology", "data-intelligence", "knowledge-graph", "palantir", "enterprise"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+dependencies = [
+    "pandas>=1.5.0",
+    "rdflib>=6.0.0",
+    "streamlit>=1.20.0",
+    "plotly>=5.0.0",
+    "networkx>=3.0.0",
+    "requests>=2.25.0",
+    "numpy>=1.20.0",
+    "beautifulsoup4>=4.9.0",
+    "spacy>=3.4.0",
+    "duckduckgo-search>=3.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=22.0.0",
+    "flake8>=5.0.0",
+    "mypy>=1.0.0",
+    "sphinx>=5.0.0",
+    "sphinx-rtd-theme>=1.0.0",
+]
+
+web = [
+    "streamlit>=1.20.0",
+    "plotly>=5.0.0",
+    "dash>=2.0.0",
+]
+
+enterprise = [
+    "sqlalchemy>=1.4.0",
+    "psycopg2-binary>=2.9.0",
+    "redis>=4.0.0",
+    "celery>=5.0.0",
+    "kafka-python>=2.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/project-odysseus/odysseus"
+Documentation = "https://odysseus.readthedocs.io"
+Repository = "https://github.com/project-odysseus/odysseus"
+"Bug Tracker" = "https://github.com/project-odysseus/odysseus/issues"
+
+[project.scripts]
+odysseus = "project_odysseus.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["project_odysseus*"]
+exclude = ["tests*"]
+
+[tool.setuptools.package-data]
+project_odysseus = ["*.json", "*.yaml", "*.yml", "*.ttl", "*.txt", "*.md"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "--cov=project_odysseus --cov-report=html --cov-report=term-missing"
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true

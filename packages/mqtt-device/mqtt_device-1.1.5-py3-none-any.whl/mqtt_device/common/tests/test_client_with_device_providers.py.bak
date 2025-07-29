@@ -1,0 +1,49 @@
+import socket
+import unittest
+from abc import abstractmethod
+from typing import TypeVar, List
+
+from mqtt_device.event_listener.listener import EventHandler
+
+from mqtt_device.common.common_log import basic_config_log
+
+from mqtt_device.local.device.device import IDevice
+
+
+
+class IDeviceProvider:
+
+    @abstractmethod
+    def add_device(self, device: T_DEVICE):
+        pass
+
+    @abstractmethod
+    def get_device(self, device_id: str) -> T_DEVICE:
+        pass
+
+    @abstractmethod
+    def get_devices(self) -> List[T_DEVICE]:
+        pass
+
+    @abstractmethod
+    def device_added(self) -> EventHandler['DeviceAddedEvent']:
+        pass
+
+local_ip: str = None
+
+class TestFakeEnv(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        global local_ip
+
+        basic_config_log()
+
+        # get the host ip
+        host_name = socket.gethostname()
+        local_ip = socket.gethostbyname(host_name)
+
+
+    # def test_ui_app(self):
+    #     replay_main_app = ReplayMainApp(public_client=Mock())
+    #     replay_main_app.start()

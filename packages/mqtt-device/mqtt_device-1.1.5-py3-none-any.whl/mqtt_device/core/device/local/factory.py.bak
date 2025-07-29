@@ -1,0 +1,61 @@
+from abc import abstractmethod
+
+from mqtt_device.common.common_log import create_logger
+from mqtt_device.core.device.remote.remote_device import RemoteDevice
+
+
+# from mqtt_device.client.topic_hierarchy import DeviceTopic
+
+# if TYPE_CHECKING:
+
+
+
+class IDeviceFactory:
+
+    @abstractmethod
+    def instanciate_device(self, topic: 'DeviceTopic') -> 'RemoteDevice':
+        pass
+
+
+class DefaultFactory(IDeviceFactory):
+
+    def __init__(self):
+        self.logger = create_logger(self)
+
+    def instanciate_device(self, device_id: str, device_type: str) -> 'RemoteDevice':
+
+        if device_type in RemoteDevice.registered_device_cls:
+            self.logger.debug(f"Device of type : '{device_type}' is registered")
+            # print(f"GROUP TYPE = {device_type}")
+            device_cls = RemoteDevice.registered_device_cls[device_type]
+            return device_cls(device_id=device_id)
+            # return device_cls(device_id=device_topic.device_id, location=device_topic.location)
+        else:
+            self.logger.info(f"Device of type : '{device_type}' is not registered")
+            # print(f"GROUP TYPE NOT CLS = {device_type}")
+            device = RemoteDevice(device_id=device_id, device_type=device_type)
+            return device
+
+    # def instanciate_device(self, device_topic: 'DeviceTopic') -> 'RemoteDevice':
+
+        # from mqtt_device.remote.device.device import RemoteDevice
+        #
+        # if not device_topic.is_valid:
+        #     return
+        #
+        # if device_topic.meta_field != "$meta":
+        #     return None
+        #
+        # device_type = device_topic.payload
+        #
+        # if device_type in RemoteDevice.registered_device_cls:
+        #     self.logger.debug(f"Device of type : '{device_type}' is registered")
+        #     # print(f"GROUP TYPE = {device_type}")
+        #     device_cls = RemoteDevice.registered_device_cls[device_topic.payload]
+        #     return device_cls(device_id=device_topic.device_id)
+        #     # return device_cls(device_id=device_topic.device_id, location=device_topic.location)
+        # else:
+        #     self.logger.info(f"Device of type : '{device_type}' is not registered")
+        #     # print(f"GROUP TYPE NOT CLS = {device_type}")
+        #     device = RemoteDevice(device_id=device_topic.device_id, device_type=device_topic.payload)
+        #     return device

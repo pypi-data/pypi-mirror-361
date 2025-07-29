@@ -1,0 +1,63 @@
+Metadata-Version: 2.1
+Name: Pyriod
+Version: 0.3.0
+Summary: Basic period detection and fitting routines for astronomical time series.
+Home-page: https://github.com/keatonb/Pyriod
+Author: Keaton Bell
+Author-email: keatonbell@utexas.edu
+Classifier: Development Status :: 4 - Beta
+Classifier: Programming Language :: Python
+Classifier: License :: OSI Approved :: GNU General Public License (GPL)
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy >=1.11
+Requires-Dist: pandas >=1.0
+Requires-Dist: scipy >=0.19
+Requires-Dist: astropy
+Requires-Dist: lightkurve >=2.1.1
+Requires-Dist: lmfit >=1.0
+Requires-Dist: beautifulsoup4 >=4.11
+Requires-Dist: matplotlib >=3.4
+Requires-Dist: ipympl >=0.7
+Requires-Dist: ipywidgets >=8
+Requires-Dist: qgridnext >1.3.1
+Requires-Dist: ipyfilechooser >=0.3.5
+
+# Pyriod
+
+**IMPORTANT INSTALLATION NOTE:** you must manually install qgrid with conda from the eshard channel as described below.
+
+Python implementation of basic period detection and fitting routines for astronomical time series.
+
+<!---Give it a spin before you install [with Binder](https://mybinder.org/v2/gh/keatonb/Pyriod/HEAD?filepath=examples%2FTSC2_Demo.ipynb).--->
+
+To install, use
+
+```pip install Pyriod```
+
+or download the latest (possibly unstable) version from GitHub and run
+
+```python setup.py install```
+
+Additional documentation is available at [pyriod.readthedocs.io](https://pyriod.readthedocs.io).
+
+This code uses [Qgrid](https://github.com/quantopian/qgrid) and other Jupyter widgets to interactively display the frequency solution.  
+Unfortunately Qgrid is no longer supported. [A version that works with other modern packages](https://anaconda.org/eshard/qgrid) can be installed with 
+
+```conda install -c eshard qgrid```
+
+Furthermore, Qgrid has specific version requirements for Jupyter (classic only, < v7) and `ipywidgets` (< v8):
+```
+conda install "notebook<7"
+conda install "ipywidgets<8"
+```
+
+To display the Pyriod GUI, you will need to first enable the following Jupyter notebook extensions in the terminal:
+```
+jupyter nbextension enable --py --sys-prefix qgrid
+jupyter nbextension enable --py --sys-prefix widgetsnbextension
+jupyter nbextension enable --py --sys-prefix ipympl
+```
+

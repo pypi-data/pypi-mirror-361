@@ -1,0 +1,24 @@
+{
+  "servers": {
+    "imas-dd": {
+      "type": "stdio",
+      "command": "uv",
+      "args": ["run", "python", "-m", "imas_mcp.server"],
+    },
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer ${input:github_mcp_pat}"
+      }
+    }
+  },
+  "inputs": [
+    {
+      "type": "promptString",
+      "id": "github_mcp_pat",
+      "description": "GitHub Personal Access Token",
+      "password": true
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+---
+title: Installation
+icon: terminal
+---
+
+Use [uv](https://github.com/astral-sh/uv) to add and manage the Modbus MCP server as a dependency in your project, or install it directly via `uv pip install` or `pip install`. See the [Installation](https://github.com/ezhuk/modbus-mcp/blob/main/docs/modbus-mcp/installation.mdx) section of the documentation for full installation instructions and more details.
+
+```bash
+uv add modbus-mcp
+```
+
+The server can be embedded in and run directly from your application. By default, it exposes a `Streamable HTTP` endpoint at `http://127.0.0.1:8000/mcp/`.
+
+```python
+# app.py
+from modbus_mcp import ModbusMCP
+
+mcp = ModbusMCP()
+
+if __name__ == "__main__":
+    mcp.run(transport="http")
+```
+
+It can also be launched from the command line using the provided `CLI` without modifying the source code.
+
+```bash
+modbus-mcp
+```
+
+Or in an ephemeral, isolated environment using `uvx`. Check out the [Using tools](https://docs.astral.sh/uv/guides/tools/) guide for more details.
+
+```bash
+uvx modbus-mcp
+```
+
+### Configuration
+
+For the use cases where most operations target a specific device, such as a Programmable Logic Controller (PLC) or Modbus gateway, its connection settings (`host`, `port`, and `unit`) can be specified at runtime using environment variables so that all prompts that omit explicit connection parameters will be routed to this device.
+
+```bash
+export MODBUS_MCP_MODBUS__HOST=10.0.0.1
+export MODBUS_MCP_MODBUS__PORT=502
+export MODBUS_MCP_MODBUS__UNIT=1
+```
+
+These settings can also be specified in a `.env` file in the working directory.
+
+```text
+# .env
+modbus__host=10.0.0.1
+modbus__port=502
+modbus__unit=1
+```
+
+### MCP Inspector
+
+To confirm the server is up and running and explore available resources and tools, run the [MCP Inspector](https://modelcontextprotocol.io/docs/tools/inspector) and connect it to the Modbus MCP server at `http://127.0.0.1:8000/mcp/`. Make sure to set the transport to `Streamable HTTP`.
+
+```bash
+npx @modelcontextprotocol/inspector
+```
+
+![s01](https://github.com/user-attachments/assets/e3673921-0396-4561-8640-884e9cef609a)

@@ -1,0 +1,2318 @@
+{
+  "ids_info": {
+    "name": "balance_of_plant",
+    "description": "Electrical and thermal power balance of the plant",
+    "version": "4.0.1.dev164",
+    "max_depth": 6,
+    "leaf_count": 144,
+    "physics_domain": "systems",
+    "documentation_coverage": 1.0,
+    "related_ids": [],
+    "common_use_cases": []
+  },
+  "coordinate_systems": {},
+  "paths": {
+    "balance_of_plant/gain_plant": {
+      "path": "balance_of_plant/gain_plant",
+      "documentation": "Electricity gain of the plant (ratio of net electric / plant electricity during operation)",
+      "units": "1",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "power_electricity_net"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.gain_plant[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "power_electricity_net"
+        ],
+        "physics_related": [],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "time"
+    },
+    "balance_of_plant/power_electricity_net": {
+      "path": "balance_of_plant/power_electricity_net",
+      "documentation": "Net electric power",
+      "units": "W",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "power_plant/system/component/port",
+        "power_plant/system",
+        "power_plant/system/component/port/description",
+        "power_electric_plant_operation/power_total",
+        "gain_plant"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.power_electricity_net[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "gain_plant"
+        ],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description",
+          "power_electric_plant_operation/power_total"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "time"
+    },
+    "balance_of_plant/thermal_efficiency_cycle": {
+      "path": "balance_of_plant/thermal_efficiency_cycle",
+      "documentation": "The fractional thermal effiency of the power cycle. Calculated as 1 - Q_out/Q_in",
+      "units": "1",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "power_plant/system/component/port",
+        "power_plant/system",
+        "power_plant/system/component/port/description",
+        "gain_plant",
+        "power_electricity_net"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.thermal_efficiency_cycle[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "gain_plant",
+          "power_electricity_net"
+        ],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "time"
+    },
+    "balance_of_plant/thermal_efficiency_plant": {
+      "path": "balance_of_plant/thermal_efficiency_plant",
+      "documentation": "The fractional thermal effiency of the entire BOP thermal plant, inlcudes all of the individual cycles. Calculated as 1 - Q_out/Q_in",
+      "units": "1",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "power_plant/system/component/port",
+        "power_plant/system",
+        "power_plant/system/component/port/description",
+        "gain_plant",
+        "power_electricity_net"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.thermal_efficiency_plant[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "gain_plant",
+          "power_electricity_net"
+        ],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "time"
+    },
+    "balance_of_plant/power_electric_plant_operation": {
+      "path": "balance_of_plant/power_electric_plant_operation",
+      "documentation": "Electric plant operation",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "power_electric_plant_operation/power_total",
+        "power_electric_plant_operation/system",
+        "power_plant/system/component/port",
+        "power_plant/system",
+        "power_plant/system/component/port/description"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_electric_plant_operation/power_total",
+          "power_electric_plant_operation/system"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "bop_power_electric"
+    },
+    "balance_of_plant/power_electric_plant_operation/power_total": {
+      "path": "balance_of_plant/power_electric_plant_operation/power_total",
+      "documentation": "Total electrical power used to operate the plant",
+      "units": "W",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "power_electric_plant_operation/system",
+        "power_plant/system",
+        "power_electric_plant_operation",
+        "power_plant/system/component/port",
+        "power_plant/system/component/port/description",
+        "power_electricity_net",
+        "gain_plant"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.power_electric_plant_operation/power_total[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "gain_plant",
+          "power_electricity_net"
+        ],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description",
+          "power_electricity_net"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_electric_plant_operation",
+          "power_electric_plant_operation/system"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "/time"
+    },
+    "balance_of_plant/power_electric_plant_operation/system": {
+      "path": "balance_of_plant/power_electric_plant_operation/system",
+      "documentation": "Set of systems involved in the electric plant operation",
+      "units": "",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "struct_array",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "power_electric_plant_operation/power_total",
+        "power_plant/system",
+        "power_electric_plant_operation",
+        "power_electric_plant_operation/system/name",
+        "power_electric_plant_operation/system/description",
+        "power_electric_plant_operation/system/power",
+        "power_plant/system/component/port",
+        "power_plant/system/component/port/description"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_electric_plant_operation",
+          "power_electric_plant_operation/power_total",
+          "power_electric_plant_operation/system/name",
+          "power_electric_plant_operation/system/description",
+          "power_electric_plant_operation/system/power"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "bop_power_electric_system"
+    },
+    "balance_of_plant/power_electric_plant_operation/system/name": {
+      "path": "balance_of_plant/power_electric_plant_operation/system/name",
+      "documentation": "Short string identifier (unique for a given device)",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "power_electric_plant_operation/system/description",
+        "power_electric_plant_operation/system/power",
+        "power_electric_plant_operation/system/subsystem",
+        "power_electric_plant_operation/system",
+        "power_plant/system/component/port",
+        "power_plant/system",
+        "power_plant/system/component/port/description"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_electric_plant_operation/system",
+          "power_electric_plant_operation/system/description",
+          "power_electric_plant_operation/system/power",
+          "power_electric_plant_operation/system/subsystem"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "balance_of_plant/power_electric_plant_operation/system/description": {
+      "path": "balance_of_plant/power_electric_plant_operation/system/description",
+      "documentation": "Description, e.g. “divertor Helium cooling loop”",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "power_electric_plant_operation/system/name",
+        "power_electric_plant_operation/system/power",
+        "power_electric_plant_operation/system/subsystem",
+        "power_electric_plant_operation/system",
+        "power_plant/system/component/port",
+        "power_plant/system",
+        "power_plant/system/component/port/description"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_electric_plant_operation/system",
+          "power_electric_plant_operation/system/name",
+          "power_electric_plant_operation/system/power",
+          "power_electric_plant_operation/system/subsystem"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "balance_of_plant/power_electric_plant_operation/system/power": {
+      "path": "balance_of_plant/power_electric_plant_operation/system/power",
+      "documentation": "Electrical power used to operate the system",
+      "units": "W",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "power_electric_plant_operation/system/name",
+        "power_electric_plant_operation/system/description",
+        "power_electric_plant_operation/system/subsystem",
+        "power_electric_plant_operation/system",
+        "power_plant/system/component/port",
+        "power_plant/system",
+        "power_plant/system/component/port/description",
+        "power_electricity_net",
+        "gain_plant"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.power_electric_plant_operation/system/power[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "gain_plant",
+          "power_electricity_net"
+        ],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description",
+          "power_electricity_net"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_electric_plant_operation/system",
+          "power_electric_plant_operation/system/name",
+          "power_electric_plant_operation/system/description",
+          "power_electric_plant_operation/system/subsystem"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "/time"
+    },
+    "balance_of_plant/power_electric_plant_operation/system/subsystem": {
+      "path": "balance_of_plant/power_electric_plant_operation/system/subsystem",
+      "documentation": "Set of subsystems",
+      "units": "",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "struct_array",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "power_electric_plant_operation/system/name",
+        "power_electric_plant_operation/system/description",
+        "power_electric_plant_operation/system/power",
+        "power_electric_plant_operation/system",
+        "power_electric_plant_operation/system/subsystem/name",
+        "power_electric_plant_operation/system/subsystem/description",
+        "power_electric_plant_operation/system/subsystem/power",
+        "power_plant/system/component/port",
+        "power_plant/system",
+        "power_plant/system/component/port/description"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_electric_plant_operation/system",
+          "power_electric_plant_operation/system/name",
+          "power_electric_plant_operation/system/description",
+          "power_electric_plant_operation/system/power",
+          "power_electric_plant_operation/system/subsystem/name",
+          "power_electric_plant_operation/system/subsystem/description",
+          "power_electric_plant_operation/system/subsystem/power"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "bop_power_electric_system_subsystem"
+    },
+    "balance_of_plant/power_electric_plant_operation/system/subsystem/name": {
+      "path": "balance_of_plant/power_electric_plant_operation/system/subsystem/name",
+      "documentation": "Short string identifier (unique for a given device)",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "power_electric_plant_operation/system/subsystem/description",
+        "power_electric_plant_operation/system/subsystem/power",
+        "power_plant/system/component/port",
+        "power_electric_plant_operation/system/subsystem",
+        "power_plant/system",
+        "power_plant/system/component/port/description"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_electric_plant_operation/system/subsystem",
+          "power_electric_plant_operation/system/subsystem/description",
+          "power_electric_plant_operation/system/subsystem/power"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "balance_of_plant/power_electric_plant_operation/system/subsystem/description": {
+      "path": "balance_of_plant/power_electric_plant_operation/system/subsystem/description",
+      "documentation": "Description, e.g. “compressor”",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "power_electric_plant_operation/system/subsystem/name",
+        "power_electric_plant_operation/system/subsystem/power",
+        "power_plant/system/component/port",
+        "power_electric_plant_operation/system/subsystem",
+        "power_plant/system",
+        "power_plant/system/component/port/description"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_electric_plant_operation/system/subsystem",
+          "power_electric_plant_operation/system/subsystem/name",
+          "power_electric_plant_operation/system/subsystem/power"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "balance_of_plant/power_electric_plant_operation/system/subsystem/power": {
+      "path": "balance_of_plant/power_electric_plant_operation/system/subsystem/power",
+      "documentation": "Electrical power used to operate the subsystem",
+      "units": "W",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "power_electric_plant_operation/system/subsystem/name",
+        "power_electric_plant_operation/system/subsystem/description",
+        "power_plant/system/component/port",
+        "power_electric_plant_operation/system/subsystem",
+        "power_plant/system",
+        "power_plant/system/component/port/description",
+        "power_electricity_net",
+        "gain_plant"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.power_electric_plant_operation/system/subsystem/power[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "gain_plant",
+          "power_electricity_net"
+        ],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description",
+          "power_electricity_net"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_electric_plant_operation/system/subsystem",
+          "power_electric_plant_operation/system/subsystem/name",
+          "power_electric_plant_operation/system/subsystem/description"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "/time"
+    },
+    "balance_of_plant/power_plant": {
+      "path": "balance_of_plant/power_plant",
+      "documentation": "Energy conversion",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "power_plant/generator_conversion_efficiency",
+        "power_plant/heat_load_breeder",
+        "power_plant/system/component/port",
+        "power_plant/system",
+        "power_plant/system/component/port/description"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_plant/generator_conversion_efficiency",
+          "power_plant/heat_load_breeder"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "bop_power_plant"
+    },
+    "balance_of_plant/power_plant/generator_conversion_efficiency": {
+      "path": "balance_of_plant/power_plant/generator_conversion_efficiency",
+      "documentation": "Conversion efficiency of thermal to electric power of the steam cycle",
+      "units": "1",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "power_plant/heat_load_breeder",
+        "power_plant/system",
+        "power_plant",
+        "power_plant/system/component/port",
+        "power_plant/system/component/port/description",
+        "gain_plant",
+        "power_electricity_net"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.power_plant/generator_conversion_efficiency[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "gain_plant",
+          "power_electricity_net"
+        ],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_plant",
+          "power_plant/heat_load_breeder"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "/time"
+    },
+    "balance_of_plant/power_plant/heat_load_breeder": {
+      "path": "balance_of_plant/power_plant/heat_load_breeder",
+      "documentation": "Heat flow towards the breeder",
+      "units": "W",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "power_plant/generator_conversion_efficiency",
+        "power_plant/system",
+        "power_plant",
+        "power_plant/system/component/port",
+        "power_plant/system/component/port/description",
+        "power_electricity_net",
+        "gain_plant"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.power_plant/heat_load_breeder[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "gain_plant",
+          "power_electricity_net"
+        ],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description",
+          "power_electricity_net"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_plant",
+          "power_plant/generator_conversion_efficiency"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "/time"
+    },
+    "balance_of_plant/power_plant/heat_load_divertor": {
+      "path": "balance_of_plant/power_plant/heat_load_divertor",
+      "documentation": "Heat flow towards the divertor",
+      "units": "W",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "power_plant/generator_conversion_efficiency",
+        "power_plant/heat_load_breeder",
+        "power_plant/system",
+        "power_plant",
+        "power_plant/system/component/port",
+        "power_plant/system/component/port/description",
+        "power_electricity_net",
+        "gain_plant"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.power_plant/heat_load_divertor[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "gain_plant",
+          "power_electricity_net"
+        ],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description",
+          "power_electricity_net"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_plant",
+          "power_plant/generator_conversion_efficiency",
+          "power_plant/heat_load_breeder"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "/time"
+    },
+    "balance_of_plant/power_plant/heat_load_wall": {
+      "path": "balance_of_plant/power_plant/heat_load_wall",
+      "documentation": "Heat flow towards the wall",
+      "units": "W",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "power_plant/generator_conversion_efficiency",
+        "power_plant/heat_load_breeder",
+        "power_plant/system",
+        "power_plant",
+        "power_plant/system/component/port",
+        "power_plant/system/component/port/description",
+        "power_electricity_net",
+        "gain_plant"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.power_plant/heat_load_wall[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "gain_plant",
+          "power_electricity_net"
+        ],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description",
+          "power_electricity_net"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_plant",
+          "power_plant/generator_conversion_efficiency",
+          "power_plant/heat_load_breeder"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "/time"
+    },
+    "balance_of_plant/power_plant/power_cycle_type": {
+      "path": "balance_of_plant/power_plant/power_cycle_type",
+      "documentation": "Type of the primary power cycle",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "power_plant/generator_conversion_efficiency",
+        "power_plant/heat_load_breeder",
+        "power_plant/system",
+        "power_plant",
+        "power_plant/power_cycle_type/name",
+        "power_plant/power_cycle_type/index",
+        "power_plant/power_cycle_type/description",
+        "power_plant/system/component/port",
+        "power_plant/system/component/port/description"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_plant",
+          "power_plant/generator_conversion_efficiency",
+          "power_plant/heat_load_breeder",
+          "power_plant/power_cycle_type/name",
+          "power_plant/power_cycle_type/index",
+          "power_plant/power_cycle_type/description"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "identifier_static"
+    },
+    "balance_of_plant/power_plant/power_cycle_type/name": {
+      "path": "balance_of_plant/power_plant/power_cycle_type/name",
+      "documentation": "Short string identifier",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "power_plant/power_cycle_type/index",
+        "power_plant/power_cycle_type/description",
+        "power_plant/power_cycle_type",
+        "power_plant/system/component/port",
+        "power_plant/system",
+        "power_plant/system/component/port/description"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_plant/power_cycle_type",
+          "power_plant/power_cycle_type/index",
+          "power_plant/power_cycle_type/description"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "balance_of_plant/power_plant/power_cycle_type/index": {
+      "path": "balance_of_plant/power_plant/power_cycle_type/index",
+      "documentation": "Integer identifier (enumeration index within a list). Private identifier values must be indicated by a negative index.",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "INT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "power_plant/power_cycle_type/name",
+        "power_plant/power_cycle_type/description",
+        "power_plant/power_cycle_type",
+        "power_plant/system/component/port",
+        "power_plant/system",
+        "power_plant/system/component/port/description"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_plant/power_cycle_type",
+          "power_plant/power_cycle_type/name",
+          "power_plant/power_cycle_type/description"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "balance_of_plant/power_plant/power_cycle_type/description": {
+      "path": "balance_of_plant/power_plant/power_cycle_type/description",
+      "documentation": "Verbose description",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "power_plant/power_cycle_type/name",
+        "power_plant/power_cycle_type/index",
+        "power_plant/power_cycle_type",
+        "power_plant/system/component/port",
+        "power_plant/system",
+        "power_plant/system/component/port/description"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_plant/power_cycle_type",
+          "power_plant/power_cycle_type/name",
+          "power_plant/power_cycle_type/index"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "balance_of_plant/power_plant/power_electric_generated": {
+      "path": "balance_of_plant/power_plant/power_electric_generated",
+      "documentation": "Net electric power produced by thermal plant, equal to power produced by turbines LESS power consumed by pumps and compressors",
+      "units": "W",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "power_plant/generator_conversion_efficiency",
+        "power_plant/heat_load_breeder",
+        "power_plant/system",
+        "power_plant",
+        "power_plant/system/component/port",
+        "power_plant/system/component/port/description",
+        "power_electricity_net",
+        "gain_plant"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.power_plant/power_electric_generated[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "gain_plant",
+          "power_electricity_net"
+        ],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description",
+          "power_electricity_net"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_plant",
+          "power_plant/generator_conversion_efficiency",
+          "power_plant/heat_load_breeder"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "/time"
+    },
+    "balance_of_plant/power_plant/total_heat_rejected": {
+      "path": "balance_of_plant/power_plant/total_heat_rejected",
+      "documentation": "Total heat flow being rejected from the thermal plant",
+      "units": "W",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "power_plant/generator_conversion_efficiency",
+        "power_plant/heat_load_breeder",
+        "power_plant/system",
+        "power_plant",
+        "power_plant/system/component/port",
+        "power_plant/system/component/port/description",
+        "power_electricity_net",
+        "gain_plant"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.power_plant/total_heat_rejected[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "gain_plant",
+          "power_electricity_net"
+        ],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description",
+          "power_electricity_net"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_plant",
+          "power_plant/generator_conversion_efficiency",
+          "power_plant/heat_load_breeder"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "/time"
+    },
+    "balance_of_plant/power_plant/total_heat_supplied": {
+      "path": "balance_of_plant/power_plant/total_heat_supplied",
+      "documentation": "Total heat flow being supplied to the thermal plant (fusion thermal power)",
+      "units": "W",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "power_plant/generator_conversion_efficiency",
+        "power_plant/heat_load_breeder",
+        "power_plant/system",
+        "power_plant",
+        "power_plant/system/component/port",
+        "power_plant/system/component/port/description",
+        "power_electricity_net",
+        "gain_plant"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.power_plant/total_heat_supplied[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "gain_plant",
+          "power_electricity_net"
+        ],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description",
+          "power_electricity_net"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_plant",
+          "power_plant/generator_conversion_efficiency",
+          "power_plant/heat_load_breeder"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "/time"
+    },
+    "balance_of_plant/power_plant/system": {
+      "path": "balance_of_plant/power_plant/system",
+      "documentation": "Set of subsystems or circuits of the power conversion system, connected by their edges, e.g. divertor cooling loop",
+      "units": "",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "struct_array",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "power_plant/generator_conversion_efficiency",
+        "power_plant/heat_load_breeder",
+        "power_plant",
+        "power_plant/system/name",
+        "power_plant/system/description",
+        "power_plant/system/component",
+        "power_plant/system/component/port",
+        "power_plant/system/component/port/description",
+        "power_electric_plant_operation/system/description"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system/component/port/description",
+          "power_electric_plant_operation/system/description"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_plant",
+          "power_plant/generator_conversion_efficiency",
+          "power_plant/heat_load_breeder",
+          "power_plant/system/name",
+          "power_plant/system/description",
+          "power_plant/system/component"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "bop_power_plant_system"
+    },
+    "balance_of_plant/power_plant/system/name": {
+      "path": "balance_of_plant/power_plant/system/name",
+      "documentation": "Short string identifier (unique for a given device)",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "power_plant/system/description",
+        "power_plant/system/component",
+        "power_plant/system",
+        "power_plant/system/component/port",
+        "power_plant/system/component/port/description"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_plant/system",
+          "power_plant/system/description",
+          "power_plant/system/component"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "balance_of_plant/power_plant/system/description": {
+      "path": "balance_of_plant/power_plant/system/description",
+      "documentation": "Description, e.g. “divertor Helium cooling loop”",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "power_plant/system/name",
+        "power_plant/system/component",
+        "power_plant/system",
+        "power_plant/system/component/port",
+        "power_plant/system/component/port/description"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_plant/system",
+          "power_plant/system/name",
+          "power_plant/system/component"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "balance_of_plant/power_plant/system/component": {
+      "path": "balance_of_plant/power_plant/system/component",
+      "documentation": "Set of components of the power conversion system",
+      "units": "",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "struct_array",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "power_plant/system/name",
+        "power_plant/system/description",
+        "power_plant/system",
+        "power_plant/system/component/name",
+        "power_plant/system/component/description",
+        "power_plant/system/component/port",
+        "power_plant/system/component/port/description"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_plant/system",
+          "power_plant/system/name",
+          "power_plant/system/description",
+          "power_plant/system/component/name",
+          "power_plant/system/component/description",
+          "power_plant/system/component/port"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "bop_power_plant_system_component"
+    },
+    "balance_of_plant/power_plant/system/component/name": {
+      "path": "balance_of_plant/power_plant/system/component/name",
+      "documentation": "Short string identifier (unique for a given device)",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "power_plant/system/component/description",
+        "power_plant/system/component/port",
+        "power_plant/system/component",
+        "power_plant/system",
+        "power_plant/system/component/port/description"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_plant/system/component",
+          "power_plant/system/component/description",
+          "power_plant/system/component/port"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "balance_of_plant/power_plant/system/component/description": {
+      "path": "balance_of_plant/power_plant/system/component/description",
+      "documentation": "Description, e.g. “compressor”",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "power_plant/system/component/name",
+        "power_plant/system/component/port",
+        "power_plant/system/component",
+        "power_plant/system",
+        "power_plant/system/component/port/description"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_plant/system/component",
+          "power_plant/system/component/name",
+          "power_plant/system/component/port"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "balance_of_plant/power_plant/system/component/port": {
+      "path": "balance_of_plant/power_plant/system/component/port",
+      "documentation": "Set of ports (input or output) of the component",
+      "units": "",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "struct_array",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "power_plant/system/component/name",
+        "power_plant/system/component/description",
+        "power_plant/system/component",
+        "power_plant/system/component/port/description",
+        "power_plant/system/component/port/mass_flow",
+        "power_plant/system/component/port/power_mechanical",
+        "power_plant/system",
+        "power_electric_plant_operation/system/description"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "power_plant/system",
+          "power_plant/system/component/port/description",
+          "power_electric_plant_operation/system/description"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_plant/system/component",
+          "power_plant/system/component/name",
+          "power_plant/system/component/description",
+          "power_plant/system/component/port/description",
+          "power_plant/system/component/port/mass_flow",
+          "power_plant/system/component/port/power_mechanical"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "bop_power_plant_system_component_port"
+    },
+    "balance_of_plant/power_plant/system/component/port/description": {
+      "path": "balance_of_plant/power_plant/system/component/port/description",
+      "documentation": "Description, e.g. “input #1”",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "power_plant/system/component/port/mass_flow",
+        "power_plant/system/component/port/power_mechanical",
+        "power_plant/system/component/port",
+        "power_plant/system",
+        "power_electric_plant_operation/system/description"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_electric_plant_operation/system/description"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_plant/system/component/port",
+          "power_plant/system/component/port/mass_flow",
+          "power_plant/system/component/port/power_mechanical"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "balance_of_plant/power_plant/system/component/port/mass_flow": {
+      "path": "balance_of_plant/power_plant/system/component/port/mass_flow",
+      "documentation": "Mass flow rate of the fluid",
+      "units": "kg.s^-1",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "power_plant/system/component/port/description",
+        "power_plant/system/component/port/power_mechanical",
+        "power_plant/system/component/port",
+        "power_plant/system",
+        "gain_plant",
+        "power_electricity_net"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.power_plant/system/component/port/mass_flow[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "gain_plant",
+          "power_electricity_net"
+        ],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_plant/system/component/port",
+          "power_plant/system/component/port/description",
+          "power_plant/system/component/port/power_mechanical"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "/time"
+    },
+    "balance_of_plant/power_plant/system/component/port/power_mechanical": {
+      "path": "balance_of_plant/power_plant/system/component/port/power_mechanical",
+      "documentation": "Shaft power associated with the component, (+) = into the system, (-) = out of the system",
+      "units": "W",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "power_plant/system/component/port/description",
+        "power_plant/system/component/port/mass_flow",
+        "power_plant/system/component/port",
+        "power_plant/system",
+        "power_electricity_net",
+        "gain_plant"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.power_plant/system/component/port/power_mechanical[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "gain_plant",
+          "power_electricity_net"
+        ],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description",
+          "power_electricity_net"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_plant/system/component/port",
+          "power_plant/system/component/port/description",
+          "power_plant/system/component/port/mass_flow"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "/time"
+    },
+    "balance_of_plant/power_plant/system/component/port/pressure": {
+      "path": "balance_of_plant/power_plant/system/component/port/pressure",
+      "documentation": "Fluid pressure",
+      "units": "Pa",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "power_plant/system/component/port/description",
+        "power_plant/system/component/port/mass_flow",
+        "power_plant/system/component/port/power_mechanical",
+        "power_plant/system/component/port",
+        "power_plant/system",
+        "gain_plant",
+        "power_electricity_net"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.power_plant/system/component/port/pressure[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "gain_plant",
+          "power_electricity_net"
+        ],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_plant/system/component/port",
+          "power_plant/system/component/port/description",
+          "power_plant/system/component/port/mass_flow",
+          "power_plant/system/component/port/power_mechanical"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "/time"
+    },
+    "balance_of_plant/power_plant/system/component/port/temperature": {
+      "path": "balance_of_plant/power_plant/system/component/port/temperature",
+      "documentation": "Fluid temperature",
+      "units": "K",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "power_plant/system/component/port/description",
+        "power_plant/system/component/port/mass_flow",
+        "power_plant/system/component/port/power_mechanical",
+        "power_plant/system/component/port",
+        "power_plant/system",
+        "gain_plant",
+        "power_electricity_net"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.power_plant/system/component/port/temperature[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "gain_plant",
+          "power_electricity_net"
+        ],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_plant/system/component/port",
+          "power_plant/system/component/port/description",
+          "power_plant/system/component/port/mass_flow",
+          "power_plant/system/component/port/power_mechanical"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "/time"
+    },
+    "balance_of_plant/power_plant/system/component/port/power_thermal": {
+      "path": "balance_of_plant/power_plant/system/component/port/power_thermal",
+      "documentation": "Heat transfer rate of the component, (+) = into the system, (-) = out of the system",
+      "units": "W",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "power_plant/system/component/port/description",
+        "power_plant/system/component/port/mass_flow",
+        "power_plant/system/component/port/power_mechanical",
+        "power_plant/system/component/port",
+        "power_plant/system",
+        "power_electricity_net",
+        "gain_plant"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.power_plant/system/component/port/power_thermal[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "gain_plant",
+          "power_electricity_net"
+        ],
+        "physics_related": [
+          "power_plant/system/component/port",
+          "power_plant/system",
+          "power_plant/system/component/port/description",
+          "power_electricity_net"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "power_plant/system/component/port",
+          "power_plant/system/component/port/description",
+          "power_plant/system/component/port/mass_flow",
+          "power_plant/system/component/port/power_mechanical"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "/time"
+    },
+    "balance_of_plant/time": {
+      "path": "balance_of_plant/time",
+      "documentation": "Generic time",
+      "units": "s",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": null,
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "time"
+    }
+  },
+  "semantic_groups": {
+    "physics_temporal_evolution": [
+      "balance_of_plant/gain_plant",
+      "balance_of_plant/power_electricity_net",
+      "balance_of_plant/thermal_efficiency_cycle",
+      "balance_of_plant/thermal_efficiency_plant",
+      "balance_of_plant/power_electric_plant_operation/power_total",
+      "balance_of_plant/power_electric_plant_operation/system/power",
+      "balance_of_plant/power_electric_plant_operation/system/subsystem/power",
+      "balance_of_plant/power_plant/generator_conversion_efficiency",
+      "balance_of_plant/power_plant/heat_load_breeder",
+      "balance_of_plant/power_plant/heat_load_divertor",
+      "balance_of_plant/power_plant/heat_load_wall",
+      "balance_of_plant/power_plant/power_electric_generated",
+      "balance_of_plant/power_plant/total_heat_rejected",
+      "balance_of_plant/power_plant/total_heat_supplied",
+      "balance_of_plant/power_plant/system/component/port/mass_flow",
+      "balance_of_plant/power_plant/system/component/port/power_mechanical",
+      "balance_of_plant/power_plant/system/component/port/pressure",
+      "balance_of_plant/power_plant/system/component/port/temperature",
+      "balance_of_plant/power_plant/system/component/port/power_thermal"
+    ],
+    "misc": [
+      "balance_of_plant/power_electric_plant_operation",
+      "balance_of_plant/power_plant"
+    ],
+    "coordinates_1...N": [
+      "balance_of_plant/power_electric_plant_operation/system",
+      "balance_of_plant/power_electric_plant_operation/system/subsystem",
+      "balance_of_plant/power_plant/system",
+      "balance_of_plant/power_plant/system/component",
+      "balance_of_plant/power_plant/system/component/port"
+    ],
+    "structure_power_electric_plant_operation": [
+      "balance_of_plant/power_electric_plant_operation/system/name",
+      "balance_of_plant/power_electric_plant_operation/system/description",
+      "balance_of_plant/power_electric_plant_operation/system/subsystem/name",
+      "balance_of_plant/power_electric_plant_operation/system/subsystem/description"
+    ],
+    "structure_power_plant": [
+      "balance_of_plant/power_plant/power_cycle_type",
+      "balance_of_plant/power_plant/power_cycle_type/name",
+      "balance_of_plant/power_plant/power_cycle_type/index",
+      "balance_of_plant/power_plant/power_cycle_type/description",
+      "balance_of_plant/power_plant/system/name",
+      "balance_of_plant/power_plant/system/description",
+      "balance_of_plant/power_plant/system/component/name",
+      "balance_of_plant/power_plant/system/component/description",
+      "balance_of_plant/power_plant/system/component/port/description"
+    ]
+  }
+}

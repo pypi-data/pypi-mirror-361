@@ -1,0 +1,273 @@
+Metadata-Version: 2.4
+Name: captionalchemy
+Version: 1.1.1
+Summary: A Python package to create closed captions with face detection and recognition.
+Author-email: Ben Batman <benbatman2@gmail.com>
+License: MIT
+Keywords: caption,closed captions,face detection,face recognition,video processing
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pyannote.audio==3.3.2
+Requires-Dist: pydub==0.25.1
+Requires-Dist: openai-whisper==20240930
+Requires-Dist: python-dotenv==1.1.0
+Requires-Dist: opencv-python==4.11.0.86
+Requires-Dist: numpy==2.1.3
+Requires-Dist: protobuf==5.29.4
+Requires-Dist: insightface==0.7.3
+Requires-Dist: onnxruntime==1.22.0
+Requires-Dist: panns-inference==0.1.1
+Requires-Dist: librosa==0.11.0
+Requires-Dist: tqdm==4.67.1
+Requires-Dist: torch==2.7.0
+Provides-Extra: dev
+Requires-Dist: pytest==8.4.0; extra == "dev"
+Requires-Dist: mypy==1.16.0; extra == "dev"
+Requires-Dist: flake8==7.2.0; extra == "dev"
+Requires-Dist: black==25.1.0; extra == "dev"
+Requires-Dist: pytest-cov==6.2.1; extra == "dev"
+Requires-Dist: setuptools-scm==8.3.1; extra == "dev"
+Provides-Extra: cuda
+Requires-Dist: onnxruntime-gpu==1.22.0; extra == "cuda"
+Dynamic: license-file
+
+# CaptionAlchemy
+
+A Python package for creating intelligent closed captions with face detection and speaker recognition.
+
+## Features
+
+- **Audio Transcription**: Powered by OpenAI Whisper for high-quality speech-to-text
+- **Speaker Diarization**: Identifies different speakers in audio
+- **Face Recognition**: Links speakers to known faces for character identification
+- **Multiple Output Formats**: Supports SRT, VTT, and SAMI caption formats
+- **Voice Activity Detection**: Intelligently detects speech vs non-speech segments
+- **GPU Acceleration**: Automatic CUDA support when available
+
+## Installation
+
+```bash
+pip install captionalchemy
+```
+
+If you have a GPU and want to use hardware acceleration:
+
+```bash
+pip install captionalchemy[cuda]
+```
+
+### Prerequisites
+
+- Python 3.10+
+- FFmpeg (for video/audio processing)
+- CUDA-capable GPU (optional, for acceleration but is highly recommended for the diarization)
+- Whisper.cpp capable (optional on MacOS)
+
+If using Whisper.cpp on MacOS, follow installation instructions [[here](https://github.com/ggml-org/whisper.cpp?tab=readme-ov-file#core-ml-support)]
+Clone the whisper repo into your working directory.
+
+## Quick Start
+
+1. **Set up environment variables** (create `.env` file):
+
+   ```
+   HF_AUTH_TOKEN=your_huggingface_token_here
+   ```
+
+2. **Prepare known faces** (optional, for speaker identification):
+   Create `known_faces.json`:
+
+   ```json
+   [
+     {
+       "name": "Speaker Name",
+       "image_path": "path/to/speaker/photo.jpg"
+     }
+   ]
+   ```
+
+3. **Generate captions**:
+
+```bash
+captionalchemy video.mp4 -f srt -o my_captions
+```
+
+or in a python script
+
+```python
+from dotenv import load_dotenv
+from captionalchemy import caption
+
+load_dotenv()
+
+caption.run_pipeline(
+    video_url_or_path="path/to/your/video.mp4",         # this can be a video URL or local file
+    character_identification=False,                      # True by default
+    known_faces_json="path/to/known_faces.json",
+    embed_faces_json="path/to/embed_faces.json",        # name of the output file
+    caption_output_path="my_captions/output",           # will write output to output.srt (or .vtt/.smi)
+    caption_format="srt"
+)
+```
+
+## Usage
+
+### Basic Usage
+
+```bash
+# Generate SRT captions from video file
+captionalchemy video.mp4
+
+# Generate VTT captions from YouTube URL
+captionalchemy "https://youtube.com/watch?v=VIDEO_ID" -f vtt -o output
+
+# Disable face recognition
+captionalchemy video.mp4 --no-face-id
+```
+
+### Command Line Options
+
+```
+captionalchemy VIDEO [OPTIONS]
+
+Arguments:
+  VIDEO                Video file path or URL
+
+Options:
+  -f, --format         Caption format: srt, vtt, smi (default: srt)
+  -o, --output         Output file base name (default: output_captions)
+  --no-face-id         Disable face recognition
+  --known-faces-json   Path to known faces JSON (default: example/known_faces.json)
+  --embed-faces-json   Path to face embeddings JSON (default: example/embed_faces.json)
+  -v, --verbose        Enable debug logging
+```
+
+## How It Works
+
+1. **Face Embedding**: Pre-processes known faces into embeddings
+2. **Audio Extraction**: Extracts audio from video files
+3. **Voice Activity Detection**: Identifies speech segments
+4. **Speaker Diarization**: Separates different speakers
+5. **Transcription**: Converts speech to text using Whisper
+6. **Face Recognition**: Matches speakers to known faces (if enabled)
+7. **Caption Generation**: Creates timestamped captions with speaker names
+
+## Configuration
+
+### Known Faces Setup
+
+Create a `known_faces.json` file with speaker information:
+
+```json
+[
+  {
+    "name": "John Doe",
+    "image_path": "photos/john_doe.jpg"
+  },
+  {
+    "name": "Jane Smith",
+    "image_path": "photos/jane_smith.png"
+  }
+]
+```
+
+### Environment Variables
+
+- `HF_AUTH_TOKEN`: Hugging Face token for accessing pyannote models
+
+## Output Examples
+
+### SRT Format
+
+```
+1
+00:00:03,254 --> 00:00:06,890
+John Doe: Welcome to our presentation on quantum computing.
+
+2
+00:00:07,120 --> 00:00:10,456
+Jane Smith: Thanks John. Let's start with the basics.
+```
+
+### VTT Format
+
+```
+WEBVTT
+
+00:03.254 --> 00:06.890
+John Doe: Welcome to our presentation on quantum computing.
+
+00:07.120 --> 00:10.456
+Jane Smith: Thanks John. Let's start with the basics.
+```
+
+## Development and Contributing
+
+### Setup Development Environment
+
+```bash
+# Install in development mode
+pip install -e ".[dev]"
+```
+
+### Running Tests
+
+```bash
+pytest
+```
+
+### Code Quality
+
+```bash
+# Linting
+flake8
+
+# Code formatting
+black src/ tests/
+```
+
+## Requirements
+
+See `requirements.txt` for the complete list of dependencies. Key packages include:
+
+- `openai-whisper`: Speech transcription
+- `pyannote.audio`: Speaker diarization
+- `opencv-python`: Computer vision
+- `insightface`: Face recognition
+- `torch`: Deep learning framework
+
+## License
+
+MIT License - see LICENSE file for details.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Run the test suite
+6. Submit a pull request
+
+## Troubleshooting
+
+### Common Issues
+
+- **CUDA out of memory**: Use CPU-only mode or reduce batch sizes
+- **Missing models**: Ensure whisper.cpp models are downloaded
+- **Face recognition errors**: Verify image paths in known_faces.json
+- **Audio extraction fails**: Check that FFmpeg is installed
+
+### Getting Help
+
+- Check the logs with `-v` flag for detailed error information
+- Ensure all dependencies are properly installed
+- Verify video file format compatibility
+
+```
+
+```

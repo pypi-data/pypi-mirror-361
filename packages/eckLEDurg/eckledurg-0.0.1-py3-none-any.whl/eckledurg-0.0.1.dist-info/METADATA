@@ -1,0 +1,176 @@
+Metadata-Version: 2.4
+Name: eckLEDurg
+Version: 0.0.1
+Summary: Computer Vision code for "seeing" LEDs with a camera automatically.
+Author-email: Jakob Walker <Jakob.Walker@kratosdefense.com>
+Project-URL: Homepage, https://code.devops.kratosdefense.com/projects/HWTST/repos/led-visual-detection/
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: opencv-python>=4.11.0
+Requires-Dist: opencv-contrib-python>=4.11.0
+
+# eckLEDurg
+This is a class that allows the user to point a camera at LEDs and determine how many are on
+
+This class implements openCV to isolate and determines blobs of colors specified by the user
+
+## The name
+Remember that one book you had to read in high school. You know the one, the one where that one guy throws a ton of parties
+and stares at green lights? Yeah, the name is a reference to that.
+
+## How it works
+The user specifies the Hue Saturation Value (HSV) model to look for a color and creates a mask of camera based on that color
+
+The mask isolates the color specified and creates a black and white image where the white represented the desired color
+
+A blob detector is then applied to the black and white image to detect where the white objects in the frame are
+
+If these blobs are on screen in the same location for the amount of time specified by the user, their location in frame is returned
+
+## An Explanation of Hue Saturation and Value
+
+A full description of HSV can be found [here](https://en.wikipedia.org/wiki/HSL_and_HSV).
+
+HSV represents all colors in a cylindrical format, where Hue represents the 360 degrees of the circle, Saturation represents
+the distance away from the center of the cylinder, and Value represents the height. 
+
+Hue: Represented by a range from 0 to 360. 0 represents red, 120 represents green, 240 represents blue, and 360 loops back
+to represent red. Starting from red, the order of primary and secondary colors is red, orange, yellow, green, blue, purple, pink, red.
+
+Saturation: Represented by a range of 0 to 100 and is used to represent how intense a color is. A Saturation of 0 is entirely
+dull gray. A Saturation of 100 is entirely the color represented by Hue. For example, a Hue of 0 and a Saturation of 100 
+represents a pure red color.
+
+Value: Represented by a range of 0 to 100 and is used to represent how bright a color is. A Value of 0 represents black 
+and a Value of 100 represents the brightest version of the color specified by Hue and Saturation. For example, a Hue of 0,
+Saturation of 100 and Value of 100 represents the purest, brightest red possible using this model.
+
+## Creating an LED Checker Instance
+
+The following parameters are all necessary to instantiate the class:
+
+`json_file` : The name of the JSON file that will store the configurations for the instance of an LED Checker. 
+
+**NOTE:** This file does not have to exist, as it will be populated using `create_json_config`
+
+`wait_time` : how long the program should look for LEDs in frame. range (0+)
+
+`error_percent` : how accurate the LED identification should be. range (0-1)
+
+`motion_tolerance` : the number of pixels off the center of a blob can be and still be counted as the same as another blob. range (0+)
+
+For example, if one blob is found at (10,10) in one frame and then found in (10,11) the following frame, a `motion_tolerance` 
+greater than or equal to 1 will count those blobs as the same blob
+
+The following parameters are optional parameters:
+
+`cv_capture` : The capture device used for the instance of an LED Checker 
+
+See [Common Errors](#common-errors) for more details
+
+Example instantiations:
+    
+    led_checker = LedCheck("example.json",5,1,10)
+    led_checker_w_cv_capture = LedCheck("example2.json",3,12,4,cv.CAP_DSHOW)
+
+## Class functions
+
+### create_json_config
+
+This function allows the user to see what the computer sees and manipulate it to isolate what the user specifies
+
+When the function is called, it scans the device to find all cameras. If more than 1 camera exists, it presents a
+list of camera indices for the user to choose from.
+
+An explanation of camera indices can be found [here](#json-file)
+
+After the camera has been chosen, the user will be presented with 2 windows: `Sharp Blobs` and `Object Detection`.
+
+`Sharp Blobs`: A sharp black and white image that represents a manipulated frame to clearly create blobs. This frame will have
+a lot of noise, this is OK. Changing hue will specify the color and changing saturation and value will adjust the amount of
+noise seen in the frame.
+
+Hue should have a range of about 60 units to fully encapsulate the color the user is looking for.  For example, if the 
+user is looking to find a hue value for green, and the lower bound of hue is 80, the upper bound should  be around 140.
+
+Saturation and Value ranges can vary, as long as the mask is what the user expects, the range can be as large or as small
+as necessary.
+
+This [site](https://colorpicker.me) has been provided to help visualize HSV values
+
+**NOTE:** This website has accurate Hue values for colors but saturation and value are variable, please only use as a rough guide
+
+`Object Detection`: A color image with red circles representing where the computer is seeing blobs in the image. Changing the area
+will affect how large or small the white blob needs to be in order to be counted as a blob.
+
+### check_led_status
+
+This function checks if there is an LED matching the values within the JSON file specified during instantiation.
+
+This function will display nothing to the user while it is running.
+
+This function will return a list of (x,y) coordinates representing blobs that match all parameters given by the user.
+
+## Example Execution
+
+    green_led_check = LedCheck("green_led.json", 5, .95, 7)
+    orange_led_check  = LedCheck("orange_led.json", 5, .95, 7)
+
+    green_led_check.create_json_config()
+    orange_led_check.create_json_config()
+
+    green_results = green_led_check.check_led_status()
+    orange_results = orange_led_check.check_led_status()
+
+    print(f"Green: {green_results}, Orange: {orange_results}")
+
+In this example, 2 LedCheck instances are created, `green_led_check` and `orange_led_check`
+
+Both instances then call `create_json_config`, which brings up the windows that are used to configure what colors the LED
+Check is looking for. Once these windows are closed, the configurations are saved to the JSON files specified in the constructor.
+
+After the instances are configured to look for specific colors, `check_led_status` is called, which looks for the color
+specified in the JSON file for 5 seconds (the specified amount of time). These points have a movement tolerance of 7 pixels
+(the specifed amount of movement allowed) After that time, it validates which points are  there 95% of the time 
+(the error percent specified).
+
+Finally, the lists of (x,y) coordinates for both `green_led_check` and `orange_led_check` is returned to the user.
+
+## JSON File
+All configurations for the mask and blob detection are stored in a JSON file
+
+`camera_index` : The index representing what camera to use.
+
+    0 represents the built in camera on the computer
+    1 represents an external camera plugged into the computer
+
+**Note:** If there is no camera built into the device, an external camera will be represented by a 0.
+
+`low_h` : The lower bound of the hue parameter to use in the mask (range 0:180)
+
+`low_s` : The lower bound of the saturation parameter to use in the mask (range 0:180)
+
+`low_v` : The lower bound of the value parameter to use in the mask (range 0:255)
+
+`high_h` : The upper bound of the hue parameter to use in the mask (range 0:255)
+
+`high_s` : The upper bound of the saturation parameter to use in the mask (range 0:255)
+
+`high_v` : The upper bound of the value parameter to use in the mask (range 0:255)
+
+`min_area` : The minimum size a blob has to be in order to be detected (range 0:5000)
+
+## Common Errors
+
+Depending on what camera and operating system the user has, the capture device may be different that the default.
+
+Please use [this link](https://docs.opencv.org/3.4/d4/d15/group__videoio__flags__base.html) to determine what capture device to use
+
+Once the capture device is determined, please use the built-in function `set_cv_capture` to change the capture device
+
+**NOTE:** please format the parameter to this function as follows: `cv.CAPTUREDEVICE`
+
+For example, if my capture device is `CAP_DSHOW`, them my function call would look like the following
+
+    led_checker.set_cv_capture(cv.CAP_DSHOW)

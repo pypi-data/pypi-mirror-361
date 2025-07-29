@@ -1,0 +1,1 @@
+from .CoolString import CoolString

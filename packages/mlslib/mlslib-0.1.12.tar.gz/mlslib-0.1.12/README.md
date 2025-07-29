@@ -1,0 +1,191 @@
+# mlslib
+
+[![PyPI version](https://badge.fury.io/py/mlslib.svg)](https://badge.fury.io/py/mlslib)
+[![Python 3](https://img.shields.io/badge/python-3-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+A lightweight utility library to simplify working with Google Cloud Storage, BigQuery, and DataFrame evaluation on Google Cloud Platform (GCP). This library provides a set of high-level functions to streamline common data engineering, data science, and evaluation workflows.
+
+---
+
+## 🚀 Key Features
+
+- **Google Cloud Storage Integration**: Upload pandas or Spark DataFrames to GCS
+- **File Management**: Upload any local file (CSV, Parquet, Pickle, etc.) to GCS
+- **Public Access**: Make GCS files public and get downloadable links
+- **BigQuery Integration**: Query BigQuery tables directly into Spark DataFrames
+- **Notebook Display**: Beautifully display PySpark DataFrames in Jupyter notebooks
+- **Data Sampling**: Perform session-based sampling on pandas and Spark DataFrames
+- **Evaluation Utilities**: Calculate MRR, save metrics, and display evaluation results
+
+---
+
+## 📦 Installation
+
+Install `mlslib` directly from PyPI:
+
+```bash
+pip install mlslib
+```
+
+### Dependencies
+
+- `ipython>=7.0.0` - For notebook display functionality
+- `pyarrow>=6.0.0` - For efficient data serialization
+- `python-dateutil>=2.8.2`
+
+**Note:** Some functions require `google-cloud-storage` and `pyspark` to be installed in your environment.
+
+---
+
+## 🛠️ Setup
+
+Before using `mlslib`, ensure you have:
+
+1. **Google Cloud SDK** installed and configured
+2. **Authentication** set up (service account key or gcloud auth)
+3. **Required packages** installed:
+   ```bash
+   pip install google-cloud-storage pyspark
+   ```
+
+---
+
+## 📖 Usage
+
+### Importing Key Functions
+
+```python
+from mlslib import (
+    display_df, download_csv, load_bigquery_table_spark,
+    sample_by_session, upload_df_to_gcs, upload_df_to_gcs_csv,
+    calculate_mrr, save_metrics_to_json, display_mrr_comparison
+)
+```
+
+### Google Cloud Storage Utilities
+
+```python
+from mlslib.gcs_utils import upload_file_to_gcs, upload_df_to_gcs
+# ... see full usage in the API Reference below ...
+```
+
+### BigQuery Utilities
+
+```python
+from mlslib.bigquery_utils import load_bigquery_table_spark
+```
+
+### Evaluation Utilities
+
+#### Calculate Mean Reciprocal Rank (MRR)
+
+```python
+from mlslib import calculate_mrr
+
+results = calculate_mrr(
+    df=my_dataframe,
+    position_col="rank",
+    label_col="is_relevant",
+    group_by_cols=["store_id"]
+)
+print(results)
+```
+
+#### Save Metrics to JSON
+
+```python
+from mlslib import save_metrics_to_json
+save_metrics_to_json(results, "metrics.json")
+```
+
+#### Display MRR Comparison
+
+```python
+from mlslib import display_mrr_comparison
+# results_list = [results1, results2, ...]
+display_mrr_comparison(results_list)
+```
+
+---
+
+## 🗂️ Project Structure
+
+```
+mlslib/
+├── __init__.py          # Package initialization and exports
+├── gcs_utils.py         # Google Cloud Storage utilities
+├── bigquery_utils.py    # BigQuery integration utilities
+├── display_utils.py     # Notebook display utilities
+├── sampling_utils.py    # Data sampling utilities
+├── date_utils.py        # Date range utilities
+├── evaluate_utils.py    # Evaluation utilities (MRR, metrics)
+```
+
+---
+
+## 📚 API Reference
+
+### gcs_utils
+- `upload_file_to_gcs(file_path, bucket_name, gcs_path)`
+- `upload_df_to_gcs(df, bucket_name, gcs_path, format='parquet')`
+- `download_csv(bucket_name, file_path)`
+
+### bigquery_utils
+- `load_bigquery_table_spark(spark, sql_query, table_name, project_id, dataset_id)`
+
+### display_utils
+- `display_df(df, limit_rows=50, title=None)`
+
+### sampling_utils
+- `sample_by_session(df, session_column, fraction, seed=None)`
+
+### date_utils
+- `generate_periodic_date_ranges(start_date_str, num_periods, period_days)`
+- `get_relative_day_range(days, offset_days=0)`
+
+### evaluate_utils
+- `calculate_mrr(df, position_col, label_col, group_by_cols=None)`
+- `save_metrics_to_json(metrics, output_path)`
+- `display_mrr_comparison(results_list, model_col='Model', test_set_col='Test Set')`
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please open issues or submit pull requests for bug fixes, improvements, or new features.
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+---
+
+## 📢 Contact
+
+Author: Raj Jha  
+Email: rjha4@wayfair.com
+
+---
+
+## 🚀 Publishing to PyPI
+
+1. **Ensure your version is updated in `setup.py`**
+2. **Build the package:**
+   ```bash
+   python -m pip install --upgrade build
+   python -m build
+   ```
+3. **Upload to PyPI:**
+   ```bash
+   python -m pip install --upgrade twine
+   twine upload dist/*
+   ```
+4. **(Optional) Test on TestPyPI first:**
+   ```bash
+   twine upload --repository testpypi dist/*
+   ```
+
+---

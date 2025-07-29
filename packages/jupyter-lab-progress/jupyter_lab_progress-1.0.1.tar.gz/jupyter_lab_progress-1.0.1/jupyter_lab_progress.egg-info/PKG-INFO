@@ -1,0 +1,270 @@
+Metadata-Version: 2.4
+Name: jupyter-lab-progress
+Version: 1.0.1
+Summary: A comprehensive toolkit for creating interactive Jupyter notebook lab exercises with progress tracking, validation, and rich display utilities.
+Author-email: Michael Lynn <michael.lynn@mongodb.com>
+License: MIT
+Project-URL: Homepage, https://github.com/mrlynn/jupyter-lab-utils
+Project-URL: Documentation, https://github.com/mrlynn/jupyter-lab-utils#readme
+Project-URL: Repository, https://github.com/mrlynn/jupyter-lab-utils.git
+Project-URL: Bug Tracker, https://github.com/mrlynn/jupyter-lab-utils/issues
+Project-URL: Changelog, https://github.com/mrlynn/jupyter-lab-utils/blob/main/CHANGELOG.md
+Keywords: jupyter,notebook,education,lab,validation,progress,interactive,teaching,workshop,tutorial
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Education
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Education
+Classifier: Topic :: Scientific/Engineering
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Framework :: Jupyter
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: ipython>=7.0.0
+Requires-Dist: pandas>=1.0.0
+Requires-Dist: numpy>=1.18.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0; extra == "dev"
+Requires-Dist: black>=22.0; extra == "dev"
+Requires-Dist: flake8>=5.0; extra == "dev"
+Requires-Dist: mypy>=1.0; extra == "dev"
+Requires-Dist: pre-commit>=2.20; extra == "dev"
+Provides-Extra: docs
+Requires-Dist: sphinx>=5.0; extra == "docs"
+Requires-Dist: sphinx-rtd-theme>=1.0; extra == "docs"
+Requires-Dist: myst-parser>=0.18; extra == "docs"
+Dynamic: license-file
+
+# Jupyter Lab Utils
+
+[![PyPI version](https://badge.fury.io/py/jupyter-lab-utils.svg)](https://badge.fury.io/py/jupyter-lab-utils)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+A comprehensive Python library for creating interactive lab exercises in Jupyter notebooks. Designed for educators, workshop leaders, and content creators who want to build engaging, validated learning experiences.
+
+## 🚀 Features
+
+- **📊 Progress Tracking**: Visual progress bars, step completion tracking, persistence support
+- **✅ Comprehensive Validation**: Variable, function, output, DataFrame, and custom validation methods
+- **🎨 Rich Display Utilities**: Info boxes, warnings, code blocks, tables, tabs, hints, and more
+- **💾 Persistence**: Save and restore progress across sessions
+- **🔗 Seamless Integration**: Validators automatically update progress trackers
+- **🎓 Education-Focused**: Built specifically for teaching and learning scenarios
+
+## 📦 Installation
+
+```bash
+pip install jupyter-lab-utils
+```
+
+For development installation:
+
+```bash
+git clone https://github.com/mongodb/jupyter-lab-utils.git
+cd jupyter-lab-utils
+pip install -e ".[dev]"
+```
+
+## 🏃‍♂️ Quick Start
+
+```python
+from jupyter_lab_utils import LabProgress, LabValidator, show_info, show_success
+
+# Create a progress tracker
+progress = LabProgress(["Load Data", "Process Data", "Analyze Results"], 
+                      lab_name="Data Science Lab")
+
+# Create a validator linked to progress
+validator = LabValidator(progress_tracker=progress)
+
+# Show instructions
+show_info("Let's start by loading the dataset", title="Step 1")
+
+# Validate and mark progress
+data_loaded = True  # Your actual condition
+validator.validate_and_mark_complete("Load Data", data_loaded)
+
+# Display success message
+show_success("Great job! Data loaded successfully")
+```
+
+## 📚 Core Components
+
+### 1. Progress Tracking (`LabProgress`)
+
+Track student progress through lab exercises with visual feedback:
+
+```python
+from jupyter_lab_utils import LabProgress
+
+# Basic usage
+progress = LabProgress(["Step 1", "Step 2", "Step 3"])
+progress.mark_done("Step 1")
+
+# Advanced features
+progress = LabProgress(
+    steps=["Load Data", "Clean Data", "Analyze"],
+    lab_name="Data Analysis Lab",
+    persist=True  # Save progress to file
+)
+
+# Mark with score and notes
+progress.mark_done("Load Data", score=95, notes="Excellent work!")
+
+# Partial progress
+progress.mark_partial("Clean Data", 0.75)  # 75% complete
+```
+
+### 2. Validation Framework (`LabValidator`)
+
+Comprehensive validation methods for checking student work:
+
+```python
+from jupyter_lab_utils import LabValidator
+
+validator = LabValidator()
+
+# Variable validation
+validator.validate_variable_exists("my_var", globals(), expected_type=list)
+
+# Function validation
+validator.validate_function_exists("process_data", globals(), 
+                                 expected_params=["data", "method"])
+
+# DataFrame validation
+validator.validate_dataframe(df, 
+                           expected_shape=(100, 5),
+                           expected_columns=["id", "name", "value"])
+
+# Custom validation with auto-progress updates
+validator = LabValidator(progress_tracker=progress)
+validator.validate_and_mark_complete("Step 1", condition=True)
+```
+
+### 3. Display Utilities
+
+Rich display functions for better communication:
+
+```python
+from jupyter_lab_utils import *
+
+# Messages
+show_info("This is informational")
+show_success("Well done!")
+show_warning("Be careful")
+show_error("Something went wrong")
+
+# Code display
+show_code("print('Hello World')", language="python", title="Example")
+
+# Interactive elements
+show_hint("Try using pandas read_csv function")
+show_progress_bar(3, 10, label="Overall Progress")
+show_checklist({"Task 1": True, "Task 2": False})
+
+# Data display
+show_json({"key": "value"}, title="Results")
+show_table(headers=["Name", "Score"], rows=[["Alice", "95"]])
+```
+
+## 🔧 Advanced Usage
+
+### Custom Validators
+
+```python
+# Create step-specific validators
+validator = LabValidator(progress_tracker=progress)
+validate_step1 = validator.create_step_validator("Step 1")
+
+# Use custom validation
+result = compute_something()
+validate_step1(result == expected_value, 
+               success_msg="Perfect calculation!",
+               failure_msg="Check your math")
+```
+
+### Persistence
+
+```python
+# Progress automatically saves/loads
+progress = LabProgress(steps, persist=True, persist_file="my_lab.json")
+```
+
+### Integration Example
+
+```python
+from jupyter_lab_utils import *
+
+# Complete lab setup
+steps = ["Import Libraries", "Load Data", "Preprocess", "Train Model"]
+progress = LabProgress(steps, lab_name="ML Workshop", persist=True)
+validator = LabValidator(progress_tracker=progress)
+
+# Step 1: Instructions
+show_info("First, import required libraries", title="Step 1")
+show_code("import pandas as pd\\nimport numpy as np")
+
+# Validation with auto-progress
+try:
+    import pandas as pd
+    import numpy as np
+    validator.validate_and_mark_complete("Import Libraries", True)
+except ImportError:
+    show_error("Missing libraries. Run: pip install pandas numpy")
+```
+
+## 🎯 Use Cases
+
+- **Educational Workshops**: Interactive coding workshops with guided exercises
+- **Corporate Training**: Employee training programs with progress tracking
+- **Online Courses**: Self-paced learning with automated validation
+- **Data Science Bootcamps**: Hands-on exercises with immediate feedback
+- **Research Training**: Academic lab exercises with validation
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
+
+### Development Setup
+
+```bash
+git clone https://github.com/mongodb/jupyter-lab-utils.git
+cd jupyter-lab-utils
+pip install -e ".[dev]"
+pre-commit install
+```
+
+### Running Tests
+
+```bash
+pytest
+pytest --cov=jupyter_lab_utils --cov-report=html
+```
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🆘 Support
+
+- **Documentation**: [https://jupyter-lab-utils.readthedocs.io/](https://jupyter-lab-utils.readthedocs.io/)
+- **Issues**: [GitHub Issues](https://github.com/mongodb/jupyter-lab-utils/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/mongodb/jupyter-lab-utils/discussions)
+
+## 🏗️ Built by MongoDB Developer Relations
+
+Created with ❤️ by the MongoDB Developer Relations team to enhance the learning experience in data science and development workshops.
+
+---
+
+**Happy Teaching and Learning!** 🎓

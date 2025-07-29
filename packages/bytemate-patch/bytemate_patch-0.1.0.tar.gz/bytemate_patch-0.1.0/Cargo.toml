@@ -1,0 +1,47 @@
+[package]
+name = "bytemate-patch"
+version = "0.1.0"
+edition = "2024"
+description = "High-performance JSON patch library for Javascript, Rust, and Python"
+
+[lib]
+name = "bytemate_patch"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+serde = { version = "1.0.219", features = ["derive"]}
+serde_json = "1.0.140"
+thiserror = "2.0.12"
+
+[dependencies.pyo3]
+version = "0.25.1"
+optional = true
+features = ["extension-module"]
+
+[dependencies.wasm-bindgen]
+version = "0.2.100"
+optional = true
+
+[dependencies.serde-wasm-bindgen]
+version = "0.6.5"
+optional = true
+
+[dependencies.js-sys]
+version = "0.3.77"
+optional = true
+
+[dependencies.web-sys]
+version = "0.3.77"
+optional = true
+
+[dev-dependencies]
+criterion = { version = "0.6.0", features = ["html_reports"]}
+
+[features]
+default = []
+python = ["pyo3"]
+wasm = ["wasm-bindgen", "serde-wasm-bindgen", "js-sys", "web-sys"]
+
+[[bench]]
+name = "patch_bench"
+harness = false

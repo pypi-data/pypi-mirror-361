@@ -1,0 +1,126 @@
+Metadata-Version: 2.4
+Name: django-dynamictexts
+Version: 0.2.1
+Summary: Reusable Django app for dynamic multilingual texts with template tags.
+Home-page: https://git.tormaks.com/basistaplay/django-dynamictexts
+Author: BasistaPlay
+Author-email: basistaplay@gmail.com
+License: MIT
+Classifier: Framework :: Django
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: Django>=4.2
+Requires-Dist: django-modeltranslation>=0.17
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: summary
+
+# Django DynamicTexts
+
+Django DynamicTexts is a reusable Django library for dynamically storing and displaying texts (with a unique key, title, and content) with full multilingual (i18n) support. It is ideal for project localization, content management, and SEO-friendly pages.
+
+---
+
+## Features
+- Store texts with a unique `key`, `title`, and `content`.
+- Full translation support (e.g., for English and Latvian) using [django-modeltranslation](https://django-modeltranslation.readthedocs.io/).
+- Easy usage in Django templates via custom template tags.
+- Content editing via the Django admin interface.
+
+---
+
+## Installation
+
+1. **Add the app and modeltranslation to `INSTALLED_APPS`:**
+    ```python
+    INSTALLED_APPS = [
+        ...
+        'modeltranslation',
+        'texts',
+    ]
+    ```
+2. **Configure languages:**
+    ```python
+    LANGUAGES = [
+        ('en', 'English'),
+        ('lv', 'Latviešu'),
+    ]
+    MODELTRANSLATION_DEFAULT_LANGUAGE = 'en'
+    MODELTRANSLATION_LANGUAGES = ('en', 'lv')
+    ENABLE_DYNAMIC_TEXT_TRANSLATIONS = True
+    USE_I18N = True
+    MIDDLEWARE = [
+        ...
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.middleware.locale.LocaleMiddleware',
+        'django.middleware.common.CommonMiddleware',
+        ...
+    ]
+    ```
+3. **Run migrations:**
+    ```bash
+    python manage.py makemigrations texts
+    python manage.py migrate
+    ```
+4. **Install dependencies:**
+    ```bash
+    pip install django-modeltranslation
+    ```
+
+---
+
+## Usage
+
+1. **Add/edit texts in the admin interface** (`/admin/`), filling in all required translation fields.
+2. **Load template tags in your template:**
+    ```django
+    {% load dynamictexts_tags %}
+    ```
+3. **Display texts in your template:**
+    ```django
+    <h1>{% get_title "about-us" %}</h1>
+    <p>{% get_content "about-us" %}</p>
+    ```
+   - The correct translation will be shown automatically based on the active language.
+
+---
+
+## Language Switching
+
+- Use Django's i18n `set_language` view or another language switching mechanism.
+- Example language switcher form in a template:
+    ```django
+    <form action="/i18n/setlang/" method="post">{% csrf_token %}
+        <input name="next" type="hidden" value="{{ request.path }}">
+        <select name="language">
+            <option value="en">English</option>
+            <option value="lv">Latviešu</option>
+        </select>
+        <input type="submit" value="Change language">
+    </form>
+    <p>Active language: {{ LANGUAGE_CODE }}</p>
+    ```
+
+---
+
+## Best Practices
+- Always fill in all translation fields in the admin interface.
+- Ensure `LocaleMiddleware` is in the correct place in the MIDDLEWARE list.
+- Use template tags only after `{% load dynamictexts_tags %}`.
+- If you add new languages, update `LANGUAGES` and run migrations.
+
+---
+
+## License
+MIT
+

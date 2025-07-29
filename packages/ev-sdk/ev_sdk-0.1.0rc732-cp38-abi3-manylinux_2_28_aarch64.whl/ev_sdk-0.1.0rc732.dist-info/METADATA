@@ -1,0 +1,85 @@
+Metadata-Version: 2.4
+Name: ev-sdk
+Version: 0.1.0rc732
+Classifier: Programming Language :: Rust
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Programming Language :: Python :: Implementation :: PyPy
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown; charset=UTF-8; variant=GFM
+
+# ev-sdk
+
+This repository is for the `ev` python package which wraps the `ev-sdk` rust package.
+
+```python
+uv pip install -e .
+
+ev --help
+```
+
+## Usage
+
+### Setup
+
+```shell
+# setup virtual env
+make .venv
+
+# build ev-sdk
+make build
+
+# install on the path
+uv pip install -e .
+```
+
+### Run the SDK
+
+Run the SDK on a python module that creates jobs
+
+```shell
+# run an example
+python -m examples.dynamic_sources
+```
+
+### Run the CLI
+
+Use the `ev` binary installed in the virtual environment by the setup above.
+
+```shell
+ev auth login
+ev spaces list
+ev run examples/hello_world/hello_world.py
+```
+
+## Documentation
+
+```python
+# my_job.py
+
+# Define the job.
+job = Job("my-job")
+
+# Define the job's main function.
+@job.main()
+def main():
+    import daft
+
+    df = daft.from_pydict({ "a": [ 1, 2, 3 ]})
+    df.show()
+```
+
+## Open Questions
+
+- Mutable environments or builder style?
+- [Mutable pyo3 classes](https://pyo3.rs/main/class.html#bound-and-interior-mutability) is better than interior mutability? But makes taking ownership and conversion painful.
+- Include should support globs?
+
+## TODO
+
+- [x] rust ev-sdk crate
+- [x] local files
+- [x] actual job run (success)
+- [x] ___main__.py template with pickled job
+- [x] client with args
+- [ ] refactor ev-cli into ev-sdk
+

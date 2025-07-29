@@ -1,0 +1,35 @@
+[project]
+name = "simt-fly-machines"
+version = "0.2.0"
+description = "A python API to start, stop and list Fly.io machines"
+authors = [{name="Chris Hatch", email="chris@cepro.energy"}]
+requires-python = ">=3.13,<4.0"
+readme = "README.md"
+dependencies = [
+    "requests==2.32.4",
+    "structlog==24.1.0",
+    "python-dotenv==1.0.1",
+    "types-requests==2.32.4.20250611",
+]
+
+[project.scripts]
+test = "simt_fly_machines:run_tests"
+lint = "simt_fly_machines:run_linter"
+
+[tool.poetry]
+packages = [{include = "simt_fly_machines"}]
+exclude = ["tests"]
+
+[tool.poetry.group.dev.dependencies]
+ruff = "0.11.2"
+fire = "0.7.0"
+mypy = "1.16.1"
+
+[tool.mypy]
+python_version = "3.13"
+# disable strict until we've fixed all the issues:
+# strict = true
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

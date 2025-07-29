@@ -1,0 +1,42 @@
+# Respect peptide modifications.
+with_modifications = true
+
+# Modifications can be either universal or selective. PSMs for modified
+# peptides with any universal modification and the same pattern of selective
+# modifications are treated together, PSMs for peptides with different pattern
+# of selective modifications are treated separately.
+
+[modification.universal.1]
+name = "Carboxyamidomethylation"
+mass_delta = 57.021464
+modX = "cam"
+site = "C"
+variable = false
+
+[modification.universal.2]
+name = "TMTplex"
+mass_delta = 229.162932
+modX = "t"
+# n-term, K
+site = "^K"
+variable = false
+
+[modification.universal.3]
+name = "Oxidation"
+mass_delta = 15.994915
+modX = "ox"
+site = "M"
+variable = true
+
+[modification.universal.4]
+name = "Deamidation"
+mass_delta = 0.984016
+modX = "d"
+site = "NQ"
+variable = true
+
+[modification.selective.1]
+name = "Phosphorylation"
+mass_delta = 79.966331
+modX = "p"
+site = "STY"

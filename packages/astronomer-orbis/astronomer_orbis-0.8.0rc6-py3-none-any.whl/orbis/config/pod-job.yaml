@@ -1,0 +1,58 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job-$POD_NAME
+  namespace: $ASTRONOMER_NAMESPACE
+  labels:
+    app: support-bundle
+    component: gather-info
+spec:
+  backoffLimit: 0
+  template:
+    metadata:
+      name: $POD_NAME
+      labels:
+        app: support-bundle
+        component: gather-info
+    spec:
+      serviceAccountName: $SA_NAME
+      initContainers:
+      - name: gather-info-init
+        image: $IMAGE
+        command: ["/bin/bash", "-c"]
+        args:
+          - |
+            gather-info.py -a $ASTRONOMER_NAMESPACE ${params[@]}
+            cp /data/*.tar.gz /results/
+        volumeMounts:
+        - name: results-file
+          mountPath: /results
+        resources:
+          limits:
+            memory: "$MEMORY"
+            cpu: "$CPU"
+          requests:
+            memory: "200Mi"
+            cpu: "200m"
+      containers:
+      - name: main
+        image: $IMAGE
+        command: ["/bin/bash", "-c"]
+        args:
+          - |
+            echo "Main container is sleeping to allow file copy..."
+            sleep $SLEEP
+        volumeMounts:
+        - name: results-file
+          mountPath: /results
+        resources:
+          limits:
+            memory: "200Mi"
+            cpu: "200m"
+          requests:
+            memory: "100Mi"
+            cpu: "100m"
+      restartPolicy: Never
+      volumes:
+      - name: results-file
+        emptyDir: {}

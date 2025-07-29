@@ -1,0 +1,49 @@
+[project]
+name = "one-dot-py"
+dynamic = ["version"]
+description = "Add your description here"
+readme = "README.md"
+license = { text = "GPL-3.0" }
+authors = [ { name = "anamoyee" } ]
+requires-python = ">=3.9"
+dependencies = [
+	"inflect>=7.5.0,<8.0.0",
+]
+classifiers = [
+	"Development Status :: 3 - Alpha",
+	"Programming Language :: Python :: 3.9",
+	"Programming Language :: Python :: 3.10",
+	"Programming Language :: Python :: 3.11",
+	"Programming Language :: Python :: 3.12",
+	"Programming Language :: Python :: 3.13",
+	"Programming Language :: Python :: 3.14",
+	"Programming Language :: Python :: 3",
+	"Programming Language :: Python :: 3 :: Only",
+	"Topic :: Utilities",
+	"Operating System :: POSIX",
+	"Operating System :: POSIX :: Linux",
+	"Operating System :: MacOS",
+	"Operating System :: Microsoft :: Windows",
+	"Operating System :: Microsoft :: MS-DOS",
+]
+
+[tool.uv]
+dev-dependencies = [
+	"toml>=0.10.2",
+]
+
+[project.urls]
+"Documentation" = "https://xkcd.com/730/" # :trollface:
+"Source (GitHub)" = "https://github.com/anamoyee/one"
+
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/one"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "src/one/_version.py"
+pattern = '__version__(?:: str)? *= *\"(?P<version>[^\"]+)\"'

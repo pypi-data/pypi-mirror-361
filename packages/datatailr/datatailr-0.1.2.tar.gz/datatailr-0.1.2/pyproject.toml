@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=60", "wheel", "toml"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "datatailr"
+version = "0.1.2"
+description = "The datatailr package"
+readme = "README.md"
+requires-python = ">=3.7"
+authors = [
+  { name="Datatailr", email="pypi@datatailr.com" }
+]
+license = "MIT"
+license-files = [
+    "LICENSE",
+]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent"
+]
+
+[project.scripts]
+run_dt_job = "datatailr.sbin.run_job:main"
+
+[project.optional-dependencies]
+dev = [
+    "ruff",
+    "pre-commit",
+    "mypy",
+    "types-setuptools",
+    "toml",
+]
+
+[tool.ruff]
+src = [
+    "src",
+    "../../tests/src/python"
+]
+lint.ignore = ["F841"]
+show-fixes = true
+fix = true
+output-format = "full"

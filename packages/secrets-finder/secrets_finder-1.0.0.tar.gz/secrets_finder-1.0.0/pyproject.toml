@@ -1,0 +1,196 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "secrets-finder"
+dynamic = ["version"]
+description = "A lightweight, extensible tool to automatically scan source code for hardcoded secrets and PII"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Saravanan Sathiyamoorthi", email = "saravanansaro976@gmail.com"}
+]
+maintainers = [
+    {name = "Saravanan Sathiyamoorthi", email = "saravanansaro976@gmail.com"}
+]
+keywords = ["security", "secrets", "pii", "detection", "scanning", "git", "pre-commit", "ci-cd", "static-analysis", "code-review"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "Intended Audience :: Information Technology",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Systems Administration",
+    "Topic :: Utilities",
+]
+requires-python = ">=3.7"
+dependencies = [
+    "click>=8.0.0",
+    "colorama>=0.4.4",
+    "jinja2>=3.0.0",
+    "gitpython>=3.1.0",
+    "pyyaml>=6.0",
+    "rich>=12.0.0",
+    "typer>=0.7.0",
+    "pydantic>=1.10.0",
+    "python-multipart>=0.0.5",
+    "reportlab>=4.0.0",
+    "pathlib2>=2.3.0; python_version < '3.4'",
+    "typing-extensions>=4.0.0; python_version < '3.8'",
+]
+
+[project.optional-dependencies]
+pdf = [
+    "weasyprint>=54.0",
+]
+reports = [
+    "weasyprint>=54.0",
+    "reportlab>=4.0.0",
+    "lxml>=4.6.0",
+    "defusedxml>=0.7.0",
+]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov>=2.0",
+    "pytest-mock>=3.0",
+    "black>=22.0",
+    "flake8>=4.0",
+    "mypy>=0.950",
+    "pre-commit>=2.0",
+    "tox>=3.24.0",
+    "bandit>=1.7.0",
+]
+test = [
+    "pytest>=6.0",
+    "pytest-cov>=2.0",
+    "pytest-mock>=3.0",
+    "pytest-xdist>=2.4.0",
+    "pytest-html>=3.1.0",
+]
+security = [
+    "bandit>=1.7.0",
+    "safety>=1.10.0",
+]
+
+[project.scripts]
+secrets-finder = "secret_scanner:main"
+
+[project.urls]
+Homepage = "https://gitlab.com/ox-saro/SecretDetection"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["secret_scanner*"]
+
+[tool.setuptools.package-data]
+secret_scanner = ["*.yaml", "*.yml", "*.json", "templates/*.html", "templates/*.css"]
+"*" = ["VERSION"]
+
+[tool.setuptools.dynamic]
+version = {file = "VERSION"}
+
+[tool.black]
+line-length = 88
+target-version = ['py37']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.flake8]
+max-line-length = 88
+extend-ignore = ["E203", "W503", "E501"]
+exclude = [
+    ".git",
+    "__pycache__",
+    "build",
+    "dist",
+    ".eggs",
+    "*.egg",
+    ".venv",
+    "venv",
+]
+
+[tool.mypy]
+python_version = "3.7"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+show_error_codes = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q --strict-markers --strict-config --cov=secret_scanner --cov-report=html --cov-report=term-missing"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+    "cross_platform: marks tests that check cross-platform compatibility",
+]
+
+[tool.coverage.run]
+source = ["secret_scanner"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "*/__pycache__/*",
+    "*/venv/*",
+    "*/.venv/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.bandit]
+exclude_dirs = ["tests", "test_*"]
+skips = ["B101", "B601"]
+
+[tool.safety]
+audit_and_monitor = true 

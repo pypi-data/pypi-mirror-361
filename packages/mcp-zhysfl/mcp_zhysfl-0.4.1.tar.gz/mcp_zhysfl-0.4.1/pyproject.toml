@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mcp-zhysfl"
+# 请记得把版本号改成一个新的，比如 "0.4.1"
+version = "0.4.1"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "graphrag>=2.3.0",
+    "mcp>=1.10.1",
+    "openai>=1.93.2",
+    "python-dotenv>=1.1.1",
+]
+
+# [推荐] 添加这个部分，可以让你创建一个 mcp-server 的快捷命令
+[project.scripts]
+mcp-server = "mcp_zhysfl.server:main"
+
+# [关键修正] 使用这个配置来自动、正确地找到你的包
+[tool.setuptools.packages.find]
+where = ["src"]

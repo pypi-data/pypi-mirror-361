@@ -1,0 +1,87 @@
+{% extends "wiki/__base.html" %}
+
+{% load wiki_extras %}
+
+{% block title %}Wiki Home{% endblock %}
+
+{% block mainheading %}
+Wiki Home
+{% endblock %}
+
+
+{% block feedback %}
+{% if status_key %}
+<div class="mt-4 alert alert-success alert-dismissible fade show" role="alert">
+    <strong>Success:</strong>
+    {% if status_key == 'logout' %}
+    you have logged out. Mistake? <a href="{% url 'login' %}">Log back in</a>
+    {% else %}
+    welcome!
+    {% endif %}
+
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+{% endblock %}
+
+
+{% block content %}
+
+<div class="row mt-4">
+
+<div class="col" text-nowrap>
+
+<h4>Wiki Spaces</h4>
+
+<ul>
+{% for space in all_spaces %}
+    <li><a href="{% url 'djwiki:space' space.name %}">{{ space.name|make_title }} </a></li>
+{% endfor %}
+</ul>
+
+
+<h4>Main Pages</h4>
+
+<ul>
+{% for space in all_spaces %}
+{% if space.homepage %}
+    <li><a href="{% url 'djwiki:page_view' space.homepage.name %}">{{ space.homepage.name }}</a></li>
+{% endif %}
+{% endfor %}
+</ul>
+
+</div>
+
+<!-- /div>
+
+<div class="row mt-2" -->
+
+<div class="col">
+<h4>Latest Updates</h4>
+
+<ul>
+{% for page in pages_updated %}
+    <li><a href="{%  url 'djwiki:page_view' page.name %}">{{ page.name }}</a></li>
+{% endfor %}
+</ul>
+
+</div>
+
+<div class="col">
+<h4>Newest Pages</h4>
+
+<ul>
+{% for page in pages_created %}
+    <li><a href="{%  url 'djwiki:page_view' page.name %}">{{ page.name }}</a></li>
+{% endfor %}
+</ul>
+</div>
+
+</div>
+
+{% endblock %}
+
+
+{% block footer %}
+<a href="/">Site Home</a>
+{% endblock %}

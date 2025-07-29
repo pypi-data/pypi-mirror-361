@@ -1,0 +1,34 @@
+{% extends "wiki/__base.html" %}
+
+{% load django_bootstrap5 %}
+{% load wiki_extras %}
+
+{% block title %}Wiki Home{% endblock %}
+
+{% block mainheading %}
+Wiki Login
+{% endblock %}
+
+{% block main_nav %}
+<!-- Remove distractions form login page -->
+{% endblock %}
+
+{% block content %}
+
+<p>Please enter your login details below:</p>
+
+{% bootstrap_messages %}
+
+<form action="" method="post">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% bootstrap_button button_type="submit" content="Log In" %}
+</form>
+
+
+{% endblock %}
+
+
+{% block footer %}
+<a href="/">Site Home</a>
+{% endblock %}

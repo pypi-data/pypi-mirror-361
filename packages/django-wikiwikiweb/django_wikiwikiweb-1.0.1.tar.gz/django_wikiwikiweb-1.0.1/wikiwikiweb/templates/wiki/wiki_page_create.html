@@ -1,0 +1,27 @@
+{% extends "wiki/__base.html" %}
+
+{% load django_bootstrap5 %}
+
+
+{% block mainheading %}
+Creating {{ new_page_name }} in {{ sess_space_key }}
+{% endblock %}
+
+
+{% block content %}
+
+{% bootstrap_messages %}
+
+<form action="" method="post">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% bootstrap_button button_type="submit" content="Save Changes" %}
+</form>
+
+{% endblock %}
+
+
+
+{% block footer %}
+<a href="{% url 'djwiki:home' %}">Wiki Home</a>
+{% endblock %}

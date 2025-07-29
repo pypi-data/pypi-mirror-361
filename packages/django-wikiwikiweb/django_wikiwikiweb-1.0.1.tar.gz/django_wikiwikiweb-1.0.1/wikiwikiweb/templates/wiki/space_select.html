@@ -1,0 +1,32 @@
+{% extends 'wiki/__base.html' %}
+
+{% load django_bootstrap5 %}
+
+
+{% block title %}
+Select WikiSpace
+{% endblock %}
+
+
+{% block mainheading %}
+Select WikiSpace
+{% endblock %}
+
+
+{% block content %}
+
+{% bootstrap_messages %}
+
+<form action="{% url 'djwiki:space_select' %}" method="post">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% bootstrap_button button_type="submit" content="Go" %}
+    <input type="hidden" name="next" value="{{ next }}">
+</form>
+
+{% endblock %}
+
+
+{% block footer %}
+<a href="{% url 'djwiki:home' %}">Wiki Home</a>
+{% endblock %}

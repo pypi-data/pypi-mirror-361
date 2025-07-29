@@ -1,0 +1,78 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gemini-mcp-server"
+version = "0.0.1"
+description = "MCP Server with Google Gemini CLI integration for AI second opinions"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [{ name = "taehun-kmu", email = "taehun-kmu@kookmin.ac.kr" }]
+keywords = ["mcp", "gemini", "ai", "development-tools", "second-opinion"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Quality Assurance",
+]
+
+dependencies = ["mcp>=0.1.0", "pydantic>=2.0.0"]
+
+[project.urls]
+Homepage = "https://github.com/taehun-kmu/gemini-mcp-server"
+Documentation = "https://github.com/taehun-kmu/gemini-mcp-server#readme"
+Repository = "https://github.com/taehun-kmu/gemini-mcp-server.git"
+Issues = "https://github.com/taehun-kmu/gemini-mcp-server/issues"
+
+[project.scripts]
+gemini-mcp-server = "gemini_mcp.__main__:main"
+gemini-mcp = "gemini_mcp.__main__:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["gemini_mcp"]
+
+[tool.ruff]
+target-version = "py38"
+line-length = 88
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "I",   # isort
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "SIM", # flake8-simplify
+]
+ignore = [
+    "E501", # line too long (handled by black)
+]
+
+[tool.black]
+line-length = 88
+target-version = ["py38"]
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+

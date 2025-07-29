@@ -1,0 +1,59 @@
+Metadata-Version: 2.4
+Name: django-device-tracker
+Version: 0.1.0
+Summary: Reusable device tracking app for Django projects
+Home-page: https://github.com/yourusername/django-device-tracker
+Author: Your Name
+Author-email: your.email@example.com
+License: MIT
+Classifier: Framework :: Django
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: Django>=3.2
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+A reusable Django app for tracking user login devices securely. Plug it into any Django project and monitor user sessions, IPs, and browser info.
+
+## Features
+- Tracks IP address and browser info (User-Agent)
+- Stores refresh token JTI
+- View and manage user devices via admin
+- Designed to be plug-and-play
+
+## Installation
+```bash
+pip install django-device-tracker
+```
+
+## Usage
+1. Add to `INSTALLED_APPS`:
+```python
+INSTALLED_APPS += ["device_tracker"]
+```
+2. Run migrations:
+```bash
+python manage.py migrate device_tracker
+```
+3. Use in your views:
+```python
+from device_tracker.utils import track_device
+
+track_device(request, user, refresh_token)
+```
+
+## License
+MIT

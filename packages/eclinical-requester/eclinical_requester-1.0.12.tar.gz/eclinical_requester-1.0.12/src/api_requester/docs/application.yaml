@@ -1,0 +1,47 @@
+serverUrl:
+  dev03: http://dev-03-app-01.chengdudev.edetekapps.cn
+  dev04: http://dev-04-app-01.chengdudev.edetekapps.cn
+  dev01: http://dev-01-app-01.chengdudev.edetekapps.cn
+  dev02: http://dev-02-app-01.chengdudev.edetekapps.cn
+  test01: http://test-01-app-01.chengdudev.edetekapps.cn
+  us.dev: https://ec.eclinical-dev.edetekapps.com
+  us.demo: https://ec4.ec4demo.edetekapps.com
+
+admin:
+  urlPrefix: /api/admin
+  blacklist:
+    - request /administration/coding/**
+    - request /monitor/{tokenBase64}/api/{monitorServerBase64}/**
+  filters:
+    - RewritePath=/api/external/admin(?P<segment>/?.*),/admin/api/external\g<segment>
+
+design:
+  urlPrefix: /api/design
+
+ctms:
+  urlPrefix: /api/ctms
+  filters:
+    - RewritePath=/api/external/facade(?P<segment>/?.*),/api/external\g<segment>
+
+etmf:
+  urlPrefix: /api/etmf
+
+edc:
+  urlPrefix: /api/edc
+  filters:
+    - RewritePath=/api/external/facade(?P<segment>/?.*),/api/external/edc\g<segment>
+
+iwrs:
+  urlPrefix: /api/iwrs
+
+external:
+  urlPrefix: /api/external
+
+coding:
+  urlPrefix: /api/coding
+
+imaging:
+  urlPrefix: /api/imaging
+
+pv:
+  urlPrefix: /api/pv

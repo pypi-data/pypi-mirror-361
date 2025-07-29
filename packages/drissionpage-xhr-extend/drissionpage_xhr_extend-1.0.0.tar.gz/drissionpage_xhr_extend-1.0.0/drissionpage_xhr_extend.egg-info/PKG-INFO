@@ -1,0 +1,238 @@
+Metadata-Version: 2.4
+Name: drissionpage-xhr-extend
+Version: 1.0.0
+Summary: DrissionPage XHR请求扩展库，支持多种数据类型和请求方式
+Home-page: https://github.com/your-username/drissionpage-xhr-extend
+Author: DrissionPage Community
+Author-email: 
+Maintainer: DrissionPage Community
+License: MIT
+Project-URL: Homepage, https://github.com/your-username/drissionpage-xhr-extend
+Project-URL: Documentation, https://github.com/your-username/drissionpage-xhr-extend/blob/main/XHR_REQUEST_README.md
+Project-URL: Repository, https://github.com/your-username/drissionpage-xhr-extend
+Project-URL: Bug Tracker, https://github.com/your-username/drissionpage-xhr-extend/issues
+Keywords: drissionpage,xhr,request,http,automation,web-scraping
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Software Development :: Testing
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: DrissionPage>=3.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0; extra == "dev"
+Requires-Dist: pytest-cov; extra == "dev"
+Requires-Dist: black; extra == "dev"
+Requires-Dist: flake8; extra == "dev"
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-python
+
+# XHR请求模块使用说明
+
+## 概述
+
+这是一个基于DrissionPage的XHR请求封装模块，支持多种数据类型和请求方式。相比原版本，新版本支持：
+
+- ✅ 多种数据格式：表单数据、JSON数据、原始文本、二进制数据
+- ✅ 自定义请求头
+- ✅ 完整的HTTP方法支持：GET、POST、PUT、PATCH、DELETE
+- ✅ 统一的API接口
+- ✅ 更好的错误处理
+
+## 主要改进
+
+### 1. 统一的request方法
+
+```python
+def request(self, method: str, url: str,
+            data: Optional[Union[Dict[str, Any], str, bytes]] = None,
+            json_data: Optional[Dict[str, Any]] = None,
+            headers: Optional[Dict[str, str]] = None,
+            timeout: int = 30000) -> XHRResponse
+```
+
+### 2. 支持多种数据类型
+
+- **Dict**: 自动转换为表单数据 (`application/x-www-form-urlencoded`)
+- **str**: 作为原始文本发送 (`text/plain`)
+- **bytes**: 作为二进制数据发送 (`application/octet-stream`)
+- **json_data**: 作为JSON发送 (`application/json`)
+
+### 3. 便捷方法
+
+- `get(url, headers=None, timeout=30000)`
+- `post(url, data=None, json_data=None, headers=None, timeout=30000)`
+- `put(url, data=None, json_data=None, headers=None, timeout=30000)`
+- `patch(url, data=None, json_data=None, headers=None, timeout=30000)`
+- `delete(url, headers=None, timeout=30000)`
+
+## 使用示例
+
+### 基本用法
+
+```python
+from DrissionPage import ChromiumPage
+from xhr_request import XHRClient
+
+# 创建浏览器实例
+page = ChromiumPage()
+client = XHRClient(page)
+
+# GET请求
+response = client.get('https://api.example.com/data')
+print(f"状态码: {response.status_code}")
+print(f"响应: {response.text}")
+```
+
+### 发送表单数据
+
+```python
+# 方式1：使用post方法
+form_data = {'username': 'user', 'password': 'pass'}
+response = client.post('https://api.example.com/login', data=form_data)
+
+# 方式2：使用通用request方法
+response = client.request('POST', 'https://api.example.com/login', data=form_data)
+```
+
+### 发送JSON数据
+
+```python
+# 方式1：使用post方法
+json_data = {'name': '张三', 'age': 25}
+response = client.post('https://api.example.com/users', json_data=json_data)
+
+# 方式2：使用通用request方法
+response = client.request('POST', 'https://api.example.com/users', json_data=json_data)
+```
+
+### 发送原始文本
+
+```python
+text_data = "这是一些原始文本数据"
+response = client.post('https://api.example.com/text', data=text_data)
+```
+
+### 发送二进制数据
+
+```python
+binary_data = b'\x00\x01\x02\x03\x04\x05'
+response = client.post('https://api.example.com/binary', data=binary_data)
+```
+
+### 自定义请求头
+
+```python
+headers = {
+    'Authorization': 'Bearer your-token',
+    'User-Agent': 'Custom-Client/1.0',
+    'X-API-Key': 'your-api-key'
+}
+
+# GET请求带自定义头
+response = client.get('https://api.example.com/protected', headers=headers)
+
+# POST请求带自定义头
+response = client.post('https://api.example.com/data', 
+                      json_data={'key': 'value'}, 
+                      headers=headers)
+```
+
+### 其他HTTP方法
+
+```python
+# PUT请求
+response = client.put('https://api.example.com/resource/1', 
+                     json_data={'update': 'data'})
+
+# PATCH请求
+response = client.patch('https://api.example.com/resource/1', 
+                       json_data={'field': 'new_value'})
+
+# DELETE请求
+response = client.delete('https://api.example.com/resource/1', 
+                        headers={'Authorization': 'Bearer token'})
+```
+
+## 响应处理
+
+```python
+response = client.get('https://api.example.com/data')
+
+# 检查请求是否成功
+if response.ok:
+    print("请求成功")
+else:
+    print(f"请求失败，状态码: {response.status_code}")
+
+# 获取响应文本
+print(response.text)
+
+# 解析JSON响应
+try:
+    data = response.json
+    print(data)
+except ValueError:
+    print("响应不是有效的JSON格式")
+
+# 获取响应头
+print(response.headers)
+```
+
+## 错误处理
+
+```python
+try:
+    response = client.post('https://api.example.com/data', 
+                          json_data={'key': 'value'})
+    if response.ok:
+        print("请求成功")
+    else:
+        print(f"HTTP错误: {response.status_code}")
+except Exception as e:
+    print(f"请求失败: {e}")
+```
+
+## 注意事项
+
+1. **依赖**: 需要安装DrissionPage: `pip install DrissionPage`
+2. **浏览器**: 需要Chromium浏览器实例运行
+3. **同步请求**: 当前实现使用同步XHR请求
+4. **编码**: 自动处理UTF-8编码
+5. **超时**: 默认超时时间为30秒
+
+## 迁移指南
+
+如果你在使用旧版本，以下是主要变更：
+
+### 旧版本
+```python
+# 表单数据
+response = client.request('POST', url, form_data={'key': 'value'})
+
+# JSON数据
+response = client.json_request('POST', url, {'key': 'value'})
+```
+
+### 新版本
+```python
+# 表单数据
+response = client.post(url, data={'key': 'value'})
+
+# JSON数据
+response = client.post(url, json_data={'key': 'value'})
+```
+
+新版本向后兼容，但建议使用新的API以获得更好的功能支持。

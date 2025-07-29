@@ -1,0 +1,103 @@
+Metadata-Version: 2.1
+Name: ftstore
+Version: 0.1.0
+Summary: Advanced local dataset management for machine learning
+Home-page: https://github.com/chrisli-llb/ftstore
+Author: chrisli-llb
+Author-email: 871266889@qq.com
+Project-URL: Bug Tracker, https://github.com/chrisli-llb/ftstore/issues
+Project-URL: Documentation, https://github.com/chrisli-llb/ftstore/wiki
+Project-URL: Source Code, https://github.com/chrisli-llb/ftstore
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pandas>=1.0
+Requires-Dist: numpy>=1.18
+Requires-Dist: requests>=2.25
+Requires-Dist: joblib>=1.0
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0; extra == "dev"
+Requires-Dist: pytest-cov>=3.0; extra == "dev"
+Requires-Dist: twine>=4.0; extra == "dev"
+Requires-Dist: wheel>=0.37; extra == "dev"
+Requires-Dist: flake8>=4.0; extra == "dev"
+Requires-Dist: black>=22.0; extra == "dev"
+Provides-Extra: excel
+Requires-Dist: openpyxl>=3.0; extra == "excel"
+Requires-Dist: xlrd>=2.0; extra == "excel"
+Provides-Extra: feather
+Requires-Dist: pyarrow>=3.0; extra == "feather"
+Provides-Extra: full
+Requires-Dist: pyarrow>=3.0; extra == "full"
+Requires-Dist: tables>=3.6; extra == "full"
+Requires-Dist: openpyxl>=3.0; extra == "full"
+Requires-Dist: xlrd>=2.0; extra == "full"
+Provides-Extra: hdf5
+Requires-Dist: tables>=3.6; extra == "hdf5"
+Provides-Extra: parquet
+Requires-Dist: pyarrow>=3.0; extra == "parquet"
+
+# ftstore - Dataset Management for Machine Learning
+
+[![PyPI Version](https://img.shields.io/pypi/v/ftstore.svg)](https://pypi.org/project/ftstore/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/ftstore.svg)](https://pypi.org/project/ftstore)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+`ftstore` is a Python package for managing and loading local datasets in machine learning projects, inspired by scikit-learn's dataset API.
+
+## Features
+
+- 🗂️ Organize datasets in a structured directory
+- ⚡️ Fast loading of CSV, Parquet, Feather, HDF5 and other formats
+- 🔄 Automatic dataset caching for faster reloads
+- 🌐 Auto-download datasets from remote sources
+- 📊 Metadata management with JSON files
+
+## Installation
+
+```bash
+pip install ftstore
+```
+
+For full format support:
+
+```bash
+pip install ftstore[full]
+```
+
+## Quick Start
+
+```python
+from ftstore import load_data
+
+# Load a dataset
+iris = load_data("iris")
+
+# Access features and target
+print("Features:", iris.feature_names)
+print("Target:", iris.target_name)
+print("Data shape:", iris.data.shape)
+
+# Load as DataFrame
+df = load_data("iris", as_frame=True)
+
+# Load as NumPy arrays
+X, y = load_data("breast_cancer", return_X_y=True)
+```
+
+## Documentation
+
+See the [Getting Started Guide](docs/getting_started.md) for detailed usage instructions.

@@ -1,0 +1,268 @@
+Metadata-Version: 2.4
+Name: astronomy-topography-system
+Version: 1.1.0
+Summary: A topography analysis system for astronomy enthusiasts
+Home-page: https://github.com/astronomy-ai/topography-system
+Author: Astronomy AI Team
+Author-email: contact@astronomy-ai.com
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Scientific/Engineering :: Astronomy
+Classifier: Topic :: Scientific/Engineering :: GIS
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: requests>=2.31.0
+Requires-Dist: python-dotenv>=1.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0; extra == "dev"
+Requires-Dist: pytest-cov>=2.0; extra == "dev"
+Requires-Dist: black>=21.0; extra == "dev"
+Requires-Dist: flake8>=3.8; extra == "dev"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# Astronomy AI - Topography Analysis System
+
+A simple and powerful system for analyzing locations for astronomy purposes, including elevation data and telescope obstruction analysis.
+
+## 🚀 Quick Start
+
+### Step 1: Install Dependencies
+```bash
+pip install requests
+```
+
+### Step 2: Run the System
+```bash
+python demo.py
+```
+
+## 📋 Features
+
+- **Elevation Analysis** - Get elevation data for any location
+- **Location Parsing** - Supports addresses and coordinates
+- **Quality Assessment** - Evaluates location quality for astronomy
+- **Recommendations** - Provides telescope orientation suggestions
+- **Multiple APIs** - Uses free elevation and geocoding services
+
+## 🛰️ Model Context Protocol (MCP) Server
+
+The Astronomy Topography System includes a built-in **Model Context Protocol (MCP) server** for advanced integrations and automation.
+
+### What is the MCP Server?
+- The MCP server allows external programs to connect via TCP and send analysis requests in real time.
+- It uses a standard protocol for context management, configuration, and model execution.
+- Useful for automation, remote control, or integrating with other AI/ML systems.
+
+### How to Start the MCP Server
+
+From your project directory, run:
+```bash
+python -m astronomy_topography_system.src.mcp_server
+```
+Or, if you expose it via a CLI or entry point, use that command.
+
+### Configuration
+- The server reads its settings from `mcp_config.json` (host, port, model parameters, etc.).
+- Example config (`src/mcp_config.json`):
+  ```json
+  {
+    "model": "TopographySystem",
+    "server": { "host": "127.0.0.1", "port": 65432 },
+    "model_parameters": { "radius_km": 10, "observer_height": 2.0, "telescope_height": 1.5 },
+    "user_input_mode": "manual",
+    "logging": { "level": "INFO", "log_to_file": false }
+  }
+  ```
+
+### Protocol
+- **Client sends:**
+  ```json
+  { "context": {"user": "test"}, "query": "51.5, -0.1" }
+  ```
+- **Server responds:**
+  ```json
+  { "result": { ...analysis result... } }
+  ```
+- All messages are JSON and newline-terminated (`\n`).
+
+### Example Client (Python)
+```python
+import socket, json
+s = socket.create_connection(("127.0.0.1", 65432))
+msg = json.dumps({"context": {"user": "test"}, "query": "51.5, -0.1"}) + "\n"
+s.sendall(msg.encode())
+resp = s.recv(4096)
+print(resp.decode())
+s.close()
+```
+
+### Extending the MCP Server
+- You can implement your own model by following the `ModelContextProtocol` interface in `model_context_protocol.py`.
+- The default model is `TopographySystem`, but you can swap in your own for custom logic.
+
+---
+
+## 🎯 How to Use
+
+1. **Run the program:**
+   ```bash
+   python demo.py
+   ```
+
+2. **Enter a location:**
+   - Address: "Mount Wilson Observatory, California"
+   - Coordinates: "34.0522, -118.2437"
+   - City: "Denver, Colorado"
+
+3. **Get results:**
+   - Elevation data
+   - Location quality assessment
+   - Telescope recommendations
+   - Suggestions for better viewing
+
+## 📊 Example Output
+
+```
+🌌 Astronomy AI - Topography Analysis System
+==================================================
+
+Example locations you can analyze:
+   1. Mount Wilson Observatory, California
+   2. 40.7589, -73.9851
+   3. 34.0522, -118.2437
+   4. Denver, Colorado
+   5. Flagstaff, Arizona
+
+Or enter your own location (address or coordinates):
+
+Enter location (or 'quit' to exit): Flagstaff, Arizona
+
+🔍 Analyzing location: Flagstaff, Arizona
+Fetching elevation data...
+Performing analysis...
+
+============================================================
+ASTRONOMY AI - LOCATION ANALYSIS RESULTS
+============================================================
+
+📍 Location: Flagstaff, Coconino County, Arizona, USA
+   Coordinates: 35.1983, -111.6513
+
+🏔️  Elevation Analysis:
+   Elevation: 2106m
+   Quality: Excellent
+
+📊 Analysis:
+   Location quality: Excellent
+   Recommendation: High elevation - great for astronomy!
+
+💡 Recommendations:
+   Location quality: Excellent
+   Telescope orientation: Point telescope toward the horizon for best views
+
+💡 Suggestions:
+   • Current elevation: 2106m
+   • High elevation - great for astronomy!
+   • Consider checking weather conditions
+   • Look for areas with minimal light pollution
+============================================================
+```
+
+## 🔧 Installation
+
+### Minimal Installation (Recommended)
+```bash
+pip install requests
+```
+
+### Full Installation (Optional)
+```bash
+pip install requests python-dotenv
+```
+
+## 📁 Files
+
+- `demo.py` - Main application
+- `requirements.txt` - Python dependencies
+- `README.md` - This file
+
+## 🌟 Features Explained
+
+### Elevation Analysis
+- Fetches elevation data from multiple free APIs
+- Provides elevation quality assessment
+- Compares to ideal astronomy elevations
+
+### Location Parsing
+- Supports various input formats:
+  - Full addresses: "Mount Wilson Observatory, California"
+  - Coordinates: "34.0522, -118.2437"
+  - City names: "Denver, Colorado"
+
+### Quality Assessment
+- **Excellent**: >2000m elevation
+- **Good**: 1000-2000m elevation
+- **Fair**: 500-1000m elevation
+- **Poor**: <500m elevation
+
+### Recommendations
+- Telescope orientation suggestions
+- Weather considerations
+- Light pollution advice
+- Alternative location suggestions
+
+## 🔍 APIs Used
+
+- **Open-Elevation API** - Primary elevation data
+- **USGS National Map API** - Fallback elevation data
+- **Nominatim (OpenStreetMap)** - Geocoding services
+
+All APIs are free and don't require API keys.
+
+## 🛠️ Troubleshooting
+
+### Common Issues
+
+1. **"ModuleNotFoundError: No module named 'requests'"**
+   ```bash
+   pip install requests
+   ```
+
+2. **"Connection error"**
+   - Check your internet connection
+   - Try again in a few minutes
+
+3. **"Location not found"**
+   - Try a different location name
+   - Use coordinates instead of address
+
+### Getting Help
+
+If you encounter any issues:
+1. Make sure you have Python 3.7+ installed
+2. Install the required dependencies
+3. Check your internet connection
+4. Try the example locations first
+
+## 🎉 Success!
+
+Once you see the interactive prompt, you're ready to analyze locations for astronomy purposes!
+
+Enter any location and get instant elevation data, quality assessment, and telescope recommendations. 

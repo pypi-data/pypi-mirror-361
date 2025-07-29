@@ -1,0 +1,18 @@
+app-id: io.github.nicolasbock.ebuildtester
+runtime: org.freedesktop.Platform
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+command: ebuildtester-wrapper
+finish-args:
+  - --talk-name=org.freedesktop.Flatpak
+modules:
+  - python3-modules.json
+  - name: ebuildtester
+    buildsystem: simple
+    build-commands:
+      - pip3 install --prefix /app --verbose .
+      - python setup.py install --prefix /app --verbose
+      - install --verbose -D ebuildtester-wrapper.sh /app/bin/ebuildtester-wrapper
+    sources:
+      - type: dir
+        path: .

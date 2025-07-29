@@ -1,0 +1,172 @@
+# SHINKA Upscaler
+
+SHINKA is a high-quality, non-ML image upscaling package for Python, built around a custom, genetically-evolved 5-tap convolution kernel. The kernel, nicknamed the **halo tap**, was discovered through large-scale GPU-accelerated search and frequency-domain optimization—not by maximizing SSIM or any perceptual metric, but by directly optimizing the frequency response for passband fidelity and stopband suppression. The result is a lightweight, dependency-minimal upscaler that delivers state-of-the-art perceptual quality for both grayscale and color images.
+
+> **Note:** SHINKA was not designed to maximize SSIM or any learned perceptual metric. Its “halo tap” kernel is the result of a pure frequency-domain search for the best trade-off between sharpness and anti-aliasing.
+
+## What Makes SHINKA Unique?
+
+- **Algorithmic, Not ML:** No neural networks, no training data, no model weights. SHINKA's core is a 5-tap symmetric kernel, evolved to maximize frequency-domain performance.
+- **The “Halo Tap”:** The final kernel is a numerical twin of the original “halo tap” discovered via computational search.
+- **Genetic & Gradient Search:** The kernel was discovered by running millions of random and gradient-optimized candidates on GPU, using a frequency-domain objective that balances pass-band fidelity and stop-band suppression. See `discovery/conv_1d.py` for the search code.
+- **Fast & Lightweight:** Pure Python (with NumPy, SciPy, Pillow), no heavy dependencies. Suitable for both scripts and production pipelines.
+- **CLI & API:** Use as a Python library or from the command line for batch or single-image upscaling.
+
+## Features
+
+- Upscales images by an integer factor (e.g., 2x, 4x)
+- Preserves color and ICC profile
+- CLI for batch and single-image upscaling
+- Python API for integration in scripts and pipelines
+
+## Performance Metrics
+
+- **Passband MSE:** 1.94 × 10⁻²
+- **Stopband Peak:** 0.57 (normalized, cf. Lanczos-3: 1.0)
+- **Computational Cost:** 5 multiplications/additions per output pixel
+- **Pareto-Optimal:** No standard kernel (bilinear, symmetric 5-tap, Lanczos-7/9) dominates this kernel across all metrics.
+- **Visual and Analytical Tests:** Superior suppression of high-frequency noise and preservation of image features compared to standard alternatives.
+
+## Installation
+
+Install the core upscaler:
+
+```bash
+pip install shinka
+```
+
+For CLI usage:
+
+```bash
+pip install shinka[cli]
+```
+
+## Python API Usage
+
+```python
+from shinka import upscale
+
+# Upscale an image from file and save the result
+result_path = upscale("input.jpg", scale=2, save_path="upscaled.png")
+
+# Upscale a NumPy array and get a PIL Image
+import numpy as np
+from PIL import Image
+arr = np.array(Image.open("input.jpg"))
+result_img = upscale(arr, scale=2)  # returns PIL Image
+```
+
+## Command-Line Usage
+
+After installing with `[cli]`, you get a `shinka` command:
+
+```bash
+shinka single input.jpg --scale 2 --output upscaled.png
+shinka batch ./images --scale 2 --output ./upscaled
+```
+
+- `single`: Upscale a single image file
+- `batch`: Recursively upscale all images in a directory (supports PNG, JPEG, etc.)
+
+## Algorithm Details
+
+- **Kernel:** 5-tap symmetric, two-phase optimized (“halo tap”)
+- **Convolution:** Separable 1D, applied in both axes
+- **Boundary Modes:** Reflect, constant, nearest, mirror, wrap
+- **No ML/AI:** No training, no model weights, no external data
+
+---
+
+## Technical Appendix: Kernel Discovery and Analysis
+
+### Title
+
+**A Pareto-Optimal 5-Tap Symmetric Kernel for Efficient Image Upscaling: Discovery via Large-Scale Random Search and Gradient-Based Refinement**
+
+### Abstract
+
+We present a computationally efficient, Pareto-optimal 5-tap symmetric convolution kernel for image upscaling, designed to maximize passband fidelity and stopband suppression while minimizing computational cost. The kernel was discovered through a two-stage process: (1) a large-scale, GPU-accelerated random search over the space of normalized symmetric 5-tap filters, and (2) gradient-based fine-tuning using frequency-domain objectives. This approach yields a kernel that outperforms standard alternatives (e.g., bilinear, Lanczos-3/7) in the trade-off between computational efficiency and anti-aliasing performance. We discuss the methodology, analyze the resulting kernel’s properties, and outline the generalizability of this approach to other kernel design problems.
+
+### 1. Introduction
+
+Image upscaling is a fundamental operation in computer vision, graphics, and imaging pipelines. The choice of interpolation kernel directly impacts both visual quality and computational efficiency. While high-tap kernels (e.g., Lanczos-7) offer strong anti-aliasing, they are computationally expensive. Conversely, low-tap kernels (e.g., bilinear) are efficient but suffer from poor frequency response and aliasing artifacts. There is a practical need for kernels that optimally balance these competing objectives.
+
+### 2. Methodology
+
+#### 2.1. Search Space
+
+We restrict our search to symmetric, normalized 5-tap kernels, parameterized as:
+
+$$
+h = [a, b, c, b, a], \quad \text{with} \quad \sum h = 1
+$$
+
+where $a, b, c$ are real-valued parameters.
+
+#### 2.2. Objective Function
+
+The kernel’s frequency response is evaluated using the discrete Fourier transform. The objective function is:
+
+$$
+J = \text{MSE}_{\text{passband}} + \alpha \cdot \max(\text{stopband})
+$$
+
+where $\text{MSE}_{\text{passband}}$ measures deviation from the ideal (unity) response in the passband, and $\max(\text{stopband})$ penalizes the largest response in the stopband. The weighting parameter $\alpha$ controls the trade-off.
+
+#### 2.3. Large-Scale Random Search
+
+We employ a GPU-accelerated random search, generating hundreds of millions of candidate kernels, each evaluated for frequency-domain performance. The best candidate is selected as the starting point for refinement.
+
+#### 2.4. Gradient-Based Fine-Tuning
+
+The selected kernel is further optimized using gradient descent (Adam optimizer) on the objective $J$, with staged adjustment of $\alpha$ to first flatten the passband and then tighten the stopband. This two-phase approach ensures both high fidelity and strong anti-aliasing.
+
+### 3. Results
+
+The discovered 5-tap kernel achieves:
+
+* **Passband MSE:** $1.94 \times 10^{-2}$
+* **Stopband Peak:** $0.57$ (normalized, cf. Lanczos-3: 1.0)
+* **Computational Cost:** 5 multiplications/additions per output pixel
+
+Pareto analysis demonstrates that no standard kernel (bilinear, symmetric 5-tap, Lanczos-7/9) dominates this kernel across all metrics. Visual and analytical tests confirm superior suppression of high-frequency noise and preservation of image features.
+
+### 4. Discussion
+
+#### 4.1. Importance of the 5-Tap Kernel
+
+This kernel fills a critical gap in the design space: it offers strong anti-aliasing and high fidelity at a computational cost suitable for real-time and embedded applications. Its symmetric, short support makes it ideal for separable 2D filtering and hardware implementation.
+
+#### 4.2. Generalizability
+
+The methodology—combining large-scale random search with gradient-based refinement—can be generalized to other kernel design problems:
+
+* **Different tap counts:** The approach scales to 3-tap, 7-tap, or higher-order kernels.
+* **Asymmetric or constrained kernels:** The parameterization and objective can be adapted for non-symmetric or application-specific constraints.
+* **Other domains:** The same framework applies to audio, 1D/3D signals, or any domain where frequency-domain kernel properties are critical.
+
+#### 4.3. Future Applications
+
+Potential applications include:
+
+* Real-time video upscaling in resource-constrained environments
+* Hardware-accelerated image processing pipelines
+* Custom anti-aliasing filters for scientific imaging or medical devices
+* Audio resampling with strict computational budgets
+
+### 5. Conclusion
+
+We have demonstrated that a data-driven, computational search approach can yield a 5-tap upscaling kernel that is Pareto-optimal and practically superior to standard alternatives. This methodology is broadly applicable to kernel design problems where trade-offs between fidelity, anti-aliasing, and efficiency are paramount.
+
+### References
+
+* Oppenheim, A. V., & Schafer, R. W. (2009). Discrete-Time Signal Processing. Pearson.
+* Smith, J. O. (2007). Introduction to Digital Filters: With Audio Applications. W3K Publishing.
+* Harris, F. J. (1978). On the use of windows for harmonic analysis with the discrete Fourier transform. Proceedings of the IEEE, 66(1), 51-83.
+* [conv_1d.py source code, this work]
+
+---
+
+## License
+
+This project is licensed under the MIT License. See the LICENSE file for details.

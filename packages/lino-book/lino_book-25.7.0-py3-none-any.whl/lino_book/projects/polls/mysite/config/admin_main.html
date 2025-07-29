@@ -1,0 +1,23 @@
+<div style="margin:5px">
+<h1>Recent polls</h1>
+<ul>
+{% for question in rt.models.polls.Question.objects.filter(hidden=False).order_by('pub_date') %}
+<li>
+{{question.question_text}} 
+{% set sep = joiner(" / ") %}
+{% for choice in question.choice_set.all() %}
+  {{ sep() }}
+  {{ choice.vote.as_button(ar, str(choice))}}
+{% endfor %}
+<br/><small>Published {{fdl(question.pub_date)}}
+<br/>Results:
+{% set sep = joiner(", ") %}
+{% for choice in question.choice_set.all() %}
+  {{ sep() }}{{choice.votes}}x {{str(choice)}}
+({{100.0 * choice.votes / (question.choice_set.aggregate(Sum('votes'))['votes__sum'] or 1)}} %)
+{% endfor %}
+</small>
+</li>
+{% endfor %}
+</ul>
+</div>

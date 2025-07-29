@@ -1,0 +1,49 @@
+<div style="margin:5px">
+
+{% if site.title %}
+<p>Welcome to the <b>{{site.title}}</b> site.</p>
+{% endif %}
+
+<p>This website is running in <tt>{{site.site_dir}}</tt>.</p>
+
+{% if not ar.user.is_authenticated %}
+<p>
+  You will now probably want to {{ar.action_link('about.About.sign_in', text="sign in")}}.
+  {% if site.plugins.users.allow_online_registration %}
+  Or {{ar.action_link('about.About.create_account', text="register as a new user")}}.
+  {% endif %}
+  Or {{ar.action_link('about.About.reset_password', text="reset your password")}}.
+</p>
+{% else %}
+<h1>Recent polls</h1>
+<ul>
+{% for question in rt.models.polls.Question.objects.filter(hidden=False).order_by('pub_date') %}
+<li>
+<b>
+{{question.question_text}}
+</b>
+{% set sep = joiner(" / ") %}
+{% for choice in question.choice_set.all() %}
+  {{ sep() }}
+  {{ choice.vote.as_button(ar, str(choice))}}
+{% endfor %}
+{% if question.description %}
+<br/> {{ question.description}}
+{% endif %}
+<br/><small>Published {{fdl(question.pub_date)}}
+<br/>Results:
+{% if True %}
+{{question.results_overview()}}
+{% else %}
+{% set sep = joiner(", ") %}
+{% for choice in question.choice_set.all() %}
+  {{ sep() }}{{choice.votes}}x {{str(choice)}}
+({{100.0 * choice.votes / (question.choice_set.aggregate(Sum('votes'))['votes__sum'] or 1)}} %)
+{% endfor %}
+{% endif %}
+</small>
+</li>
+{% endfor %}
+</ul>
+</div>
+{% endif %}

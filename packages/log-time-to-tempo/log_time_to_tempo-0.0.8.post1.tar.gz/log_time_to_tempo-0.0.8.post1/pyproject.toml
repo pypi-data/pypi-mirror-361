@@ -1,0 +1,133 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "log-time-to-tempo"
+description = 'Log your work time to tempo from the command line.'
+readme = "README.md"
+requires-python = ">=3.11"
+keywords = ["jira", "tempo", "cli"]
+authors = [
+  { name = "Jannis Mainczyk", email = "jannis.mainczyk@codecentric.de" },
+]
+dynamic = ["version"]
+dependencies = [
+  "jira",
+  "typer",
+  "click>=8.2",
+  "rich",
+  "python-dotenv",
+  "keyring",
+  "keyrings-alt",     # less secure fallback, if no secure keyring is available
+  "coloredlogs",
+  "requests",
+  "pydantic",
+  "python-dateutil",
+  "simple-term-menu", # https://github.com/IngoMeyer441/simple-term-menu
+  "dateparser",
+  "sparklines",       # for time visualization in stats command
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+license-files = ["./LICENSE"]
+[project.optional-dependencies]
+test = ["pytest", "pytest-cov", "hypothesis", "ruff"]
+
+[project.urls]
+Documentation = "https://github.com/jannismain/log-time-to-tempo#readme"
+Issues = "https://github.com/jannismain/log-time-to-tempo/issues"
+Source = "https://github.com/jannismain/log-time-to-tempo"
+
+[project.scripts]
+log-time-to-tempo = "log_time_to_tempo.cli.main:app"
+log-time = "log_time_to_tempo.cli.main:app"
+lt = "log_time_to_tempo.cli.main:app"
+
+[tool.hatch.version]
+path = "src/log_time_to_tempo/__init__.py"
+
+[tool.hatch.envs.default]
+installer = "uv"
+
+[tool.hatch.envs.default.scripts]
+test = "hatch run test:test"
+release = "hatch run test:release"
+publish = "hatch run test:publish"
+build = "hatch run build:build"
+
+[tool.hatch.envs.test]
+dependencies = ["pytest", "pytest-cov", "hypothesis", "hatchling"]
+[tool.hatch.envs.test.scripts]
+test = "pytest --cov-config=pyproject.toml --cov-report=term --cov-report html:build/coverage --cov=log_time_to_tempo --cov-report xml"
+release = """\
+hatch run test:test
+echo "Forgot anything? Press CTRL+C to abort..."
+sleep 5
+git tag -m 'bump version to '`hatch version` v`hatch version` --sign
+git push --tags
+rm -rf dist/log_time_to_tempo-*
+hatch run build:build
+hatch run test:publish
+"""
+publish = """\
+hatch publish
+glab release create v`hatch version` \
+    --name v`hatch version` \
+    --notes '*[see changes](https://gitlab.codecentric.de/jmm/log-time-to-tempo/-/blob/main/README.md#'`hatch version | tr -d .`'-'`date -Idate`')*' \
+    dist/*
+gh release create v`hatch version` \
+    --title v`hatch version` \
+    --notes '*[see changes](https://github.com/jannismain/log-time-to-tempo/blob/main/README.md#'`hatch version | tr -d .`'---'`date -Idate`')*' \
+    dist/*
+"""
+[tool.hatch.envs.build]
+dependencies = ["hatchling"]
+[tool.hatch.envs.build.scripts]
+build = """\
+hatch build --clean
+"""
+
+[tool.coverage.run]
+source_pkgs = ["log_time_to_tempo", "tests"]
+branch = true
+parallel = true
+omit = ["_logging.py"]
+
+[tool.coverage.paths]
+log_time_to_tempo = ["src/log_time_to_tempo"]
+tests = ["tests", "src/test_log_time_to_tempo/"]
+
+[tool.coverage.report]
+exclude_lines = ["nocov", "if __name__ == .__main__.:"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "B", "I", "F"]
+ignore = ["B008"]
+
+[tool.ruff.lint.per-file-ignores]
+# Ignore `E402` (import violations) in all `__init__.py` files, and in select subdirectories.
+"__init__.py" = ["E402"]
+
+[tool.ruff.format]
+docstring-code-format = true
+quote-style = "single"
+
+[tool.ruff.lint.isort]
+known-first-party = ["log_time_to_tempo", "test_log_time_to_tempo"]
+
+[tool.uv]
+managed = true
+package = true

@@ -1,0 +1,77 @@
+Metadata-Version: 2.1
+Name: lop-compress
+Version: 1.0.0
+Summary: Compressing Tree Ensembles through Level-wise Optimization and Pruning
+Author: Laurens Devos, Timo Martens
+Project-URL: Homepage, https://github.com/ML-KULeuven/lop_compress
+Project-URL: Issues, https://github.com/ML-KULeuven/lop_compress/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy>=1.26
+Requires-Dist: scikit-learn>=1.4
+Requires-Dist: scipy>=1.12
+Requires-Dist: dtai-veritas>=0.2
+Requires-Dist: colorama
+
+# TreeCompress: top-down compression of decision tree ensembles using L1 regularization
+
+This Python software package takes a pre-trained tree ensemble model and compresses
+it in a top-down fashion. Starting from the root and going down level per level, it prunes
+away subtrees by fitting coefficients.
+
+It uses the tree representation of [Veritas](https://github.com/laudv/veritas).
+
+## Installation
+
+From source:
+```bash
+git clone https://github.com/ML-KULeuven/lop_compress
+cd lop_compress
+pip install .
+```
+
+## Example
+
+```python
+import tree_compress
+import veritas
+import numpy as np
+from sklearn.datasets import make_moons
+from sklearn.ensemble import RandomForestClassifier
+
+noise = 0.05
+xtrain, ytrain = make_moons(200, noise=noise, random_state=1)
+xtest, ytest = make_moons(200, noise=noise, random_state=2)
+xvalid, yvalid = make_moons(200, noise=noise, random_state=3)
+
+data = tree_compress.Data(xtrain, ytrain, xtest, ytest, xvalid, yvalid)
+
+clf = RandomForestClassifier(
+        max_depth=5,
+        random_state=2,
+        n_estimators=50)
+clf.fit(data.xtrain, data.ytrain)
+
+at_orig = veritas.get_addtree(clf, silent=silent)
+
+compr = tree_compress.Compress(
+                            data,
+                            at_orig,
+                            score=balanced_accuracy_score,
+                            isworse=lambda v, ref: ref-v > 0.005,
+                            silent=True
+                        )
+at_pruned = compr.compress(max_rounds=2, timeout=7200)
+```
+
+## Experiments
+The code to run the experiments from our ICML paper can be run using the files in `experiment/`.
+
+The different experiments can be run using the commands in the `experiment/settings/` folder. Figures/tables from the paper can be generated using the notebook `experiment/icml.ipynb`.
+
+## Reference
+Devos, L., Martens, T., Oruç, D.C., Meert, W., Blockeel, H., Davis, J.: Compressing tree ensembles through level-wise optimization and pruning. In: Proceedings of the 42nd International Conference on Machine Learning (2025)

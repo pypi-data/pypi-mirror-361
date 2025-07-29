@@ -1,0 +1,197 @@
+{
+   "default": {
+      "usage": "lmcv_tools [command] [args]",
+      "topics": {
+         "Possible Commands": {
+            "version": "Show version",
+            "help": "Show a help text. Without arguments, show this text. With a command name as argument, show a help text about this command",
+            "translate": "Translate file to another format. Example: translate Job-1.inp to .dat",
+            "extract": "Extract attributes from .pos (or .dat) file to CSV format. Example: extract [attributes] from [path/to/.pos]",
+            "generate": "Generate special artifacts. Example: generate [artifact name]",
+            "reorder": "Add a nodal solver order in .dat files. Example: reorder [method] [path/to/.dat]",
+            "change": "Change attributes from .dat (or .pos) files. Example: change [attribute] to [value] in [path/to/.dat]"
+         }
+      }
+   },
+   "version": {
+      "usage": "version",
+      "topics": {
+         "Details": {
+            "No Arguments": "This command shows the version of this program"
+         }
+      }
+   },
+   "translate": {
+      "usage": "translate [path/to/file] to [extension]",
+      "topics": {
+         "Possible Translations": {
+            ".inp to .dat": "Example: translate Job-1.inp to .dat",
+            ".dat to .svg": "Example: translate Plate.dat to .svg"
+         },
+         "Possible Arguments": {
+            "[path/to/file]": "Required argument. Relative path to file",
+            "[new extension]": "Required argument. Extension to which the file will be translated"
+         },
+         "Projections in .dat to .svg": {
+            "Explanation": "The use of these flags must consider the following points: the projection plane will always be the x-y plane; the -x, -y and -z flags are only necessary if the projection type is \"perspective\"; the coordinates provided in the -x, -y and -z flags are relative to the mesh centroid; the flags --Rx, --Ry and --Rz can be written in any order and can even be repeated; the rotations described by --Rx, --Ry, and --Rz will be executed in the order they were written",
+            "-p or --projection": "Type of projection: parallel or perspective (default: parallel)",
+            "-x": "X-coordinate of the projection center (perspective projection)",
+            "-y": "Y-coordinate of the projection center (perspective projection)",
+            "-z": "Z-coordinate of the projection center (perspective projection)",
+            "--Rx": "A rotaion in x-axis",
+            "--Ry": "A rotaion in y-axis",
+            "--Rz": "A rotaion in z-axis"
+         }
+      }
+   },
+   "extract": {
+      "usage": "extract [attributes] from [path/to/.pos] where [condition] to [path/to/.csv]",
+      "topics": {
+         "Possible Arguments": {
+            "[attributes]": "Required argument. List of names (at least one) that represent a piece of data from a .pos file",
+            "[path/to/.pos]": "Required argument. Relative path to .pos file",
+            "[condition]": "Optional argument. Series of attribute constraints, combining attribute names, operators and test values. Supported operators: and, or, =, >, <, >=, <=, !=, in. Remembering that the symbols '>' and '<' must be encapsulated by quotes. Otherwise, they will be interpreted by the shell as redirection operators. Example: [...] where step.id '>' 5 and step.factor '<' 1.0",
+            "[path/to/.csv]": "Optional argument. Relative path to .csv file. If it is not given, it will be the same as the .pos file"
+         },
+         "Supported Attributes": {
+            "step.id": "Type: int",
+            "step.factor": "Type: float, Related: step.id",
+            "node.id": "Type: int",
+            "node.coord": "Type: list[float], Related: node.id",
+            "step.node.displacement": "Type: list[float], Related: step.id, node.id",
+            "step.gauss.scalar": "Type: list[str], Related: step.id",
+            "step.nodal.scalar": "Type: list[str], Related: step.id",
+            "element.id": "Type: int",
+            "element.info": "Type: list[int], Related: element.id",
+            "step.element.gauss.scalar.data": "Type: list[float], Related: step.id, element.id",
+            "step.element.nodal.scalar.data": "Type: list[float], Related: step.id, element.id",
+            "buckling.id": "Type: int",
+            "buckling.factor": "Type: float, Related: buckling.id",
+            "buckling.node.displacement": "Type: list[float], Related: buckling.id, node.id",
+            "vibration.id": "Type: int",
+            "vibration.factor": "Type: float, Related: vibration.id",
+            "vibration.node.displacement": "Type: list[float], Related: vibration.id, node.id",
+            "material.id": "Type: int",
+            "material.isotropic.E": "Type: float, Related: material.id",
+            "material.isotropic.poisson": "Type: float, Related: material.id, material.isotropic.E",
+            "section.id": "Type: int",
+            "section.bar.circle.radius": "Type: float, Related: section.id"
+         }
+      }
+   },
+   "generate": {
+      "usage": "generate [artifact name] [args] [path/to/artifact]",
+      "topics": {
+         "Possible Arguments": {
+            "[artifact name]": "Required argument. Name of the artifact. Supported artifacts: virtual_laminas, cuboid, nurbs_rectanle, nurbs_cuboid, cyl_panel, slit_annular_plate, nurbs_slit_annular_plate",
+            "[args]": "Series of arguments that depend on the artifact. See the topics bellow for more details",
+            "[path/to/artifact]": "Optional argument. Relative path to artifact output files. If it is not given, it will be the file with the same name of artifact in the current directory"
+         },
+         "Arguments for virtual_laminas": {
+            "[Laminas Count]": "Required integer argument",
+            "[Element Type]": "Required string argument. Supported element types: Solid, Shell",
+            "[Laminas Thickness]": "Required float point argument. If the element type is Shell, it represents total absolute thickness. If the element type is Solid, it represents the relative thickness for each lamina.",
+            "[Number of Integration Points]": "Required integer argument",
+            "[Power Law Exponent]": "Required float point argument. Exponent of Power Law, a mathematical function that determines the volume fractions of the Functionally Graded Material represented by virtual laminas",
+            "[Micromechanical Model]": "Required string argument. Supported micromechanical models: voigt, mori_tanaka, hashin_shtrikman_lower_bound, hashin_shtrikman_upper_bound",
+            "[E1]": "Required float point argument. Elastic Modulus of Material 1",
+            "[E2]": "Required float point argument. Elastic Modulus of Material 2",
+            "[nu1]": "Required float point argument. Poisson's Coefficient of Material 1",
+            "[nu2]": "Required float point argument. Poisson's Coefficient of Material 2",
+            "[pho1]": "Required float point argument. Density of Material 1",
+            "[pho2]": "Required float point argument. Density of Material 2",
+            "[Smart Laminas]": "Required boolean argument. If True, the laminas will be generated by a new smart method"
+         },
+         "Arguments for rectangle": {
+            "[Element Type]": "Required string argument. Supported element types: Q8",
+            "[Width]": "Required float point argument",
+            "[Height]": "Required float point argument",
+            "[Number of Elements in Width]": "Required integer argument",
+            "[Number of Elements in Height]": "Required integer argument"
+         },
+         "Arguments for cuboid": {
+            "[Element Type]": "Required string argument. Supported element types: BRICK20",
+            "[Width]": "Required float point argument",
+            "[Height]": "Required float point argument",
+            "[Deep]": "Required float point argument",
+            "[Number of Elements in Width]": "Required integer argument",
+            "[Number of Elements in Height]": "Required integer argument",
+            "[Number of Elements in Deep]": "Required integer argument"
+         },
+         "Arguments for nurbs_rectangle": {
+            "[Degree in Width]": "Required integer argument",
+            "[Degree in Height]": "Required integer argument",
+            "[Width]": "Required float point argument",
+            "[Height]": "Required float point argument",
+            "[Number of Elements in Width]": "Required integer argument",
+            "[Number of Elements in Height]": "Required integer argument"
+         },
+         "Arguments for nurbs_cuboid": {
+            "[Degree in Width]": "Required integer argument",
+            "[Degree in Height]": "Required integer argument",
+            "[Degree in Deep]": "Required integer argument",
+            "[Width]": "Required float point argument",
+            "[Height]": "Required float point argument",
+            "[Deep]": "Required float point argument",
+            "[Number of Elements in Width]": "Required integer argument",
+            "[Number of Elements in Height]": "Required integer argument",
+            "[Number of Elements in Deep]": "Required integer argument"
+         },
+         "Arguments for cyl_panel": {
+            "[Element Type]": "Required string argument. Supported element types: Q8, Q4",
+            "[Height]": "Required float point argument",
+            "[Number of Elements in Width]": "Required integer argument",
+            "[Number of Elements in Height]": "Required integer argument",
+            "[Radius]": "Required float point argument",
+            "[Start Angle]": "Required float point argument (Degrees)",
+            "[Stop Angle]": "Required float point argument (Degrees)"
+         },
+         "Arguments for slit_annular_plate": {
+            "[Element Type]": "Required string argument. Supported element types: Q8",
+            "[Inner Radius]": "Required float point argument",
+            "[Outer Radius]": "Required float point argument",
+            "[Number of Elements along Radius]": "Required integer argument",
+            "[Number of Elements along Circumference]": "Required integer argument"
+         },
+         "Arguments for nurbs_slit_annular_plate": {
+            "[Inner Radius]": "Required float point argument",
+            "[Outer Radius]": "Required float point argument",
+            "[Element Degree along Radius]": "Required integer argument",
+            "[Element Degree along Circumference quarter]": "Required integer argument",
+            "[Number of Elements along Radius]": "Required integer argument",
+            "[Number of Elements along Circumference quarter]": "Required integer argument"
+         },
+         "Arguments for nurbs_hemisfere": {
+            "[Radius]": "Required float point argument",
+            "[Pole Angle]": "Required float point argument",
+            "[Element Degree along Longitudinal Circunference]": "Required integer argument",
+            "[Element Degree along Transversal Circunference]": "Required integer argument",
+            "[Number of Elements along Longitudinal Circunference]": "Required integer argument",
+            "[Number of Elements along Transversal Circunference]": "Required integer argument"
+         }
+      }
+   },
+   "reorder": {
+      "usage": "reorder [method] [path/to/.dat]",
+      "topics": {
+         "Possible Arguments": {
+            "[method]": "Required argument. Method of Reordering. Supported methods: rcm (Reverse Cuthill-McKee), sloan, boost_rcm, boost_sloan",
+            "[path/to/.dat]": "Required argument. Relative path to .dat file"
+         },
+         "Possible Flags": {
+            "-i or --info": "Show info about bandwidth reduction and execution time"
+         }
+      }
+   },
+   "change": {
+      "usage": "change [attribute] to [value] in [path/to/.dat] where [condition]",
+      "topics": {
+         "Possible Arguments": {
+            "[attribute]": "Required argument. List of names (at least one) that represent a piece of data from a .dat file. Supported attributes: They are the same as those used in the extract command",
+            "[value]": "Required argument. New value for the given atribute",
+            "[path/to/.dat]": "Required argument. Relative path to .dat file",
+            "[condition]": "Optional argument. They are the same as those used in the extract command"
+         }
+      }
+   }
+}

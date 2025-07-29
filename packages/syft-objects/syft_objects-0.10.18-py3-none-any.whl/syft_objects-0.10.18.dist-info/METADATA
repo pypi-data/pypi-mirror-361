@@ -1,0 +1,243 @@
+Metadata-Version: 2.4
+Name: syft-objects
+Version: 0.10.18
+Summary: Share files with explicit mock vs private control
+Project-URL: Homepage, https://github.com/OpenMined/syft-objects
+Project-URL: Documentation, https://openmined.github.io/syft-objects/
+Project-URL: Repository, https://github.com/OpenMined/syft-objects
+Project-URL: Bug Tracker, https://github.com/OpenMined/syft-objects/issues
+Project-URL: Discussions, https://github.com/OpenMined/syft-objects/discussions
+Author-email: OpenMined <contact@openmined.org>
+Maintainer-email: OpenMined <contact@openmined.org>
+Keywords: data-sharing,distributed,openmined,privacy,syft
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: System :: Distributed Computing
+Requires-Python: >=3.9
+Requires-Dist: build>=1.2.2.post1
+Requires-Dist: fastapi>=0.104.0
+Requires-Dist: httptools>=0.6.0
+Requires-Dist: loguru>=0.7.0
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: python-multipart>=0.0.20
+Requires-Dist: pyyaml>=6.0
+Requires-Dist: requests>=2.32.4
+Requires-Dist: syft-core>=0.2.5
+Requires-Dist: syft-perm>=0.1.0
+Requires-Dist: twine>=6.1.0
+Requires-Dist: uvicorn[standard]>=0.24.0
+Requires-Dist: uvloop>=0.17.0; sys_platform != 'win32'
+Provides-Extra: data
+Requires-Dist: numpy>=1.20.0; extra == 'data'
+Requires-Dist: openpyxl>=3.0.0; extra == 'data'
+Requires-Dist: pandas>=2.0.0; extra == 'data'
+Requires-Dist: pyarrow>=10.0.0; extra == 'data'
+Provides-Extra: dev
+Requires-Dist: black>=23.0.0; extra == 'dev'
+Requires-Dist: isort>=5.0.0; extra == 'dev'
+Requires-Dist: mypy>=1.0.0; extra == 'dev'
+Requires-Dist: pre-commit>=3.0.0; extra == 'dev'
+Requires-Dist: pytest-cov>=4.0.0; extra == 'dev'
+Requires-Dist: pytest>=7.0.0; extra == 'dev'
+Provides-Extra: docs
+Requires-Dist: mkdocs-jupyter>=0.24.0; extra == 'docs'
+Requires-Dist: mkdocs-material>=9.0.0; extra == 'docs'
+Requires-Dist: mkdocs>=1.5.0; extra == 'docs'
+Description-Content-Type: text/markdown
+
+# 🎯 Syft Objects
+
+[![PyPI version](https://badge.fury.io/py/syft-objects.svg)](https://badge.fury.io/py/syft-objects)
+
+**Discover and use files you can't read.** Syft Objects enables federated data science by letting you write code against mock data that runs on real data elsewhere.
+
+## Why Syft Objects?
+
+In federated computing, you often need to:
+- 🔍 **Discover** files that exist on other machines
+- 📍 **Address** those files in your code
+- 🧪 **Test** your code locally before running remotely
+- 🔐 **Control** who can see what
+
+Syft Objects solves this by providing a simple mock/private pattern for any file type.
+
+## Installation
+
+```bash
+pip install syft-objects
+```
+
+## Quick Start
+
+```python
+import syft_objects as so
+
+# Create an object with mock (public) and private versions
+analysis = so.create_object(
+    name="Q4 Sales Analysis",
+    mock_contents="Revenue up 10% to $2.5M",         # What others see
+    private_contents="Revenue: $2,547,891.23",       # What you see
+    discovery_read=["public"],                       # Who can discover it
+    mock_read=["team@customer_company.com"],         # Who can see mock
+    private_read=["cfo@our_company.com"]             # Who can see real data
+)
+
+# Browse available objects
+so.objects  # Interactive table with search, filter, and permissions
+```
+
+## Core Concepts
+
+### 1. Every Object Has Two Versions
+- **Mock**: Sample/demo data anyone can code against
+- **Private**: Real data only authorized users can access
+
+### 2. Permissioned Discovery
+```python
+# Others can discover your object exists, even if they can't read it
+so.objects  # Shows objects YOU can discover (not everyone sees the same list)
+```
+
+### 3. Write Once, Run Anywhere
+```python
+# Test locally with mock data
+netflix_data = so.objects["0b2f982d-6f82-48f3-b32e-3005e186e1cc"]
+result = len(netflix_data.mock.obj)  # Works with mock
+
+# Same code runs on private data elsewhere
+def analyze_netflix_data():
+    data = pd.read_csv(netflix_data.private.path)  # Runs on real data
+    return len(data)
+```
+
+## Common Workflows
+
+### Creating Objects from Files
+```python
+# From existing files
+dataset = so.create_object(
+    name="Customer Dataset",
+    mock_file="sample_100.csv",
+    private_file="customers_full.csv"
+)
+
+# From folders
+model = so.create_object(
+    name="ML Model",
+    mock_folder="model_demo/",
+    private_folder="model_prod/"
+)
+```
+
+### Finding and Using Objects
+```python
+# 1. Browse available objects
+so.objects
+
+# 2. Search and select (checkbox) objects of interest
+# 3. Click "Python" button to copy code
+# 4. Paste and use:
+results = [so.objects["uid-here"]]
+mock_data = results[0].mock.obj
+```
+
+### Creating Derivative Objects
+```python
+# Your analysis creates new syft objects
+def my_analysis():
+    # Load input
+    input_data = pd.read_csv(input_path)
+    
+    # Process
+    result = len(input_data)
+    
+    # Save as new syft object
+    so.create_object(
+        name=f"Row count: {result}",
+        private_file="result.txt",
+        mock_file="result_mock.txt",
+        discovery_read=["researcher@university.edu"]
+    )
+```
+
+## CRUD Operations
+
+### Create
+```python
+obj = so.create_object(name="My Object", mock_contents="demo", private_contents="real")
+```
+
+### Read
+```python
+obj.get_name()
+obj.get_permissions() 
+obj.mock.obj  # Access mock data
+```
+
+### Update
+```python
+obj.set_name("Updated Name")
+obj.set_permissions(mock_read=["new@user.com"])
+```
+
+### Delete
+```python
+obj.delete_obj()
+```
+
+## Web Interface
+
+```bash
+./run.sh  # Starts web UI at http://localhost:8004
+```
+
+Features:
+- Search and filter objects
+- Drag-and-drop file upload
+- Edit permissions
+- View/edit mock and private files
+
+## How It Works
+
+Syft Objects creates YAML config files that point to mock and private versions of your data:
+
+```yaml
+name: Sales Data
+mock_url: syft://user@email.com/public/objects/sales_mock.csv
+private_url: syft://user@email.com/private/objects/sales_real.csv
+mock_permissions: [public]
+private_permissions: [cfo@company.com]
+```
+
+The library handles all the complexity of:
+- File management and syft:// URLs
+- Permission checking
+- Mock/private switching
+- Cross-datasite discovery
+
+## Use Cases
+
+- **Federated Data Science**: Write analysis code against mock data, run on real data elsewhere
+- **Privacy-Preserving ML**: Train models on distributed data without seeing it
+- **Secure Collaboration**: Share data structure without revealing contents
+- **Intermediate Results**: Track outputs from multi-step federated computations
+
+## Learn More
+
+- **Tutorial**: See `5mins.ipynb` for hands-on examples
+- **Federated Execution**: Use with [syft-queue](https://github.com/OpenMined/syft-queue) or [syft-data-science](https://github.com/OpenMined/syft-data-science)
+- **Issues**: https://github.com/OpenMined/syft-objects/issues
+
+## License
+
+Apache License 2.0

@@ -1,0 +1,45 @@
+# https://packaging.python.org/en/latest/tutorials/packaging-projects/
+# https://packaging.python.org/en/latest/specifications/well-known-project-urls/#well-known-labels
+
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tutor-contrib-pok"
+description = "Tutor plugin to integrate POK certificates into Open edX"
+version = "18.0.0"
+authors = [
+  { name = "Aulasneo", email = "andres@aulasneo.com" }
+]
+readme = "README.rst"
+requires-python = ">=3.9"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU Affero General Public License v3",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12"
+]
+dependencies = [
+    "tutor>=19.0.0,<20.0.0"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/aulasneo/tutor-contrib-pok"
+"Bug Tracker" = "https://github.com/aulasneo/tutor-contrib-pok/issues"
+
+[tool.setuptools]
+package-dir = { "" = "." }
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["tutorpok*"]
+namespaces = true
+
+[project.entry-points."tutor.plugin.v1"]
+pok = "tutorpok.plugin"

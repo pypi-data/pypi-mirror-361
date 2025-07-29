@@ -1,0 +1,231 @@
+Metadata-Version: 2.1
+Name: mw-info
+Version: 0.1.1
+Summary: Malawi Information Library (Districts, Currency, Agriculture, Health, Demographics)
+Home-page: https://github.com/Tuntufye4/mw-info
+Author: Tuntufye Mwanyongo
+Author-email: tuntumwanyongo@gmail.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: PyYAML
+
+# mw_info
+
+A lightweight Python library to access structured information about **Malawiâ€™s districts**, **agriculture**, **currency exchange rates**,
+**health facilities**, and **demographics**.
+   
+  
+---
+
+## Features
+
+âœ… **District-level insights**:  
+Region, coordinates, population, climate, timezone, elevation, and more
+
+âœ… **Currency conversion**:  
+Convert between MWK and major currencies (USD, EUR, ZAR, etc.)
+
+âœ… **Agricultural info**:  
+Query crops and fish species using **Chichewa**, **English**, or **scientific name**
+
+âœ… **Health data**:  
+Get health facility counts (hospitals, clinics, health posts) by district
+
+âœ… **Demographics**:  
+Population totals, gender ratios, age distribution, and urban/rural splits
+
+---
+
+## Installation
+
+```bash
+pip install mw-info
+```
+or for development:
+
+```
+git clone https://github.com/Tuntufye4/mw_info.git
+cd mw_info
+pip install -e .
+```
+
+## Usage
+
+## DistrictInfo Class, Methods & Examples
+
+### get_all_districts()
+
+```
+districts = DistrictInfo()
+all_districts = districts.get_all_districts()
+print(all_districts)
+# Output: ['Lilongwe', 'Blantyre', 'Machinga', ...]
+
+```
+
+### get_district_info(district_name, fields=None)
+
+```
+districts = DistrictInfo()
+
+#### Full info for Lilongwe
+info = districts.get_district_info("Lilongwe")
+print(info)
+
+#### Selected fields only
+selected = districts.get_district_info("Mangochi", fields=["population_2023", "languages", "climate"])
+print(selected)
+
+```
+
+### filter_by_region(region_name)
+
+Returns list of district dictionaries for districts in a given region.
+
+```
+districts = DistrictInfo()
+southern_districts = districts.filter_by_region("Southern")
+for d in southern_districts:
+    print(d["district"])
+### Outputs districts in Southern region
+```
+
+### get_all_district_data()
+
+Returns the full raw list of all district dictionaries.
+
+```
+districts = DistrictInfo()
+all_data = districts.get_all_district_data()
+print(all_data[0])  # Print first district data
+
+```
+
+## CurrencyConverter Class, Methods & Examples
+
+### available_currencies()
+
+Returns list of supported currency codes.
+
+```
+print(currency.available_currencies())
+ Example output: ['USD', 'EUR', 'ZAR', 'GBP', 'KES', ...]
+
+```
+
+### convert_from_base(amount, to_currency)
+
+Convert amount from MWK (base currency) to another currency.
+
+```
+mwk_amount = 10000
+usd_amount = currency.convert_from_base(mwk_amount, "USD")
+print(f"{mwk_amount} MWK is approximately {usd_amount} USD")
+
+```
+
+### convert_to_base(amount, from_currency)
+
+Convert amount from another currency to MWK.
+
+```
+usd_amount = 100
+mwk_amount = currency.convert_to_base(usd_amount, "USD")
+print(f"{usd_amount} USD is approximately {mwk_amount} MWK")
+
+```
+
+## AgriInfoMw Class Methods
+
+```
+from agriculture_info import AgricultureInfoMW
+
+agri = AgricultureInfoMW()
+
+```
+
+### Query crop or fish info by any name (Chichewa, English, or Scientific)
+
+```
+crop = agri.query_info("Chimanga")
+print(crop)
+
+fish = agri.query_info("Oreochromis shiranus")
+print(fish)
+```
+
+### Query by English name
+
+```
+crop2 = agri.query_info("Maize")
+print(crop2)
+
+```
+### List all crops
+
+```
+all_crops = agri.list_all_crops()
+print(all_crops)
+
+```
+
+### List all fish species
+
+```
+all_fish = agri.list_all_fish()
+print(all_fish)
+
+```
+
+## Class HealthInfo
+
+from mw_info.health import HealthInfoMW
+
+health = HealthInfoMW()
+
+### List all districts
+
+print(health.get_all_districts())
+
+### Get district 
+
+print(health.get_district_health("Zomba"))
+
+### Filter by facility count
+print(health.filter_by_facility_count("hospitals", threshold=3))
+
+## Class DemographicsInfoMW
+
+from mw_info.demographics import DemographicsInfoMW
+
+demo = DemographicsInfoMW()
+
+### Get all districts
+
+print(demo.get_all_districts())
+
+### Get Total Population
+
+print(demo.get_population_total("Lilongwe"))
+print(demo.get_urban_rural_split("Blantyre"))
+
+### Get district data
+print(demo.get_district_data("Zomba", fields=["population", "urban_percent"]))
+
+
+## Data Source
+
+All the yml files datastores are chatgpt generated.
+
+## License
+
+This project is licensed under the MIT License
+
+## Maintainer
+
+Tuntufye Mwanyongo
+   

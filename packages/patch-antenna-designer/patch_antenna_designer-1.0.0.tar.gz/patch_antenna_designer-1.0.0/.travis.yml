@@ -1,0 +1,20 @@
+dist: focal
+sudo: false
+language: python
+
+python:
+  - "3.10"
+
+before_install:
+  - pip3 install scipy==1.9.0
+  - pip3 install gerber_writer==0.3.4
+  - pip3 install setuptools==61.2.0
+  - python3 setup.py install
+  - pip install pytest-codecov
+
+script:
+  - pytest --cov-report term --cov-report xml:coverage.xml --cov=patch_antenna tests/test_patch_antenna.py
+  - curl -Os https://uploader.codecov.io/latest/linux/codecov && chmod +x codecov && ./codecov -t 98a19ccc-20be-4af6-9c61-0163b5110abb
+
+notifications:
+  email: false

@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "singleston"
+dynamic = ["version"]
+authors = [
+    {name = "Adrien Soursou", email = "adrien.soursou@gmail.com"},
+]
+description = "A powerful source file amalgamator for C/C++ projects"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: Software Development :: Code Generators",
+]
+
+[project.urls]
+Homepage = "https://github.com/ChuOkupai/singleston"
+"Bug Reports" = "https://github.com/ChuOkupai/singleston/issues"
+"Source" = "https://github.com/ChuOkupai/singleston"
+
+[project.scripts]
+singleston = "scripts.singleston:main"
+
+[tool.setuptools.dynamic]
+version = {attr = "scripts.version.__version__"}
+
+[tool.setuptools.packages.find]
+include = ["scripts*", "tests*"]
+
+[tool.setuptools.package-data]
+"*" = ["*.md", "*.txt", "*.cfg"]

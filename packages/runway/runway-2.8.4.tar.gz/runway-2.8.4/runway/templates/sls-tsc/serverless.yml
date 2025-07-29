@@ -1,0 +1,33 @@
+service: replaceme-myslsservice
+
+plugins:
+  - serverless-iam-roles-per-function
+  - serverless-webpack
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+
+package:
+  individually: true
+
+custom:
+  webpack:
+    serializedCompile: true
+    excludeFiles:
+      - "src/**/*.test.ts"
+      - "src/**/__mocks__/*.ts"
+
+functions:
+  helloWorld:
+    handler: src/helloWorld.handler
+    events:
+      - http:
+          path: hello-world
+          method: get
+          cors: true
+    # iamRoleStatements:
+    #   - Effect: "Allow"
+    #     Action:
+    #       - dynamodb:GetItem
+    #     Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/mytable"

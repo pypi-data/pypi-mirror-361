@@ -1,0 +1,65 @@
+Metadata-Version: 2.4
+Name: mfd-event-log
+Version: 0.9.0
+Summary: Module for event logs handling
+Project-URL: Homepage, https://github.com/intel/mfd
+Project-URL: Repository, https://github.com/intel/mfd-event-log
+Project-URL: Issues, https://github.com/intel/mfd-event-log/issues
+Project-URL: Changelog, https://github.com/intel/mfd-event-log/blob/main/CHANGELOG.md
+Requires-Python: <3.14,>=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE.md
+License-File: AUTHORS.md
+Requires-Dist: mfd-common-libs>=1.11.0
+Requires-Dist: mfd-typing>=1.23.0
+Dynamic: license-file
+
+> [!IMPORTANT]  
+> This project is under development. All source code and features on the main branch are for the purpose of testing or evaluation and not production ready.
+
+# MFD Event Log
+Module for interacting with and managing Windows Event Logs.
+
+## Usage
+```python
+from mfd_connect import RPyCConnection
+from mfd_event_log import EventLog, EventType
+
+conn = RPyCConnection(ip="x.x.x.x")
+eventlog_obj = EventLog(connection=conn)
+eventlog_obj.clear_event_log()
+eventlog_obj.get_event_log()
+eventlog_obj.get_event_log(source="Microsoft-Windows-Eventlog",
+	event_type=EventType.INFORMATION, event_id="104")
+result = eventlog_obj.get_and_verify_event_log()
+result = eventlog_obj.get_and_verify_event_log(failure_entry_types=[EventType.INFORMATION])
+result = eventlog_obj.get_and_verify_event_log(ignored_event_ids=["236"])
+```
+
+
+## Implemented methods
+
+* `get_event_log(self, logger_name: str = "System", source: str = "", event_type: EventType = EventType.ALL, event_id: str = "") -> Dict[str, str]` - To get Windows Event Log.
+* `clear_event_log(self) -> None` - Clear Windows Event Log.
+* `get_and_verify_event_log(self, failure_entry_types: List[str] = None, ignored_event_ids: List[str] = None) -> bool` - Get Windows Event Log and check if it contains any unwanted entries.
+* `verify_event_log(self, event_log_entries: Dict[str, str], ignored_event_ids: List[str] = None) -> bool` - Check if given list of Event Log entries contains any unwanted entries
+
+* **Methods**
+- `verify_log(driver: str) -> str` 
+
+  Checks the system log for errors.
+
+  **Parameters:**
+  * driver - name of driver for check
+
+  **Returns:**
+  * `str` -  empty string if no errors found, error content otherwise
+
+## OS supported:
+
+* WINDOWS
+
+
+## Issue reporting
+
+If you encounter any bugs or have suggestions for improvements, you're welcome to contribute directly or open an issue [here](https://github.com/intel/mfd-event-log/issues).

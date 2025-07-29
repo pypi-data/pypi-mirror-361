@@ -1,0 +1,43 @@
+from llmutil import FunctionCallOutput, new_response
+
+
+def add(a, b):
+    return a + b
+
+
+tools = {
+    "add": {
+        "a": "number",
+        "b": "number",
+    }
+}
+
+
+def on_function_call(m):
+    print(m)
+    match m:
+        case {"name": "add", "args": {"a": a, "b": b}}:
+            return FunctionCallOutput(add(a, b))
+
+
+messages = [
+    {
+        "role": "system",
+        "content": "you cannot do math. you must use the add() function to add numbers.",
+    },
+    {
+        "role": "user",
+        "content": "alice has 10 apples, bob has 20 apples, how many apples do they have in total?",
+    },
+]
+
+output = new_response(
+    messages,
+    model="gpt-4.1-mini",
+    tools=tools,
+    on_function_call=on_function_call,
+    timeout=5,
+)
+
+# Alice and Bob have 30 apples in total.
+print(output)

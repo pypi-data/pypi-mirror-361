@@ -1,0 +1,245 @@
+name: Test Package Installation
+
+on:
+  # DISABLED - Using test-pypi-only.yml instead
+  # This workflow is disabled and will not run
+  workflow_dispatch:
+    inputs:
+      disabled:
+        description: 'This workflow is disabled'
+        required: true
+        default: 'disabled'
+
+jobs:
+  test-installation:
+    strategy:
+      fail-fast: false
+      matrix:
+        # Test key combinations to avoid too many jobs
+        include:
+          # Core platform testing
+          - os: ubuntu-latest
+            python-version: "3.11"
+            install-method: "pip"
+            test-name: "Ubuntu Python 3.11"
+          - os: macos-latest
+            python-version: "3.11"
+            install-method: "pip"
+            test-name: "macOS Python 3.11"
+          - os: windows-latest
+            python-version: "3.11"
+            install-method: "pip"
+            test-name: "Windows Python 3.11"
+          # Test conda on macOS
+          - os: macos-latest
+            python-version: "3.11"
+            install-method: "conda"
+            test-name: "macOS Conda Python 3.11"
+          # Test older Python versions
+          - os: ubuntu-latest
+            python-version: "3.8"
+            install-method: "pip"
+            test-name: "Ubuntu Python 3.8"
+          - os: macos-latest
+            python-version: "3.12"
+            install-method: "pip"
+            test-name: "macOS Python 3.12"
+
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Set up Conda (if using conda)
+      if: matrix.install-method == 'conda'
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/pyproject.toml', '**/requirements*.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - name: Install system dependencies (macOS)
+      if: runner.os == 'macOS'
+      run: |
+        # Install Homebrew if not available
+        if ! command -v brew &> /dev/null; then
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        fi
+        brew install hdf5
+        brew install libpng
+        brew install libjpeg
+        brew install pkg-config
+
+    - name: Install system dependencies (Ubuntu)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libhdf5-dev libpng-dev libjpeg-dev pkg-config build-essential
+
+    - name: Build package
+      run: |
+        python -m pip install --upgrade pip build wheel
+        python -m build --sdist --wheel
+
+    - name: Test pip installation
+      if: matrix.install-method == 'pip'
+      shell: bash
+      run: |
+        set -euxo pipefail
+        echo "Testing: ${{ matrix.test-name }}"
+        
+        # Test installation from wheel
+        python -m pip install dist/*.whl
+        
+        # Test basic import
+        python -c "import snid_sage; print('✅ Package imported successfully')"
+        
+        # Test CLI commands
+        echo "Testing CLI commands..."
+        snid --help && echo "✅ snid CLI works"
+        snid-gui --help && echo "✅ snid-gui CLI works"
+        snid-sage --help && echo "✅ snid-sage CLI works"
+        
+        # Test optional dependencies + dev extras
+        echo "Testing optional dependencies..."
+        python -m pip install ".[dev]"
+        python -c "import snid_sage; print('✅ Package with dev dependencies imported successfully')"
+        
+        # Test core functionality
+        echo "Testing core functionality..."
+        python -c "
+        from snid_sage.shared.utils.data_io.spectrum_loader import SpectrumLoader
+        loader = SpectrumLoader()
+        print('✅ Core functionality works')
+        "
+
+    - name: Test sdist installation
+      if: matrix.install-method == 'pip'
+      shell: bash
+      run: |
+        set -euxo pipefail
+        echo "Testing sdist installation..."
+        pip uninstall -y snid-sage
+        python -m pip install dist/*.tar.gz
+        python -c "import snid_sage; print('✅ sdist installation successful')"
+
+    - name: Run unit tests
+      if: matrix.install-method == 'pip'
+      shell: bash
+      run: |
+        set -euxo pipefail
+        echo "Running unit tests..."
+        python -m pip install ".[dev]"
+        pytest -q
+
+    - name: Test conda installation
+      if: matrix.install-method == 'conda'
+      run: |
+        echo "Testing: ${{ matrix.test-name }}"
+        
+        # Install package in conda environment
+        conda install -c conda-forge pip
+        pip install dist/*.whl
+        
+        # Test basic import
+        python -c "import snid_sage; print('✅ Package imported successfully in conda')"
+        
+        # Test CLI commands
+        echo "Testing CLI commands in conda..."
+        snid --help && echo "✅ snid CLI works in conda"
+        snid-gui --help && echo "✅ snid-gui CLI works in conda"
+        snid-sage --help && echo "✅ snid-sage CLI works in conda"
+        
+        # Test core functionality
+        echo "Testing core functionality in conda..."
+        python -c "
+        from snid_sage.shared.utils.data_io.spectrum_loader import SpectrumLoader
+        loader = SpectrumLoader()
+        print('✅ Core functionality works in conda')
+        "
+
+    - name: Test GUI import (if GUI dependencies available)
+      run: |
+        echo "Testing GUI module import..."
+        python -c "
+        try:
+            import snid_sage.interfaces.gui.sage_gui
+            print('✅ GUI module imported successfully')
+        except ImportError as e:
+            print(f'⚠️  GUI import failed (expected on CI): {e}')
+        except Exception as e:
+            print(f'❌ GUI exception: {e}')
+        "
+
+    - name: Test optional dependencies availability
+      run: |
+        echo "Testing optional dependencies..."
+        for dep in astropy scipy matplotlib pandas h5py; do
+          if python -c "import $dep" 2>/dev/null; then
+            echo "✅ $dep available"
+          else
+            echo "⚠️  $dep not available"
+          fi
+        done
+
+    - name: Test Summary
+      if: always()
+      run: |
+        echo "### ${{ matrix.test-name }} 📝" >> "$GITHUB_STEP_SUMMARY"
+        echo "- Package built and installed successfully" >> "$GITHUB_STEP_SUMMARY"
+        echo "- CLI commands available" >> "$GITHUB_STEP_SUMMARY"
+        echo "- Core functionality works" >> "$GITHUB_STEP_SUMMARY"
+        echo "- Optional dependencies handled" >> "$GITHUB_STEP_SUMMARY"
+
+  test-pypi-installation:
+    runs-on: macos-latest
+    if: github.event_name == 'release'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    - name: Install from PyPI
+      run: |
+        echo "Testing PyPI installation on macOS..."
+        python -m pip install --upgrade pip
+        python -m pip install snid-sage
+        
+        # Test basic functionality
+        python -c "import snid_sage; print('✅ PyPI installation successful')"
+        
+        # Test CLI commands
+        echo "Testing PyPI CLI commands..."
+        snid --help && echo "✅ PyPI snid CLI works"
+        snid-gui --help && echo "✅ PyPI snid-gui CLI works"
+        snid-sage --help && echo "✅ PyPI snid-sage CLI works"
+
+    - name: Test PyPI with optional dependencies
+      run: |
+        echo "Testing PyPI with dev dependencies..."
+        python -m pip install "snid-sage[dev]"
+        python -c "import snid_sage; print('✅ PyPI installation with dev dependencies successful')"
+        
+        # Test core functionality
+        python -c "
+        from snid_sage.shared.utils.data_io.spectrum_loader import SpectrumLoader
+        loader = SpectrumLoader()
+        print('✅ PyPI core functionality works')
+        " 

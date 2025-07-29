@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "adt-core"
+version = "2.0.1"
+description = "ADT Module Configuration and Sequencing System"
+requires-python = ">=3.8"
+dependencies = [
+    "importlib-metadata>=1.0; python_version<'3.8'"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[project.scripts]
+adt-core = "adt_core.cli:main"
+adg = "adt_core.cli:main"
+adt = "adt_core.cli:main"
+adt-test-files = "adt_core.cli:main"
+asciidoc-dita-toolkit = "adt_core.cli:main"
+asciidoc-dita-toolkit-gui = "adt_core.cli:main"
+
+[project.entry-points."adt.modules"]
+EntityReference = "asciidoc_dita_toolkit.asciidoc_dita.plugins.EntityReference:EntityReferenceModule"
+ContentType = "asciidoc_dita_toolkit.asciidoc_dita.plugins.ContentType:ContentTypeModule"
+DirectoryConfig = "asciidoc_dita_toolkit.asciidoc_dita.plugins.DirectoryConfig:DirectoryConfigModule"
+ContextAnalyzer = "asciidoc_dita_toolkit.asciidoc_dita.plugins.ContextAnalyzer:ContextAnalyzerModule"
+ContextMigrator = "asciidoc_dita_toolkit.asciidoc_dita.plugins.ContextMigrator:ContextMigratorModule"
+CrossReference = "asciidoc_dita_toolkit.asciidoc_dita.plugins.CrossReference:CrossReferenceModule"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov>=2.0",
+    "black>=21.0",
+    "flake8>=3.8",
+]

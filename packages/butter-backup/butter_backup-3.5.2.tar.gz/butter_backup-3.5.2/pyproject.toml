@@ -1,0 +1,87 @@
+[project]
+name = "butter-backup"
+version = "3.5.2"
+description = "Vollverschlüsselte, pseudoinkrementelle Sicherungskopien leicht gemacht"
+authors = [{name = "Max Görner", email = "max@familie-goerner.eu"}]
+license = "GPL-3.0-or-later"
+readme = "README.md"
+requires-python = ">=3.10,<4.0.0"
+dependencies = [
+    "loguru>=0.7.3",
+    "pydantic>=2.11.7",
+    "shell-interface>=1.0.1",
+    "storage-device-managers>=1.0.0",
+    "typer>=0.16.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/MaxG87/ButterBackup"
+Repository = "https://github.com/MaxG87/ButterBackup"
+Issues = "https://github.com/MaxG87/ButterBackup/issues"
+Changelog = "https://github.com/MaxG87/ButterBackup/blob/main/CHANGELOG.md"
+
+
+[project.optional-dependencies]
+all = [
+    "rich>=13.9.4",
+]
+
+[project.scripts]
+butter-backup = "butter_backup.cli:cli"
+
+[dependency-groups]
+dev = [
+    "hypothesis>=6.135.24",
+    "mypy>=1.16.1",
+    "pdbpp>=0.11.6",
+    "pytest>=8.4.1",
+    "pytest-cov>=6.2.1",
+    "pytest-xdist>=3.8.0",
+    "ruff>=0.12.1",
+]
+
+[tool.mypy]
+plugins = [
+  "pydantic.mypy"
+]
+allow_any_unimported = false
+warn_unreachable = true
+enable_error_code = [
+    "possibly-undefined"
+]
+strict = true
+allow_incomplete_defs = true
+allow_untyped_defs = true
+
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disable_error_code = [
+    "possibly-undefined"
+]
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+warn_untyped_fields = true
+
+[tool.pytest.ini_options]
+addopts = [
+    "--cov", "src",
+    "--cov-branch",
+    "--cov-fail-under", "85"
+]
+testpaths = ["tests"]
+
+[tool.ruff]
+src = [".", "src/"]
+
+[tool.ruff.lint]
+select = ["A", "B", "C", "F", "I", "ISC", "PIE", "PL", "Q", "RUF", "SIM", "TID", "W", "YTT"]
+ignore = ["E", "PLC1901", "SIM117"]
+mccabe.max-complexity = 6
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

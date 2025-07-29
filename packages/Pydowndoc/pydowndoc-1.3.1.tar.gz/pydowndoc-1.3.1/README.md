@@ -1,0 +1,215 @@
+# Pydowndoc
+
+![Pydowndoc](https://img.shields.io/badge/%F0%9F%A5%95-Pydowndoc-blue)
+![PyPI Version](https://img.shields.io/pypi/v/Pydowndoc)
+![Python Version](https://img.shields.io/pypi/pyversions/Pydowndoc?logo=Python&logoColor=white&label=Python)
+![downdoc Version](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2FCarrotManMatt%2FPydowndoc%2Fmain%2F.github%2Fworkflows%2Fupload-downdoc-binaries.yaml&query=%24.jobs.upload-downdoc-binaries.steps%5B0%5D.with.ref&label=downdoc&logo=asciidoctor)
+![Tests Status](https://github.com/CarrotManMatt/Pydowndoc/actions/workflows/check-build-publish.yaml/badge.svg)
+![mypy Status](https://img.shields.io/badge/mypy-checked-%232EBB4E&label=mypy)
+![pre-commit Status](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)
+![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)
+![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)
+
+Rapidly convert your [AsciiDoc](https://asciidoc.org) files to [Markdown](https://wikipedia.org/wiki/Markdown), using [Python](https://python.org)
+
+A [Python](https://python.org) wrapper around the latest-built binary of [downdoc](https://github.com/opendevise/downdoc); a rapid [AsciiDoc](https://asciidoc.org) to [Markdown](https://wikipedia.org/wiki/Markdown) converter.
+
+## Why Use Pydowndoc?
+
+* Run [downdoc](https://github.com/opendevise/downdoc) from the CLI within your [virtual environment](https://docs.python.org/3/tutorial/venv)
+* Use [PyPI](https://pypi.org) as the single installation location of your [Python](https://python.org) project tooling
+* Use [pydowndoc/__init__.py](pass:macros)[the API] to convert files using your own [Python](https://python.org) code/scripts
+* Use the [Hatch](https://hatch.pypa.io) plugin to convert your project’s README.adoc file to [Markdown](https://wikipedia.org/wiki/Markdown), when building your package
+
+## Installation
+
+**Run as a [uv tool](https://docs.astral.sh/uv/guides/tools) (no installation necessary)**
+
+uvx --from Pydowndoc -- downdoc --version
+
+**Add to your [uv project/script’s dependencies](https://docs.astral.sh/uv/concepts/projects#managing-dependencies)**
+
+uv add Pydowndoc
+
+**[Install permanently as a uv tool](https://docs.astral.sh/uv/guides/tools#installing-tools)**
+
+uv tool install Pydowndoc
+
+**Install using [pip](https://pip.pypa.io) after [creating a virtual environment](https://docs.python.org/3/tutorial/venv)**
+
+path/to/venv/python -m pip install Pydowndoc
+
+## CLI Usage
+
+These commands will only work correctly either after installation as a [permanent uv tool](https://docs.astral.sh/uv/guides/tools#installing-tools), or after activating a virtual environment with Pydowndoc installed.
+Replace the command name `downdoc` with `uvx --from Pydowndoc -- downdoc`, to run any of the following commands in an ephemeral envrionment.
+
+**Display the current version number (useful to validate that installation was successful)**
+
+downdoc --version
+
+**Display the help message**
+
+downdoc --help
+
+**Convert a given file (the same filename will be retained, with file-extension changed to `.md`)**
+
+downdoc MyNotes.adoc
+
+**Output the converted file to the given filename & path**
+
+downdoc MyNotes.adoc -o path/to/output.md
+
+**Output the converted file to stdout**
+
+downdoc MyNotes.adoc -o -
+
+**Read the input AsciiDoc file from stdin**
+
+cat MyNotes.adoc | downdoc - -o MyNotes.md
+
+## API Usage
+
+**Convert a given file (the same filename will be retained, with file-extension changed to `.md`)**
+
+```python
+from pathlib import Path
+
+import pydowndoc
+
+pydowndoc.run(Path("MyNotes.adoc"))
+```
+
+**Retrieve the converted file as a string**
+
+```python
+from pathlib import Path
+
+import pydowndoc
+
+converted_file_contents: str = pydowndoc.run(
+    Path("MyNotes.adoc"),
+    output="-",
+    process_capture_output=True,
+).stdout.decode()
+```
+
+**Ensure the conversion process executes successfully and output the converted file to the given location (by default your code will continue execution even if conversion fails)**
+
+```python
+from pathlib import Path
+
+import pydowndoc
+
+pydowndoc.run(
+    Path("MyNotes.adoc"),
+    output=Path("path/to/output.md"),
+    process_check_return_code=True,
+)
+```
+
+## Use as a Hatch build hook
+
+1. Ensure the `readme` field is added to your `project.dynamic` list within your `pyproject.toml` file
+
+   ```toml
+   [project]
+   name = "my-cool-project"
+   version = "0.1.0"
+   dynamic = ["readme"]
+   ```
+2. Set up your build backend, within your `pyproject.toml` file
+
+   ```toml
+   [build-system]
+   build-backend = "hatchling.build"
+   requires = ["hatchling", "Pydowndoc"]
+   ```
+3. Include the hook name within `[tool.hatch.metadata.hooks]` to enable [README](https://docs.github.com/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes)-file conversion
+
+   ```toml
+   [tool.hatch.metadata.hooks.downdoc-readme]
+   ```
+
+   or
+
+   ```toml
+   [tool.hatch.metadata.hooks]
+   downdoc-readme = {}
+   ```
+   1. Using a path to a custom [README](https://docs.github.com/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes) file
+
+      ```toml
+      [tool.hatch.metadata.hooks.downdoc-readme]
+      path = "README2.adoc"
+      ```
+
+<details>
+<summary>A full example of a `+pyproject.toml+` file</summary>
+
+```toml
+[project]
+name = "my-cool-project"
+version = "0.1.0"
+dynamic = ["readme"]
+
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling", "Pydowndoc"]
+
+[tool.hatch.metadata.hooks.downdoc-readme]
+path = "README2.adoc"
+```
+</details>
+
+### Configuration Options
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `path` | `str` | `README.adoc` | The location of your AsciiDoc to be converted to [Markdown](https://wikipedia.org/wiki/Markdown), to be used as the project’s [README](https://docs.github.com/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes) file |
+
+## Upgrading
+
+**If [installed as a uv tool](https://docs.astral.sh/uv/guides/tools#upgrading-tools)**
+
+uv tool upgrade Pydowndoc
+
+**If added as a [uv project dependency](https://docs.astral.sh/uv/concepts/projects#managing-dependencies)**
+
+uv sync --upgrade-package Pydowndoc
+
+**If installed using [pip](https://pip.pypa.io)**
+
+path/to/venv/python -m pip install --upgrade Pydowndoc
+
+## Uninstallation
+
+**If added as a [uv project dependency](https://docs.astral.sh/uv/concepts/projects#managing-dependencies)**
+
+uv remove Pydowndoc
+
+**If installed as a [uv tool](https://docs.astral.sh/uv/guides/tools)**
+
+uv tool uninstall Pydowndoc
+
+**If installed with [pip](https://pip.pypa.io)**
+
+path/to/venv/python -m pip uninstall Pydowndoc
+
+## Reporting Issues
+
+If there are issues with the Python API for this package, or you are encountering installation problems, please report these on [the GitHub issues tracker for this project](https://github.com/CarrotManMatt/Pydowndoc/issues).
+
+If you have problems with the conversion process of your AsciiDoc files to Markdown, please report these [upstream](https://github.com/opendevise/downdoc/issues), directly to the [downdoc project](https://github.com/opendevise/downdoc).
+
+### Windows & macOS Wheels
+
+Windows and macOS wheels are provided to enable use of this project on non-linux hosts.
+However, these versions have not had the same level of testing as the linux version.
+Therefore, if you encounter any bugs with these other versions, report them on [the GitHub issues tracker for this project](https://github.com/CarrotManMatt/Pydowndoc/issues).
+
+## Licencing
+
+The compiled binary of the distributed downdoc software is shared under the MIT licence as described in [the upstream project’s licence file](https://github.com/opendevise/downdoc?tab=MIT-1-ov-file#readme).
+
+All other code in this project is distrubuted under [the Apache-2.0 licence](./LICENSE).

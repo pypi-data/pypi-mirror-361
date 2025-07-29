@@ -1,0 +1,2 @@
+def salted():
+    print("salted")

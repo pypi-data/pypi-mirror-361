@@ -1,0 +1,369 @@
+name: cerebro
+ntp_server: us.pool.ntp.org
+logfile: /data/logs/cerebro/cerebro.log
+
+profiles:
+  lvm-lab:
+    sources:
+      - lvm_govee_clean_room
+      - lvm_govee_lab
+      # - lvm_sens4_r1
+      # - lvm_sens4_b1
+      # - lvm_sens4_z1
+      - lvm_sens4_r2
+      - lvm_sens4_b2
+      - lvm_sens4_z2
+      - lvm_sens4_r3
+      - lvm_sens4_b3
+      - lvm_sens4_z3
+      - lvm_actors
+      # - lvm_sp1_ieb
+      - lvm_sp2_ieb
+      - lvm_sp3_ieb
+      - ln2_scale_sp1
+      - lvm_spec_in_use
+    observers:
+      - influxdb
+      - influxdb_cloud
+
+  boss-lab:
+    sources:
+      - boss_tron
+    observers:
+      - influxdb
+
+  fps-osu:
+    sources:
+      - ieb:
+          type: ieb
+          bucket: FPS
+          config: ${JAEGER_DIR}/src/jaeger/etc/ieb_LCO.yaml
+      - tron:
+          type: tron
+          bucket: actors
+          host: sdss-hub
+          port: 6093
+          tags:
+            observatory: ${OBSERVATORY}
+          actors:
+            - fliswarm
+            - jaeger
+          commands:
+            'fliswarm talk status': 30
+    observers:
+      - influxdb
+
+  apo:
+    sources:
+      - ieb:
+          type: drift
+          bucket: FPS
+          config: ${JAEGER_DIR}/src/jaeger/etc/ieb_APO.yaml
+          delay: 30
+          measure_timeout: 30.0
+      - chiller:
+          type: drift
+          bucket: FPS
+          config: ${JAEGER_DIR}/src/jaeger/etc/chiller_APO.yaml
+          delay: 30
+          measure_timeout: 30.0
+      - tpm_data:
+          type: tpm
+          bucket: TPM
+      - tron:
+          type: tron
+          bucket: actors
+          host: sdss5-hub.apo.nmsu.edu
+          port: 6093
+          tags:
+            observatory: ${OBSERVATORY}
+          actors:
+            - mcp
+            - apogeecal
+            - apogeebpr
+            - hartmann
+            - apo
+            - fliswarm
+            - apogeefpi
+            - tcc
+            - apogee
+            - boss
+            - alerts
+            - apogeeql
+            - hal
+            - cherno
+            - jaeger
+            - hub
+            - cmds
+      - fliswarm:
+          type: actor_client
+          bucket: actors
+          actor: fliswarm
+          host: sdss5-hub.apo.nmsu.edu
+          port: 19996
+          keyword_tags:
+            fliswarm.status:
+              index: 0
+              name: camera
+          commands:
+            - talk status
+          interval: 30
+    observers:
+      - influxdb_apo
+
+  lco:
+    sources:
+      - ieb:
+          type: drift
+          bucket: FPS
+          config: ${JAEGER_DIR}/src/jaeger/etc/ieb_${OBSERVATORY}.yaml
+          delay: 30
+      - tron:
+          type: tron
+          bucket: actors
+          host: sdss5-hub.lco.cl
+          port: 6093
+          tags:
+            observatory: ${OBSERVATORY}
+          keyword_tags:
+            fliswarm.status:
+              index: 0
+              name: camera
+          actors:
+            - apogeecal
+            - apogee
+            - alerts
+            - jaeger
+            - fliswarm
+            - yao
+            - cherno
+            - hal
+            - lcotcc
+            - apogeebpr
+            - apogeefpi
+            - apogeeql
+      - fliswarm:
+          type: actor_client
+          bucket: actors
+          actor: fliswarm
+          host: sdss5-hub
+          port: 19996
+          keyword_tags:
+            fliswarm.status:
+              index: 0
+              name: camera
+          commands:
+            - talk status
+          interval: 30
+      - yao:
+          type: actor_client
+          bucket: actors
+          actor: yao
+          host: sdss5-boss-icc
+          port: 19999
+          commands:
+            - mech status
+            - status
+          interval: 20
+      - lco_weather_data:
+          type: lco_weather_data
+          bucket: lco
+      - lco_seeing_data:
+          type: lco_seeing_data
+          bucket: lco
+
+    observers:
+      - influxdb_lco
+
+sources:
+  tron:
+    type: tron
+    bucket: Actors
+    host: localhost
+    port: 6093
+    tags:
+      observatory: ${OBSERVATORY}
+    actors:
+      - tcc
+      - apo
+  ieb:
+    type: drift
+    bucket: IEB
+    config: ${JAEGER_DIR}/src/jaeger/etc/ieb_${OBSERVATORY}.yaml
+  lvm_govee_clean_room:
+    type: govee
+    host: 10.7.45.30
+    port: 1111
+    device: H5179
+    address: 'e0:13:d5:71:d0:66'
+    bucket: sensors
+    delay: 30
+    tags:
+      location: 'Clean room'
+  lvm_govee_lab:
+    type: govee
+    host: 10.7.45.30
+    port: 1111
+    device: H5072_1
+    address: 'a4:c1:38:82:a2:88'
+    bucket: sensors
+    delay: 30
+    tags:
+      location: 'Outside clean room'
+  lvm_sens4_r1:
+    type: sens4
+    host: 10.7.45.30
+    port: 1112
+    device_id: 253
+    ccd: r1
+    delay: 30
+    bucket: sensors
+  lvm_sens4_b1:
+    type: sens4
+    host: 10.7.45.30
+    port: 1114
+    device_id: 253
+    ccd: b1
+    delay: 30
+    bucket: sensors
+  lvm_sens4_z1:
+    type: sens4
+    host: 10.7.45.30
+    port: 1115
+    device_id: 253
+    ccd: z1
+    delay: 30
+    bucket: sensors
+  lvm_sens4_r2:
+    type: sens4
+    host: 10.7.45.33
+    port: 1112
+    device_id: 253
+    ccd: r2
+    delay: 30
+    bucket: sensors
+  lvm_sens4_b2:
+    type: sens4
+    host: 10.7.45.33
+    port: 1114
+    device_id: 253
+    ccd: b2
+    delay: 30
+    bucket: sensors
+  lvm_sens4_z2:
+    type: sens4
+    host: 10.7.45.33
+    port: 1115
+    device_id: 253
+    ccd: z2
+    delay: 30
+    bucket: sensors
+  lvm_sens4_r3:
+    type: sens4
+    host: 10.7.45.30
+    port: 1112
+    device_id: 253
+    ccd: r3
+    delay: 30
+    bucket: sensors
+  lvm_sens4_b3:
+    type: sens4
+    host: 10.7.45.30
+    port: 1114
+    device_id: 253
+    ccd: b3
+    delay: 30
+    bucket: sensors
+  lvm_sens4_z3:
+    type: sens4
+    host: 10.7.45.30
+    port: 1115
+    device_id: 253
+    ccd: z3
+    delay: 30
+    bucket: sensors
+  lvm_actors:
+    type: amqp
+    bucket: actors
+    keywords:
+      - lvmscp.status.mod2/tempa
+      - lvmscp.status.mod2/tempb
+      - lvmscp.status.mod2/tempc
+      - lvmscp.status.mod12/tempa
+      - lvmscp.status.mod12/tempb
+      - lvmscp.status.mod12/tempc
+      - lvmscp.status.mod2/heateraoutput
+      - lvmscp.status.mod2/heaterboutput
+      - lvmscp.status.mod12/heateraoutput
+      - lvmscp.status.mod12/heaterboutput
+      - lvmscp.status.status
+    groupers:
+      - controller
+    commands:
+      'lvmscp status': 30
+  lvm_sp1_ieb:
+    type: lvm_ieb
+    bucket: sensors
+    controller: sp1
+    delay: 30
+    config: ${LVMIEB_DIR}/python/lvmieb/etc/lvmieb.yml
+  lvm_sp2_ieb:
+    type: lvm_ieb
+    bucket: sensors
+    controller: sp2
+    delay: 30
+    config: ${LVMIEB_DIR}/python/lvmieb/etc/lvmieb.yml
+  lvm_sp3_ieb:
+    type: lvm_ieb
+    bucket: sensors
+    controller: sp3
+    delay: 30
+    config: ${LVMIEB_DIR}/python/lvmieb/etc/lvmieb.yml
+  ln2_scale_sp1:
+    type: ln2_scale
+    host: 10.7.45.45
+    port: 10001
+    bucket: sensors
+    delay: 30
+  lvm_spec_in_use:
+    type: check_file_exists
+    file: /home/lvm/.config/sdss/spec_in_use
+    bucket: sensors
+    delay: 10
+  boss_tron:
+    type: tron
+    bucket: boss
+    host: obsvld01
+    port: 6093
+    tags:
+      observatory: ${OBSERVATORY}
+    actors:
+      - yao
+    commands:
+      'yao status': 3
+
+observers:
+  influxdb:
+    type: influxdb
+    url: http://localhost:9999
+    token: null
+    org: SDSS
+    default_bucket: Actors
+  influxdb_apo:
+    type: influxdb
+    url: http://sdss5-webapp.apo.nmsu.edu:9999
+    token: null
+    org: apo
+    default_bucket: FPS
+  influxdb_cloud:
+    type: influxdb
+    url: https://europe-west1-1.gcp.cloud2.influxdata.com
+    token: ${INFLUXDB_CLOUD_TOKEN}
+    org: c61507bd4e709b18
+    default_bucket: sensors
+  influxdb_lco:
+    type: influxdb
+    url: http://sdss5-webapp.lco.cl:9999
+    token: null
+    org: lco
+    default_bucket: actors

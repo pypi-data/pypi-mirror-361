@@ -1,0 +1,40 @@
+from decouple import config
+from pathlib import Path
+
+# --- Project Base Path ---
+# This allows you to use relative paths in other parts of the system
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+# --- Project Information ---
+# Loaded from .env, with default values if not set
+APP_NAME = config('APP_NAME', default='{{ project_name }}')
+APP_VERSION = config('APP_VERSION', default='1.0.0')
+DEBUG = config('DEBUG', default=False, cast=bool)
+
+
+# --- Security Settings (JWT) ---
+# It's ESSENTIAL that SECRET_KEY is set in the .env and NEVER hardcoded!
+JWT_SECRET_KEY = config('JWT_SECRET_KEY')
+JWT_ALGORITHM = config('JWT_ALGORITHM', default='HS256')
+JWT_ACCESS_TOKEN_EXPIRE_MINUTES = config('JWT_ACCESS_TOKEN_EXPIRE_MINUTES', default=30, cast=int)
+
+
+# --- CORS (Cross-Origin Resource Sharing) Settings ---
+# Important so your Vue frontend can communicate with the backend
+CORS_ORIGINS = config('CORS_ORIGINS', default='*', cast=lambda v: [s.strip() for s in v.split(',')])
+
+
+# --- Database Settings (Tortoise ORM) ---
+# The database URL should also come from the .env
+DATABASE_URL = config('DATABASE_URL', default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}")
+
+ORM_SETTINGS_CONNECTIONS = {
+    'default': DATABASE_URL,
+}
+
+
+# --- Application Registry ---
+# Apps contain all the logic for a specific part of the system
+# Must follow the structure: apps.<app_name>
+INSTALLED_APPS = []

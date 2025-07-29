@@ -1,0 +1,46 @@
+[project]
+name = "robotarm-mcp-p340"
+version = "0.1.0"
+description = "MCP Server for controlling ElephantRobotics MyCobot robotic arms via natural language"
+requires-python = ">=3.10"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "FanGe", email = "archifancy@gmail.com"},
+    {name = "guoyuaarg", email = "aargwangguoyu@outlook.com"}
+]
+keywords = ["mcp", "mycobot", "robotics", "elephantrobotics", "robot-arm"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+dependencies = [
+    "mcp>=1.10.0",
+    "pymycobot>=3.9.0",
+    "pyserial>=3.5",
+]
+
+[project.urls]
+Homepage = "https://github.com/AI-FanGe/RobotArm-MCP-P340"
+Documentation = "https://github.com/AI-FanGe/RobotArm-MCP-P340#readme"
+Repository = "https://github.com/AI-FanGe/RobotArm-MCP-P340.git"
+Issues = "https://github.com/AI-FanGe/RobotArm-MCP-P340/issues"
+
+[project.scripts]
+robotarm-mcp-p340 = "mycobot_mcp:main"
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["mycobot_mcp"]
+package-dir = {"" = "src"}
+
+[tool.setuptools.package-data]
+mycobot_mcp = ["*.json"] 

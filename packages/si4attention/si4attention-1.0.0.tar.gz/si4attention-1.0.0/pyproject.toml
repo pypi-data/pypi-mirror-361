@@ -1,0 +1,81 @@
+[project]
+name = "si4attention"
+version = "1.0.0"
+description = "Package for statistical test for attention in Transformers"
+readme = { file = "README.md", content-type = "text/markdown" }
+requires-python = ">=3.10"
+dependencies = ["torch>=2.5.0", "sicore>=2.2.0", "tqdm>=4.66.5"]
+authors = [{ name = "Takeuchi Lab" }]
+maintainers = [{ name = "Tomohiro Shiraishi", email = "shirara1016@gmail.com" }]
+license = "MIT"
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+
+[project.urls]
+repository = "https://github.com/shirara1016/si4attention"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.sdist]
+exclude = ["*.ipynb", "utils"]
+
+[tool.uv]
+dev-dependencies = [
+    "ipykernel>=6.29.5",
+    "mat73>=0.65",
+    "mypy>=1.11.2",
+    "nibabel>=5.3.2",
+    "pymupdf>=1.24.14",
+    "ruff>=0.6.5",
+    "scikit-image>=0.24.0",
+]
+
+
+[tool.ruff]
+extend-include = ["*.ipynb"]
+
+[tool.ruff.lint]
+exclude = [".git", ".mypy_cache", ".ruff_cache", ".venv"]
+select = ["ALL"]
+ignore = [
+    "E741",    # ambiguous variable name
+    "PLR0912", # too many branches
+    "PLR0913", # too many arguments in function definition
+    "PLR0915", # too many statements
+    "C901",    # function too complex
+    "E501",    # line too long
+    "PD",      # disable pandas warnings
+    "A001",    # can be used to input as a variable
+    "A002",    # can be used to input as a variable
+    "ERA001",  # remove commented out code
+    "E402",    # module level import not at top of file
+    "S101",    # use of assert
+    "PT028",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+ignore-decorators = ["typing.overload"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*.py" = [
+    "S101",   # use of assert
+    "FBT001", # boolean argument
+]
+"tests/test_main_inference.py" = [
+    "N803", # argument name should be lowercase
+    "N806", # variable in function should be lowercase
+]
+"*.ipynb" = [
+    "N803",   # argument name should be lowercase
+    "N806",   # variable in function should be lowercase
+    "T201",   # remove print statements
+    "ERA001", # remove commented out code
+]

@@ -1,0 +1,124 @@
+Metadata-Version: 2.4
+Name: SciCom
+Version: 1.0.1
+Summary: Simulating various aspects of scientific communication via Agent-based models.
+Project-URL: Project Homepage, https://modelsen.gea.mpg.de
+Project-URL: Homepage, https://gitlab.gwdg.de/modelsen/sciencecommunicationmodels
+Project-URL: Issues, https://gitlab.gwdg.de/modelsen/sciencecommunicationmodels/-/issues
+Author-email: "Bernardo S. Buarque" <bernardo.buarque@motu.org.nz>, Malte Vogl <vogl@gea.mpg.de>
+License: MIT License
+        
+        Copyright (c) 2021 Malte Vogl (ModelSEN project)
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+License-File: AUTHORS.md
+License-File: LICENSE.md
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >3.8
+Requires-Dist: altair
+Requires-Dist: geopandas
+Requires-Dist: igraph
+Requires-Dist: mesa-geo
+Requires-Dist: mesa>=2
+Requires-Dist: networkx
+Requires-Dist: numpy
+Requires-Dist: nx-altair
+Requires-Dist: pandas
+Requires-Dist: shapely>=2
+Requires-Dist: solara
+Provides-Extra: dev
+Requires-Dist: twine; extra == 'dev'
+Provides-Extra: docs
+Requires-Dist: myst-parser; extra == 'docs'
+Requires-Dist: sphinx; extra == 'docs'
+Requires-Dist: sphinx-autoapi; extra == 'docs'
+Requires-Dist: sphinx-rtd-theme; extra == 'docs'
+Provides-Extra: test
+Requires-Dist: flake8; extra == 'test'
+Requires-Dist: pytest; extra == 'test'
+Requires-Dist: pytest-cov; extra == 'test'
+Requires-Dist: tox; extra == 'test'
+Description-Content-Type: text/markdown
+
+# SciCom
+
+Simulating various aspects of scientific communication via Agent-based models.
+
+In this first version, we introduce an agent-based modelling approach to reconstruct communication in
+the Republic of Letters.
+
+Documentation is available on [ReadTheDocs](https://scientificcommunication.readthedocs.io).
+
+## Installation
+
+tl;dr Use pip
+
+~~~bash
+pip install scicom
+~~~
+
+Consider using a clean virtual environment to keep your main packages separated.
+Create a new virtual environment and install the package
+
+~~~bash
+python3 -m venv env
+source env/bin/activate
+pip install scicom
+~~~
+
+## Examples
+
+You can find an example Jupyter Notebook showing the use of the LetterSpace model in the [examples folder](../examples/RunModel.ipynb).
+
+Alternatively, you can use the mesa server framework to create an local browser interface with changeable parameters,
+see screenshot below and [documentation on running mesa](usingmesa.rst).
+
+<img src="HistoricalLetters.png" alt="Mesa Interface" width="800px" height="400px">
+
+## Testing
+
+Tests can be run by installing the _test_ requirements and running `tox`.
+
+~~~bash
+pip install scicom[test]
+tox
+~~~
+
+## Building documentation
+
+The documentation is build using _sphinx_. Install with the _docs_ option and run
+
+~~~bash
+pip install scicom[docs]
+tox -e docs
+~~~
+
+## Funding information
+
+The development was part of the research project [ModelSEN](https://modelsen.gea.mpg.de)
+
+> Socio-epistemic networks: Modelling Historical Knowledge Processes,
+
+in Department I of the Max Planck Institute for the History of Science, Berlin,
+and funded by the Federal Ministry of Education and Research, Germany (Grant No. 01 UG2131).
+
+The work is continued in the department for Structural Changes of the Technosphere
+at the Max Planck Institute of Geoanthropology, Jena.

@@ -1,0 +1,52 @@
+// Copyright 2020 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Instrument protos for Forward Rate Agreement.
+syntax = "proto3";
+
+package tf_quant_finance.experimental.pricing_platform.instrument_protos;
+
+import "business_days.proto";
+import "currencies.proto";
+import "date.proto";
+import "decimal.proto";
+import "metadata.proto";
+
+
+// Interest rate swap proto
+message AmericanEquityOption {
+  // Whether the price is computed for the contract holder.
+  //`True` means that the price is for the contract holder.
+  bool short_position = 1;
+  // Expiry date
+  Date expiry_date = 2;
+  // Denominated currency
+  Currency currency = 3;
+  // Underlying equity
+  string equity = 4;
+  // Contract notional
+  Decimal contract_amount = 5;
+  // Strike
+  Decimal strike = 6;
+  // Business day convention
+  BusinessDayConvention business_day_convention = 8;
+  // Holiday calendar
+  BankHolidays bank_holidays = 9;
+  // Settlement days
+  int32 settlement_days = 10;
+  // Common metadata needed to identify the trade.
+  InstrumentMetadata metadata = 11;
+  // Whether the option is call/put
+  bool is_call_option = 12;
+}

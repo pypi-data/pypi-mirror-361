@@ -1,0 +1,138 @@
+Metadata-Version: 2.4
+Name: wagtail-2fa-v6
+Version: 1.0.7
+Summary: Wagtail two-factor auth, updated for Wagtail 6+
+Home-page: https://github.com/ravigupta-art/wagtail-2fa-v6
+Author: ravigupta-art
+Author-email: ravi.opensource@protonmail.com
+License: MIT
+Classifier: Development Status :: 4 - Beta
+Classifier: Framework :: Django
+Classifier: Framework :: Django :: 5.2
+Classifier: Framework :: Wagtail
+Classifier: Framework :: Wagtail :: 6
+Classifier: Framework :: Wagtail :: 7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: License :: OSI Approved :: MIT License
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: Django>=5.2
+Requires-Dist: wagtail>=6.3
+Requires-Dist: django-otp>=0.8.1
+Requires-Dist: qrcode>=6.1
+Requires-Dist: six>=1.14.0
+Provides-Extra: test
+Requires-Dist: pytest; extra == "test"
+Requires-Dist: pytest-django; extra == "test"
+Requires-Dist: coverage; extra == "test"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# wagtail-2fa-v6
+
+[![PyPI version](https://img.shields.io/pypi/v/wagtail-2fa-v6.svg)](https://pypi.org/project/wagtail-2fa-v6/)
+[![Release to PyPi](https://github.com/ravigupta-art/wagtail-2fa-v6/actions/workflows/python-release.yml/badge.svg)](https://github.com/ravigupta-art/wagtail-2fa-v6/actions/workflows/python-release.yml)
+
+**Supported Python:** 3.10, 3.11, 3.12, 3.13  
+**Supported Django:** 5.2+  
+**Supported Wagtail:** 6.3+
+
+A fork of [`wagtail-2fa`](https://github.com/LabD/wagtail-2fa) updated for **Wagtail 6+** and **Django 5.2+**. Provides Time-based One-Time Password (TOTP) two-factor authentication in the Wagtail admin.
+
+Use apps like **Authy**, **Google Authenticator**, or **1Password** to secure your Wagtail login.
+
+📖 [Django OTP Documentation](https://django-otp-official.readthedocs.io)
+
+* * *
+
+## Installation
+
+    pip install wagtail-2fa-v6
+
+Then add the following to your `INSTALLED_APPS` in `settings.py`:
+
+    INSTALLED_APPS = [
+        # ...
+        'wagtail_2fa',
+        'django_otp',
+        'django_otp.plugins.otp_totp',
+        # ...
+    ]
+
+Next, add the middleware **after** `AuthenticationMiddleware`:
+
+    MIDDLEWARE = [
+        # ... other middleware
+        # 'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'wagtail_2fa.middleware.VerifyUserMiddleware',
+        # 'wagtail.core.middleware.SiteMiddleware',
+        # ... other middleware
+    ]
+
+Run migrations:
+
+    python manage.py migrate
+
+* * *
+
+## Settings
+
+Set the following in your Django `settings.py` file:
+
+* `WAGTAIL_2FA_REQUIRED` (default `False`):Force 2FA login for all staff, superusers, and users with access to the Wagtail admin.
+  
+* `WAGTAIL_2FA_OTP_TOTP_NAME` (default `False`):Issuer name for authenticator app. Defaults to `WAGTAIL_SITE_NAME` if set.(Sets `OTP_TOTP_ISSUER` under the hood.)
+  
+
+* * *
+
+## Making 2FA Optional
+
+To make 2FA **optional** (enabled per group), replace the middleware in your settings:
+
+    MIDDLEWARE = [
+        # ...
+        # 'wagtail_2fa.middleware.VerifyUserMiddleware',
+        'wagtail_2fa.middleware.VerifyUserPermissionsMiddleware',
+        # ...
+    ]
+
+* This adds a checkbox to group permissions to enable or disable 2FA.
+* **Superusers** are always required to use 2FA.
+
+* * *
+
+## Sandbox
+
+To run a sandbox environment:
+
+1. Create a virtual environment with Python 3.8
+2. Activate it
+3. Run:
+
+    make sandbox
+
+Access the admin at: [http://localhost:8000/admin/](http://localhost:8000/admin/)
+
+Login credentials:
+
+* **E-mail:** `superuser@example.com`
+* **Password:** `testing`
+
+Note: This is still in development. Contribution and testing is highly appreciated. 

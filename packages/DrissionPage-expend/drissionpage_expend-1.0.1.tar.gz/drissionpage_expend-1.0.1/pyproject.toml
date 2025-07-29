@@ -1,0 +1,79 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "DrissionPage-expend"
+version = "1.0.1"
+description = "DrissionPage XHR请求扩展库，支持多种数据类型和请求方式"
+readme = "XHR_REQUEST_README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "DrissionPage Community"},
+]
+maintainers = [
+    {name = "DrissionPage Community"},
+]
+keywords = ["drissionpage", "xhr", "request", "http", "automation", "web-scraping"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Testing",
+]
+requires-python = ">=3.7"
+dependencies = [
+    "DrissionPage>=3.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov",
+    "black",
+    "flake8",
+]
+
+[project.urls]
+Homepage = "https://github.com/your-username/DrissionPage-expend"
+Documentation = "https://github.com/your-username/DrissionPage-expend/blob/main/XHR_REQUEST_README.md"
+Repository = "https://github.com/your-username/DrissionPage-expend"
+"Bug Tracker" = "https://github.com/your-username/DrissionPage-expend/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["DrissionPage_expend*"]
+
+[tool.black]
+line-length = 88
+target-version = ['py37']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]

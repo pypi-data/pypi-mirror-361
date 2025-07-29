@@ -1,0 +1,70 @@
+from setuptools import setup, find_packages
+version = "1.0.0"
+setup(
+    name="almos_kit",
+    packages=find_packages(include=["almos*", "edbo*"], exclude=["tests", "tests*"]),
+    package_data={"almos": ["icons/*"]},
+    version=version,
+    license="MIT",
+    description="Active Learning Molecular Selection",
+    long_description="Documentation in Read The Docs: https://almos.readthedocs.io",
+    long_description_content_type="text/markdown",
+    author="Miguel Martínez Fernández, Susana García Abellán, David Dalmau Ginesta, Juan V. Alegre Requena",
+    author_email="miguel.martinez@csic.es, susanag.abellan@gmail.com",
+    keywords=[
+        "workflows",
+        "machine learning",
+        "cheminformatics",
+        "clustering",
+        "active learning",
+        "automated",
+    ],
+    url="https://github.com/MiguelMartzFdez/almos",
+    download_url=f"https://github.com/MiguelMartzFdez/almos/archive/refs/tags/{version}.tar.gz",
+    classifiers=[
+        "Development Status :: 5 - Production/Stable",  # Chose either "3 - Alpha", "4 - Beta" or "5 - Production/Stable" as the current state of your package
+        "Intended Audience :: Developers",  # Define that your audience are developers
+        "Topic :: Software Development :: Build Tools",
+        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+    ],
+    
+    install_requires=[
+        # --- Core almos_kit dependencies ---
+        "aqme==1.7.3",
+        "robert==2.0.2",
+        "plotly==5.24.1",
+        "matplotlib==3.10.0",
+        "numpy>=1.26.4,<3.0",
+        "pandas>=2.2.2,<2.3",
+        "pdfplumber==0.11.5",
+        "rdkit==2024.3.3",
+        "scikit_learn>=1.6,<1.7",
+        "pca==2.0.9",
+        "kneed==0.8.5",
+
+        # --- Bayesian Optimization (EDBO) dependencies ---
+        "botorch==0.7.2",
+        "gpytorch==1.9.0",
+        "idaes-pse==1.5.1",
+        "ipykernel==6.5.1",
+        "ipython==7.29.0",
+        "ipywidgets==7.6.5",
+        "Jinja2==3.0.3",
+        "joypy==0.2.6",
+        "lxml==4.6.4",
+        "mordred==1.2.0",
+        "ordered-set==4.0.2",
+        "pareto==1.1.1.post3",
+        "pymoo==0.5.0",
+        "scipy==1.15.0",
+        "seaborn",
+        "sympy==1.13.3",
+        "torch==2.7.0",
+        "tqdm",
+    ],
+    python_requires=">=3.10",
+    include_package_data=True,
+)

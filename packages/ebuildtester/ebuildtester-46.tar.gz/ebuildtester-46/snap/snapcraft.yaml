@@ -1,0 +1,86 @@
+name: ebuildtester
+base: core22
+adopt-info: ebuildtester
+summary: Tool to test a Gentoo ebuild and its dependencies
+description: |
+  This is a tool to test a Gentoo ebuild and its dependencies. The idea is
+  that the ebuild is emerged in a clean (and current) stage3 Docker container.
+
+  * Installation
+
+  This snap uses the `docker` snap and needs to be connected via
+
+     snap connect ebuildtester:docker-executables docker:docker-executables
+
+  * Usage
+
+  We are going to assume that the user has a local git clone of the portage
+  tree in
+
+     /usr/local/git/gentoo
+
+  We have added a new ebuild and would like to verify that the build
+  dependencies are all correct. We can build the package (ATOM) with:
+
+     ebuildtester \
+        --portage-dir /usr/local/git/gentoo \
+        --atom ATOM \
+        --use USE1 USE2
+
+  where we have specified two USE flags, USE1 and USE2. The `ebuildtester`
+  command will now create a docker container and start installing the ATOM.
+  All specified dependencies will be installed as well.
+
+  For a full list of supported options run
+
+     ebuildtester --help
+
+grade: stable
+confinement: strict
+
+environment:
+  DOCKER_COMMAND: docker-wrapper.sh
+
+plugs:
+  docker-executables:
+    interface: content
+    target: $SNAP/docker-snap
+    default-provider: docker
+
+apps:
+  ebuildtester:
+    environment:
+      XDG_STATE_HOME: ${SNAP_USER_DATA}
+    command: bin/ebuildtester
+    completer: usr/share/bash-completion/completions/ebuildtester.bash-completion
+    plugs:
+      - home
+  docker:
+    command: usr/bin/docker-wrapper.sh
+    plugs:
+      - docker
+
+parts:
+  ebuildtester:
+    plugin: python
+    source: .
+    source-type: git
+    source-branch: main
+    override-pull: |
+      snapcraftctl pull
+      snapcraftctl set-version "$(git describe)"
+    python-requirements:
+      - requirements.txt
+
+  docker-wrapper:
+    plugin: dump
+    source: .
+    override-build: |
+      set -e -u -x
+      install -D docker-wrapper.sh \
+        ${SNAPCRAFT_PART_INSTALL}/usr/bin/docker-wrapper.sh
+      install -D ebuildtester.bash-completion \
+        ${SNAPCRAFT_PART_INSTALL}/usr/share/bash-completion/completions/ebuildtester.bash-completion
+    stage:
+      - usr/bin/docker-wrapper.sh
+      - usr/share/bash-completion/completions/ebuildtester.bash-completion

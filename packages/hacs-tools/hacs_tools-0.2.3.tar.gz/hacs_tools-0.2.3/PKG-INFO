@@ -1,0 +1,352 @@
+Metadata-Version: 2.4
+Name: hacs-tools
+Version: 0.2.3
+Summary: Core tools and utilities for HACS (Healthcare Agent Communication Standard)
+Project-URL: Homepage, https://github.com/solanovisitor/hacs
+Project-URL: Documentation, https://github.com/solanovisitor/hacs/blob/main/docs/README.md
+Project-URL: Repository, https://github.com/solanovisitor/hacs
+Project-URL: Bug Tracker, https://github.com/solanovisitor/hacs/issues
+Project-URL: Changelog, https://github.com/solanovisitor/hacs/blob/main/docs/reference/changelog.md
+Author-email: Solano Todeschini <solano.todeschini@gmail.com>
+Maintainer-email: Solano Todeschini <solano.todeschini@gmail.com>
+License: Apache-2.0
+Keywords: crud,evidence,healthcare,memory,search,tools,validation
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Healthcare Industry
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Scientific/Engineering :: Medical Science Apps.
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Typing :: Typed
+Requires-Python: >=3.10
+Requires-Dist: hacs-core>=0.2.0
+Requires-Dist: hacs-fhir>=0.2.0
+Requires-Dist: hacs-models>=0.2.0
+Requires-Dist: pydantic>=2.7.0
+Requires-Dist: requests>=2.31.0
+Requires-Dist: typing-extensions>=4.0.0
+Provides-Extra: dev
+Requires-Dist: pyright>=1.1.0; extra == 'dev'
+Requires-Dist: pytest-cov>=4.0.0; extra == 'dev'
+Requires-Dist: pytest>=7.0.0; extra == 'dev'
+Requires-Dist: ruff>=0.4.0; extra == 'dev'
+Description-Content-Type: text/markdown
+
+# HACS Tools
+
+Core tools and utilities for Healthcare Agent Communication Standard (HACS).
+
+## Overview
+
+`hacs-tools` provides essential tools for working with HACS data, including CRUD operations, search functionality, validation, memory management, evidence handling, and structured data processing. This package focuses on core functionality that is shared across all HACS implementations.
+
+## 📦 **Modular Architecture**
+
+Protocol adapters and integrations are available in separate packages:
+
+- **[hacs-langgraph](https://pypi.org/project/hacs-langgraph/)**: LangGraph workflow integration
+- **[hacs-crewai](https://pypi.org/project/hacs-crewai/)**: CrewAI multi-agent workflows  
+- **[hacs-autogen](https://pypi.org/project/hacs-autogen/)**: AutoGen UI integration
+- **[hacs-anthropic](https://pypi.org/project/hacs-anthropic/)**: Anthropic AI integration
+- **[hacs-openai](https://pypi.org/project/hacs-openai/)**: OpenAI integration
+- **[hacs-pinecone](https://pypi.org/project/hacs-pinecone/)**: Pinecone vector store
+- **[hacs-qdrant](https://pypi.org/project/hacs-qdrant/)**: Qdrant vector store
+
+Install only the tools and adapters you need:
+```bash
+pip install hacs-tools                     # Core tools only
+pip install hacs-tools hacs-langgraph      # Core tools + LangGraph
+pip install hacs-tools hacs-crewai         # Core tools + CrewAI
+pip install hacs-tools hacs-openai hacs-pinecone  # Core + OpenAI + Pinecone
+```
+
+## Key Components
+
+### CRUD Operations
+- Create, Read, Update, Delete operations for all HACS models
+- Bulk operations for efficient data processing
+- Transaction support and rollback capabilities
+- Data validation and integrity checks
+- Storage backend abstraction (memory, file, database)
+
+### Search and Retrieval
+- Semantic search capabilities with hybrid scoring
+- Structured query interface with FHIR parameter support
+- Full-text search with medical terminology
+- Faceted search and filtering
+- Resource-specific search optimizations
+
+### Memory Management
+- Persistent memory storage and retrieval
+- Memory consolidation and lifecycle management
+- Cross-resource memory linking
+- Importance-based memory prioritization
+- Memory search and querying
+
+### Evidence Management
+- Clinical evidence storage and retrieval
+- Evidence quality assessment and scoring
+- Evidence linking and relationship management
+- Citation and reference handling
+- Evidence-based decision support
+
+### Validation and Quality Assurance
+- Comprehensive data validation with Actor context
+- Schema validation and business rule enforcement
+- Cross-reference validation and integrity checks
+- FHIR compliance validation
+- Clinical data quality assessment
+
+### Structured Data Processing
+- LLM function specification generation
+- Structured output validation and coercion
+- Multi-provider tool calling patterns
+- Healthcare-specific data transformation
+- Clinical data normalization
+
+### Base Vectorization Interfaces
+- Abstract embedding model protocols
+- Vector store interface definitions
+- Metadata management for vectors
+- Base vectorization utilities
+
+## Installation
+
+```bash
+pip install hacs-tools
+```
+
+## Quick Start
+
+```python
+from hacs_tools import (
+    CreateResource, ReadResource, UpdateResource, DeleteResource,
+    StorageManager, PermissionManager, DataValidator
+)
+from hacs_models import Patient, Observation
+
+# CRUD operations
+storage = StorageManager()
+permissions = PermissionManager()
+
+# Create a patient
+create_op = CreateResource()
+patient = Patient(full_name="Alice Johnson", age=35)
+patient_id = create_op.execute(patient, actor=doctor)
+
+# Read patient
+read_op = ReadResource()
+retrieved_patient = read_op.execute(Patient, patient_id, actor=doctor)
+
+# Update patient
+update_op = UpdateResource()
+retrieved_patient.full_name = "Alice Johnson-Smith"
+update_op.execute(retrieved_patient, actor=doctor)
+
+# Validation
+validator = DataValidator()
+is_valid = validator.validate_patient(patient, actor=doctor)
+```
+
+## Core Tools
+
+### CRUD Operations
+```python
+from hacs_tools import CreatePatient, ReadPatient, CreateObservation
+
+# Specialized CRUD operations
+create_patient = CreatePatient()
+patient = create_patient.execute(patient_data, actor=doctor)
+
+read_patient = ReadPatient()
+patient = read_patient.execute(patient_id, actor=nurse)
+
+create_obs = CreateObservation()
+observation = create_obs.execute(obs_data, actor=doctor)
+```
+
+### Search and Retrieval
+```python
+from hacs_tools.search import SemanticSearch, FHIRSearch
+
+# Semantic search
+search = SemanticSearch()
+results = search.find_patients(query="hypertension", actor=doctor, limit=10)
+
+# FHIR parameter search
+fhir_search = FHIRSearch()
+results = fhir_search.search_observations(
+    patient_id="patient-123",
+    code="blood-pressure",
+    actor=doctor
+)
+```
+
+### Memory Management
+```python
+from hacs_tools.memory import MemoryManager
+
+memory = MemoryManager()
+memory.store_memory(memory_block, actor=doctor)
+memories = memory.retrieve_memories(patient_id, actor=doctor)
+consolidated = memory.consolidate_memories(workflow_id, actor=doctor)
+```
+
+### Evidence Management
+```python
+from hacs_tools.evidence import EvidenceManager
+
+evidence_mgr = EvidenceManager()
+evidence = evidence_mgr.create_evidence(content, evidence_type, actor=researcher)
+evidence_mgr.link_to_patient(evidence, patient_id, actor=doctor)
+results = evidence_mgr.search_evidence(query="ACE inhibitors", actor=doctor)
+```
+
+### Validation
+```python
+from hacs_tools.validation import DataValidator
+
+validator = DataValidator()
+is_valid = validator.validate_patient(patient_data, actor=doctor)
+errors = validator.get_validation_errors(patient_data)
+fhir_valid = validator.validate_fhir_compliance(resource, actor=doctor)
+```
+
+### Structured Data Processing
+```python
+from hacs_tools.structured import StructuredProcessor, generate_function_spec
+
+processor = StructuredProcessor()
+structured_data = processor.process_clinical_text(text, actor=doctor)
+
+# Generate LLM function specs
+spec = generate_function_spec(Patient, pattern="openai")
+```
+
+### Vectorization Base Classes
+```python
+from hacs_tools.vectorization import HACSVectorizer, VectorMetadata
+
+# Base vectorization (implement with specific vector stores)
+vectorizer = HACSVectorizer()
+metadata = VectorMetadata(
+    resource_type="Patient",
+    resource_id="patient-123",
+    content_hash="abc123"
+)
+```
+
+## Advanced Features
+
+### Bulk Operations
+```python
+from hacs_tools import CreateResource
+
+# Bulk create patients
+patients = [Patient(full_name=f"Patient {i}", age=30+i) for i in range(100)]
+bulk_create = CreateResource()
+patient_ids = bulk_create.bulk_execute(patients, actor=admin)
+```
+
+### Storage Backend Configuration
+```python
+from hacs_tools import set_storage_backend, StorageBackend
+
+# Configure storage backend
+set_storage_backend(StorageBackend.DATABASE)
+storage = get_storage_manager()
+```
+
+### Memory Consolidation
+```python
+from hacs_tools.memory import MemoryManager
+
+memory = MemoryManager()
+# Add consolidation rule
+memory.add_consolidation_rule(
+    lambda memories: sorted(memories, key=lambda m: m.importance_score, reverse=True)[:10]
+)
+consolidated = memory.consolidate_memories("workflow-123", actor=doctor)
+```
+
+### Evidence Quality Assessment
+```python
+from hacs_tools.evidence import EvidenceManager
+
+evidence_mgr = EvidenceManager()
+quality_score = evidence_mgr.assess_evidence_quality(evidence, actor=researcher)
+evidence_mgr.update_quality_score(evidence_id, quality_score, actor=researcher)
+```
+
+### Hybrid Search
+```python
+from hacs_tools.search import SemanticSearch
+
+search = SemanticSearch()
+results = search.hybrid_search(
+    query="cardiovascular risk factors",
+    resource_types=["Patient", "Observation"],
+    actor=doctor,
+    method="hybrid"  # combines semantic + text search
+)
+```
+
+## Integration Examples
+
+### With LangGraph
+```python
+# Install: pip install hacs-tools hacs-langgraph
+from hacs_tools import CreateResource, MemoryManager
+from hacs_langgraph import LangGraphAdapter
+
+# Core tools work seamlessly with LangGraph
+adapter = LangGraphAdapter()
+memory_mgr = MemoryManager()
+create_resource = CreateResource()
+
+# Use in LangGraph workflows
+state = adapter.create_hacs_state(workflow_type="clinical_assessment", actor=doctor)
+```
+
+### With CrewAI
+```python
+# Install: pip install hacs-tools hacs-crewai
+from hacs_tools import EvidenceManager, DataValidator
+from hacs_crewai import CrewAIAdapter
+
+# Core tools work seamlessly with CrewAI
+evidence_mgr = EvidenceManager()
+validator = DataValidator()
+adapter = CrewAIAdapter()
+
+# Use in CrewAI workflows
+task = adapter.create_evidence_synthesis_task(evidence_list, query, actor)
+```
+
+## Documentation
+
+For complete documentation, see the [HACS Documentation](https://github.com/solanovisitor/hacs/blob/main/docs/README.md).
+
+## Related Packages
+
+- **[hacs-core](https://pypi.org/project/hacs-core/)**: Core HACS data models and utilities
+- **[hacs-models](https://pypi.org/project/hacs-models/)**: Clinical data models (Patient, Observation, etc.)
+- **[hacs-langgraph](https://pypi.org/project/hacs-langgraph/)**: LangGraph workflow integration
+- **[hacs-crewai](https://pypi.org/project/hacs-crewai/)**: CrewAI multi-agent workflows
+- **[hacs-anthropic](https://pypi.org/project/hacs-anthropic/)**: Anthropic AI integration
+- **[hacs-openai](https://pypi.org/project/hacs-openai/)**: OpenAI integration
+
+## License
+
+Licensed under the Apache License, Version 2.0. See [LICENSE](https://github.com/solanovisitor/hacs/blob/main/LICENSE) for details.
+
+## Contributing
+
+See [Contributing Guidelines](https://github.com/solanovisitor/hacs/blob/main/docs/contributing/guidelines.md) for information on how to contribute to HACS Tools.

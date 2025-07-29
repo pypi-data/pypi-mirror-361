@@ -1,0 +1,65 @@
+Metadata-Version: 2.4
+Name: mfd-serial
+Version: 1.7.0
+Summary: Module for handling communication via serial port like Universal asynchronous receiver-transmitter (UART)
+Project-URL: Homepage, https://github.com/intel/mfd
+Project-URL: Repository, https://github.com/intel/mfd-serial
+Project-URL: Issues, https://github.com/intel/mfd-serial/issues
+Project-URL: Changelog, https://github.com/intel/mfd-serial/blob/main/CHANGELOG.md
+Requires-Python: <3.14,>=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE.md
+License-File: AUTHORS.md
+Requires-Dist: pyserial==3.5
+Requires-Dist: mfd-common-libs>=1.11.0
+Dynamic: license-file
+
+> [!IMPORTANT]  
+> This project is under development. All source code and features on the main branch are for the purpose of testing or evaluation and not production ready.
+
+# MFD SERIAL
+Tool for communication via serial port (e.g UART). 
+
+## Usage
+Open serial connection put serial port and baud rate:  
+port can be e.g. COM1 if windows or /dev/ttyUSB0 if linux 
+```python 
+serial = SerialConnection(serial_port='/dev/ttyUSB0', baud=115200)  
+```
+
+Read data from serial:  
+```python
+serial.read()
+```
+
+Send text msg via serial port  
+```python
+serial.send('Text to send')
+```
+
+Read until some expression appear:   
+```python
+serial.read_until('Module Error') 
+ ```
+ 
+Close serial connection:  
+```python
+serial.close()  
+```
+
+Read in background (e.g. if we want to run tests and log everything what happen on serial port during the test)  
+```python
+serial.read_in_background()  
+(... test steps ...)  
+serial_log = serial.get_result()  #get_result will automatically close the connection
+```
+
+SerialConnection can be used as context manager:  
+```python
+with SerialConnection(serial_port='/dev/ttyUSB0', baud=115200) as serial:  
+	log = serial.read()  
+```
+
+## Issue reporting
+
+If you encounter any bugs or have suggestions for improvements, you're welcome to contribute directly or open an issue [here](https://github.com/intel/mfd-serial/issues).

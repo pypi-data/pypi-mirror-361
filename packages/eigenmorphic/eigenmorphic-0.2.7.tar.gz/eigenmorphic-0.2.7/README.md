@@ -1,0 +1,110 @@
+<h1><p align="center">eigenmorphic</p></h1>
+
+<p align="center">Eigenvalues and more for morphic subshifts</p>
+<hr>
+
+Morphic subshifts are generalization of substitution subshifts,
+where we allow taking the image of a substitution subshift by another substitution,
+considering the generated subshift.
+
+This ``eigenmorphic`` package for [SageMath](https://www.sagemath.org) contains:
+
+* computation of exact additive eigenvalues of morphic subshifts
+* decide recognizability of a substitution in the subshift of another substitution
+* test if a morphic subshift has pure discrete spectrum using an improvement of the balanced pair algorithm
+* compute substitutions from an IET given as a Rauzy loop or with lengths
+* plot very general Rauzy fractals
+* plot fixed points of Anosov maps from IET
+* compute coboundaries
+
+## Installation
+
+```python
+sage -pip install eigenmorphic
+```
+
+## Usage
+
+```python
+sage: from eigenmorphic import *
+```
+
+### After this command, you can compute eigenvalues of morphic subshifts
+
+```python
+sage: s = WordMorphism('a->ab,b->ac,c->a')
+sage: morphic_eigenvalues(s)
+Z*{1, b, b^2}
+where b is root of x^3 - x^2 - x - 1
+```
+```python
+sage: t = WordMorphism('a->0,b->1,c->1')
+sage: morphic_eigenvalues(s, t)
+Z*{1, b, b^2}
+where b is root of x^3 - x^2 - x - 1
+
+# regular paperfolding
+sage: t = WordMorphism('a->00,b->01,c->10,d->11')
+sage: s = WordMorphism('a->ca,b->cb,c->da,d->db')
+sage: t(s.fixed_points()[0])
+word: 1101100111001001110110001100100111011001...
+sage: morphic_eigenvalues(s,t)
+1/8Z[1/2]
+```
+
+### There are tools to compute coboundaries
+
+```python
+sage: s = WordMorphism('a->c,b->de,c->bde,d->b,e->deab')
+sage: coboundary_basis(s)
+[ 0  1  0 -1  0]
+[ 0  0  0  1 -1]
+```
+
+### You can also test if the Z-action of a morphic subshift has pure discrete spectrum, using an improvement of the balanced pair algorithm
+
+```python
+sage: s = WordMorphism("a->ab,b->ac,c->a")
+sage: has_pure_discrete_spectrum(s)
+True
+sage: t = WordMorphism('a->ab,b->a,c->a')
+sage: has_pure_discrete_spectrum(s, t, verb=1)
+The condition ensuring that there is enough eigenvalues is satisfied.
+execute balanced_pair_algorithm with w = a...
+execute balanced_pair_algorithm with w = ab...
+execute balanced_pair_algorithm with w = aba...
+execute balanced_pair_algorithm with w = abac...
+balanced pair algorithm terminated conclusively with w = a
+
+True
+```
+
+### There are also tools to find Rauzy loop in the graph of graphs, and plot fixed points of the corresponding Anosov
+
+```python
+sage: b = AA(2*cos(pi/7))
+sage: v = [4*b^2 - 2*b - 9, -7*b^2 + 6*b + 12, 5*b^2 - 4*b - 9, -b + 2, -3*b^2 + b + 8, b^2 - 3]
+sage: per = "643215"
+sage: rauzy_loop_substitution(per, v, gets2=1)
+(WordMorphism: 1->1416, 2->14232416, 3->142332416, 4->142416, 5->156, 6->15616,
+ WordMorphism: 1->12345664321, 2->23432, 3->323, 4->4321234, 5->56, 6->6432156)
+sage: plot_surface_with_fixed_pts(per, v)
+```
+
+### There are also tools to plot very general Rauzy fractals, from any finite word and projection
+
+```python
+sage: u = s.periodic_points()[0][0]
+sage: V = usual_projection(s.incidence_matrix())
+sage: rauzy_fractal_plot(u[:100000], V)
+```
+
+### You can also decide recognizability
+
+```python
+sage: s = WordMorphism("a->ab,b->ac,c->a")
+sage: t = WordMorphism('a->ab,b->a,c->a')
+sage: is_recognizable(t, s)
+True
+```
+

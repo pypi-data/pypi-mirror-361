@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=61.0", "setuptools_scm[toml]>=8.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "r2pb"
+dynamic = ["version"]
+authors = [
+    { name="Mark", email="hzypp1995@gmail.com" },
+]
+description = "A simple tool to convert ROS .msg files to Protobuf .proto files."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "jinja2",
+    "requests",
+    "rosdistro",
+    "pyyaml",
+    "GitPython"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/tz-bb/r2pb"
+"Bug Tracker" = "https://github.com/tz-bb/r2pb/issues"
+
+[project.scripts]
+r2pb = "r2pb.cli:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "black",
+    "ruff",
+]
+
+[tool.setuptools.package-data]
+r2pb = ["templates/*.j2"]
+
+[tool.setuptools_scm]
+# For more configuration options, see https://github.com/pypa/setuptools_scm

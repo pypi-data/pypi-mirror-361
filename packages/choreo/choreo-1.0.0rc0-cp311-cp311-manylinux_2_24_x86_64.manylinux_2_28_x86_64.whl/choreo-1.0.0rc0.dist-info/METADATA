@@ -1,0 +1,127 @@
+Metadata-Version: 2.4
+Name: choreo
+Version: 1.0.0rc0
+Summary: A set of tools to compute periodic solutions to the Newtonian N-body problem
+Author-email: Gabriel Fougeron <gabriel.fougeron@hotmail.fr>
+License-Expression: BSD-2-Clause
+Project-URL: Homepage, https://gabrielfougeron.github.io/choreo/
+Project-URL: Documentation, https://gabrielfougeron.github.io/choreo-docs/
+Project-URL: Repository, https://github.com/gabrielfougeron/choreo
+Project-URL: Changelog, https://github.com/gabrielfougeron/choreo/releases/
+Keywords: ODE,periodic,N-body,gravitation
+Classifier: Development Status :: 2 - Pre-Alpha
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Cython
+Classifier: Programming Language :: JavaScript
+Classifier: Environment :: WebAssembly :: Emscripten
+Classifier: Intended Audience :: Education
+Classifier: Natural Language :: English
+Classifier: Topic :: Scientific/Engineering :: Mathematics
+Classifier: Topic :: Scientific/Engineering :: Physics
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+License-File: LICENSES/OrdinaryDiffEq.jl_licence.txt
+License-File: LICENSES/Readme.md
+License-File: LICENSES/cpython_license.txt
+License-File: LICENSES/kepler.py_license.txt
+License-File: LICENSES/mathjax_license.txt
+License-File: LICENSES/mpmath_license.txt
+License-File: LICENSES/network_vis_license.txt
+License-File: LICENSES/npyjs_licence.txt
+License-File: LICENSES/pyFFTW_license.txt
+License-File: LICENSES/scipy_license.txt
+License-File: LICENSES/treejs_licence.txt
+Requires-Dist: scipy<1.14
+Requires-Dist: numpy
+Requires-Dist: matplotlib
+Requires-Dist: networkx
+Requires-Dist: mpmath
+Requires-Dist: threadpoolctl
+Provides-Extra: build
+Requires-Dist: setuptools>=42; extra == "build"
+Requires-Dist: wheel; extra == "build"
+Requires-Dist: Cython>=3.0; extra == "build"
+Requires-Dist: build; extra == "build"
+Requires-Dist: pyfftw>=0.14.0; extra == "build"
+Requires-Dist: cibuildwheel; extra == "build"
+Provides-Extra: gui
+Requires-Dist: pyodide-build==0.29.0; extra == "gui"
+Provides-Extra: cli
+Requires-Dist: numba; extra == "cli"
+Requires-Dist: pyfftw>=0.14.0.0; extra == "cli"
+Provides-Extra: test-cli
+Requires-Dist: choreo[cli]; extra == "test-cli"
+Requires-Dist: attrs; extra == "test-cli"
+Requires-Dist: pytest; extra == "test-cli"
+Requires-Dist: pytest-xdist; extra == "test-cli"
+Requires-Dist: pytest-timeout; extra == "test-cli"
+Requires-Dist: pytest-asyncio; extra == "test-cli"
+Provides-Extra: test-gui
+Requires-Dist: choreo[test-cli]; extra == "test-gui"
+Requires-Dist: pytest-pyodide; extra == "test-gui"
+Requires-Dist: pytest-httpserver; extra == "test-gui"
+Requires-Dist: selenium; extra == "test-gui"
+Provides-Extra: test
+Requires-Dist: choreo[test-cli,test-gui]; extra == "test"
+Provides-Extra: bench
+Requires-Dist: pyquickbench; extra == "bench"
+Provides-Extra: docs
+Requires-Dist: choreo[bench,cli,test]; extra == "docs"
+Requires-Dist: Sphinx<8; extra == "docs"
+Requires-Dist: pydata-sphinx-theme>=0.16.1; extra == "docs"
+Requires-Dist: sphinx-gallery; extra == "docs"
+Requires-Dist: sphinx-pyproject; extra == "docs"
+Requires-Dist: sphinx-needs<4; extra == "docs"
+Requires-Dist: sphinx-test-reports; extra == "docs"
+Requires-Dist: sphinxcontrib.plantuml; extra == "docs"
+Requires-Dist: seed-intersphinx-mapping; extra == "docs"
+Requires-Dist: myst-parser; extra == "docs"
+Requires-Dist: sphinxext-rediraffe; extra == "docs"
+Requires-Dist: sphinx-sitemap; extra == "docs"
+Requires-Dist: sphinxcontrib-bibtex; extra == "docs"
+Requires-Dist: sphinx-copybutton; extra == "docs"
+Requires-Dist: sphinxcontrib-autoprogram; extra == "docs"
+Requires-Dist: sphinx_design; extra == "docs"
+Requires-Dist: sphinxcontrib-video; extra == "docs"
+Provides-Extra: full
+Requires-Dist: choreo[build,cli,docs,gui,test-cli,test-gui]; extra == "full"
+Dynamic: license-file
+
+# choreo
+Finds periodic solutions to the gravitational N-body problem. 
+
+## Try out this project, no installation required!
+
+Check out the online in-browser GUI: https://gabrielfougeron.github.io/choreo/
+
+## Build wheel for pyodide to be used in GUI
+
+After sourcing emsdk environment, run the following:
+
+```
+pyodide build && python -m build --sdist
+```
+
+## Install the package with pip
+
+The package is not available on PyPA yet, but will be in the future.
+Till then, the installation process is the following:
+
+ - Download this project. For instance using git: `git clone git@github.com:gabrielfougeron/choreo.git`
+ - Open the directory: `cd choreo`
+ - Build and install using pip: `pip install .`
+
+## Power up the GUI solver with the CLI backend
+Using clang or gcc as a C compiler, the single-threaded CLI solver is about 3 times faster that the wasm in-browser GUI solver. In addition, several independent single-threaded solvers can be launched simultaneously using a single command.
+
+To use the CLI backend, follow these steps:
+
+- Install the package
+- In the GUI, define a workspace folder under `Play => Workspace => Setup Workspace`
+- Every time the workspace is reloaded under `Play => Workspace => Reload Workspace` **or** every time a new initial state is generated in the GUI, a new configuration file `choreo_config.json` is written to disk.
+- In the command line, run the installed script as `choreo_CLI_search -f /path/to/workspace/folder/` 
+
+## Online documentation
+
+Available at: https://gabrielfougeron.github.io/choreo-docs/

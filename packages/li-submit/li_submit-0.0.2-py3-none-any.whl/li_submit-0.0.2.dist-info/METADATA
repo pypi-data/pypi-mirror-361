@@ -1,0 +1,61 @@
+Metadata-Version: 2.4
+Name: li-submit
+Version: 0.0.2
+Summary: LiveInternet.ru site registration with automatic captcha solving
+Author-email: webii <webii@pm.me>
+Maintainer-email: webii <webii@pm.me>
+License: MIT
+Project-URL: Homepage, https://github.com/pi11/li_submit
+Project-URL: Repository, https://github.com/pi11/li_submit
+Keywords: liveinternet,registration,captcha,anticaptcha,automation
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: requests>=2.25.0
+Requires-Dist: pyquery
+Requires-Dist: anticaptchaofficial
+
+# li-submit
+
+Minimal command-line utility to submit a website to [liveinternet.ru](https://www.liveinternet.ru/add) using a simple HTTP POST request.
+
+## Features
+
+- Requires only website URL and email
+- Optional password argument (default is `123123`)
+- Simple one-command usage
+
+## Installation
+
+```bash
+pip install li-submit
+```
+
+
+## Usage exmaple
+
+```python
+from li_submit import register_site
+
+result = register_site(
+    url="example.com",
+    email="user@example.com",
+    anticaptcha_key="your_anticaptcha_key"
+)
+
+if result.success:
+    print("Registration successful!")
+else:
+    print(f"Registration failed: {result.message}")
+```

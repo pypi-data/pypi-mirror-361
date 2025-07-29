@@ -1,0 +1,33 @@
+name: PR Check
+
+on: [pull_request]
+
+jobs:
+  check:
+    name: Check for formatting and secrets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Ensure we have python
+      - uses: actions/setup-python@v5
+      # Pull in ruff and detect secrets for PR checks
+      - uses: astral-sh/ruff-action@v3
+      - name: Install detect secrets
+        run: python -m pip install --upgrade "git+https://github.com/ibm/detect-secrets.git@master#egg=detect-secrets"
+      - name: Run check
+        run: make check
+  build_test_image:
+    name: Check tests 
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: "./scripts/Dockerfile"
+          tags: kubernetes-lite-test:latest
+          load: true
+          push: false
+          target: test
+      - name: Run tests
+        run: make run-docker-test

@@ -1,0 +1,212 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "parsable"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pomagma"
+description = "An inference engine for extensional lambda-calculus"
+authors = [{name = "Fritz Obermeyer", email = "fritz.obermeyer@gmail.com"}]
+maintainers = [{name = "Fritz Obermeyer", email = "fritz.obermeyer@gmail.com"}]
+license = "Apache-2.0"
+readme = "README.md"
+requires-python = ">=3.11"
+dynamic = ["version", "scripts"]
+dependencies = [
+    "boto3",
+    "hypothesis",
+    "immutables",
+    "isort",
+    "mypy",
+    "nbval",
+    "notebook",
+    "numpy",
+    "parsable",
+    "protobuf>=5,<6",
+    "psutil",
+    "pytest",
+    "pytest-timeout",
+    "pytest-xdist",
+    "pyzmq",
+    "ruff",
+    "torch",
+    "tqdm",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+
+[project.urls]
+Homepage = "https://github.com/fritzo/pomagma"
+Repository = "https://github.com/fritzo/pomagma"
+
+[tool.setuptools]
+packages = {find = {}}
+
+[tool.setuptools.dynamic]
+version = {attr = "pomagma.__version__"}
+
+[tool.ruff]
+# Configure line length and formatting settings
+line-length = 88
+
+# Target Python 3.11+ to match project requirements
+target-version = "py311"
+
+[tool.ruff.lint]
+unfixable = ["F841"]
+ignore = [
+  "COM812",
+  "E203",
+  "E501",
+  "E741",
+  "RET504",
+  "RUF001",
+  "RUF012",
+  "RUF023",
+  "SIM102",
+  "SIM103",
+  "SIM108",
+  "SIM300",
+  "SIM117",
+]
+select = [
+    # "ANN",
+    "ASYNC",
+    # "B",  # bugbear
+    "C4",
+    "COM",
+    "E",  # pycodestyle
+    "EXE",
+    "G",  # logging format
+    "F",  # pyflakes
+    "FA",
+    "I",  # isort
+    "ICN",
+    "INT",  # gettext
+    "ISC",
+    "PERF",
+    "PIE",
+    "PLE",
+    # "PT",
+    "Q",
+    "RET",
+    "RSE",
+    "RUF",
+    "SIM",  # simplify
+    "SLOT",
+    "UP",  # pyupgrade
+    "W",  # pycodestyle warnings
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+[tool.ruff.lint.isort]
+known-first-party = ["pomagma"]
+known-third-party = ["torch"]
+
+[tool.mypy]
+# Configure mypy type checking
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = true
+disallow_untyped_decorators = false
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+# Global ignores for now
+ignore_missing_imports = true
+disable_error_code = ["name-defined"]
+
+# Handle symlinks properly (pomagma -> src)
+follow_imports_for_stubs = true
+
+# TODO: Incrementally fix these errors by removing module-specific ignores
+# When fixing a sub-package, remove its entire [[tool.mypy.overrides]] section
+
+# Core utility modules - fix first
+[[tool.mypy.overrides]]
+module = "pomagma.util.*"
+disable_error_code = ["var-annotated", "index", "comparison-overlap", "assignment", "attr-defined"]
+
+# Language and protobuf modules
+[[tool.mypy.overrides]]
+module = "pomagma.language.*"
+disable_error_code = ["attr-defined", "var-annotated"]
+
+# Src.reducer - one of the main sub-packages to fix
+[[tool.mypy.overrides]]
+module = "pomagma.reducer.*"
+disable_error_code = ["attr-defined", "assignment", "call-overload", "index", "var-annotated", "call-arg", "operator", "method-assign", "unreachable", "unused-ignore", "misc", "arg-type"]
+
+# Src.compiler - one of the main sub-packages to fix
+[[tool.mypy.overrides]]
+module = "pomagma.compiler.*"
+disable_error_code = ["method-assign", "assignment", "var-annotated", "index", "override", "attr-defined", "operator", "misc"]
+
+# Src.analyst - one of the main sub-packages to fix  
+[[tool.mypy.overrides]]
+module = "pomagma.analyst.*"  
+disable_error_code = ["attr-defined", "var-annotated", "index"]
+
+# Src.torch - one of the main sub-packages to fix
+[[tool.mypy.overrides]]
+module = "pomagma.torch.*"
+disable_error_code = ["misc", "no-any-return", "return-value", "operator", "attr-defined"]
+
+# IO modules
+[[tool.mypy.overrides]]
+module = "pomagma.io.*"
+disable_error_code = ["attr-defined", "no-any-return", "misc", "arg-type", "assignment"]
+
+# Cartographer modules
+[[tool.mypy.overrides]]
+module = "pomagma.cartographer.*"
+disable_error_code = ["attr-defined", "no-any-return"]
+
+# Make module
+[[tool.mypy.overrides]]
+module = "pomagma.make"
+disable_error_code = ["arg-type"]
+
+# Atlas modules  
+[[tool.mypy.overrides]]
+module = "pomagma.atlas.*"
+disable_error_code = ["attr-defined"]
+
+# Theorist modules
+[[tool.mypy.overrides]]
+module = "pomagma.theorist.*"
+disable_error_code = ["var-annotated"]
+
+# Examples and corpus modules
+[[tool.mypy.overrides]]
+module = "pomagma.examples.*"
+disable_error_code = ["assignment", "attr-defined"]
+
+[[tool.mypy.overrides]]
+module = "pomagma.corpus.*"
+disable_error_code = ["attr-defined"]
+
+# Main modules and top-level scripts
+[[tool.mypy.overrides]]
+module = "pomagma.__main__"
+disable_error_code = ["union-attr"]
+
+[[tool.mypy.overrides]]
+module = "vet"
+disable_error_code = ["assignment"] 

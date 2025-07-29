@@ -1,0 +1,663 @@
+# TGO-Memory Python SDK
+
+TGO-Memory 的官方 Python SDK，提供简洁而强大的 API 接口，让您轻松集成智能用户记忆管理功能。
+
+## ✨ 主要功能
+
+- **用户档案记忆管理** - 创建、更新、删除用户档案信息
+- **用户事件记忆管理** - 管理用户的重要经历和里程碑事件
+- **会话管理** - 支持个人聊天和群组聊天
+- **消息处理** - 智能分析对话内容，自动提取记忆
+- **配置管理** - 灵活配置记忆提取规则
+- **智能上下文生成** - 为 AI 对话提供个性化上下文
+- **同步/异步支持** - 提供同步和异步两种客户端
+
+## 🚀 快速开始
+
+### 安装
+
+```bash
+pip install tgo-memory
+```
+
+或使用 Poetry：
+
+```bash
+poetry add tgo-memory
+```
+
+### 5分钟快速体验
+
+```python
+import asyncio
+from tgo_memory import TgoMemory
+
+async def main():
+    # 1. 初始化客户端
+    client = TgoMemory(
+        project_url="https://memory.tgo.ai",
+        api_key="your-api-key-here"
+    )
+
+    # 2. 测试连接
+    if await client.ping():
+        print("✅ 连接成功！")
+
+    # 3. 创建或更新用户
+    user_id = "user_lixiaoming_001"
+    user = await client.set_user(
+        user_id=user_id,
+        profiles={
+            "basic_info": {
+                "name": "李小明",
+                "age": "28",
+                "location": "北京",
+                "occupation": "软件工程师"
+            },
+            "contact": {
+                "email": "lixiaoming@example.com",
+                "timezone": "Asia/Shanghai",
+                "language": "zh-CN"
+            }
+        }
+    )
+    print(f"✅ 用户创建成功: {user.user_id}")
+
+    # 4. 获取个人聊天会话
+    session = client.get_session(
+        session_id=user_id,  # 个人聊天使用用户 ID
+        session_type="personal"
+    )
+    print("✅ 会话创建成功")
+
+    # 5. 添加对话消息
+    await session.add([
+        {"role": "user", "content": "你好，我是李小明，今年28岁，在北京做软件工程师"},
+        {"role": "assistant", "content": "你好李小明！很高兴认识你。作为软件工程师，你主要使用什么技术栈呢？"},
+        {"role": "user", "content": "我主要做Python开发，最近在学习机器学习。我住在朝阳区，平时喜欢打篮球"},
+        {"role": "assistant", "content": "很棒！Python在机器学习领域确实很受欢迎。朝阳区有很多不错的篮球场，你经常去哪里打球？"}
+    ])
+    print("✅ 对话数据添加成功")
+
+    # 6. 处理记忆（让 TGO-Memory 分析对话并提取记忆）
+    await session.flush()
+    print("✅ 记忆处理完成")
+
+    # 7. 获取用户上下文（用于 AI 对话）
+    context = await client.get_context(user_id=user_id)
+    print("✅ 上下文获取成功")
+    print(f"上下文内容: {context}")
+
+    # 8. 关闭客户端
+    await client.close()
+
+# 运行示例
+asyncio.run(main())
+```
+
+### 同步客户端使用
+
+如果您更喜欢同步 API，可以使用 `SyncTgoMemory`：
+
+```python
+from tgo_memory import SyncTgoMemory
+
+# 初始化同步客户端
+client = SyncTgoMemory(
+    project_url="https://memory.tgo.ai",
+    api_key="your-api-key-here"
+)
+
+# 测试连接
+if client.ping():
+    print("✅ 连接成功！")
+
+# 创建用户
+user = client.set_user(
+    user_id="user_12345",
+    profiles={
+        "basic_info": {
+            "name": "张三",
+            "age": "25",
+            "location": "上海"
+        }
+    }
+)
+
+# 获取会话并添加消息
+session = client.get_session(session_id="user_12345", session_type="personal")
+session.add([
+    {"role": "user", "content": "你好，我是张三"},
+    {"role": "assistant", "content": "你好张三！很高兴认识你。"}
+])
+
+# 处理记忆
+session.flush()
+
+# 获取上下文
+context = client.get_context(user_id="user_12345")
+print("用户上下文:", context)
+
+# 关闭客户端
+client.close()
+```
+
+## 📖 详细文档
+
+### 客户端初始化
+
+```python
+from tgo_memory import TgoMemory
+
+client = TgoMemory(
+    project_url="https://memory.tgo.ai",      # 必需：TGO-Memory 服务地址
+    api_key="your-api-key",                   # 必需：API 密钥
+    timeout=30.0,                             # 可选：请求超时时间（秒）
+    max_retries=3,                            # 可选：最大重试次数
+    retry_delay=1.0,                          # 可选：重试延迟（秒）
+    debug=False                               # 可选：启用调试模式
+)
+```
+
+### 用户档案记忆管理
+
+#### 创建或更新用户
+
+```python
+# 创建或更新用户（Upsert 模式）
+user = await client.set_user(
+    user_id="user_lixiaoming_001",
+    profiles={
+        "basic_info": {
+            "name": "李小明",
+            "age": "28",
+            "location": "北京",
+            "occupation": "软件工程师"
+        },
+        "contact": {
+            "email": "lixiaoming@example.com",
+            "timezone": "Asia/Shanghai",
+            "language": "zh-CN"
+        },
+        "interests": {
+            "hobbies": "编程、阅读、篮球",
+            "technology": "Python、机器学习",
+            "sports": "篮球"
+        }
+    }
+)
+```
+
+#### 获取用户档案
+
+```python
+# 获取完整档案
+profile = await client.get_profile(user_id="user_12345")
+
+# 获取特定类别
+basic_info = await client.get_profile(
+    user_id="user_12345",
+    categories=["basic_info", "contact"]
+)
+
+# 获取特定字段
+name_and_age = await client.get_profile(
+    user_id="user_12345",
+    fields=["basic_info.name", "basic_info.age"]
+)
+```
+
+#### 删除档案数据
+
+```python
+# 删除特定类别
+await client.delete_profile_data(
+    user_id="user_12345",
+    categories=["interests"]
+)
+
+# 删除特定字段
+await client.delete_profile_data(
+    user_id="user_12345",
+    fields=["basic_info.age", "contact.email"]
+)
+```
+
+### 用户事件记忆管理
+
+#### 创建事件记录
+
+```python
+# 创建事件记录
+event = await client.create_event_record(
+    user_id="user_12345",
+    category="professional",
+    event_data={
+        "title": "升职为高级产品经理",
+        "description": "经过两年努力，升职为高级产品经理",
+        "date": "2024-01-15",
+        "importance": "high",
+        "emotions": ["excited", "proud"],
+        "impact": "职业发展的重要里程碑"
+    },
+    confidence=1.0,
+    source="user_sharing",
+    metadata={
+        "department": "产品部",
+        "previous_role": "产品经理"
+    }
+)
+```
+
+#### 获取事件记录
+
+```python
+# 获取所有事件
+events = await client.get_events(user_id="user_12345")
+
+# 按时间范围获取
+recent_events = await client.get_events(
+    user_id="user_12345",
+    start_date="2024-01-01",
+    end_date="2024-12-31"
+)
+
+# 按类别获取
+work_events = await client.get_events(
+    user_id="user_12345",
+    categories=["professional", "education"]
+)
+
+# 按重要性获取
+important_events = await client.get_events(
+    user_id="user_12345",
+    importance="high"
+)
+```
+
+#### 更新和删除事件
+
+```python
+# 更新事件记录
+updated_event = await client.update_event_record(
+    event_id="event_123",
+    event_data={
+        "title": "升职为资深产品经理",  # 更新标题
+        "importance": "very_high"      # 更新重要性
+    },
+    metadata={
+        "updated_reason": "职位名称调整"
+    }
+)
+
+# 删除事件记录
+success = await client.delete_event_record(event_id="event_123")
+```
+
+### 会话管理
+
+#### 个人会话
+
+```python
+# 个人会话：session_id 通常使用用户 ID
+session = client.get_session(
+    session_id="user_12345",
+    session_type="personal"
+)
+```
+
+#### 群组会话
+
+```python
+# 群组会话：session_id 使用群组 ID
+session = client.get_session(
+    session_id="project_team_001",
+    session_type="group"
+)
+
+# 群组消息需要包含发送者信息
+await session.add([
+    {
+        "role": "user",
+        "content": "大家好，我是项目经理张三",
+        "user_id": "user_zhangsan"  # 群组消息必须指定发送者
+    },
+    {
+        "role": "user",
+        "content": "我是开发工程师李四",
+        "user_id": "user_lisi"
+    }
+])
+```
+
+### 消息处理
+
+#### 添加消息
+
+```python
+# 个人聊天添加消息
+await session.add([
+    {"role": "user", "content": "今天天气真好，我去公园跑步了"},
+    {"role": "assistant", "content": "跑步是很好的运动！你经常去哪个公园？"},
+    {"role": "user", "content": "我经常去奥森公园，那里空气很好"}
+])
+
+# 群组聊天添加消息（需要指定 user_id）
+await session.add([
+    {
+        "role": "user",
+        "content": "项目进度如何？",
+        "user_id": "user_manager"
+    },
+    {
+        "role": "user",
+        "content": "后端开发已完成80%",
+        "user_id": "user_developer"
+    }
+])
+```
+
+#### 处理消息缓冲区
+
+```python
+# 触发记忆提取和处理
+result = await session.flush()
+
+print(f"处理消息数: {result.processed_messages}")
+print(f"档案记忆数: {result.profile_memories_count}")
+print(f"事件记忆数: {result.event_memories_count}")
+print(f"处理状态: {result.status}")
+```
+
+#### 获取缓冲区状态
+
+```python
+# 查看待处理消息数量
+status = await session.get_buffer_status()
+print(f"待处理消息数: {status.pending_messages}")
+print(f"上次处理时间: {status.last_flush_at}")
+```
+
+### 配置管理
+
+#### 更新档案记忆配置
+
+```python
+# 配置哪些字段需要提取，以及优先级
+config = {
+    "profiles": {
+        "basic_info": {
+            "name": {"enabled": True, "priority": "high"},
+            "age": {"enabled": True, "priority": "medium"},
+            "location": {"enabled": True, "priority": "medium"},
+            "occupation": {"enabled": True, "priority": "high"}
+        },
+        "interests": {
+            "hobbies": {"enabled": True, "priority": "medium"},
+            "technology": {"enabled": True, "priority": "high"},
+            "sports": {"enabled": True, "priority": "medium"}
+        }
+    }
+}
+
+result = await client.update_profile_config(config=config)
+print(f"配置更新状态: {result.status}")
+```
+
+#### 获取当前配置
+
+```python
+config = await client.get_profile_config()
+print("当前配置:", config.profiles)
+print("配置版本:", config.version)
+```
+
+### 智能上下文生成
+
+```python
+# 基础用法
+context = await client.get_context(user_id="user_12345")
+
+# 高级配置
+context = await client.get_context(
+    user_id="user_12345",
+    config={
+        "max_length": 2000,                    # 最大长度
+        "categories": ["basic_info", "interests"],  # 指定类别
+        "priority": "recent",                  # 优先级策略: recent, important, balanced
+        "include_profile": True,               # 包含档案记忆
+        "include_events": True,                # 包含事件记忆
+        "time_range": {"days": 30}            # 时间范围（最近30天）
+    }
+)
+
+print(f"生成的上下文: {context}")
+```
+
+## 🔧 高级用法
+
+### 异步上下文管理器
+
+```python
+# 推荐使用异步上下文管理器，自动处理资源清理
+async with TgoMemory(
+    project_url="https://memory.tgo.ai",
+    api_key="your-api-key"
+) as client:
+    # 使用客户端
+    user = await client.set_user(...)
+    session = client.get_session(...)
+    await session.add([...])
+    await session.flush()
+    # 自动关闭连接
+```
+
+### 错误处理
+
+```python
+from tgo_memory import (
+    TGOMemoryError,
+    AuthenticationError,
+    ValidationError,
+    NetworkError,
+    ServerError,
+    SessionError,
+    MemoryError
+)
+
+try:
+    # 可能出错的操作
+    await client.set_user(user_id="", profiles={})
+
+except ValidationError as e:
+    print(f"参数验证失败: {e}")
+    # 检查输入参数格式
+
+except AuthenticationError as e:
+    print(f"认证失败: {e}")
+    # 检查 API 密钥是否正确
+
+except NetworkError as e:
+    print(f"网络错误: {e}")
+    # 检查网络连接和服务地址
+
+except ServerError as e:
+    print(f"服务器错误: {e}")
+    # 服务端问题，稍后重试
+
+except SessionError as e:
+    print(f"会话错误: {e}")
+    # 会话相关操作失败
+
+except MemoryError as e:
+    print(f"记忆操作错误: {e}")
+    # 记忆处理失败
+
+except TGOMemoryError as e:
+    print(f"其他错误: {e}")
+    # 其他 TGO-Memory 相关错误
+```
+
+### 批量操作
+
+```python
+import asyncio
+
+# 批量处理多个用户的消息
+async def process_users_batch(client, user_data_list):
+    """批量处理多个用户的对话数据"""
+
+    tasks = []
+    for user_data in user_data_list:
+        task = process_single_user(client, user_data)
+        tasks.append(task)
+
+    # 并发执行
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+
+    # 处理结果
+    for i, result in enumerate(results):
+        if isinstance(result, Exception):
+            print(f"用户 {user_data_list[i]['user_id']} 处理失败: {result}")
+        else:
+            print(f"用户 {user_data_list[i]['user_id']} 处理成功")
+
+async def process_single_user(client, user_data):
+    """处理单个用户的数据"""
+    user_id = user_data["user_id"]
+
+    # 创建或更新用户
+    await client.set_user(
+        user_id=user_id,
+        profiles=user_data["profiles"]
+    )
+
+    # 获取会话并添加消息
+    session = client.get_session(user_id, "personal")
+    await session.add(user_data["messages"])
+
+    # 处理记忆
+    result = await session.flush()
+    return result
+
+# 使用示例
+user_data_list = [
+    {
+        "user_id": "user_001",
+        "profiles": {"basic_info": {"name": "张三"}},
+        "messages": [{"role": "user", "content": "你好"}]
+    },
+    {
+        "user_id": "user_002",
+        "profiles": {"basic_info": {"name": "李四"}},
+        "messages": [{"role": "user", "content": "早上好"}]
+    }
+]
+
+async with TgoMemory(project_url="...", api_key="...") as client:
+    await process_users_batch(client, user_data_list)
+```
+
+## 📝 API 参考
+
+### TgoMemory 类
+
+#### 连接管理
+| 方法 | 描述 | 参数 | 返回值 |
+|------|------|------|--------|
+| `ping()` | 测试连接 | - | `bool` |
+| `close()` | 关闭客户端 | - | `None` |
+
+#### 用户档案记忆
+| 方法 | 描述 | 参数 | 返回值 |
+|------|------|------|--------|
+| `set_user()` | 创建或更新用户 | `user_id`, `profiles` | `User` |
+| `get_profile()` | 获取用户档案 | `user_id`, `categories?`, `fields?` | `Dict` |
+| `delete_profile_data()` | 删除档案数据 | `user_id`, `categories?`, `fields?` | `bool` |
+
+#### 用户事件记忆
+| 方法 | 描述 | 参数 | 返回值 |
+|------|------|------|--------|
+| `create_event_record()` | 创建事件记录 | `user_id`, `category`, `event_data`, `confidence?`, `source?`, `metadata?` | `Event` |
+| `get_events()` | 获取事件列表 | `user_id`, `start_date?`, `end_date?`, `categories?`, `importance?` | `List[Event]` |
+| `get_event()` | 获取特定事件 | `event_id` | `Event` |
+| `update_event_record()` | 更新事件记录 | `event_id`, `event_data?`, `metadata?` | `Event` |
+| `delete_event_record()` | 删除事件记录 | `event_id` | `bool` |
+
+#### 会话管理
+| 方法 | 描述 | 参数 | 返回值 |
+|------|------|------|--------|
+| `get_session()` | 获取会话对象 | `session_id`, `session_type` | `Session` |
+
+#### 配置管理
+| 方法 | 描述 | 参数 | 返回值 |
+|------|------|------|--------|
+| `update_profile_config()` | 更新档案配置 | `config` | `ConfigResult` |
+| `get_profile_config()` | 获取档案配置 | - | `ProfileConfig` |
+
+#### 上下文生成
+| 方法 | 描述 | 参数 | 返回值 |
+|------|------|------|--------|
+| `get_context()` | 获取用户上下文 | `user_id`, `config?` | `str` |
+
+### Session 类
+
+| 方法 | 描述 | 参数 | 返回值 |
+|------|------|------|--------|
+| `add()` | 添加消息 | `messages` | `AddResult` |
+| `flush()` | 处理缓冲区 | - | `FlushResult` |
+| `get_buffer_status()` | 获取缓冲区状态 | - | `BufferStatus` |
+
+### 数据模型
+
+#### User
+- `user_id`: 用户 ID
+- `profiles`: 档案数据字典
+- `created_at`: 创建时间
+- `updated_at`: 更新时间
+
+#### Event
+- `event_id`: 事件 ID
+- `user_id`: 用户 ID
+- `category`: 事件类别
+- `event_data`: 事件数据
+- `confidence`: 置信度
+- `source`: 数据源
+- `metadata`: 元数据
+
+#### AddResult
+- `session_id`: 会话 ID
+- `session_type`: 会话类型
+- `added_messages`: 添加的消息数
+- `message_ids`: 消息 ID 列表
+
+#### FlushResult
+- `session_id`: 会话 ID
+- `session_type`: 会话类型
+- `processed_messages`: 处理的消息数
+- `profile_memories_count`: 档案记忆数
+- `event_memories_count`: 事件记忆数
+- `status`: 处理状态
+
+## 🎯 最佳实践
+
+1. **使用异步上下文管理器**：确保资源正确释放
+2. **合理配置超时和重试**：提高系统稳定性
+3. **批量处理**：对于大量数据，使用并发处理提高效率
+4. **错误处理**：捕获并处理各种异常情况
+5. **配置管理**：根据业务需求调整记忆提取配置
+
+## 🔗 相关链接
+
+- [TGO-Memory 官方文档](https://docs.tgo.ai/memory)
+- [API 参考文档](https://docs.tgo.ai/memory/api)
+- [GitHub 仓库](https://github.com/tgo-ai/tgo-memory)
+- [问题反馈](https://github.com/tgo-ai/tgo-memory/issues)
+
+## 🤝 贡献
+
+欢迎贡献代码！请查看 [贡献指南](../../CONTRIBUTING.md) 了解详情。
+
+## 📄 许可证
+
+本项目采用 MIT 许可证。详见 [LICENSE](../../LICENSE) 文件。

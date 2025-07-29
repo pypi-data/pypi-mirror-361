@@ -1,0 +1,64 @@
+[project]
+name = "p-scldata"
+version = "2025.6.0"
+description = "A dataset (SCL2205) for subcellular localisation prediction modelling"
+authors = [{ name = "Ouso D. O. S.", email = "daniel.ouso@ucdconnect.ie" },
+    {email = "ousodaniel@gmail.com"}
+]
+maintainers = [
+  {name = "Ouso D. O. S.", email = "daniel.ouso@ucdconnect.ie"}
+]
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "pandas",
+]
+license = "MIT"
+keywords = ["subcellular localisation", "machine learning", "dataset", "clustering", "classification", "natural language processing"]
+[project.urls]
+Homepage = "https://github.com/ousodaniel/scldata"
+Repository = "https://github.com/ousodaniel/scldata.git"
+"Bug Tracker" = "https://github.com/ousodaniel/scldata/issues"
+
+[project.gui-scripts]
+scldata = "scldata.__init__:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+include = [
+    "scldata/data/*",
+    "CHANGELOG.md"
+]
+exclude = [
+    "/tests",
+    ".gitignore",
+    ".hgignore",
+]
+
+[tool.hatch.build.targets.sdist]
+packages = ["scldata"]
+[tool.hatch.build.targets.wheel]
+packages = ["scldata"]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Healthcare Industry",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    'Programming Language :: Python :: 3.8',
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Database",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Bio-Informatics"
+]

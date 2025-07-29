@@ -1,0 +1,89 @@
+# Changelog
+
+Significant changes in major and minor releases of this library:
+
+## Version 5.4.0 (2025)
+
+- index() is not compatible with pandas anymore. Instead use indexes when you need to get the indexes for multiple items.
+
+## Version 5.3.2 (2025)
+
+- Better support for freezing sets.
+
+## Version 5.3.1 (2025)
+
+- Additional type hints
+
+## Version 5.3.0 (2025)
+
+- Added freeze() to make stable sets immutable
+
+## Version 5.2.x (2024)
+
+- Added Sorted Set and Orderly Set
+
+## Version 5.2 (February 2022)
+
+- Major refactor
+- Added a StableSet implementation, as a base class for OrderedSet.
+- Added Many functions to OrderedSet, to be more complete and more compatible with other implementations.
+  - popitem(last: bool = True), similar to `dict.popitem` (note minor incompatibility with another implementation (`orderedset`) that have the `last` keyword in the `pop` function)
+  - move_to_end(key), similar to `dict.move_to_end`
+  - __le__, __lt__, __ge__, __gt__ - to improve subset/superset testing
+- Minimum Python version is 3.8 (because __reversed__)
+- Fix: OrderedSet.update now raised a TypeError instead of a ValueError when the type of the input is incorrect
+- Added many new tests, and all the tests from 2 other implementations.
+
+## Version 4.1 (January 2022)
+
+- Packaged using flit. Wheels now exist, and setuptools is no longer required.
+- This package now has a typical package structure, instead of being a single module. The code is in `orderly_set/__init__.py` instead of `orderly_set.py`.
+- There is an `orderly_set/py.typed` so that type checkers know about the types.
+- Use the type aliases `SetLike[T]` and `OrderedSetInitializer[T]` to simplify some types.
+- Updated the way overloaded type signatures are written to what MyPy currently expects.
+- Minimum Python version is 3.7.
+
+## Version 4.0 (January 2020)
+
+- Added type signatures inline to the code, instead of using type stubs.
+- Dropped Python 2 support. The minimum supported Python version is 3.5.
+
+## Version 3.1 (November 2018)
+
+- `__getitem__` accepts NumPy arrays of indices, and returns a list of elements with those indices.
+- Updated in-place operations that took O(N^2) time, such as .difference_update(), to take O(N) time.
+- Clarified whether various methods mutate or copy the OrderedSet.
+- Added `OrderedSet.get_loc` and `OrderedSet.get_indexer` as aliases for `OrderedSet.index`, for interoperability with `pandas.Index`.
+- Added type stubs in a .pyi file.
+
+## Version 3.0 (June 2018)
+
+- Implemented the abstract base classes `collections.MutableSet` and `collections.Sequence`.
+- Changed the behavior of some methods to follow the MutableSet API.
+- Indexing an OrderedSet with `[:]` returns a copy, not the same object.
+
+## Version 2.0 (December 2015)
+
+- Tuples are allowable values in the set, and are not treated as "fancy indexing".
+- Added `update` and `pop` methods.
+
+## Version 1.4 (September 2015)
+
+- Added `discard` and `clear` methods.
+
+## Version 1.3 (April 2015)
+
+- Added support for pickling.
+
+## Version 1.2 (May 2014)
+
+- First Python 3 support.
+
+## Version 1.1 (August 2013)
+
+- Added tests.
+- Removed a broken implementation of `discard`.
+
+## Version 1.0 (August 2012)
+
+- First release.

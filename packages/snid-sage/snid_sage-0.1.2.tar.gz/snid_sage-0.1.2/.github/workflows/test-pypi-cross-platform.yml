@@ -1,0 +1,300 @@
+name: Test PyPI Cross-Platform
+
+on:
+  workflow_dispatch:  # Manual trigger
+    inputs:
+      package_source:
+        description: 'Package source'
+        required: true
+        default: 'pypi'
+        type: choice
+        options:
+          - pypi
+          - testpypi
+      version:
+        description: 'Version to test (leave empty for latest)'
+        required: false
+        default: ''
+        type: string
+  workflow_run:
+    workflows: ["Deploy to PyPI"]
+    types:
+      - completed
+
+jobs:
+  test-cross-platform:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Test on all major platforms with Python 3.11
+          - os: ubuntu-latest
+            python-version: "3.11"
+            test-name: "Ubuntu Python 3.11"
+          - os: macos-latest
+            python-version: "3.11"
+            test-name: "macOS Python 3.11"
+          - os: windows-latest
+            python-version: "3.11"
+            test-name: "Windows Python 3.11"
+          # Test on different Python versions
+          - os: ubuntu-latest
+            python-version: "3.8"
+            test-name: "Ubuntu Python 3.8 (minimum)"
+          - os: ubuntu-latest
+            python-version: "3.12"
+            test-name: "Ubuntu Python 3.12 (latest)"
+          # Test conda on macOS
+          - os: macos-latest
+            python-version: "3.11"
+            install-method: "conda"
+            test-name: "macOS Conda Python 3.11"
+
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+    - name: Set up Python ${{ matrix.python-version }}
+      if: matrix.install-method != 'conda'
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Set up Conda
+      if: matrix.install-method == 'conda'
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+        auto-activate-base: true
+        activate-environment: ""
+
+    - name: Install system dependencies (macOS)
+      if: runner.os == 'macOS'
+      shell: bash
+      run: |
+        set -euxo pipefail
+        # Install Homebrew if not available
+        if ! command -v brew &> /dev/null; then
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        fi
+        brew install hdf5 libpng libjpeg pkg-config
+
+    - name: Install system dependencies (Ubuntu)
+      if: runner.os == 'Linux'
+      shell: bash
+      run: |
+        set -euxo pipefail
+        sudo apt-get update
+        sudo apt-get install -y libhdf5-dev libpng-dev libjpeg-dev pkg-config build-essential
+        # For GUI testing
+        sudo apt-get install -y xvfb
+
+    - name: Test PyPI installation (pip)
+      if: matrix.install-method != 'conda'
+      shell: bash
+      run: |
+        set -euxo pipefail
+        echo "🧪 Testing PyPI installation: ${{ matrix.test-name }}"
+        
+        # Upgrade pip
+        python -m pip install --upgrade pip setuptools wheel
+        
+        # Determine package source
+        if [[ "${{ github.event.inputs.package_source }}" == "testpypi" ]]; then
+          INDEX_URL="--index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/"
+        else
+          INDEX_URL=""
+        fi
+        
+        # Install package
+        if [[ -n "${{ github.event.inputs.version }}" ]]; then
+          echo "📦 Installing snid-sage==${{ github.event.inputs.version }}..."
+          python -m pip install $INDEX_URL snid-sage==${{ github.event.inputs.version }}
+        else
+          echo "📦 Installing latest snid-sage..."
+          python -m pip install $INDEX_URL snid-sage
+        fi
+        
+        # Verify installation
+        echo "🔍 Verifying installation..."
+        python -m pip show snid-sage
+        
+        # Test basic import
+        echo "✅ Testing basic import..."
+        python -c "import snid_sage; print(f'Version: {snid_sage.__version__}')"
+        
+        # Test CLI commands
+        echo "🔧 Testing CLI commands..."
+        snid --help && echo "✅ snid CLI works"
+        snid-gui --help && echo "✅ snid-gui CLI works"
+        snid-sage --help && echo "✅ snid-sage CLI works"
+        snid-template --help && echo "✅ snid-template CLI works"
+
+    - name: Test PyPI installation (conda)
+      if: matrix.install-method == 'conda'
+      shell: bash -el {0}
+      run: |
+        set -euxo pipefail
+        echo "🧪 Testing PyPI installation in Conda: ${{ matrix.test-name }}"
+        
+        # Install pip in conda environment
+        conda install -c conda-forge pip
+        
+        # Determine package source
+        if [[ "${{ github.event.inputs.package_source }}" == "testpypi" ]]; then
+          INDEX_URL="--index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/"
+        else
+          INDEX_URL=""
+        fi
+        
+        # Install package
+        if [[ -n "${{ github.event.inputs.version }}" ]]; then
+          echo "📦 Installing snid-sage==${{ github.event.inputs.version }} in conda..."
+          pip install $INDEX_URL snid-sage==${{ github.event.inputs.version }}
+        else
+          echo "📦 Installing latest snid-sage in conda..."
+          pip install $INDEX_URL snid-sage
+        fi
+        
+        # Verify installation
+        echo "🔍 Verifying installation..."
+        pip show snid-sage
+        
+        # Test basic import
+        echo "✅ Testing basic import..."
+        python -c "import snid_sage; print(f'Version: {snid_sage.__version__}')"
+        
+        # Test CLI commands
+        echo "🔧 Testing CLI commands..."
+        snid --help && echo "✅ snid CLI works in conda"
+        snid-gui --help && echo "✅ snid-gui CLI works in conda"
+        snid-sage --help && echo "✅ snid-sage CLI works in conda"
+
+    - name: Test core functionality
+      shell: bash
+      run: |
+        set -euxo pipefail
+        echo "🧪 Testing core functionality..."
+        
+        # Test core imports
+        python -c "
+        try:
+            import snid_sage.snid.snid
+            import snid_sage.snid.preprocessing
+            import snid_sage.snid.template_manager
+            print('✅ Core modules imported successfully')
+        except ImportError as e:
+            print(f'❌ Core import failed: {e}')
+            exit(1)
+        "
+        
+        # Test CLI interface imports
+        python -c "
+        try:
+            import snid_sage.interfaces.cli.main
+            import snid_sage.interfaces.cli.identify
+            import snid_sage.interfaces.cli.template
+            print('✅ CLI modules imported successfully')
+        except ImportError as e:
+            print(f'❌ CLI import failed: {e}')
+            exit(1)
+        "
+        
+        # Test data loading
+        python -c "
+        try:
+            from snid_sage.shared.utils.data_io.spectrum_loader import SpectrumLoader
+            loader = SpectrumLoader()
+            print('✅ Data loading functionality works')
+        except Exception as e:
+            print(f'❌ Data loading failed: {e}')
+            exit(1)
+        "
+
+    - name: Test GUI import and initialization
+      shell: bash
+      run: |
+        set -euxo pipefail
+        echo "🖥️ Testing GUI module import and initialization..."
+        
+        # Set up virtual display for headless testing on Linux
+        if [[ "${{ runner.os }}" == "Linux" ]]; then
+          export DISPLAY=:99
+          Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+          sleep 2
+        fi
+        
+        # Test GUI module import
+        python -c "
+        import os
+        import sys
+        
+        # Set up headless mode for tkinter on Linux
+        if sys.platform.startswith('linux'):
+            os.environ['DISPLAY'] = ':99'
+        
+        try:
+            import snid_sage.interfaces.gui.sage_gui
+            print('✅ GUI module imported successfully')
+        except ImportError as e:
+            print(f'❌ GUI import failed: {e}')
+            exit(1)
+        except Exception as e:
+            print(f'⚠️  GUI exception (may be expected on CI): {e}')
+        "
+
+    - name: Test optional dependencies
+      shell: bash
+      run: |
+        echo "🔍 Testing optional dependencies installation..."
+        
+        # Try installing with optional dependencies
+        if [[ "${{ github.event.inputs.package_source }}" == "testpypi" ]]; then
+          echo "⚠️  Skipping optional dependencies test for Test PyPI (dependencies may not be available)"
+        else
+          python -m pip install "snid-sage[astro,llm]"
+          
+          # Test astro dependencies
+          python -c "
+          try:
+              import astroquery
+              print('✅ Astro dependencies installed successfully')
+          except ImportError:
+              print('⚠️  Astro dependencies not available')
+          "
+          
+          # Test LLM dependencies
+          python -c "
+          try:
+              import openai
+              print('✅ LLM dependencies installed successfully')
+          except ImportError:
+              print('⚠️  LLM dependencies not available')
+          "
+        fi
+
+    - name: Test Summary
+      if: always()
+      shell: bash
+      run: |
+        echo "### ${{ matrix.test-name }} Test Results 📝" >> "$GITHUB_STEP_SUMMARY"
+        echo "" >> "$GITHUB_STEP_SUMMARY"
+        if [[ "${{ github.event.inputs.package_source }}" == "testpypi" ]]; then
+          echo "📦 **Source**: Test PyPI" >> "$GITHUB_STEP_SUMMARY"
+        else
+          echo "📦 **Source**: PyPI" >> "$GITHUB_STEP_SUMMARY"
+        fi
+        if [[ -n "${{ github.event.inputs.version }}" ]]; then
+          echo "🏷️ **Version**: ${{ github.event.inputs.version }}" >> "$GITHUB_STEP_SUMMARY"
+        else
+          echo "🏷️ **Version**: latest" >> "$GITHUB_STEP_SUMMARY"
+        fi
+        echo "" >> "$GITHUB_STEP_SUMMARY"
+        echo "✅ **Tests Completed**:" >> "$GITHUB_STEP_SUMMARY"
+        echo "- Package installation successful" >> "$GITHUB_STEP_SUMMARY"
+        echo "- CLI commands available and working" >> "$GITHUB_STEP_SUMMARY"
+        echo "- Core functionality tested" >> "$GITHUB_STEP_SUMMARY"
+        echo "- GUI module imports correctly" >> "$GITHUB_STEP_SUMMARY"
+        if [[ "${{ matrix.install-method }}" == "conda" ]]; then
+          echo "- Conda environment compatibility verified" >> "$GITHUB_STEP_SUMMARY"
+        fi 

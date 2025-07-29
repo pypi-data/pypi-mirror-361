@@ -1,0 +1,1 @@
+This is a simple Python package that calculates total bill amount.

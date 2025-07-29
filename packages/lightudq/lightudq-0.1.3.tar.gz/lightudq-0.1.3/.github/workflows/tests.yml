@@ -1,0 +1,40 @@
+name: Run Tests
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+
+jobs:
+  test:
+    name: run-all-tests
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false # Only run if the PR is not a draft
+
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: Create venv and install project
+        run: |
+          uv sync
+          source .venv/bin/activate
+
+      - name: Run tests
+        run: |
+          source .venv/bin/activate
+          pytest

@@ -1,0 +1,87 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "heir_py"
+version = "0.0.2"
+authors = [
+    { name = "Jeremy Kun", email = "jkun@google.com" },
+    { name = "Asra Ali", email = "asraa@google.com" },
+    { name = "Alexander Viand", email = "alexander.viand@intel.com" },
+]
+description = "The HEIR compiler"
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+    "Topic :: Security :: Cryptography",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Compilers",
+]
+license = "MIT AND Apache-2.0"
+dependencies = [
+  "numba>=0.61.0",
+  "numpy>=2.0.2",
+  "llvmlite>=0.44.0",
+  "pybind11>=2.13.6",
+  "pybind11_global>=2.13.6",
+  "colorama>=0.4.6",
+  "absl-py>=2.1.0",
+]
+
+[project.urls]
+Homepage = "https://heir.dev"
+Issues = "https://github.com/google/heir/issues"
+
+[tool.setuptools]
+package-dir = { "" = "frontend" }
+zip-safe = false
+
+[tool.setuptools.packages.find]
+where = ["frontend"]
+
+[tool.cibuildwheel]
+build = "cp311-* cp312-* cp313-*"
+build-frontend = "build[uv]"
+skip = "*-musllinux_* pp-*"
+# The test must be run in an isolated directory so that python uses the wheel
+# when running `import heir` instead of the local source files. cibuildwheel
+# creates an isolated directory for this purpose, and cd's to it before running
+# this command.
+test-command = "cp {package}/frontend/example.py . && python example.py"
+
+[tool.cibuildwheel.linux]
+archs = "auto64"
+before-all = "bash .github/install_cibuildwheel_deps.sh"
+# Use the rootless Bazel installation inside the container.
+environment = { PATH = "$PATH:$HOME/bin" }
+
+[tool.cibuildwheel.windows]
+archs = "auto64"
+
+[tool.cibuildwheel.macos]
+# Inherits archs from default (auto64)
+# Unused by Bazel, but needed explicitly by delocate on MacOS.
+environment = { MACOSX_DEPLOYMENT_TARGET = "10.14" }
+
+[tool.pytest.ini_options]
+norecursedirs = [
+  ".git",
+  "__pycache__",
+  "bazel",
+  "bazel-bin",
+  "bazel-heir",
+  "bazel-out",
+  "bazel-testlogs",
+  "docs",
+  "external",
+  "tests",
+  "tools",
+  "venv",
+]
+
+[tool.pyink]
+line-length = 80
+unstable = true
+pyink-indentation = 2
+pyink-use-majority-quotes = true

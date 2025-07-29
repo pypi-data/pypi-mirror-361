@@ -1,0 +1,133 @@
+Metadata-Version: 2.4
+Name: meshparty
+Version: 2.0.3
+Summary: a service to work with meshes
+Project-URL: Homepage, https://github.com/CAVEconnectome/MeshParty
+Project-URL: Bug Tracker, https://github.com/CAVEconnectome/MeshParty/issues
+Author-email: Sven Dorkenwald <svenmd@princeton.edu>, Forrest Collman <forrestc@alleninstitute.org>, Casey Schneider-Mizell <caseys@alleninstitute.org>
+License: MIT
+License-File: LICENSE
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.10
+Requires-Dist: blosc>=1.11.2
+Requires-Dist: cloud-volume>=1.16.0
+Requires-Dist: h5py
+Requires-Dist: multiwrapper
+Requires-Dist: networkx
+Requires-Dist: numpy>=2.0.0
+Requires-Dist: orjson>=3.0.0
+Requires-Dist: pandas>=2.0.0
+Requires-Dist: scikit-learn
+Requires-Dist: scipy>=1.3.0
+Requires-Dist: tables>=3.0.0
+Requires-Dist: trimesh[easy]>=4.0.0
+Provides-Extra: repair
+Requires-Dist: caveclient>=4.0.0; extra == 'repair'
+Provides-Extra: test
+Requires-Dist: pytest; extra == 'test'
+Requires-Dist: pytest-cov; extra == 'test'
+Requires-Dist: pytest-mock; extra == 'test'
+Provides-Extra: viz
+Requires-Dist: vtk; extra == 'viz'
+Description-Content-Type: text/x-rst
+
+.. image:: https://readthedocs.org/projects/meshparty/badge/?version=latest
+    :target: https://meshparty.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+.. image:: https://travis-ci.com/sdorkenw/MeshParty.svg?branch=master
+    :target: https://travis-ci.com/sdorkenw/MeshParty
+.. image:: https://codecov.io/gh/sdorkenw/MeshParty/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/sdorkenw/MeshParty
+.. image:: https://zenodo.org/badge/148393516.svg
+   :target: https://zenodo.org/badge/latestdoi/148393516
+   
+MeshParty
+#########
+A package to work with meshes, designed around use cases for analyzing neuronal morphology.
+
+documentation https://meshparty.readthedocs.io/
+ 
+############
+
+From pypi:
+::
+
+    pip install meshparty
+
+Note: Version 2.0.0 or higher requires Python 3.10 or higher and offers reduced features for mesh analysis and visualization.
+Projects like pyvista are now easier and more powerful for work that was previously done in MeshParty.
+This package is still intended to be used for the Skeleton and MeshWork classes, but with reduced support for mesh analysis.
+
+
+To install the git version do:
+
+:: 
+
+    git clone https://github.com/sdorkenw/MeshParty.git
+    cd MeshParty
+    pip install . --upgrade
+
+
+to make optional features of ray tracing and interaction with the PyChunkedGraph work properly you need to install the optional dependencies
+
+::
+
+    conda install pyembree
+    pip install caveclient
+    
+
+
+Usage example
+#################
+
+::
+
+    from meshparty import trimesh_io
+
+    meshmeta = trimesh_io.MeshMeta()
+    mesh = meshmeta.mesh(path_to_mesh) # mesh gets cached
+
+    local_vertices = mesh.get_local_view(n_points, pc_align=True, method="kdtree")
+
+
+Downloading meshes
+##################
+
+Meshes can be downloaded in parallel using 
+
+::
+
+    trimesh_io.download_meshes(seg_ids, target_dir, cv_path)
+
+
+where `cv_path` points to the cloudvolume bucket. For downloading proofread meshes one needs to 
+specify the `mesh_endpoint` of the chunkedgraph server:
+
+::
+
+    trimesh_io.download_meshes(seg_ids, target_dir, cv_path, mesh_endpoint="https://...")
+
+
+
+Extracting mesh information
+###########################
+
+The mesh needs to be `watertight` In order to compute reliable information. To
+test whether a mesh is watertight, run
+
+::
+
+    mesh.is_watertight
+
+
+
+Since trimesh_io.Mesh() inherits from trimesh.Trimesh all trimesh functionality 
+is available to mesh, e.g.:
+::
+
+    mesh.volume
+    mesh.area
+    mesh.center_mass
+

@@ -1,0 +1,121 @@
+Metadata-Version: 2.2
+Name: infinianalytics
+Version: 0.1.9
+Summary: Librería para registrar eventos en la API de InfiniAnalytics
+Author: Infini Analytics
+Author-email: analytics@infini.es
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests>=2.32.3
+Dynamic: author
+Dynamic: author-email
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# InfiniAnalytics
+
+**InfiniAnalytics** es una librería de Python que facilita el registro de eventos, inicios y finales de procesos, así como la notificación de errores, en la plataforma de Analítica de **Infini**.  
+
+El diseño está orientado a que **nunca quiebre el flujo** de tu automatismo o aplicación: ante cualquier error de comunicación o respuesta inesperada, la librería simplemente imprime un mensaje y devuelve `None`, pero **no lanza excepciones no controladas**.
+
+---
+
+## Características principales
+
+- **Registro de inicio** (`.start(description: str)`)  
+- **Registro de evento** (`.event(description: str)`)  
+- **Registro de warning** (`.warning(description: str)`)  
+- **Registro de fin** (`.end(description: str)`)  
+- **Registro de errores** (`.error(description: str, error_id: str = None, error_detailed: str = None)`)  
+- **No lanza excepciones**: Devuelve `None` en caso de fallo e imprime el error por pantalla.  
+
+Cada vez que se crea una instancia de `InfiniAnalytics`, se genera (o se inyecta) un `execution_id`.  
+- Si no lo especificas, se genera automáticamente usando la hora actual (`datetime.now().isoformat()`).
+
+---
+
+## Instalación
+
+La librería se puede instalar directamente desde [PyPI](https://pypi.org/) con:
+
+```bash
+pip install infinianalytics
+```
+
+
+## Uso básico
+
+### 1. Importar e Instanciar
+
+```python
+from infinianalytics import InfiniAnalytics
+
+execution = InfiniAnalytics(
+    token="TU_TOKEN",
+    automation_id="44444444-4444-4444-4444-444444444444"
+)
+```
+
+- `token (str)`: Cadena que te identifica para la autenticación.
+- `automation_id (str)`: Identificador único de tu automatización.
+- `execution_id (str)` (opcional): Si lo omites, se genera uno automáticamente usando la fecha/hora actual.
+
+### 2. Registrar eventos
+
+#### Inicio (start)
+
+```python
+execution.start("Starting the process")
+```
+
+Registra el inicio de la ejecución.
+
+#### Evento intermedio (event)
+
+```python
+execution.event("An event occurred")
+```
+
+Registra un evento relevante en el transcurso de la ejecución.
+
+#### Warning (warning)
+
+```python
+execution.warning("Warning: This is a non-critical issue")
+```
+
+Registra una advertencia durante la ejecución. Los warnings son útiles para notificar situaciones que no son errores críticos pero que requieren atención, como valores inesperados, configuraciones subóptimas, o condiciones que podrían llevar a problemas futuros.
+
+#### Error (error)
+
+Para registrar un error dentro de un `try-except`, por ejemplo:
+
+```python
+try:
+    # Lógica que puede fallar
+    ...
+except Exception as ex:
+    execution.error(
+        description="Ocurrió un error durante el proceso",
+        error_id="1234",
+        error_description=str(ex)
+    )
+```
+
+**Importante:** Se recomienda siempre llamar al método `.error(...)` dentro de un bloque `except`, para asegurarte de capturar cualquier excepción y notificarla a la API.
+
+La librería no lanza excepciones no controladas, por lo que tu automatismo no se detendrá.
+
+#### Fin (end)
+
+```python
+execution.end("Ending the process")
+```
+
+Registra el final de la ejecución.
+
+

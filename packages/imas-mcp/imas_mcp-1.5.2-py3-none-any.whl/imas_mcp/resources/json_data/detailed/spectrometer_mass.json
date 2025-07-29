@@ -1,0 +1,772 @@
+{
+  "ids_info": {
+    "name": "spectrometer_mass",
+    "description": "Mass spectrometer diagnostic",
+    "version": "4.0.1.dev164",
+    "max_depth": 6,
+    "leaf_count": 108,
+    "physics_domain": "radiation_diagnostics",
+    "documentation_coverage": 1.0,
+    "related_ids": [],
+    "common_use_cases": []
+  },
+  "coordinate_systems": {},
+  "paths": {
+    "spectrometer_mass/name": {
+      "path": "spectrometer_mass/name",
+      "documentation": "Short string identifier (unique for a given device)",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": null,
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "spectrometer_mass/description": {
+      "path": "spectrometer_mass/description",
+      "documentation": "Description, e.g. “channel viewing the upper divertor”",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": null,
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "spectrometer_mass/channel": {
+      "path": "spectrometer_mass/channel",
+      "documentation": "Set of mass channels, each corresponding to a given atomic mass measured continuously by the spectrometer",
+      "units": "",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "struct_array",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "channel/a",
+        "channel/current"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "channel/a",
+          "channel/current"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "spectrometer_mass_channel"
+    },
+    "spectrometer_mass/channel/a": {
+      "path": "spectrometer_mass/channel/a",
+      "documentation": "Atomic mass measured by this channel",
+      "units": "u",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "channel/current",
+        "residual_spectrum/a",
+        "channel"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "residual_spectrum/a"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "channel",
+          "channel/current"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "spectrometer_mass/channel/current": {
+      "path": "spectrometer_mass/channel/current",
+      "documentation": "Collected current",
+      "units": "A",
+      "coordinates": [
+        "channel(i1)/time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "channel/a",
+        "residual_spectrum/current",
+        "channel/pressure_partial",
+        "channel"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "channel/pressure_partial"
+        ],
+        "physics_related": [
+          "residual_spectrum/current"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "channel",
+          "channel/a"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "time"
+    },
+    "spectrometer_mass/channel/pressure_partial": {
+      "path": "spectrometer_mass/channel/pressure_partial",
+      "documentation": "Partial pressure (calibrated data)",
+      "units": "Pa",
+      "coordinates": [
+        "channel(i1)/time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "channel/a",
+        "channel/current",
+        "channel"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "channel/current"
+        ],
+        "physics_related": [],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "channel",
+          "channel/a",
+          "channel/current"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "time"
+    },
+    "spectrometer_mass/channel/photomultiplier_voltage": {
+      "path": "spectrometer_mass/channel/photomultiplier_voltage",
+      "documentation": "Voltage applied to the photomultiplier",
+      "units": "V",
+      "coordinates": [
+        "channel(i1)/time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "channel/a",
+        "channel/current",
+        "channel/pressure_partial",
+        "channel",
+        "detector_voltage"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "channel/current",
+          "channel/pressure_partial"
+        ],
+        "physics_related": [
+          "detector_voltage"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "channel",
+          "channel/a",
+          "channel/current"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "time"
+    },
+    "spectrometer_mass/channel/validity": {
+      "path": "spectrometer_mass/channel/validity",
+      "documentation": "Indicator of the validity of the data. 0: Valid from automated processing; 1: Valid and certified by the diagnostic RO; -1: Problem identified in the data processing (request verification by the diagnostic RO); -2: Invalid data, should not be used. (Values less than -2 have a code-specific meaning)",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "INT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "channel/a",
+        "channel/current",
+        "channel"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "channel",
+          "channel/a",
+          "channel/current"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "spectrometer_mass/channel/validity_timed": {
+      "path": "spectrometer_mass/channel/validity_timed",
+      "documentation": "Indicator of the validity of the data for each time slice. 0: Valid from automated processing; 1: Valid and certified by the diagnostic RO; -1: Means problem identified in the data processing (request verification by the diagnostic RO); -2: Invalid data, should not be used. (Values less than -2 have a code-specific meaning.)",
+      "units": "",
+      "coordinates": [
+        "channel(i1)/time"
+      ],
+      "lifecycle": "active",
+      "data_type": "INT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "channel/a",
+        "channel/current",
+        "channel/pressure_partial",
+        "channel"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "channel/current",
+          "channel/pressure_partial"
+        ],
+        "physics_related": [],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "channel",
+          "channel/a",
+          "channel/current"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "time"
+    },
+    "spectrometer_mass/channel/time": {
+      "path": "spectrometer_mass/channel/time",
+      "documentation": "Timebase for the dynamic nodes of this channel",
+      "units": "s",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "channel/a",
+        "channel/current",
+        "residual_spectrum/time",
+        "channel",
+        "latency"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "residual_spectrum/time",
+          "latency"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "channel",
+          "channel/a",
+          "channel/current"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "time"
+    },
+    "spectrometer_mass/residual_spectrum": {
+      "path": "spectrometer_mass/residual_spectrum",
+      "documentation": "Set of entire mass spectra recorded at various time slices",
+      "units": "",
+      "coordinates": [
+        "residual_spectrum(itime)/time"
+      ],
+      "lifecycle": "active",
+      "data_type": "struct_array",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "residual_spectrum/a",
+        "residual_spectrum/current"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "residual_spectrum/a",
+          "residual_spectrum/current"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "spectrometer_mass_residual",
+      "temporal_context": "time"
+    },
+    "spectrometer_mass/residual_spectrum/a": {
+      "path": "spectrometer_mass/residual_spectrum/a",
+      "documentation": "Array of atomic masses",
+      "units": "u",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "residual_spectrum/current",
+        "channel/a",
+        "residual_spectrum"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "channel/a"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "residual_spectrum",
+          "residual_spectrum/current"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "spectrometer_mass/residual_spectrum/current": {
+      "path": "spectrometer_mass/residual_spectrum/current",
+      "documentation": "Collected current",
+      "units": "A",
+      "coordinates": [
+        "residual_spectrum(itime)/a"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "residual_spectrum/a",
+        "channel/current",
+        "residual_spectrum"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "channel/current"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "residual_spectrum",
+          "residual_spectrum/a"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "spectrometer_mass/residual_spectrum/time": {
+      "path": "spectrometer_mass/residual_spectrum/time",
+      "documentation": "Time",
+      "units": "s",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "residual_spectrum/a",
+        "residual_spectrum/current",
+        "channel/time",
+        "residual_spectrum",
+        "latency"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "channel/time",
+          "latency"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "residual_spectrum",
+          "residual_spectrum/a",
+          "residual_spectrum/current"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "spectrometer_mass/emission_current": {
+      "path": "spectrometer_mass/emission_current",
+      "documentation": "Emission current in the spectrometer filament",
+      "units": "A",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "channel/current"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "channel/current"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "spectrometer_mass/detector_voltage": {
+      "path": "spectrometer_mass/detector_voltage",
+      "documentation": "Voltage applied on the microchannel plate detector",
+      "units": "V",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "channel/photomultiplier_voltage"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "channel/photomultiplier_voltage"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "spectrometer_mass/latency": {
+      "path": "spectrometer_mass/latency",
+      "documentation": "Upper bound of the delay between physical information received by the detector and data available on the real-time (RT) network.",
+      "units": "s",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "channel/time",
+        "residual_spectrum/time"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "channel/time",
+          "residual_spectrum/time"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "spectrometer_mass/time": {
+      "path": "spectrometer_mass/time",
+      "documentation": "Generic time",
+      "units": "s",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "channel/time",
+        "residual_spectrum/time",
+        "latency"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "channel/time",
+          "residual_spectrum/time",
+          "latency"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "time"
+    }
+  },
+  "semantic_groups": {
+    "misc": [
+      "spectrometer_mass/name",
+      "spectrometer_mass/description"
+    ],
+    "units_u": [
+      "spectrometer_mass/channel/a",
+      "spectrometer_mass/residual_spectrum/a"
+    ],
+    "units_A": [
+      "spectrometer_mass/channel/current",
+      "spectrometer_mass/residual_spectrum/current",
+      "spectrometer_mass/emission_current"
+    ],
+    "units_V": [
+      "spectrometer_mass/channel/photomultiplier_voltage",
+      "spectrometer_mass/detector_voltage"
+    ],
+    "units_s": [
+      "spectrometer_mass/channel/time",
+      "spectrometer_mass/residual_spectrum/time",
+      "spectrometer_mass/latency",
+      "spectrometer_mass/time"
+    ]
+  }
+}

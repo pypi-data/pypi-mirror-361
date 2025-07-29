@@ -1,0 +1,29 @@
+{% extends "wiki/__base.html" %}
+
+{% load markdownify %}
+{% load wiki_extras %}
+
+
+{% block title %}{{ mypage.name|make_title }}{% endblock %}
+
+
+{% block mainheading %}
+<a href="{% url 'djwiki:page_view' mypage.name %}">{{ mypage.name|make_title }}</a> v. {{ mypage.history_id }} @ {{ mypage.history_date|date:"M d, Y H:m" }}
+{% endblock %}
+
+
+{% block content %}
+
+<div class="wiki_content wiki_content_archive">
+{{ mypage.content | markdownify | linkify | safe }}
+</div>
+
+{% endblock %}
+
+{% block footer %}
+<!-- <a href="{% url 'djwiki:page_edit' mypage.name %}">Edit</a>
+| -->
+<a href="{% url 'djwiki:home' %}">Wiki Home</a>
+|
+<a href="{% url 'djwiki:space' mypage.space.name %}">Space:{{ mypage.space.name }}</a>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "wiki/__base.html" %}
+
+{% load markdownify %}
+{% load wiki_extras %}
+
+
+{% block title %}{{ myspace.name|make_title }} - Wiki Space{% endblock %}
+
+
+{% block mainheading %}
+Space for {{ myspace.name }}
+{% endblock %}
+
+
+{% block content %}
+
+<div class="row">
+
+<p class="lead">{{ myspace.description }}</p>
+
+</div>
+
+<div class="row">
+
+<div class="col">
+
+{% if myspace.homepage %}
+
+<!-- h4 class="text-nowrap">{{ myspace.homepage.name|make_title }}</h4 -->{{ myspace.homepage.content  | markdownify | linkify | safe }}
+
+<p><a class="btn btn-secondary" style="color: white" href="{% url 'djwiki:page_view' myspace.homepage.name %}">{{ myspace.homepage.name }}</a></p>
+
+{% else %}
+
+<h4>No home page selected</h4>
+
+<p>You can select a WikiPage to appear here via the admin.</p>
+
+{% endif %}
+
+</div>
+
+<div class="col">
+
+<h4 class="text-nowrap">Pages in This Space</h4>
+
+<ul>
+{% for mypage in myspace.wikipage_set.all %}
+    <li><a href="{% url 'djwiki:page_view' mypage.name %}">{{ mypage.name }}</a></li>
+{% endfor %}
+</ul>
+
+</div>
+</div>
+
+{% endblock %}
+
+
+{% block footer %}
+<a href="{% url 'djwiki:home' %}">Wiki Home</a>
+{% endblock %}

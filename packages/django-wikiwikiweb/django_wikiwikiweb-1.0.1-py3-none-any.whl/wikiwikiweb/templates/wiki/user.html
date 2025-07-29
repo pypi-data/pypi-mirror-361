@@ -1,0 +1,110 @@
+{% extends "wiki/__base.html" %}
+
+{% load wiki_extras %}
+
+
+
+{% block title %}Wiki User {{ myuser.username }}{% endblock %}
+
+
+{% block mainheading %}
+Profile for {{ myuser.username }}
+{% if myuser.username == user.username %}
+<span class="badge bg-primary">YOU!</span>
+{% endif %}
+
+{% endblock %}
+
+
+{% block content %}
+
+{% if debugme %}
+<pre>
+ {{ debugme|pprint }}
+</pre>
+{% endif %}
+
+
+<div class="row mt-4">
+
+<div class="col text-nowrap">
+
+<h4>User Info</h4>
+
+<dl>
+    <dt>Username:</dt>
+    <dd>{{ myuser.username }}</dd>
+    <dt>Member since:</dt>
+    <dd>{{ myuser.date_joined }}</dd>
+    <dt>Is admin?</dt>
+    <dd>{{ myuser.is_superuser|yesno|title }}</dd>
+    <dt>Total contributions:</dt>
+    <dd>{{ edits_made.count }} ({{ pages_created.count }} new pages)</dd>
+</dl>
+
+</div>
+
+<div class="col text-nowrap">
+<h4>Created by {{ myuser }}</h4>
+
+<ul>
+{% if pages_created %}
+{% for page in pages_created %}
+    <li><a href="{%  url 'djwiki:page_view' page.name %}">{{ page.name }}</a> - {{ page.created }}</li>
+{% endfor %}
+{% else %}
+    <li>None yet...</li>
+{% endif %}
+</ul>
+</div>
+
+<div class="col text-nowrap">
+
+<h4>Edits by {{ myuser }}</h4>
+
+<ul>
+{% if edits_made %}
+{% for page in edits_made %}
+    <li><a href="{%  url 'djwiki:page_archive' page.name page.history_id %}" title="{{ page.edit_reason }} - {{ page.updated }}">{{ page.name }}</a> @ {{ page.history_id }}</li>
+{% endfor %}
+{% else %}
+    <li>None yet...</li>
+{% endif %}
+</ul>
+</div>
+
+<!-- div class="col">
+
+<h4>Main Pages</h4>
+
+<ul>
+{% for space in all_spaces %}
+{% if space.homepage %}
+    <li><a href="{% url 'djwiki:page_view' space.homepage.name %}">{{ space.homepage.name }}</a></li>
+{% endif %}
+{% endfor %}
+</ul>
+
+</div -->
+
+
+
+<!-- div class="col">
+<h4>Latest Updates</h4>
+
+<ul>
+{% for page in pages_updated %}
+    <li><a href="{%  url 'djwiki:page_view' page.name %}">{{ page.name }}</a></li>
+{% endfor %}
+</ul>
+
+</div -->
+
+</div>
+
+{% endblock %}
+
+
+{% block footer %}
+<a href="{% url 'djwiki:home' %}">Wiki Home</a>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "wiki/__base.html" %}
+
+{% load wiki_extras %}
+
+
+{% block title %}Wiki Search{% endblock %}
+
+
+{% block mainheading %}
+Wiki Search
+{% endblock %}
+
+
+{% block content %}
+
+<p>Your search term was <b>{{ search_query }}</b>. Found <b>{{ object_list.count }}</b> result(s).</p>
+
+
+{% for mypage in object_list %}
+<div>
+<a href="{% url 'djwiki:page_view' mypage.name %}">{{ mypage.name }}</a>
+</div>
+{% endfor %}
+
+
+
+{% endblock %}
+
+
+
+{% block footer %}
+
+<a href="{% url 'djwiki:home' %}">Wiki Home</a>
+
+{% endblock %}

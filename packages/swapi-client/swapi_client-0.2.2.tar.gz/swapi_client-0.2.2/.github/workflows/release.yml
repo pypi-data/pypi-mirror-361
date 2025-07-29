@@ -1,0 +1,57 @@
+name: Create Release
+
+on:
+    push:
+        branches:
+            - master
+        paths-ignore:
+            - README.md
+            - .gitignore
+
+jobs:
+    release:
+        name: Create Release
+        runs-on: ubuntu-latest
+
+        steps:
+            -   name: Check out the repo
+                uses: actions/checkout@v4.1.7
+                with:
+                    token: ${{ secrets.RELEASE_GIT_TOKEN }}
+            -   name: Update version in pyproject.toml
+                id: version_bump
+                run: |
+                    OLD_VERSION=$(awk -F ' = ' '/^version =/ {gsub(/"/, "", $2); print $2}' pyproject.toml)
+                    
+                    IFS='.' read -r -a V_PARTS <<< "$OLD_VERSION"
+                    V_PARTS[2]=$((V_PARTS[2] + 1))
+                    NEW_VERSION="${V_PARTS[0]}.${V_PARTS[1]}.${V_PARTS[2]}"
+                    
+                    # Using awk for safer replacement
+                    awk -v old="version = \"$OLD_VERSION\"" -v new="version = \"$NEW_VERSION\"" '{gsub(old, new)}1' pyproject.toml > pyproject.toml.tmp && mv pyproject.toml.tmp pyproject.toml
+                    
+                    echo "New version: $NEW_VERSION"
+                    echo "VERSION=$NEW_VERSION" >> "$GITHUB_OUTPUT"
+            -   name: Commit and push changes
+                run: |
+                    git config --global user.email "github@actions.com"
+                    git config --global user.name "GitHub Actions"
+                    git add pyproject.toml
+                    if [[ -n "$(git diff --cached)" ]]; then
+                        git commit -m "Bump version to ${{ steps.version_bump.outputs.VERSION }} [skip ci]"
+                        git push
+                    else
+                        echo "No changes to commit"
+                    fi
+            -   name: Extract version from pyproject.toml
+                id: extract_metadata
+                run: |
+                    VERSION=$(awk -F ' = ' '/^version =/ {gsub(/"/, "", $2); print $2}' ./pyproject.toml)
+                    echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+                shell: bash
+            -   name: Release New Version
+                uses: softprops/action-gh-release@v1
+                with:
+                    name: v${{ steps.extract_metadata.outputs.version }}
+                    tag_name: v${{ steps.extract_metadata.outputs.version }}
+                    token: ${{ secrets.RELEASE_GIT_TOKEN }}

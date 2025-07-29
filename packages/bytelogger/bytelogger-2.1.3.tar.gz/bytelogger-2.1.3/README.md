@@ -1,0 +1,83 @@
+# bytelogger
+
+## What is bytelogger?
+
+`bytelogger` is an very light weight logging tool for any python application. It can log the hole console but also make it prettier and more reliable. 
+
+You can easy turn the logs or the debug_mode on or off with boolean (true and false statments).
+
+## How to use it?
+
+### debug_mode:
+
+In the debug mode you define wich type of ouput you want to have.
+
+Here are the diffrent types:
+
+#### The dev_debug, is ment for just the developer, where you can see wich function or class got executed, for better debuging.
+- dev_debug
+
+#### The debung is a normal debuging mode where you can see for example that file X got created or that the execution was succesfully.
+- debug
+
+#### The warn is a warn message or debug, that is ment for example mode X is disabled or could not load module X.
+- warn
+
+#### The error debug is, as it names says it. Ment for the error messages. It says error loading module X or couldnt finde crusel file or module X.
+- error
+
+Here is an code example how to use it:
+
+```python
+
+import bytelogger as log
+
+log.debug("Succesfully created.")
+↓
+[DEBUG] 22:22Uhr 10.07.2025 = Succesfully created.
+
+
+log.debug_dev("Entered function show_example_log().")
+↓
+[DEV DEBUG] 22:22Uhr 10.07.2025 = Entered function show_example_log().
+
+
+log.warn("The main process is disabled.")
+↓
+[WARN] 22:22Uhr 10.07.2025 = The main process is disabled.
+
+
+log.debug("Failed to load or find module show_example_log().")
+↓
+[ERROR] 22:22Uhr 10.07.2025 = Failed to load or find module show_example_log().
+
+```
+
+When you want to turn the debug_mode off, to use for example you own tool or just normal prints, or when you dont need them right now.
+
+You can disable them following way:
+```python
+import bytelogger
+
+
+bytelogger.init(debug_mode = false)
+```
+
+### log_mode:
+
+Its very simple. Basicly every console output for example the debug_mode ↑ would be logged. Or in short terms any output. 
+
+When you just import the normal bytelogger, it automaticly logs every thing. 
+
+When you dont want him to log every thing automaticly (for example just for the debug_mode or just so), you just need to turn it off by saying:
+
+```python
+import bytelogger
+
+bytelogger.init(log_mode = false)
+```
+#
+#
+#
+
+`made by nobyte`

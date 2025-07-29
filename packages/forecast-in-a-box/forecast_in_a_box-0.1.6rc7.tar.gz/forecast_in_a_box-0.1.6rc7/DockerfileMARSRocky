@@ -1,0 +1,30 @@
+FROM eccr.ecmwf.int/mars/stable-rocky9
+
+ARG REPO_BASE=https://nexus.ecmwf.int
+ARG REPO_SUFFIX=stable
+
+ENV REPO_BASE=${REPO_BASE}
+ENV REPO_SUFFIX=${REPO_SUFFIX}
+
+# 1. Install base packages
+RUN dnf install -y epel-release dnf-plugins-core firewalld iproute git && \
+    dnf clean all
+
+# Set the working directory in the container
+WORKDIR /app/backend
+
+# Copy the backend directory into the container
+COPY forecastbox /app/backend/forecastbox/
+COPY install.sh /app/backend/install.sh
+COPY pyproject.toml /app/backend/forecastbox/pyproject.toml
+
+# Install UV
+COPY --from=ghcr.io/astral-sh/uv:0.7.8 /uv /uvx /bin/
+
+# Create a virtual env. Install fiab dependencies, with caching
+RUN --mount=type=cache,mode=0755,target=/root/.cache/uv sh /app/backend/install.sh
+
+ENV FIAB__API__SERVE_STATIC=False
+ENV PATH="/app/.venv/bin/:$PATH"
+ENTRYPOINT ["/app/.venv/bin/uvicorn", "--host", "0.0.0.0", \
+    "forecastbox.entrypoint:app", "--log-level", "info"]

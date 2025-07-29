@@ -1,0 +1,75 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "pnet.schema.json",
+    "title": "Petri Net",
+    "description": "Defines the object petri net schema acceptable by the petri net simulator",
+    "type": "object",
+    "patternProperties": {
+        "^.*$":{
+            "title": "Object with all places of the one of the Petri Networks.",
+            "description": "Place keys must begin with 'p_' and values must be non-negative integers. Also, there is a minimum of 2 places in the network.",
+            "type": "object",
+            "properties": {
+                "places": {
+                    "title": "Object with all places of the Petri Network.",
+                    "description": "Place keys must begin with 'p_' and values must be non-negative integers. Also, there is a minimum of 2 places in the network.",
+                    "type": "object",
+                    "patternProperties": {
+                        "^p_": {
+                            "type": "integer",
+                            "minimum": 0
+                        }
+                    },
+                    "propertyNames": {
+                        "pattern": "^[A-Za-z0-9_]*$"
+                    },
+                    "minProperties": 2
+                },
+                "transitions":{
+                    "title": "Object with all transitions of the Petri Network.",
+                    "description": "Transition keys must begin with 't_' and values are objects describing the places where tokens are consumed and produced. Also, there is a minimum of 1 transition in the network and each transition must consume at least 1 token in some place and produce at least 1 token in some place.",
+                    "type":"object",
+                    "patternProperties": {
+                        "^t_": {
+                            "type": "object",
+                            "properties":{
+                                "consume":{
+                                    "type":"object",
+                                    "patternProperties": {
+                                        "^p_": {
+                                            "type": "integer",
+                                            "minimum": 0
+                                        }
+                                    },
+                                    "propertyNames": {
+                                        "pattern": "^[A-Za-z0-9_]*$"
+                                    }
+                                },
+                                "produce":{
+                                    "type":"object",
+                                    "patternProperties": {
+                                        "^p_": {
+                                            "type": "integer",
+                                            "minimum": 0
+                                        }
+                                    },
+                                    "propertyNames": {
+                                        "pattern": "^[A-Za-z0-9_]*$"
+                                    }
+                                }
+                            },
+                            "required":["consume","produce"]
+                        }
+                    },
+                    "minProperties": 1,
+                    "propertyNames": {
+                        "pattern": "^[A-Za-z0-9_]*$"
+                    }
+                }
+            },
+            "required":["places","transitions"]
+        }
+    },
+    "minProperties": 1
+}
+  

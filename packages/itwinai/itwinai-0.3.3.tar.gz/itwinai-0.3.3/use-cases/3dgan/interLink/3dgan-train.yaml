@@ -1,0 +1,104 @@
+# --------------------------------------------------------------------------------------
+# Part of the interTwin Project: https://www.intertwin.eu/
+#
+# Created by: Matteo Bunino
+#
+# Credit:
+# - Matteo Bunino <matteo.bunino@cern.ch> - CERN
+# --------------------------------------------------------------------------------------
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: 3dgan-train
+  annotations:
+    slurm-job.vk.io/flags: "-p gpu --gres=gpu:1 --ntasks-per-node=1 --nodes=1 --time=00:55:00"
+    slurm-job.vk.io/singularity-mounts: "--bind /ceph/hpc/data/st2301-itwin-users/egarciagarcia:/exp_data"
+    # slurm-job.vk.io/pre-exec: "singularity pull /ceph/hpc/data/st2301-itwin-users/itwinai_v10.1.sif docker://ghcr.io/intertwin-eu/itwinai:0.2.1-3dgan-0.1"
+spec:
+  automountServiceAccountToken: false
+  containers:
+  - args:
+    # cd to writable location before launching training
+    - " cd /tmp && itwinai exec-pipeline \
+          --config-path $CERN_CODE_ROOT \
+          +pipe_key=training_pipeline \
+          dataset_location=$CERN_DATA_ROOT \ 
+          logs_dir=$TMP_DATA_ROOT/ml_logs \ 
+          distributed_strategy=$STRATEGY \ 
+          devices=$DEVICES \ 
+          hw_accelerators=$ACCELERATOR \ 
+          checkpoints_path=$TMP_DATA_ROOT/checkpoints \
+          batch_size=$BATCH_SIZE \ 
+          num_workers_dataloader=$NUM_WORKERS_DL \
+          max_dataset_size=$MAX_DATA_SAMPLES \
+          mlflow_tracking_uri=$MLFLOW_TRACKING_URI \
+          train_dataset_proportion=$TRAIN_PROPORTION"
+    command:
+    - /bin/sh
+    - -c
+    env:
+    - name: CERN_DATA_ROOT
+      value: "/exp_data"
+    - name: CERN_CODE_ROOT
+      value: "/usr/src/app"
+    - name: TMP_DATA_ROOT
+      value: "/exp_data"
+    - name: MAX_DATA_SAMPLES
+      value: "1000"
+    - name: BATCH_SIZE
+      value: "256"
+    - name: NUM_WORKERS_DL
+      value: "4"
+    - name: ACCELERATOR
+      value: "gpu"
+    - name: STRATEGY
+      value: "auto"
+    - name: DEVICES
+      value: "auto"
+    - name: MLFLOW_TRACKING_URI
+      value: "https://131.154.99.166.myip.cloud.infn.it"
+    - name: TRAIN_PROPORTION
+      value: "0.5"
+
+    # - name: MLFLOW_TRACKING_USERNAME
+    #   valueFrom:
+    #     secretKeyRef:
+    #       name: mlflow-server
+    #       key: username
+    # - name: MLFLOW_TRACKING_PASSWORD
+    #   valueFrom:
+    #     secretKeyRef:
+    #       name: mlflow-server
+    #       key: password
+
+    - name: MLFLOW_TRACKING_USERNAME
+      value: "xxx"
+    - name: MLFLOW_TRACKING_PASSWORD
+      value: "xxx"
+
+    image: /ceph/hpc/data/st2301-itwin-users/itwinai_v10.1.sif
+    imagePullPolicy: Always
+    name: 3dgan-container
+    resources:
+      limits:
+        cpu: "48"
+        memory: 150Gi
+      requests:
+        cpu: "4"
+        memory: 20Gi
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+  nodeSelector:
+    kubernetes.io/hostname: vega-new-vk
+  tolerations:
+  - key: virtual-node.interlink/no-schedule
+    operator: Exists
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300

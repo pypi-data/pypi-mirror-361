@@ -1,0 +1,47 @@
+# --------------------------------------------------------------------------------------
+# Part of the interTwin Project: https://www.intertwin.eu/
+#
+# Created by: Roman Machacek
+#
+# Credit:
+# - Roman Machacek <roman.machacek@cern.ch> - CERN
+# - Matteo Bunino <matteo.bunino@cern.ch> - CERN
+# --------------------------------------------------------------------------------------
+
+# General config
+verbose: auto
+micro_batch_size: 17
+epochs: 3
+checkpoints_path: checkpoints
+tb_log_dir: ./logs
+
+# Training pipeline
+pipeline:
+  _target_: itwinai.pipeline.Pipeline
+  steps:
+    - _target_: dataloader.MNISTDataGetter
+    - _target_: dataloader.MNISTDataPreproc
+      classes: 10
+    - _target_: itwinai.tensorflow.trainer.TensorflowTrainer
+      epochs: ${epochs}
+      micro_batch_size: ${micro_batch_size}
+      verbose: ${verbose}
+      model_compile_config:
+        loss:
+          _target_: tensorflow.keras.losses.CategoricalCrossentropy
+          from_logits: False
+        optimizer: 
+          _target_: tensorflow.keras.optimizers.Adam
+          learning_rate: 0.001
+      model_config:
+        _target_: itwinai.tensorflow.models.mnist.MNIST_Model
+        input_shape: [28, 28, 1]
+        output_shape: 10
+      callbacks:
+        - _target_: keras.callbacks.EarlyStopping
+          patience: 2
+        - _target_: keras.callbacks.ModelCheckpoint
+          filepath: ${checkpoints_path}/model.{epoch:02d}-{val_loss:.2f}.keras
+        - _target_: keras.callbacks.TensorBoard
+          log_dir: ${tb_log_dir}
+

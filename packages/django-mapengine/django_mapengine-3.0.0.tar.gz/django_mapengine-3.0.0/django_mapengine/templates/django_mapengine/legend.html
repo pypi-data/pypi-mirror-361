@@ -1,0 +1,43 @@
+<button id="mapengine-legend-open-btn" class="hidden" aria-label="Open map legend">
+  <!-- Heroicons -->
+  <svg xmlns="http://www.w3.org/2000/svg"
+       fill="none"
+       viewBox="0 0 24 24"
+       stroke-width="1.5"
+       stroke="currentColor"
+       height="24"
+       width="24">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75 2.25 12l4.179 2.25m0-4.5 5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0 4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0-5.571 3-5.571-3" />
+  </svg>
+</button>
+<!-- 2) the legend panel itself -->
+<div id="mapengine-legend">
+  <div class="mapengine-legend-content">
+    {% for category, items in mapengine_legend.items %}
+      <div class="mapengine-legend-category">
+        <div class="mapengine-legend-header">
+          <h2>{{ category}}</h2>
+          {% if forloop.first %}
+            <button id="mapengine-legend-close-btn" aria-label="Close map legend">
+              <!-- Heroicons -->
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   fill="none"
+                   viewBox="0 0 24 24"
+                   stroke-width="1.5"
+                   stroke="currentColor"
+                   height="24"
+                   width="24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+              </svg>
+            </button>
+          {% endif %}
+        </div>
+        <div class="mapengine-legend-items">
+          {% for item in items %}
+            {% include "django_mapengine/legend_item.html" with item=item %}
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>

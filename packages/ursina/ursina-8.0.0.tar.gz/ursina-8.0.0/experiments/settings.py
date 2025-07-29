@@ -1,0 +1,1 @@
+window.vsync = 100

@@ -1,0 +1,56 @@
+if __name__ == '__main__':
+    from ursina import *
+    from ursina.prefabs.particle_system import ParticleSystem, ParticleSystemContainer
+    from ursina.shaders import matcap_shader
+    app = Ursina()
+
+
+particle_system_container = ParticleSystemContainer((
+    ParticleSystem(
+        position=Vec3(0,.5,0), scale=.5,
+        start_size = Vec3(1,1.5,1) * .5,
+        end_size = Vec3(1,1.5,1) * .0,
+        speed_curve=curve.combine(curve.zero, curve.out_circ, .2),
+        auto_play=False,
+        mesh='diamond',
+        size_curve = curve.combine(curve.in_back, curve.linear, .3),
+        start_color = (color.white),
+        spin=Vec3(200,200,200),
+        rotation_randomness=Vec3(360),
+        num_particles=0,
+        spawn_points = [v.xzy for v in Circle(radius=.75, resolution=5).vertices][::-1],
+        move_directions='forward',
+        spawn_type = 'sequential',
+        speed=5,
+        lifetime=2,
+        delay=.1,
+        spawn_interval=.05,
+        shader=matcap_shader,
+        texture='matcap_dall_e',
+        unlit=True,
+        bounce=2,
+        bounce_curve=curve.combine(curve.out_expo, curve.reverse(curve.linear), .2),
+    ),
+    ParticleSystem(
+        position=Vec3(0,.5,0), scale=.5,
+        speed=1,
+        lifetime=.4,
+        auto_play=False,
+        num_particles=6,
+        direction_randomness=Vec3(360,360,360),
+        move_directions='up',
+        mesh=Cone(3, radius=.3),
+        start_size=(1,1.5,1),
+        end_size=0,
+        size_curve = curve.linear,
+        start_color = (color.white, ),
+        end_color = (color.azure, color.cyan),
+        color_curve=curve.out_expo,
+    ),
+))
+
+if __name__ == '__main__':
+    from ursina.prefabs.particle_system import ParticleSystemUI
+    ParticleSystemUI(Path(__file__), particle_system_container)
+    EditorCamera()
+    app.run()

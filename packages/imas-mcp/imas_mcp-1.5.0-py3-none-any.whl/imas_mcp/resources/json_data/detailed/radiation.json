@@ -1,0 +1,5924 @@
+{
+  "ids_info": {
+    "name": "radiation",
+    "description": "Radiation emitted by the plasma and neutrals",
+    "version": "4.0.1.dev164",
+    "max_depth": 6,
+    "leaf_count": 348,
+    "physics_domain": "radiation_diagnostics",
+    "documentation_coverage": 1.0,
+    "related_ids": [],
+    "common_use_cases": []
+  },
+  "coordinate_systems": {},
+  "paths": {
+    "radiation/vacuum_toroidal_field": {
+      "path": "radiation/vacuum_toroidal_field",
+      "documentation": "Characteristics of the vacuum toroidal field (used in rho_tor definition)",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "vacuum_toroidal_field/r0",
+        "vacuum_toroidal_field/b0",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "vacuum_toroidal_field/r0",
+          "vacuum_toroidal_field/b0"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "b_tor_vacuum_1"
+    },
+    "radiation/vacuum_toroidal_field/r0": {
+      "path": "radiation/vacuum_toroidal_field/r0",
+      "documentation": "Reference major radius where the vacuum toroidal magnetic field is given (usually a fixed position such as the middle of the vessel at the equatorial midplane)",
+      "units": "m",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "vacuum_toroidal_field/b0",
+        "vacuum_toroidal_field",
+        "process/global_quantities/inside_lcfs",
+        "process/profiles_1d/grid/rho_tor"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/profiles_1d/grid/rho_tor"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "vacuum_toroidal_field",
+          "vacuum_toroidal_field/b0"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/vacuum_toroidal_field/b0": {
+      "path": "radiation/vacuum_toroidal_field/b0",
+      "documentation": "Vacuum toroidal field at R0 [T]; Positive sign means anti-clockwise when viewing from above. The product R0B0 must be consistent with the b_tor_vacuum_r field of the tf IDS.",
+      "units": "T",
+      "coordinates": [
+        "time"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": {
+        "domain": "temporal_evolution",
+        "phenomena": [
+          "temporal_evolution"
+        ],
+        "typical_values": {}
+      },
+      "related_paths": [
+        "vacuum_toroidal_field/r0",
+        "vacuum_toroidal_field",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [
+        {
+          "scenario": "Time evolution access",
+          "code": "time_trace = ids.vacuum_toroidal_field/b0[:]",
+          "notes": "Access time evolution of quantity"
+        }
+      ],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "vacuum_toroidal_field",
+          "vacuum_toroidal_field/r0"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "/time"
+    },
+    "radiation/grid_ggd/identifier": {
+      "path": "radiation/grid_ggd/identifier",
+      "documentation": "Grid identifier",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "identifier_dynamic_aos3"
+    },
+    "radiation/grid_ggd/identifier/name": {
+      "path": "radiation/grid_ggd/identifier/name",
+      "documentation": "Short string identifier",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/identifier/index": {
+      "path": "radiation/grid_ggd/identifier/index",
+      "documentation": "Integer identifier (enumeration index within a list). Private identifier values must be indicated by a negative index.",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "INT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/identifier/description": {
+      "path": "radiation/grid_ggd/identifier/description",
+      "documentation": "Verbose description",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/path": {
+      "path": "radiation/grid_ggd/path",
+      "documentation": "Path of the grid, including the IDS name, in case of implicit reference to a grid_ggd node described in another IDS. To be filled only if the grid is not described explicitly in this grid_ggd structure. Example syntax: #wall:2/description_ggd(1)/grid_ggd, means that the grid is located in the wall IDS, occurrence 2, with relative path description_ggd(1)/grid_ggd, using Fortran index convention (here : first index of the array)",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/space": {
+      "path": "radiation/grid_ggd/space",
+      "documentation": "Set of grid spaces",
+      "units": "",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "struct_array",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "generic_grid_dynamic_space"
+    },
+    "radiation/grid_ggd/space/identifier": {
+      "path": "radiation/grid_ggd/space/identifier",
+      "documentation": "Space identifier",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "identifier_dynamic_aos3"
+    },
+    "radiation/grid_ggd/space/identifier/name": {
+      "path": "radiation/grid_ggd/space/identifier/name",
+      "documentation": "Short string identifier",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/space/identifier/index": {
+      "path": "radiation/grid_ggd/space/identifier/index",
+      "documentation": "Integer identifier (enumeration index within a list). Private identifier values must be indicated by a negative index.",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "INT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/space/identifier/description": {
+      "path": "radiation/grid_ggd/space/identifier/description",
+      "documentation": "Verbose description",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/space/geometry_type": {
+      "path": "radiation/grid_ggd/space/geometry_type",
+      "documentation": "Type of space geometry (0: standard, 1:Fourier, >1: Fourier with periodicity)",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "identifier_dynamic_aos3"
+    },
+    "radiation/grid_ggd/space/geometry_type/name": {
+      "path": "radiation/grid_ggd/space/geometry_type/name",
+      "documentation": "Short string identifier",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/space/geometry_type/index": {
+      "path": "radiation/grid_ggd/space/geometry_type/index",
+      "documentation": "Integer identifier (enumeration index within a list). Private identifier values must be indicated by a negative index.",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "INT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/space/geometry_type/description": {
+      "path": "radiation/grid_ggd/space/geometry_type/description",
+      "documentation": "Verbose description",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/space/coordinates_type": {
+      "path": "radiation/grid_ggd/space/coordinates_type",
+      "documentation": "Type of coordinates describing the physical space, for every coordinate of the space. The size of this node therefore defines the dimension of the space.",
+      "units": "",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "struct_array",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "identifier_dynamic_aos3"
+    },
+    "radiation/grid_ggd/space/coordinates_type/name": {
+      "path": "radiation/grid_ggd/space/coordinates_type/name",
+      "documentation": "Short string identifier",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/space/coordinates_type/index": {
+      "path": "radiation/grid_ggd/space/coordinates_type/index",
+      "documentation": "Integer identifier (enumeration index within a list). Private identifier values must be indicated by a negative index.",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "INT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/space/coordinates_type/description": {
+      "path": "radiation/grid_ggd/space/coordinates_type/description",
+      "documentation": "Verbose description",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/space/objects_per_dimension": {
+      "path": "radiation/grid_ggd/space/objects_per_dimension",
+      "documentation": "Definition of the space objects for every dimension (from one to the dimension of the highest-dimensional objects). The index correspond to 1=nodes, 2=edges, 3=faces, 4=cells/volumes, .... For every index, a collection of objects of that dimension is described.",
+      "units": "",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "struct_array",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "generic_grid_dynamic_space_dimension"
+    },
+    "radiation/grid_ggd/space/objects_per_dimension/object": {
+      "path": "radiation/grid_ggd/space/objects_per_dimension/object",
+      "documentation": "Set of objects for a given dimension",
+      "units": "",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "struct_array",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "generic_grid_dynamic_space_dimension_object"
+    },
+    "radiation/grid_ggd/space/objects_per_dimension/object/boundary": {
+      "path": "radiation/grid_ggd/space/objects_per_dimension/object/boundary",
+      "documentation": "Set of  (n-1)-dimensional objects defining the boundary of this n-dimensional object",
+      "units": "",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "struct_array",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "generic_grid_dynamic_space_dimension_object_boundary"
+    },
+    "radiation/grid_ggd/space/objects_per_dimension/object/boundary/index": {
+      "path": "radiation/grid_ggd/space/objects_per_dimension/object/boundary/index",
+      "documentation": "Index of this (n-1)-dimensional boundary object",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "INT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/space/objects_per_dimension/object/boundary/neighbours": {
+      "path": "radiation/grid_ggd/space/objects_per_dimension/object/boundary/neighbours",
+      "documentation": "List of indices of the n-dimensional objects adjacent to the given n-dimensional object. An object can possibly have multiple neighbours on a boundary",
+      "units": "",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "INT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/space/objects_per_dimension/object/geometry": {
+      "path": "radiation/grid_ggd/space/objects_per_dimension/object/geometry",
+      "documentation": "Geometry data associated with the object, its detailed content is defined by ../../geometry_content. Its dimension depends on the type of object, geometry and coordinate considered.",
+      "units": "mixed",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/space/objects_per_dimension/object/nodes": {
+      "path": "radiation/grid_ggd/space/objects_per_dimension/object/nodes",
+      "documentation": "List of nodes forming this object (indices to objects_per_dimension(1)%object(:) in Fortran notation)",
+      "units": "",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "INT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/space/objects_per_dimension/object/measure": {
+      "path": "radiation/grid_ggd/space/objects_per_dimension/object/measure",
+      "documentation": "Measure of the space object, i.e. physical size (length for 1d, area for 2d, volume for 3d objects,...)",
+      "units": "m^dimension",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/space/objects_per_dimension/object/geometry_2d": {
+      "path": "radiation/grid_ggd/space/objects_per_dimension/object/geometry_2d",
+      "documentation": "2D geometry data associated with the object. Its dimension depends on the type of object, geometry and coordinate considered. Typically, the first dimension represents the object coordinates, while the second dimension would represent the values of the various degrees of freedom of the finite element attached to the object.",
+      "units": "mixed",
+      "coordinates": [
+        "1...N",
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_2D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/space/objects_per_dimension/geometry_content": {
+      "path": "radiation/grid_ggd/space/objects_per_dimension/geometry_content",
+      "documentation": "Content of the ../object/geometry node for this dimension",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "identifier_dynamic_aos3"
+    },
+    "radiation/grid_ggd/space/objects_per_dimension/geometry_content/name": {
+      "path": "radiation/grid_ggd/space/objects_per_dimension/geometry_content/name",
+      "documentation": "Short string identifier",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/space/objects_per_dimension/geometry_content/index": {
+      "path": "radiation/grid_ggd/space/objects_per_dimension/geometry_content/index",
+      "documentation": "Integer identifier (enumeration index within a list). Private identifier values must be indicated by a negative index.",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "INT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/space/objects_per_dimension/geometry_content/description": {
+      "path": "radiation/grid_ggd/space/objects_per_dimension/geometry_content/description",
+      "documentation": "Verbose description",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/grid_subset": {
+      "path": "radiation/grid_ggd/grid_subset",
+      "documentation": "Grid subsets",
+      "units": "",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "struct_array",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "generic_grid_dynamic_grid_subset"
+    },
+    "radiation/grid_ggd/grid_subset/identifier": {
+      "path": "radiation/grid_ggd/grid_subset/identifier",
+      "documentation": "Grid subset identifier",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "identifier_dynamic_aos3"
+    },
+    "radiation/grid_ggd/grid_subset/identifier/name": {
+      "path": "radiation/grid_ggd/grid_subset/identifier/name",
+      "documentation": "Short string identifier",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/grid_subset/identifier/index": {
+      "path": "radiation/grid_ggd/grid_subset/identifier/index",
+      "documentation": "Integer identifier (enumeration index within a list). Private identifier values must be indicated by a negative index.",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "INT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/grid_subset/identifier/description": {
+      "path": "radiation/grid_ggd/grid_subset/identifier/description",
+      "documentation": "Verbose description",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/grid_subset/dimension": {
+      "path": "radiation/grid_ggd/grid_subset/dimension",
+      "documentation": "Space dimension of the grid subset elements, using the convention 1=nodes, 2=edges, 3=faces, 4=cells/volumes",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "INT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/grid_subset/element": {
+      "path": "radiation/grid_ggd/grid_subset/element",
+      "documentation": "Set of elements defining the grid subset. An element is defined by a combination of objects from potentially all spaces",
+      "units": "",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "struct_array",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "generic_grid_dynamic_grid_subset_element"
+    },
+    "radiation/grid_ggd/grid_subset/element/object": {
+      "path": "radiation/grid_ggd/grid_subset/element/object",
+      "documentation": "Set of objects defining the element",
+      "units": "",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "struct_array",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "generic_grid_dynamic_grid_subset_element_object"
+    },
+    "radiation/grid_ggd/grid_subset/element/object/space": {
+      "path": "radiation/grid_ggd/grid_subset/element/object/space",
+      "documentation": "Index of the space from which that object is taken",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "INT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/grid_subset/element/object/dimension": {
+      "path": "radiation/grid_ggd/grid_subset/element/object/dimension",
+      "documentation": "Dimension of the object - using the convention  1=nodes, 2=edges, 3=faces, 4=cells/volumes",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "INT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/grid_subset/element/object/index": {
+      "path": "radiation/grid_ggd/grid_subset/element/object/index",
+      "documentation": "Object index",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "INT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/grid_subset/base": {
+      "path": "radiation/grid_ggd/grid_subset/base",
+      "documentation": "Set of bases for the grid subset. For each base, the structure describes the projection of the base vectors on the canonical frame of the grid.",
+      "units": "",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "struct_array",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "generic_grid_dynamic_grid_subset_metric"
+    },
+    "radiation/grid_ggd/grid_subset/base/jacobian": {
+      "path": "radiation/grid_ggd/grid_subset/base/jacobian",
+      "documentation": "Metric Jacobian",
+      "units": "mixed",
+      "coordinates": [
+        "grid_ggd(itime)/grid_subset(i1)/element"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/grid_subset/base/tensor_covariant": {
+      "path": "radiation/grid_ggd/grid_subset/base/tensor_covariant",
+      "documentation": "Covariant metric tensor, given on each element of the subgrid (first dimension)",
+      "units": "mixed",
+      "coordinates": [
+        "grid_ggd(itime)/grid_subset(i1)/element",
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_3D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/grid_subset/base/tensor_contravariant": {
+      "path": "radiation/grid_ggd/grid_subset/base/tensor_contravariant",
+      "documentation": "Contravariant metric tensor, given on each element of the subgrid (first dimension)",
+      "units": "mixed",
+      "coordinates": [
+        "grid_ggd(itime)/grid_subset(i1)/element",
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_3D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/grid_subset/metric": {
+      "path": "radiation/grid_ggd/grid_subset/metric",
+      "documentation": "Metric of the canonical frame onto Cartesian coordinates",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "generic_grid_dynamic_grid_subset_metric"
+    },
+    "radiation/grid_ggd/grid_subset/metric/jacobian": {
+      "path": "radiation/grid_ggd/grid_subset/metric/jacobian",
+      "documentation": "Metric Jacobian",
+      "units": "mixed",
+      "coordinates": [
+        "grid_ggd(itime)/grid_subset(i1)/element"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/grid_subset/metric/tensor_covariant": {
+      "path": "radiation/grid_ggd/grid_subset/metric/tensor_covariant",
+      "documentation": "Covariant metric tensor, given on each element of the subgrid (first dimension)",
+      "units": "mixed",
+      "coordinates": [
+        "grid_ggd(itime)/grid_subset(i1)/element",
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_3D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/grid_subset/metric/tensor_contravariant": {
+      "path": "radiation/grid_ggd/grid_subset/metric/tensor_contravariant",
+      "documentation": "Contravariant metric tensor, given on each element of the subgrid (first dimension)",
+      "units": "mixed",
+      "coordinates": [
+        "grid_ggd(itime)/grid_subset(i1)/element",
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_3D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/grid_ggd/time": {
+      "path": "radiation/grid_ggd/time",
+      "documentation": "Time",
+      "units": "s",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs",
+        "process/global_quantities/time",
+        "process/profiles_1d/time"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/global_quantities/time",
+          "process/profiles_1d/time"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process": {
+      "path": "radiation/process",
+      "documentation": "Set of emission processes. The radiation characteristics are described at the level of the originating entity. For instance describe line radiation from neutrals under profiles_1d/neutral. Line and recombination radiation under profiles_1d/ion. Bremsstrahlung radiation under profiles_1d/neutral and ion ...",
+      "units": "",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "struct_array",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/identifier",
+        "process/global_quantities",
+        "process/profiles_1d",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/identifier",
+          "process/global_quantities",
+          "process/profiles_1d"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "radiation_process"
+    },
+    "radiation/process/identifier": {
+      "path": "radiation/process/identifier",
+      "documentation": "Process identifier",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities",
+        "process/profiles_1d",
+        "process",
+        "process/identifier/name",
+        "process/identifier/index",
+        "process/identifier/description",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process",
+          "process/global_quantities",
+          "process/profiles_1d",
+          "process/identifier/name",
+          "process/identifier/index",
+          "process/identifier/description"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "identifier"
+    },
+    "radiation/process/identifier/name": {
+      "path": "radiation/process/identifier/name",
+      "documentation": "Short string identifier",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/identifier/index",
+        "process/identifier/description",
+        "process/global_quantities/inside_lcfs",
+        "process/identifier"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/identifier",
+          "process/identifier/index",
+          "process/identifier/description"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/identifier/index": {
+      "path": "radiation/process/identifier/index",
+      "documentation": "Integer identifier (enumeration index within a list). Private identifier values must be indicated by a negative index.",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "INT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/identifier/name",
+        "process/identifier/description",
+        "process/global_quantities/inside_lcfs",
+        "process/identifier"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/identifier",
+          "process/identifier/name",
+          "process/identifier/description"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/identifier/description": {
+      "path": "radiation/process/identifier/description",
+      "documentation": "Verbose description",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/identifier/name",
+        "process/identifier/index",
+        "process/global_quantities/inside_lcfs",
+        "process/identifier"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/identifier",
+          "process/identifier/name",
+          "process/identifier/index"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/global_quantities": {
+      "path": "radiation/process/global_quantities",
+      "documentation": "Scalar volume integrated quantities",
+      "units": "",
+      "coordinates": [
+        "process(i1)/global_quantities(itime)/time"
+      ],
+      "lifecycle": "active",
+      "data_type": "struct_array",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/identifier",
+        "process/profiles_1d",
+        "process",
+        "process/global_quantities/inside_lcfs",
+        "process/global_quantities/inside_vessel",
+        "process/global_quantities/time"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process",
+          "process/identifier",
+          "process/profiles_1d",
+          "process/global_quantities/inside_lcfs",
+          "process/global_quantities/inside_vessel",
+          "process/global_quantities/time"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "radiation_process_global",
+      "temporal_context": "time"
+    },
+    "radiation/process/global_quantities/inside_lcfs": {
+      "path": "radiation/process/global_quantities/inside_lcfs",
+      "documentation": "Emissions from the core plasma, inside the last closed flux surface",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_vessel",
+        "process/global_quantities/time",
+        "process/global_quantities",
+        "process/global_quantities/inside_lcfs/power",
+        "process/global_quantities/inside_lcfs/power_ion_total"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/global_quantities",
+          "process/global_quantities/inside_vessel",
+          "process/global_quantities/time",
+          "process/global_quantities/inside_lcfs/power",
+          "process/global_quantities/inside_lcfs/power_ion_total"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "radiation_process_global_volume"
+    },
+    "radiation/process/global_quantities/inside_lcfs/power": {
+      "path": "radiation/process/global_quantities/inside_lcfs/power",
+      "documentation": "Total power emitted by all species",
+      "units": "W",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs/power_ion_total",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/global_quantities/inside_lcfs/power_ion_total"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/global_quantities/inside_lcfs",
+          "process/global_quantities/inside_lcfs/power_ion_total"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/global_quantities/inside_lcfs/power_ion_total": {
+      "path": "radiation/process/global_quantities/inside_lcfs/power_ion_total",
+      "documentation": "Total power emitted by all ion species",
+      "units": "W",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs/power",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/global_quantities/inside_lcfs/power"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/global_quantities/inside_lcfs",
+          "process/global_quantities/inside_lcfs/power"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/global_quantities/inside_lcfs/power_neutral_total": {
+      "path": "radiation/process/global_quantities/inside_lcfs/power_neutral_total",
+      "documentation": "Total power emitted by all neutral species",
+      "units": "W",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs/power",
+        "process/global_quantities/inside_lcfs/power_ion_total",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/global_quantities/inside_lcfs/power"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/global_quantities/inside_lcfs",
+          "process/global_quantities/inside_lcfs/power",
+          "process/global_quantities/inside_lcfs/power_ion_total"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/global_quantities/inside_lcfs/power_electrons": {
+      "path": "radiation/process/global_quantities/inside_lcfs/power_electrons",
+      "documentation": "Power emitted by electrons",
+      "units": "W",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs/power",
+        "process/global_quantities/inside_lcfs/power_ion_total",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/global_quantities/inside_lcfs/power"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/global_quantities/inside_lcfs",
+          "process/global_quantities/inside_lcfs/power",
+          "process/global_quantities/inside_lcfs/power_ion_total"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/global_quantities/inside_vessel": {
+      "path": "radiation/process/global_quantities/inside_vessel",
+      "documentation": "Total emissions inside the vacuum vessel",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs",
+        "process/global_quantities/time",
+        "process/global_quantities",
+        "process/global_quantities/inside_vessel/power",
+        "process/global_quantities/inside_vessel/power_ion_total"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/global_quantities",
+          "process/global_quantities/inside_lcfs",
+          "process/global_quantities/time",
+          "process/global_quantities/inside_vessel/power",
+          "process/global_quantities/inside_vessel/power_ion_total"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "radiation_process_global_volume"
+    },
+    "radiation/process/global_quantities/inside_vessel/power": {
+      "path": "radiation/process/global_quantities/inside_vessel/power",
+      "documentation": "Total power emitted by all species",
+      "units": "W",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_vessel/power_ion_total",
+        "process/global_quantities/inside_lcfs/power",
+        "process/global_quantities/inside_vessel",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/global_quantities/inside_lcfs/power"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/global_quantities/inside_vessel",
+          "process/global_quantities/inside_vessel/power_ion_total"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/global_quantities/inside_vessel/power_ion_total": {
+      "path": "radiation/process/global_quantities/inside_vessel/power_ion_total",
+      "documentation": "Total power emitted by all ion species",
+      "units": "W",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_vessel/power",
+        "process/global_quantities/inside_lcfs/power",
+        "process/global_quantities/inside_vessel",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/global_quantities/inside_lcfs/power"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/global_quantities/inside_vessel",
+          "process/global_quantities/inside_vessel/power"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/global_quantities/inside_vessel/power_neutral_total": {
+      "path": "radiation/process/global_quantities/inside_vessel/power_neutral_total",
+      "documentation": "Total power emitted by all neutral species",
+      "units": "W",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_vessel/power",
+        "process/global_quantities/inside_vessel/power_ion_total",
+        "process/global_quantities/inside_lcfs/power",
+        "process/global_quantities/inside_vessel",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/global_quantities/inside_lcfs/power"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/global_quantities/inside_vessel",
+          "process/global_quantities/inside_vessel/power",
+          "process/global_quantities/inside_vessel/power_ion_total"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/global_quantities/inside_vessel/power_electrons": {
+      "path": "radiation/process/global_quantities/inside_vessel/power_electrons",
+      "documentation": "Power emitted by electrons",
+      "units": "W",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_vessel/power",
+        "process/global_quantities/inside_vessel/power_ion_total",
+        "process/global_quantities/inside_lcfs/power",
+        "process/global_quantities/inside_vessel",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/global_quantities/inside_lcfs/power"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/global_quantities/inside_vessel",
+          "process/global_quantities/inside_vessel/power",
+          "process/global_quantities/inside_vessel/power_ion_total"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/global_quantities/time": {
+      "path": "radiation/process/global_quantities/time",
+      "documentation": "Time",
+      "units": "s",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/inside_lcfs",
+        "process/global_quantities/inside_vessel",
+        "process/profiles_1d/time",
+        "process/global_quantities"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/profiles_1d/time"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/global_quantities",
+          "process/global_quantities/inside_lcfs",
+          "process/global_quantities/inside_vessel"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d": {
+      "path": "radiation/process/profiles_1d",
+      "documentation": "Emissivity radial profiles for various time slices",
+      "units": "",
+      "coordinates": [
+        "process(i1)/profiles_1d(itime)/time"
+      ],
+      "lifecycle": "active",
+      "data_type": "struct_array",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/identifier",
+        "process/global_quantities",
+        "process",
+        "process/profiles_1d/grid",
+        "process/profiles_1d/electrons",
+        "process/profiles_1d/emissivity_ion_total",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process",
+          "process/identifier",
+          "process/global_quantities",
+          "process/profiles_1d/grid",
+          "process/profiles_1d/electrons",
+          "process/profiles_1d/emissivity_ion_total"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "radiation_process_profiles_1d",
+      "temporal_context": "time"
+    },
+    "radiation/process/profiles_1d/grid": {
+      "path": "radiation/process/profiles_1d/grid",
+      "documentation": "Radial grid",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/electrons",
+        "process/profiles_1d/emissivity_ion_total",
+        "process/profiles_1d/power_inside_ion_total",
+        "process/global_quantities/inside_lcfs",
+        "process/profiles_1d",
+        "process/profiles_1d/grid/rho_tor_norm",
+        "process/profiles_1d/grid/rho_tor"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d",
+          "process/profiles_1d/electrons",
+          "process/profiles_1d/emissivity_ion_total",
+          "process/profiles_1d/power_inside_ion_total",
+          "process/profiles_1d/grid/rho_tor_norm",
+          "process/profiles_1d/grid/rho_tor"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "core_radial_grid"
+    },
+    "radiation/process/profiles_1d/grid/rho_tor_norm": {
+      "path": "radiation/process/profiles_1d/grid/rho_tor_norm",
+      "documentation": "Normalized toroidal flux coordinate. The normalizing value for rho_tor_norm, is the toroidal flux coordinate at the equilibrium boundary (LCFS or 99.x % of the LCFS in case of a fixed boundary equilibium calculation, see time_slice/boundary/b_flux_pol_norm in the equilibrium IDS)",
+      "units": "1",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/grid/rho_tor",
+        "process/profiles_1d/grid",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/grid",
+          "process/profiles_1d/grid/rho_tor"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/grid/rho_tor": {
+      "path": "radiation/process/profiles_1d/grid/rho_tor",
+      "documentation": "Toroidal flux coordinate = sqrt(phi/(pi*b0)), where the toroidal magnetic field, b0, corresponds to that stored in vacuum_toroidal_field/b0 and pi can be found in the IMAS constants",
+      "units": "m",
+      "coordinates": [
+        "process(i1)/profiles_1d(itime)/grid/rho_tor_norm"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/grid/rho_tor_norm",
+        "process/profiles_1d/grid/rho_pol_norm",
+        "process/profiles_1d/grid",
+        "process/global_quantities/inside_lcfs",
+        "vacuum_toroidal_field/r0"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "process/profiles_1d/grid/rho_pol_norm"
+        ],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "vacuum_toroidal_field/r0"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/grid",
+          "process/profiles_1d/grid/rho_tor_norm"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/grid/rho_pol_norm": {
+      "path": "radiation/process/profiles_1d/grid/rho_pol_norm",
+      "documentation": "Normalized poloidal flux coordinate = sqrt((psi(rho)-psi(magnetic_axis)) / (psi(LCFS)-psi(magnetic_axis)))",
+      "units": "1",
+      "coordinates": [
+        "process(i1)/profiles_1d(itime)/grid/rho_tor_norm"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/grid/rho_tor_norm",
+        "process/profiles_1d/grid/rho_tor",
+        "process/profiles_1d/grid",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "process/profiles_1d/grid/rho_tor"
+        ],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/grid",
+          "process/profiles_1d/grid/rho_tor_norm",
+          "process/profiles_1d/grid/rho_tor"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/grid/psi": {
+      "path": "radiation/process/profiles_1d/grid/psi",
+      "documentation": "Poloidal magnetic flux. Integral of magnetic field passing through a contour defined by the intersection of a flux surface passing through the point of interest and a Z=constant plane. If the integration surface is flat, the surface normal vector is in the increasing vertical coordinate direction, Z, namely upwards.",
+      "units": "Wb",
+      "coordinates": [
+        "process(i1)/profiles_1d(itime)/grid/rho_tor_norm"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/grid/rho_tor_norm",
+        "process/profiles_1d/grid/rho_tor",
+        "process/profiles_1d/grid/psi_magnetic_axis",
+        "process/profiles_1d/grid/rho_pol_norm",
+        "process/profiles_1d/grid"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "process/profiles_1d/grid/rho_tor",
+          "process/profiles_1d/grid/rho_pol_norm"
+        ],
+        "physics_related": [
+          "process/profiles_1d/grid/psi_magnetic_axis",
+          "process/profiles_1d/grid/psi_magnetic_axis"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/grid",
+          "process/profiles_1d/grid/rho_tor_norm",
+          "process/profiles_1d/grid/rho_tor"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/grid/volume": {
+      "path": "radiation/process/profiles_1d/grid/volume",
+      "documentation": "Volume enclosed inside the magnetic surface",
+      "units": "m^3",
+      "coordinates": [
+        "process(i1)/profiles_1d(itime)/grid/rho_tor_norm"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/grid/rho_tor_norm",
+        "process/profiles_1d/grid/rho_tor",
+        "process/profiles_1d/grid/rho_pol_norm",
+        "process/profiles_1d/grid",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "process/profiles_1d/grid/rho_tor",
+          "process/profiles_1d/grid/rho_pol_norm"
+        ],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/grid",
+          "process/profiles_1d/grid/rho_tor_norm",
+          "process/profiles_1d/grid/rho_tor"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/grid/area": {
+      "path": "radiation/process/profiles_1d/grid/area",
+      "documentation": "Cross-sectional area of the flux surface",
+      "units": "m^2",
+      "coordinates": [
+        "process(i1)/profiles_1d(itime)/grid/rho_tor_norm"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/grid/rho_tor_norm",
+        "process/profiles_1d/grid/rho_tor",
+        "process/profiles_1d/grid/surface",
+        "process/profiles_1d/grid/rho_pol_norm",
+        "process/profiles_1d/grid",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "process/profiles_1d/grid/rho_tor",
+          "process/profiles_1d/grid/rho_pol_norm"
+        ],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/profiles_1d/grid/surface"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/grid",
+          "process/profiles_1d/grid/rho_tor_norm",
+          "process/profiles_1d/grid/rho_tor"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/grid/surface": {
+      "path": "radiation/process/profiles_1d/grid/surface",
+      "documentation": "Surface area of the toroidal flux surface",
+      "units": "m^2",
+      "coordinates": [
+        "process(i1)/profiles_1d(itime)/grid/rho_tor_norm"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/grid/rho_tor_norm",
+        "process/profiles_1d/grid/rho_tor",
+        "process/profiles_1d/grid/area",
+        "process/profiles_1d/grid/rho_pol_norm",
+        "process/profiles_1d/grid",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "process/profiles_1d/grid/rho_tor",
+          "process/profiles_1d/grid/rho_pol_norm"
+        ],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/profiles_1d/grid/area"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/grid",
+          "process/profiles_1d/grid/rho_tor_norm",
+          "process/profiles_1d/grid/rho_tor"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/grid/psi_magnetic_axis": {
+      "path": "radiation/process/profiles_1d/grid/psi_magnetic_axis",
+      "documentation": "Value of the poloidal magnetic flux at the magnetic axis (useful to normalize the psi array values when the radial grid doesn't go from the magnetic axis to the plasma boundary)",
+      "units": "Wb",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/grid/rho_tor_norm",
+        "process/profiles_1d/grid/rho_tor",
+        "process/profiles_1d/grid/psi",
+        "process/profiles_1d/grid"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/profiles_1d/grid/psi",
+          "process/profiles_1d/grid/psi"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/grid",
+          "process/profiles_1d/grid/rho_tor_norm",
+          "process/profiles_1d/grid/rho_tor"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/grid/psi_boundary": {
+      "path": "radiation/process/profiles_1d/grid/psi_boundary",
+      "documentation": "Value of the poloidal magnetic flux at the plasma boundary (useful to normalize the psi array values when the radial grid doesn't go from the magnetic axis to the plasma boundary)",
+      "units": "Wb",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/grid/rho_tor_norm",
+        "process/profiles_1d/grid/rho_tor",
+        "process/profiles_1d/grid/psi_magnetic_axis",
+        "process/profiles_1d/grid/psi",
+        "process/profiles_1d/grid"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/profiles_1d/grid/psi_magnetic_axis",
+          "process/profiles_1d/grid/psi",
+          "process/profiles_1d/grid/psi"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/grid",
+          "process/profiles_1d/grid/rho_tor_norm",
+          "process/profiles_1d/grid/rho_tor"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/electrons": {
+      "path": "radiation/process/profiles_1d/electrons",
+      "documentation": "Processs terms related to electrons",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/grid",
+        "process/profiles_1d/emissivity_ion_total",
+        "process/profiles_1d/power_inside_ion_total",
+        "process/global_quantities/inside_lcfs",
+        "process/profiles_1d",
+        "process/profiles_1d/electrons/emissivity",
+        "process/profiles_1d/electrons/power_inside"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d",
+          "process/profiles_1d/grid",
+          "process/profiles_1d/emissivity_ion_total",
+          "process/profiles_1d/power_inside_ion_total",
+          "process/profiles_1d/electrons/emissivity",
+          "process/profiles_1d/electrons/power_inside"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "radiation_process_profiles_1d_electrons"
+    },
+    "radiation/process/profiles_1d/electrons/emissivity": {
+      "path": "radiation/process/profiles_1d/electrons/emissivity",
+      "documentation": "Emissivity from this species",
+      "units": "W.m^-3",
+      "coordinates": [
+        "process(i1)/profiles_1d(itime)/grid/rho_tor_norm"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/electrons/power_inside",
+        "process/profiles_1d/grid/rho_tor",
+        "process/profiles_1d/grid/rho_pol_norm",
+        "process/profiles_1d/electrons",
+        "process/global_quantities/inside_lcfs",
+        "process/profiles_1d/emissivity_ion_total"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "process/profiles_1d/grid/rho_tor",
+          "process/profiles_1d/grid/rho_pol_norm"
+        ],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/profiles_1d/emissivity_ion_total"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/electrons",
+          "process/profiles_1d/electrons/power_inside"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/electrons/power_inside": {
+      "path": "radiation/process/profiles_1d/electrons/power_inside",
+      "documentation": "Radiated power from inside the flux surface (volume integral of the emissivity inside the flux surface)",
+      "units": "W",
+      "coordinates": [
+        "process(i1)/profiles_1d(itime)/grid/rho_tor_norm"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/electrons/emissivity",
+        "process/global_quantities/inside_lcfs/power",
+        "process/profiles_1d/grid/rho_tor",
+        "process/profiles_1d/grid/rho_pol_norm",
+        "process/profiles_1d/electrons",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "process/profiles_1d/grid/rho_tor",
+          "process/profiles_1d/grid/rho_pol_norm"
+        ],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/global_quantities/inside_lcfs/power"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/electrons",
+          "process/profiles_1d/electrons/emissivity"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/emissivity_ion_total": {
+      "path": "radiation/process/profiles_1d/emissivity_ion_total",
+      "documentation": "Emissivity (summed over ion  species)",
+      "units": "W.m^-3",
+      "coordinates": [
+        "process(i1)/profiles_1d(itime)/grid/rho_tor_norm"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/grid",
+        "process/profiles_1d/electrons",
+        "process/profiles_1d/power_inside_ion_total",
+        "process/global_quantities/inside_lcfs",
+        "process/profiles_1d",
+        "process/profiles_1d/electrons/emissivity",
+        "process/profiles_1d/grid/rho_tor",
+        "process/profiles_1d/grid/rho_pol_norm"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "process/profiles_1d/grid/rho_tor",
+          "process/profiles_1d/grid/rho_pol_norm"
+        ],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/profiles_1d/electrons/emissivity"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d",
+          "process/profiles_1d/grid",
+          "process/profiles_1d/electrons",
+          "process/profiles_1d/power_inside_ion_total"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/power_inside_ion_total": {
+      "path": "radiation/process/profiles_1d/power_inside_ion_total",
+      "documentation": "Total power from ion species (summed over ion  species) inside the flux surface (volume integral of the emissivity inside the flux surface)",
+      "units": "W",
+      "coordinates": [
+        "process(i1)/profiles_1d(itime)/grid/rho_tor_norm"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/grid",
+        "process/profiles_1d/electrons",
+        "process/profiles_1d/emissivity_ion_total",
+        "process/global_quantities/inside_lcfs",
+        "process/profiles_1d",
+        "process/global_quantities/inside_lcfs/power",
+        "process/profiles_1d/grid/rho_tor",
+        "process/profiles_1d/grid/rho_pol_norm"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "process/profiles_1d/grid/rho_tor",
+          "process/profiles_1d/grid/rho_pol_norm"
+        ],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/global_quantities/inside_lcfs/power"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d",
+          "process/profiles_1d/grid",
+          "process/profiles_1d/electrons",
+          "process/profiles_1d/emissivity_ion_total"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/emissivity_neutral_total": {
+      "path": "radiation/process/profiles_1d/emissivity_neutral_total",
+      "documentation": "Emissivity (summed over neutral  species)",
+      "units": "W.m^-3",
+      "coordinates": [
+        "process(i1)/profiles_1d(itime)/grid/rho_tor_norm"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/grid",
+        "process/profiles_1d/electrons",
+        "process/profiles_1d/emissivity_ion_total",
+        "process/global_quantities/inside_lcfs",
+        "process/profiles_1d",
+        "process/profiles_1d/electrons/emissivity",
+        "process/profiles_1d/grid/rho_tor",
+        "process/profiles_1d/grid/rho_pol_norm"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "process/profiles_1d/grid/rho_tor",
+          "process/profiles_1d/grid/rho_pol_norm"
+        ],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/profiles_1d/electrons/emissivity"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d",
+          "process/profiles_1d/grid",
+          "process/profiles_1d/electrons",
+          "process/profiles_1d/emissivity_ion_total"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/power_inside_neutral_total": {
+      "path": "radiation/process/profiles_1d/power_inside_neutral_total",
+      "documentation": "Total power from ion species (summed over neutral species) inside the flux surface (volume integral of the emissivity inside the flux surface)",
+      "units": "W",
+      "coordinates": [
+        "process(i1)/profiles_1d(itime)/grid/rho_tor_norm"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/grid",
+        "process/profiles_1d/electrons",
+        "process/profiles_1d/emissivity_ion_total",
+        "process/global_quantities/inside_lcfs",
+        "process/profiles_1d",
+        "process/global_quantities/inside_lcfs/power",
+        "process/profiles_1d/grid/rho_tor",
+        "process/profiles_1d/grid/rho_pol_norm"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "process/profiles_1d/grid/rho_tor",
+          "process/profiles_1d/grid/rho_pol_norm"
+        ],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/global_quantities/inside_lcfs/power"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d",
+          "process/profiles_1d/grid",
+          "process/profiles_1d/electrons",
+          "process/profiles_1d/emissivity_ion_total"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/ion": {
+      "path": "radiation/process/profiles_1d/ion",
+      "documentation": "Process terms related to the different ion species",
+      "units": "",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "struct_array",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/grid",
+        "process/profiles_1d/electrons",
+        "process/profiles_1d/emissivity_ion_total",
+        "process/global_quantities/inside_lcfs",
+        "process/profiles_1d",
+        "process/profiles_1d/ion/element",
+        "process/profiles_1d/ion/z_ion",
+        "process/profiles_1d/ion/name"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d",
+          "process/profiles_1d/grid",
+          "process/profiles_1d/electrons",
+          "process/profiles_1d/emissivity_ion_total",
+          "process/profiles_1d/ion/element",
+          "process/profiles_1d/ion/z_ion",
+          "process/profiles_1d/ion/name"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "radiation_process_profiles_1d_ions"
+    },
+    "radiation/process/profiles_1d/ion/element": {
+      "path": "radiation/process/profiles_1d/ion/element",
+      "documentation": "List of elements forming the atom or molecule",
+      "units": "",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "struct_array",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/ion/z_ion",
+        "process/profiles_1d/ion/name",
+        "process/profiles_1d/ion/neutral_index",
+        "process/profiles_1d/ion",
+        "process/profiles_1d/ion/element/a",
+        "process/profiles_1d/ion/element/z_n",
+        "process/profiles_1d/ion/element/atoms_n",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/ion",
+          "process/profiles_1d/ion/z_ion",
+          "process/profiles_1d/ion/name",
+          "process/profiles_1d/ion/neutral_index",
+          "process/profiles_1d/ion/element/a",
+          "process/profiles_1d/ion/element/z_n",
+          "process/profiles_1d/ion/element/atoms_n"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "plasma_composition_neutral_element"
+    },
+    "radiation/process/profiles_1d/ion/element/a": {
+      "path": "radiation/process/profiles_1d/ion/element/a",
+      "documentation": "Mass of atom",
+      "units": "u",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/ion/element/z_n",
+        "process/profiles_1d/ion/element/atoms_n",
+        "process/profiles_1d/neutral/element/a",
+        "process/profiles_1d/ion/element",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/profiles_1d/neutral/element/a"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/ion/element",
+          "process/profiles_1d/ion/element/z_n",
+          "process/profiles_1d/ion/element/atoms_n"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/ion/element/z_n": {
+      "path": "radiation/process/profiles_1d/ion/element/z_n",
+      "documentation": "Nuclear charge",
+      "units": "e",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "INT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/ion/element/a",
+        "process/profiles_1d/ion/element/atoms_n",
+        "process/profiles_1d/ion/element",
+        "process/global_quantities/inside_lcfs",
+        "process/profiles_1d/ion/z_ion"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/profiles_1d/ion/z_ion"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/ion/element",
+          "process/profiles_1d/ion/element/a",
+          "process/profiles_1d/ion/element/atoms_n"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/ion/element/atoms_n": {
+      "path": "radiation/process/profiles_1d/ion/element/atoms_n",
+      "documentation": "Number of atoms of this element in the molecule",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "INT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/ion/element/a",
+        "process/profiles_1d/ion/element/z_n",
+        "process/profiles_1d/ion/element",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/ion/element",
+          "process/profiles_1d/ion/element/a",
+          "process/profiles_1d/ion/element/z_n"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/ion/z_ion": {
+      "path": "radiation/process/profiles_1d/ion/z_ion",
+      "documentation": "Ion charge (of the dominant ionization state; lumped ions are allowed)",
+      "units": "e",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/ion/element",
+        "process/profiles_1d/ion/name",
+        "process/profiles_1d/ion/neutral_index",
+        "process/profiles_1d/ion",
+        "process/global_quantities/inside_lcfs",
+        "process/profiles_1d/ion/element/z_n"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/profiles_1d/ion/element/z_n"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/ion",
+          "process/profiles_1d/ion/element",
+          "process/profiles_1d/ion/name",
+          "process/profiles_1d/ion/neutral_index"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/ion/name": {
+      "path": "radiation/process/profiles_1d/ion/name",
+      "documentation": "String identifying ion (e.g. H+, D+, T+, He+2, C+, ...)",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/ion/element",
+        "process/profiles_1d/ion/z_ion",
+        "process/profiles_1d/ion/neutral_index",
+        "process/profiles_1d/ion",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/ion",
+          "process/profiles_1d/ion/element",
+          "process/profiles_1d/ion/z_ion",
+          "process/profiles_1d/ion/neutral_index"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/ion/neutral_index": {
+      "path": "radiation/process/profiles_1d/ion/neutral_index",
+      "documentation": "Index of the corresponding neutral species in the ../../neutral array",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "INT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/ion/element",
+        "process/profiles_1d/ion/z_ion",
+        "process/profiles_1d/ion/name",
+        "process/profiles_1d/ion",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/ion",
+          "process/profiles_1d/ion/element",
+          "process/profiles_1d/ion/z_ion",
+          "process/profiles_1d/ion/name"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/ion/emissivity": {
+      "path": "radiation/process/profiles_1d/ion/emissivity",
+      "documentation": "Emissivity from this species",
+      "units": "W.m^-3",
+      "coordinates": [
+        "process(i1)/profiles_1d(itime)/grid/rho_tor_norm"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/ion/element",
+        "process/profiles_1d/ion/z_ion",
+        "process/profiles_1d/ion/name",
+        "process/profiles_1d/electrons/emissivity",
+        "process/profiles_1d/grid/rho_tor",
+        "process/profiles_1d/grid/rho_pol_norm",
+        "process/profiles_1d/ion",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "process/profiles_1d/grid/rho_tor",
+          "process/profiles_1d/grid/rho_pol_norm"
+        ],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/profiles_1d/electrons/emissivity"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/ion",
+          "process/profiles_1d/ion/element",
+          "process/profiles_1d/ion/z_ion",
+          "process/profiles_1d/ion/name"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/ion/power_inside": {
+      "path": "radiation/process/profiles_1d/ion/power_inside",
+      "documentation": "Radiated power from inside the flux surface (volume integral of the emissivity inside the flux surface)",
+      "units": "W",
+      "coordinates": [
+        "process(i1)/profiles_1d(itime)/grid/rho_tor_norm"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/ion/element",
+        "process/profiles_1d/ion/z_ion",
+        "process/profiles_1d/ion/name",
+        "process/global_quantities/inside_lcfs/power",
+        "process/profiles_1d/grid/rho_tor",
+        "process/profiles_1d/grid/rho_pol_norm",
+        "process/profiles_1d/ion",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "process/profiles_1d/grid/rho_tor",
+          "process/profiles_1d/grid/rho_pol_norm"
+        ],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/global_quantities/inside_lcfs/power"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/ion",
+          "process/profiles_1d/ion/element",
+          "process/profiles_1d/ion/z_ion",
+          "process/profiles_1d/ion/name"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/ion/multiple_states_flag": {
+      "path": "radiation/process/profiles_1d/ion/multiple_states_flag",
+      "documentation": "Multiple states calculation flag : 0-Only one state is considered; 1-Multiple states are considered and are described in the state structure",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "INT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/ion/element",
+        "process/profiles_1d/ion/z_ion",
+        "process/profiles_1d/ion/name",
+        "process/profiles_1d/ion",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/ion",
+          "process/profiles_1d/ion/element",
+          "process/profiles_1d/ion/z_ion",
+          "process/profiles_1d/ion/name"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/ion/state": {
+      "path": "radiation/process/profiles_1d/ion/state",
+      "documentation": "Process terms related to the different charge states of the species (ionization, energy, excitation, ...)",
+      "units": "",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "struct_array",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/ion/element",
+        "process/profiles_1d/ion/z_ion",
+        "process/profiles_1d/ion/name",
+        "process/profiles_1d/ion",
+        "process/profiles_1d/ion/state/z_min",
+        "process/profiles_1d/ion/state/z_max",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/ion",
+          "process/profiles_1d/ion/element",
+          "process/profiles_1d/ion/z_ion",
+          "process/profiles_1d/ion/name",
+          "process/profiles_1d/ion/state/z_min",
+          "process/profiles_1d/ion/state/z_max"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "radiation_process_profiles_1d_ions_charge_states"
+    },
+    "radiation/process/profiles_1d/ion/state/z_min": {
+      "path": "radiation/process/profiles_1d/ion/state/z_min",
+      "documentation": "Minimum Z of the charge state bundle",
+      "units": "e",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/ion/state/z_max",
+        "process/profiles_1d/ion/element/z_n",
+        "process/profiles_1d/ion/state",
+        "process/global_quantities/inside_lcfs",
+        "process/profiles_1d/ion/z_ion"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/profiles_1d/ion/element/z_n",
+          "process/profiles_1d/ion/z_ion"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/ion/state",
+          "process/profiles_1d/ion/state/z_max"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/ion/state/z_max": {
+      "path": "radiation/process/profiles_1d/ion/state/z_max",
+      "documentation": "Maximum Z of the charge state bundle",
+      "units": "e",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/ion/state/z_min",
+        "process/profiles_1d/ion/element/z_n",
+        "process/profiles_1d/ion/state",
+        "process/global_quantities/inside_lcfs",
+        "process/profiles_1d/ion/z_ion"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/profiles_1d/ion/element/z_n",
+          "process/profiles_1d/ion/z_ion"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/ion/state",
+          "process/profiles_1d/ion/state/z_min"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/ion/state/name": {
+      "path": "radiation/process/profiles_1d/ion/state/name",
+      "documentation": "String identifying charge state (e.g. C+, C+2 , C+3, C+4, C+5, C+6, ...)",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/ion/state/z_min",
+        "process/profiles_1d/ion/state/z_max",
+        "process/profiles_1d/ion/state",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/ion/state",
+          "process/profiles_1d/ion/state/z_min",
+          "process/profiles_1d/ion/state/z_max"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/ion/state/vibrational_level": {
+      "path": "radiation/process/profiles_1d/ion/state/vibrational_level",
+      "documentation": "Vibrational level (can be bundled)",
+      "units": "e",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/ion/state/z_min",
+        "process/profiles_1d/ion/state/z_max",
+        "process/profiles_1d/ion/element/z_n",
+        "process/profiles_1d/ion/state",
+        "process/global_quantities/inside_lcfs",
+        "process/profiles_1d/ion/z_ion"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/profiles_1d/ion/element/z_n",
+          "process/profiles_1d/ion/z_ion"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/ion/state",
+          "process/profiles_1d/ion/state/z_min",
+          "process/profiles_1d/ion/state/z_max"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/ion/state/vibrational_mode": {
+      "path": "radiation/process/profiles_1d/ion/state/vibrational_mode",
+      "documentation": "Vibrational mode of this state, e.g. \"A_g\". Need to define, or adopt a standard nomenclature.",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/ion/state/z_min",
+        "process/profiles_1d/ion/state/z_max",
+        "process/profiles_1d/ion/state",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/ion/state",
+          "process/profiles_1d/ion/state/z_min",
+          "process/profiles_1d/ion/state/z_max"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/ion/state/electron_configuration": {
+      "path": "radiation/process/profiles_1d/ion/state/electron_configuration",
+      "documentation": "Configuration of atomic orbitals of this state, e.g. 1s2-2s1",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/ion/state/z_min",
+        "process/profiles_1d/ion/state/z_max",
+        "process/profiles_1d/ion/state",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/ion/state",
+          "process/profiles_1d/ion/state/z_min",
+          "process/profiles_1d/ion/state/z_max"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/ion/state/emissivity": {
+      "path": "radiation/process/profiles_1d/ion/state/emissivity",
+      "documentation": "Emissivity from this species",
+      "units": "W.m^-3",
+      "coordinates": [
+        "process(i1)/profiles_1d(itime)/grid/rho_tor_norm"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/ion/state/z_min",
+        "process/profiles_1d/ion/state/z_max",
+        "process/profiles_1d/ion/state",
+        "process/global_quantities/inside_lcfs",
+        "process/profiles_1d/electrons/emissivity",
+        "process/profiles_1d/grid/rho_tor",
+        "process/profiles_1d/grid/rho_pol_norm"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "process/profiles_1d/grid/rho_tor",
+          "process/profiles_1d/grid/rho_pol_norm"
+        ],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/profiles_1d/electrons/emissivity"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/ion/state",
+          "process/profiles_1d/ion/state/z_min",
+          "process/profiles_1d/ion/state/z_max"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/ion/state/power_inside": {
+      "path": "radiation/process/profiles_1d/ion/state/power_inside",
+      "documentation": "Radiated power from inside the flux surface (volume integral of the emissivity inside the flux surface)",
+      "units": "W",
+      "coordinates": [
+        "process(i1)/profiles_1d(itime)/grid/rho_tor_norm"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/ion/state/z_min",
+        "process/profiles_1d/ion/state/z_max",
+        "process/profiles_1d/ion/state",
+        "process/global_quantities/inside_lcfs",
+        "process/global_quantities/inside_lcfs/power",
+        "process/profiles_1d/grid/rho_tor",
+        "process/profiles_1d/grid/rho_pol_norm"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "process/profiles_1d/grid/rho_tor",
+          "process/profiles_1d/grid/rho_pol_norm"
+        ],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/global_quantities/inside_lcfs/power"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/ion/state",
+          "process/profiles_1d/ion/state/z_min",
+          "process/profiles_1d/ion/state/z_max"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/neutral": {
+      "path": "radiation/process/profiles_1d/neutral",
+      "documentation": "Process terms related to the different neutral species",
+      "units": "",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "struct_array",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/grid",
+        "process/profiles_1d/electrons",
+        "process/profiles_1d/emissivity_ion_total",
+        "process/global_quantities/inside_lcfs",
+        "process/profiles_1d",
+        "process/profiles_1d/neutral/element",
+        "process/profiles_1d/neutral/name",
+        "process/profiles_1d/neutral/ion_index",
+        "process/profiles_1d/neutral/emissivity"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d",
+          "process/profiles_1d/grid",
+          "process/profiles_1d/electrons",
+          "process/profiles_1d/emissivity_ion_total",
+          "process/profiles_1d/neutral/element",
+          "process/profiles_1d/neutral/name",
+          "process/profiles_1d/neutral/ion_index",
+          "process/profiles_1d/neutral/emissivity"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "radiation_process_profiles_1d_neutral"
+    },
+    "radiation/process/profiles_1d/neutral/element": {
+      "path": "radiation/process/profiles_1d/neutral/element",
+      "documentation": "List of elements forming the atom or molecule",
+      "units": "",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "struct_array",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/neutral/name",
+        "process/profiles_1d/neutral/ion_index",
+        "process/profiles_1d/neutral/emissivity",
+        "process/profiles_1d/neutral",
+        "process/profiles_1d/neutral/element/a",
+        "process/profiles_1d/neutral/element/z_n",
+        "process/profiles_1d/neutral/element/atoms_n",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/neutral",
+          "process/profiles_1d/neutral/name",
+          "process/profiles_1d/neutral/ion_index",
+          "process/profiles_1d/neutral/emissivity",
+          "process/profiles_1d/neutral/element/a",
+          "process/profiles_1d/neutral/element/z_n",
+          "process/profiles_1d/neutral/element/atoms_n"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "plasma_composition_neutral_element"
+    },
+    "radiation/process/profiles_1d/neutral/element/a": {
+      "path": "radiation/process/profiles_1d/neutral/element/a",
+      "documentation": "Mass of atom",
+      "units": "u",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/neutral/element/z_n",
+        "process/profiles_1d/neutral/element/atoms_n",
+        "process/profiles_1d/ion/element/a",
+        "process/profiles_1d/neutral/element",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/profiles_1d/ion/element/a"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/neutral/element",
+          "process/profiles_1d/neutral/element/z_n",
+          "process/profiles_1d/neutral/element/atoms_n"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/neutral/element/z_n": {
+      "path": "radiation/process/profiles_1d/neutral/element/z_n",
+      "documentation": "Nuclear charge",
+      "units": "e",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "INT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/neutral/element/a",
+        "process/profiles_1d/neutral/element/atoms_n",
+        "process/profiles_1d/ion/element/z_n",
+        "process/profiles_1d/neutral/element",
+        "process/global_quantities/inside_lcfs",
+        "process/profiles_1d/ion/z_ion"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/profiles_1d/ion/element/z_n",
+          "process/profiles_1d/ion/z_ion"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/neutral/element",
+          "process/profiles_1d/neutral/element/a",
+          "process/profiles_1d/neutral/element/atoms_n"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/neutral/element/atoms_n": {
+      "path": "radiation/process/profiles_1d/neutral/element/atoms_n",
+      "documentation": "Number of atoms of this element in the molecule",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "INT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/neutral/element/a",
+        "process/profiles_1d/neutral/element/z_n",
+        "process/profiles_1d/neutral/element",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/neutral/element",
+          "process/profiles_1d/neutral/element/a",
+          "process/profiles_1d/neutral/element/z_n"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/neutral/name": {
+      "path": "radiation/process/profiles_1d/neutral/name",
+      "documentation": "String identifying the neutral species (e.g. H, D, T, He, C, ...)",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/neutral/element",
+        "process/profiles_1d/neutral/ion_index",
+        "process/profiles_1d/neutral/emissivity",
+        "process/profiles_1d/neutral",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/neutral",
+          "process/profiles_1d/neutral/element",
+          "process/profiles_1d/neutral/ion_index",
+          "process/profiles_1d/neutral/emissivity"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/neutral/ion_index": {
+      "path": "radiation/process/profiles_1d/neutral/ion_index",
+      "documentation": "Index of the corresponding ion species in the ../../ion array",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "INT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/neutral/element",
+        "process/profiles_1d/neutral/name",
+        "process/profiles_1d/neutral/emissivity",
+        "process/profiles_1d/neutral",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/neutral",
+          "process/profiles_1d/neutral/element",
+          "process/profiles_1d/neutral/name",
+          "process/profiles_1d/neutral/emissivity"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/neutral/emissivity": {
+      "path": "radiation/process/profiles_1d/neutral/emissivity",
+      "documentation": "Emissivity from this species",
+      "units": "W.m^-3",
+      "coordinates": [
+        "process(i1)/profiles_1d(itime)/grid/rho_tor_norm"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/neutral/element",
+        "process/profiles_1d/neutral/name",
+        "process/profiles_1d/neutral/ion_index",
+        "process/profiles_1d/electrons/emissivity",
+        "process/profiles_1d/grid/rho_tor",
+        "process/profiles_1d/grid/rho_pol_norm",
+        "process/profiles_1d/neutral",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "process/profiles_1d/grid/rho_tor",
+          "process/profiles_1d/grid/rho_pol_norm"
+        ],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/profiles_1d/electrons/emissivity"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/neutral",
+          "process/profiles_1d/neutral/element",
+          "process/profiles_1d/neutral/name",
+          "process/profiles_1d/neutral/ion_index"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/neutral/power_inside": {
+      "path": "radiation/process/profiles_1d/neutral/power_inside",
+      "documentation": "Radiated power from inside the flux surface (volume integral of the emissivity inside the flux surface)",
+      "units": "W",
+      "coordinates": [
+        "process(i1)/profiles_1d(itime)/grid/rho_tor_norm"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/neutral/element",
+        "process/profiles_1d/neutral/name",
+        "process/profiles_1d/neutral/ion_index",
+        "process/profiles_1d/neutral/emissivity",
+        "process/global_quantities/inside_lcfs/power",
+        "process/profiles_1d/grid/rho_tor",
+        "process/profiles_1d/grid/rho_pol_norm",
+        "process/profiles_1d/neutral",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "process/profiles_1d/grid/rho_tor",
+          "process/profiles_1d/grid/rho_pol_norm"
+        ],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/global_quantities/inside_lcfs/power"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/neutral",
+          "process/profiles_1d/neutral/element",
+          "process/profiles_1d/neutral/name",
+          "process/profiles_1d/neutral/ion_index",
+          "process/profiles_1d/neutral/emissivity"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/neutral/multiple_states_flag": {
+      "path": "radiation/process/profiles_1d/neutral/multiple_states_flag",
+      "documentation": "Multiple states calculation flag : 0-Only one state is considered; 1-Multiple states are considered and are described in the state structure",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "INT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/neutral/element",
+        "process/profiles_1d/neutral/name",
+        "process/profiles_1d/neutral/ion_index",
+        "process/profiles_1d/neutral/emissivity",
+        "process/profiles_1d/neutral",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/neutral",
+          "process/profiles_1d/neutral/element",
+          "process/profiles_1d/neutral/name",
+          "process/profiles_1d/neutral/ion_index",
+          "process/profiles_1d/neutral/emissivity"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/neutral/state": {
+      "path": "radiation/process/profiles_1d/neutral/state",
+      "documentation": "Process terms related to the different charge states of the species (energy, excitation, ...)",
+      "units": "",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "struct_array",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/neutral/element",
+        "process/profiles_1d/neutral/name",
+        "process/profiles_1d/neutral/ion_index",
+        "process/profiles_1d/neutral/emissivity",
+        "process/profiles_1d/neutral",
+        "process/profiles_1d/neutral/state/name",
+        "process/profiles_1d/neutral/state/vibrational_level",
+        "process/profiles_1d/neutral/state/vibrational_mode",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/neutral",
+          "process/profiles_1d/neutral/element",
+          "process/profiles_1d/neutral/name",
+          "process/profiles_1d/neutral/ion_index",
+          "process/profiles_1d/neutral/emissivity",
+          "process/profiles_1d/neutral/state/name",
+          "process/profiles_1d/neutral/state/vibrational_level",
+          "process/profiles_1d/neutral/state/vibrational_mode"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "radiation_process_profiles_1d_neutral_state"
+    },
+    "radiation/process/profiles_1d/neutral/state/name": {
+      "path": "radiation/process/profiles_1d/neutral/state/name",
+      "documentation": "String identifying state",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/neutral/state/vibrational_level",
+        "process/profiles_1d/neutral/state/vibrational_mode",
+        "process/profiles_1d/neutral/state/neutral_type",
+        "process/profiles_1d/neutral/state",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/neutral/state",
+          "process/profiles_1d/neutral/state/vibrational_level",
+          "process/profiles_1d/neutral/state/vibrational_mode",
+          "process/profiles_1d/neutral/state/neutral_type"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/neutral/state/vibrational_level": {
+      "path": "radiation/process/profiles_1d/neutral/state/vibrational_level",
+      "documentation": "Vibrational level (can be bundled)",
+      "units": "e",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/neutral/state/name",
+        "process/profiles_1d/neutral/state/vibrational_mode",
+        "process/profiles_1d/neutral/state/neutral_type",
+        "process/profiles_1d/ion/element/z_n",
+        "process/profiles_1d/neutral/state",
+        "process/global_quantities/inside_lcfs",
+        "process/profiles_1d/ion/z_ion"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/profiles_1d/ion/element/z_n",
+          "process/profiles_1d/ion/z_ion"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/neutral/state",
+          "process/profiles_1d/neutral/state/name",
+          "process/profiles_1d/neutral/state/vibrational_mode",
+          "process/profiles_1d/neutral/state/neutral_type"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/neutral/state/vibrational_mode": {
+      "path": "radiation/process/profiles_1d/neutral/state/vibrational_mode",
+      "documentation": "Vibrational mode of this state, e.g. \"A_g\". Need to define, or adopt a standard nomenclature.",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/neutral/state/name",
+        "process/profiles_1d/neutral/state/vibrational_level",
+        "process/profiles_1d/neutral/state/neutral_type",
+        "process/profiles_1d/neutral/state",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/neutral/state",
+          "process/profiles_1d/neutral/state/name",
+          "process/profiles_1d/neutral/state/vibrational_level",
+          "process/profiles_1d/neutral/state/neutral_type"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/neutral/state/neutral_type": {
+      "path": "radiation/process/profiles_1d/neutral/state/neutral_type",
+      "documentation": "Neutral type (if the considered state is a neutral), in terms of energy. ID =1: cold; 2: thermal; 3: fast; 4: NBI",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "structure",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/neutral/state/name",
+        "process/profiles_1d/neutral/state/vibrational_level",
+        "process/profiles_1d/neutral/state/vibrational_mode",
+        "process/profiles_1d/neutral/state",
+        "process/profiles_1d/neutral/state/neutral_type/name",
+        "process/profiles_1d/neutral/state/neutral_type/index",
+        "process/profiles_1d/neutral/state/neutral_type/description",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/neutral/state",
+          "process/profiles_1d/neutral/state/name",
+          "process/profiles_1d/neutral/state/vibrational_level",
+          "process/profiles_1d/neutral/state/vibrational_mode",
+          "process/profiles_1d/neutral/state/neutral_type/name",
+          "process/profiles_1d/neutral/state/neutral_type/index",
+          "process/profiles_1d/neutral/state/neutral_type/description"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "structure_reference": "identifier_dynamic_aos3"
+    },
+    "radiation/process/profiles_1d/neutral/state/neutral_type/name": {
+      "path": "radiation/process/profiles_1d/neutral/state/neutral_type/name",
+      "documentation": "Short string identifier",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/neutral/state/neutral_type/index",
+        "process/profiles_1d/neutral/state/neutral_type/description",
+        "process/profiles_1d/neutral/state/neutral_type",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/neutral/state/neutral_type",
+          "process/profiles_1d/neutral/state/neutral_type/index",
+          "process/profiles_1d/neutral/state/neutral_type/description"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/neutral/state/neutral_type/index": {
+      "path": "radiation/process/profiles_1d/neutral/state/neutral_type/index",
+      "documentation": "Integer identifier (enumeration index within a list). Private identifier values must be indicated by a negative index.",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "INT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/neutral/state/neutral_type/name",
+        "process/profiles_1d/neutral/state/neutral_type/description",
+        "process/profiles_1d/neutral/state/neutral_type",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/neutral/state/neutral_type",
+          "process/profiles_1d/neutral/state/neutral_type/name",
+          "process/profiles_1d/neutral/state/neutral_type/description"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/neutral/state/neutral_type/description": {
+      "path": "radiation/process/profiles_1d/neutral/state/neutral_type/description",
+      "documentation": "Verbose description",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/neutral/state/neutral_type/name",
+        "process/profiles_1d/neutral/state/neutral_type/index",
+        "process/profiles_1d/neutral/state/neutral_type",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/neutral/state/neutral_type",
+          "process/profiles_1d/neutral/state/neutral_type/name",
+          "process/profiles_1d/neutral/state/neutral_type/index"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/neutral/state/electron_configuration": {
+      "path": "radiation/process/profiles_1d/neutral/state/electron_configuration",
+      "documentation": "Configuration of atomic orbitals of this state, e.g. 1s2-2s1",
+      "units": "",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "STR_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/neutral/state/name",
+        "process/profiles_1d/neutral/state/vibrational_level",
+        "process/profiles_1d/neutral/state/vibrational_mode",
+        "process/profiles_1d/neutral/state",
+        "process/global_quantities/inside_lcfs"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": false,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/neutral/state",
+          "process/profiles_1d/neutral/state/name",
+          "process/profiles_1d/neutral/state/vibrational_level",
+          "process/profiles_1d/neutral/state/vibrational_mode"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/neutral/state/emissivity": {
+      "path": "radiation/process/profiles_1d/neutral/state/emissivity",
+      "documentation": "Emissivity from this species",
+      "units": "W.m^-3",
+      "coordinates": [
+        "process(i1)/profiles_1d(itime)/grid/rho_tor_norm"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/neutral/state/name",
+        "process/profiles_1d/neutral/state/vibrational_level",
+        "process/profiles_1d/neutral/state/vibrational_mode",
+        "process/profiles_1d/neutral/state",
+        "process/global_quantities/inside_lcfs",
+        "process/profiles_1d/electrons/emissivity",
+        "process/profiles_1d/grid/rho_tor",
+        "process/profiles_1d/grid/rho_pol_norm"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "process/profiles_1d/grid/rho_tor",
+          "process/profiles_1d/grid/rho_pol_norm"
+        ],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/profiles_1d/electrons/emissivity"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/neutral/state",
+          "process/profiles_1d/neutral/state/name",
+          "process/profiles_1d/neutral/state/vibrational_level",
+          "process/profiles_1d/neutral/state/vibrational_mode"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/neutral/state/power_inside": {
+      "path": "radiation/process/profiles_1d/neutral/state/power_inside",
+      "documentation": "Radiated power from inside the flux surface (volume integral of the emissivity inside the flux surface)",
+      "units": "W",
+      "coordinates": [
+        "process(i1)/profiles_1d(itime)/grid/rho_tor_norm"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/neutral/state/name",
+        "process/profiles_1d/neutral/state/vibrational_level",
+        "process/profiles_1d/neutral/state/vibrational_mode",
+        "process/profiles_1d/neutral/state",
+        "process/global_quantities/inside_lcfs",
+        "process/global_quantities/inside_lcfs/power",
+        "process/profiles_1d/grid/rho_tor",
+        "process/profiles_1d/grid/rho_pol_norm"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [
+          "process/profiles_1d/grid/rho_tor",
+          "process/profiles_1d/grid/rho_pol_norm"
+        ],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/global_quantities/inside_lcfs/power"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d/neutral/state",
+          "process/profiles_1d/neutral/state/name",
+          "process/profiles_1d/neutral/state/vibrational_level",
+          "process/profiles_1d/neutral/state/vibrational_mode"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/process/profiles_1d/time": {
+      "path": "radiation/process/profiles_1d/time",
+      "documentation": "Time",
+      "units": "s",
+      "coordinates": [],
+      "lifecycle": "active",
+      "data_type": "FLT_0D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/profiles_1d/grid",
+        "process/profiles_1d/electrons",
+        "process/profiles_1d/emissivity_ion_total",
+        "process/global_quantities/inside_lcfs",
+        "process/global_quantities/time",
+        "process/profiles_1d"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/inside_lcfs",
+          "process/global_quantities/time"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [
+          "process/profiles_1d",
+          "process/profiles_1d/grid",
+          "process/profiles_1d/electrons",
+          "process/profiles_1d/emissivity_ion_total"
+        ],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null
+    },
+    "radiation/time": {
+      "path": "radiation/time",
+      "documentation": "Generic time",
+      "units": "s",
+      "coordinates": [
+        "1...N"
+      ],
+      "lifecycle": "active",
+      "data_type": "FLT_1D",
+      "introduced_after": null,
+      "physics_context": null,
+      "related_paths": [
+        "process/global_quantities/time",
+        "process/profiles_1d/time"
+      ],
+      "usage_examples": [],
+      "validation_rules": {
+        "min_value": null,
+        "max_value": null,
+        "units_required": true,
+        "coordinate_check": null
+      },
+      "relationships": {
+        "coordinates": [],
+        "physics_related": [
+          "process/global_quantities/time",
+          "process/profiles_1d/time"
+        ],
+        "cross_ids": [],
+        "validation": [],
+        "hierarchical": [],
+        "units_compatible": [],
+        "semantic_similarity": [],
+        "documentation_refs": []
+      },
+      "coordinate1": null,
+      "coordinate2": null,
+      "timebase": null,
+      "type": null,
+      "temporal_context": "time"
+    }
+  },
+  "semantic_groups": {
+    "units_m": [
+      "radiation/vacuum_toroidal_field/r0",
+      "radiation/process/profiles_1d/grid/rho_tor"
+    ],
+    "structure_grid_ggd": [
+      "radiation/grid_ggd/identifier",
+      "radiation/grid_ggd/identifier/name",
+      "radiation/grid_ggd/identifier/index",
+      "radiation/grid_ggd/identifier/description",
+      "radiation/grid_ggd/path",
+      "radiation/grid_ggd/space/identifier",
+      "radiation/grid_ggd/space/identifier/name",
+      "radiation/grid_ggd/space/identifier/index",
+      "radiation/grid_ggd/space/identifier/description",
+      "radiation/grid_ggd/space/geometry_type",
+      "radiation/grid_ggd/space/geometry_type/name",
+      "radiation/grid_ggd/space/geometry_type/index",
+      "radiation/grid_ggd/space/geometry_type/description",
+      "radiation/grid_ggd/space/coordinates_type/name",
+      "radiation/grid_ggd/space/coordinates_type/index",
+      "radiation/grid_ggd/space/coordinates_type/description",
+      "radiation/grid_ggd/space/objects_per_dimension/object/boundary/index",
+      "radiation/grid_ggd/space/objects_per_dimension/geometry_content",
+      "radiation/grid_ggd/space/objects_per_dimension/geometry_content/name",
+      "radiation/grid_ggd/space/objects_per_dimension/geometry_content/index",
+      "radiation/grid_ggd/space/objects_per_dimension/geometry_content/description",
+      "radiation/grid_ggd/grid_subset/identifier",
+      "radiation/grid_ggd/grid_subset/identifier/name",
+      "radiation/grid_ggd/grid_subset/identifier/index",
+      "radiation/grid_ggd/grid_subset/identifier/description",
+      "radiation/grid_ggd/grid_subset/dimension",
+      "radiation/grid_ggd/grid_subset/element/object/space",
+      "radiation/grid_ggd/grid_subset/element/object/dimension",
+      "radiation/grid_ggd/grid_subset/element/object/index",
+      "radiation/grid_ggd/grid_subset/metric"
+    ],
+    "coordinates_1...N": [
+      "radiation/grid_ggd/space",
+      "radiation/grid_ggd/space/coordinates_type",
+      "radiation/grid_ggd/space/objects_per_dimension",
+      "radiation/grid_ggd/space/objects_per_dimension/object",
+      "radiation/grid_ggd/space/objects_per_dimension/object/boundary",
+      "radiation/grid_ggd/space/objects_per_dimension/object/boundary/neighbours",
+      "radiation/grid_ggd/space/objects_per_dimension/object/geometry",
+      "radiation/grid_ggd/space/objects_per_dimension/object/nodes",
+      "radiation/grid_ggd/grid_subset",
+      "radiation/grid_ggd/grid_subset/element",
+      "radiation/grid_ggd/grid_subset/element/object",
+      "radiation/grid_ggd/grid_subset/base",
+      "radiation/process",
+      "radiation/process/profiles_1d/grid/rho_tor_norm",
+      "radiation/process/profiles_1d/ion",
+      "radiation/process/profiles_1d/ion/element",
+      "radiation/process/profiles_1d/ion/state",
+      "radiation/process/profiles_1d/neutral",
+      "radiation/process/profiles_1d/neutral/element",
+      "radiation/process/profiles_1d/neutral/state"
+    ],
+    "coordinates_grid_ggd(itime)/grid_subset(i1)/element": [
+      "radiation/grid_ggd/grid_subset/base/jacobian",
+      "radiation/grid_ggd/grid_subset/metric/jacobian"
+    ],
+    "coordinates_grid_ggd(itime)/grid_subset(i1)/element_1...N": [
+      "radiation/grid_ggd/grid_subset/base/tensor_covariant",
+      "radiation/grid_ggd/grid_subset/base/tensor_contravariant",
+      "radiation/grid_ggd/grid_subset/metric/tensor_covariant",
+      "radiation/grid_ggd/grid_subset/metric/tensor_contravariant"
+    ],
+    "units_s": [
+      "radiation/grid_ggd/time",
+      "radiation/process/global_quantities/time",
+      "radiation/process/profiles_1d/time",
+      "radiation/time"
+    ],
+    "structure_process": [
+      "radiation/process/identifier",
+      "radiation/process/identifier/name",
+      "radiation/process/identifier/index",
+      "radiation/process/identifier/description",
+      "radiation/process/global_quantities/inside_lcfs",
+      "radiation/process/global_quantities/inside_vessel",
+      "radiation/process/profiles_1d/grid",
+      "radiation/process/profiles_1d/electrons",
+      "radiation/process/profiles_1d/ion/element/atoms_n",
+      "radiation/process/profiles_1d/ion/name",
+      "radiation/process/profiles_1d/ion/neutral_index",
+      "radiation/process/profiles_1d/ion/multiple_states_flag",
+      "radiation/process/profiles_1d/ion/state/name",
+      "radiation/process/profiles_1d/ion/state/vibrational_mode",
+      "radiation/process/profiles_1d/ion/state/electron_configuration",
+      "radiation/process/profiles_1d/neutral/element/atoms_n",
+      "radiation/process/profiles_1d/neutral/name",
+      "radiation/process/profiles_1d/neutral/ion_index",
+      "radiation/process/profiles_1d/neutral/multiple_states_flag",
+      "radiation/process/profiles_1d/neutral/state/name",
+      "radiation/process/profiles_1d/neutral/state/vibrational_mode",
+      "radiation/process/profiles_1d/neutral/state/neutral_type",
+      "radiation/process/profiles_1d/neutral/state/neutral_type/name",
+      "radiation/process/profiles_1d/neutral/state/neutral_type/index",
+      "radiation/process/profiles_1d/neutral/state/neutral_type/description",
+      "radiation/process/profiles_1d/neutral/state/electron_configuration"
+    ],
+    "units_W": [
+      "radiation/process/global_quantities/inside_lcfs/power",
+      "radiation/process/global_quantities/inside_lcfs/power_ion_total",
+      "radiation/process/global_quantities/inside_lcfs/power_neutral_total",
+      "radiation/process/global_quantities/inside_lcfs/power_electrons",
+      "radiation/process/global_quantities/inside_vessel/power",
+      "radiation/process/global_quantities/inside_vessel/power_ion_total",
+      "radiation/process/global_quantities/inside_vessel/power_neutral_total",
+      "radiation/process/global_quantities/inside_vessel/power_electrons",
+      "radiation/process/profiles_1d/electrons/power_inside",
+      "radiation/process/profiles_1d/power_inside_ion_total",
+      "radiation/process/profiles_1d/power_inside_neutral_total",
+      "radiation/process/profiles_1d/ion/power_inside",
+      "radiation/process/profiles_1d/ion/state/power_inside",
+      "radiation/process/profiles_1d/neutral/power_inside",
+      "radiation/process/profiles_1d/neutral/state/power_inside"
+    ],
+    "units_Wb": [
+      "radiation/process/profiles_1d/grid/psi",
+      "radiation/process/profiles_1d/grid/psi_magnetic_axis",
+      "radiation/process/profiles_1d/grid/psi_boundary"
+    ],
+    "units_m^2": [
+      "radiation/process/profiles_1d/grid/area",
+      "radiation/process/profiles_1d/grid/surface"
+    ],
+    "units_W_m^-3": [
+      "radiation/process/profiles_1d/electrons/emissivity",
+      "radiation/process/profiles_1d/emissivity_ion_total",
+      "radiation/process/profiles_1d/emissivity_neutral_total",
+      "radiation/process/profiles_1d/ion/emissivity",
+      "radiation/process/profiles_1d/ion/state/emissivity",
+      "radiation/process/profiles_1d/neutral/emissivity",
+      "radiation/process/profiles_1d/neutral/state/emissivity"
+    ],
+    "units_u": [
+      "radiation/process/profiles_1d/ion/element/a",
+      "radiation/process/profiles_1d/neutral/element/a"
+    ],
+    "units_e": [
+      "radiation/process/profiles_1d/ion/element/z_n",
+      "radiation/process/profiles_1d/ion/z_ion",
+      "radiation/process/profiles_1d/ion/state/z_min",
+      "radiation/process/profiles_1d/ion/state/z_max",
+      "radiation/process/profiles_1d/ion/state/vibrational_level",
+      "radiation/process/profiles_1d/neutral/element/z_n",
+      "radiation/process/profiles_1d/neutral/state/vibrational_level"
+    ]
+  }
+}

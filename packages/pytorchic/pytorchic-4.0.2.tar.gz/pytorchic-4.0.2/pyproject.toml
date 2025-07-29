@@ -1,0 +1,39 @@
+[tool.poetry]
+name = "pytorchic"
+packages = [
+    { include = "torchic" },
+]
+version = "4.0.2"
+description = "A framework for instantly building flexible PyTorch models."
+authors = ["Mattia Matteini <matteinimattia@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+coverage = "^7.8.0"
+mypy = "^1.15.0"
+ruff = "^0.11.6"
+pytest = "^8.3.5"
+torch = "^2.7.0"
+matplotlib = "^3.10.1"
+
+[tool.poe.tasks]
+test = "pytest"
+coverage = "coverage run -m pytest"
+coverage-report = "coverage report -m --include='tests/*','torchic/*'"
+coverage-html = "coverage html --include='tests/*','torchic/*'"
+ruff-check = "ruff check"
+ruff-fix = "ruff check --fix"
+format = "ruff format"
+format-check = "ruff format --check"
+mypy = "mypy torchic tests"
+compile = "python -m compileall torchic tests"
+static-checks = [
+    "ruff-check",
+    "mypy",
+]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,47 @@
+import json
+
+from nandboxbots.data.Thumbnail import Thumbnail
+
+
+class Video:
+    __KEY_ID = "id"
+    __KEY_WIDTH = "width"
+    __KEY_HEIGHT = "height"
+    __KEY_SIZE = "size"
+    __KEY_THUMBNAIL = "thumbnail"
+    __KEY_DURATION = "duration"
+
+    id = None
+    width = None
+    height = None
+    size = None
+    thumbnail = None
+    duration = None
+
+    def __init__(self, dictionary):
+        self.id = str(dictionary[self.__KEY_ID]) if self.__KEY_ID in dictionary.keys() else None
+        self.width = int(dictionary[self.__KEY_WIDTH]) if self.__KEY_WIDTH in dictionary.keys() else None
+        self.height = int(dictionary[self.__KEY_HEIGHT]) if self.__KEY_HEIGHT in dictionary.keys() else None
+        self.size = int(dictionary[self.__KEY_SIZE]) if self.__KEY_SIZE in dictionary.keys() else None
+        self.thumbnail = Thumbnail(dictionary.get(self.__KEY_THUMBNAIL, {}))
+        self.duration = int(dictionary[self.__KEY_DURATION]) if self.__KEY_DURATION in dictionary.keys() else None
+
+    def to_json_obj(self):
+
+        dictionary = {}
+
+        if self.id is not None:
+            dictionary[self.__KEY_ID] = self.id
+        if self.width is not None:
+            dictionary[self.__KEY_WIDTH] = self.width
+        if self.height is not None:
+            dictionary[self.__KEY_HEIGHT] = self.height
+        if self.size is not None:
+            dictionary[self.__KEY_SIZE] = self.size
+        if self.thumbnail is not None:
+            _, thumbnail_dict = self.thumbnail.to_json_obj()
+            dictionary[self.__KEY_THUMBNAIL] = thumbnail_dict
+        if self.duration is not None:
+            dictionary[self.__KEY_DURATION] = self.duration
+
+        return json.dumps(dictionary), dictionary

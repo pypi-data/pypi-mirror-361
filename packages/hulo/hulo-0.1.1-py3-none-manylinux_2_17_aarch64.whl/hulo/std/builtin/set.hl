@@ -1,0 +1,30 @@
+pub comptime class set<T> {
+    set(data: list<T>)
+
+    fn len() -> num
+    fn is_empty() -> bool
+    fn has(item: T) -> bool
+
+    operator #() -> num
+    operator in(item: T) -> bool
+
+    fn add(item: T) -> bool  // 返回是否实际插入
+    fn add(items: T[] | set<T>) -> bool
+    fn remove(item: T) -> bool // 返回是否实际移除
+    fn clear()
+
+    fn union(other: set<T>) -> set<T>
+    fn intersection(other: set<T>) -> set<T>
+    fn difference(other: set<T>) -> set<T>
+    fn map<U>(f: (item: T) -> U) -> set<U>
+
+    operator |(other: set<T>) -> set<T>
+    operator &(other: set<T>) -> set<T>
+    operator /(other: set<T>) -> set<T>
+
+    fn is_subset(other: set<T>) -> bool
+    fn is_superset(other: set<T>) -> bool
+    fn is_disjoint(other: set<T>) -> bool
+
+    fn to_list() -> T[]
+}

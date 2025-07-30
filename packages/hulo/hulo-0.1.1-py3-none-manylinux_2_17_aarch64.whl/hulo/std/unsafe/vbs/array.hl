@@ -1,0 +1,28 @@
+import * from "constant"
+
+/**
+ * Returns a zero-based array containing a subset of a string array based on a specified filter criteria.
+ * Examples:
+ * ```hulo
+ * let arr = ["Sunday", "Monday", "Tuesday"]
+ * let res = Filter(arr, "Mon")
+ * assert_eq(arr, ["Monday"])
+ * ```
+ */
+declare fn Filter(
+    // One-dimensional array of strings to be searched.
+    InputStrings: str[], 
+    // String to search for.
+    Value: str,
+    /*
+        Boolean value indicating whether to return substrings that include or exclude Value. If Include is True, Filter returns the subset of the array that contains Value as a substring. If Include is False, Filter returns the subset of the array that does not contain Value as a substring.
+    */
+    Include?: Boolean,
+    Compare?: FilterCompare
+    ) -> str[]
+
+// Returns the smallest available subscript for the indicated dimension of an array.
+declare fn LBound(arr: list, dimension: num = 1)
+
+// Returns the largest available subscript for the indicated dimension of an array.
+declare fn UBound(arr: list, dimension: num = 1) -> num

@@ -1,0 +1,22 @@
+pub class triple<T extends any[]> {
+    get len() -> num
+    operator #() -> num
+
+    fn get<U extends T[num | str]>(index: num | str) -> U
+    fn with<U extends T[num | str]>(index: num | str, value: U)
+
+    operator []<U extends T[num | str]>(index: num | str) -> U
+    operator []=<U extends T[num | str]>(index: num | str, value: U)
+
+    fn append<U>(item: U) -> triple<[...T, U]>
+    fn map<U extends any[]>(mapper: (value: T[num | str], index: num) -> U[num | str]) -> triple<U>
+    fn match(cases: {
+        [K in keyof T]: (value: T[K]) -> U
+    }) -> U
+
+    fn to_list() -> list
+
+    fn to_set() -> set
+
+    fn to_str() -> str
+}

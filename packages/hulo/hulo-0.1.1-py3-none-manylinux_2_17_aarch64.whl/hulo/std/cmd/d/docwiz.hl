@@ -1,0 +1,46 @@
+cmd docwiz {
+    cmd authors {
+
+    }
+
+    cmd changelog {
+
+    }
+
+    /*
+    Examples:
+        docwiz conduct
+    */
+    @cmd(alias: ["code-of-conduct", "coc"])
+    cmd code_of_conduct {
+        
+    }
+
+    /*
+    Examples:
+        docwiz commit -m "fix: corrected database query"
+        docwiz commit -m "feat: added new API endpoint" -e
+        docwiz commit -m "docs: updated README" -p
+    */
+    cmd commit {
+        // help for commit
+        @flag(alias: ["-h", "--help"])
+        help: bool
+
+        // Output only the processed commit message
+        @flag(alias: ["-p", "--pure"])
+        pure: bool
+    
+        // Commit message to use
+        @flag(alias: ["-m", "--message"])
+        message: str
+
+        // Execute the git commit command directly
+        @flag(alias: ["-e", "--exec"])
+        exec: bool
+    }
+}
+
+fn testDocwiz() {
+    docwiz commit -m "fix: corrected database query"
+}

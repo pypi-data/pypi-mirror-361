@@ -1,0 +1,88 @@
+/**
+ * Schedules commands and programs to run at a specified time and date.
+ * Requires the Schedule service to be running.
+ * When used without parameters, lists scheduled commands.
+ * 
+ * Note:
+ * - Requires local Administrators group membership
+ * - For remote computers, use \\computername format
+ */
+@command([
+    "at computername [[id] [delete] | delete [confirm]]", 
+    "at computername time [interactive] [every | next] command"
+])
+class at {
+    /**
+     * Specifies a remote computer name.
+     * Format: \\computername
+     * Omit for local computer scheduling.
+     */
+    @option(bind: "computername", format: "\\\\{}")
+    computername: symbol | str
+
+    /**
+     * Specifies the ID of a scheduled command.
+     * Required when deleting specific tasks.
+     */
+    @option(bind: "id")
+    id: num
+
+    /**
+     * Cancels scheduled commands:
+     * - With ID: Deletes specific command
+     * - Without ID: Deletes all scheduled commands
+     */
+    @flag(bind: "delete", format: "/delete")
+    delete: bool
+
+    /**
+     * Automatically answers 'yes' to all confirmation prompts
+     * when deleting scheduled events.
+     */
+    @flag(bind: "confirm", format: "/yes")
+    confirm: bool
+
+    /**
+     * Specifies the execution time in 24-hour format (HH:MM).
+     * Required when scheduling new commands.
+     */
+    @option(bind: "time", validate: "^([01]?[0-9]|2[0-3]):[0-5][0-9]$")
+    time: str
+
+    /**
+     * Allows the command to interact with the desktop of the
+     * logged-in user when it runs.
+     */
+    @flag(bind: "interactive", format: "/interactive")
+    interactive: bool
+
+    /**
+     * Recurrence pattern:
+     * - Specific days (M,T,W,Th,F,S,Su)
+     * - Monthly dates (1-31)
+     * Multiple values separated by commas.
+     */
+    @flag(bind: "every", format: "/every:{}")
+    every: str
+
+    /**
+     * Runs command on next occurrence of specified day(s).
+     * Format same as /every parameter.
+     */
+    @flag(bind: "next", format: "/next:{}")
+    next: str
+
+    /**
+     * The command/program to execute.
+     * For remote files, use UNC paths (\\server\share).
+     * For local files, use absolute paths.
+     */
+    @option(bind: "command")
+    command: str
+
+    /**
+     * Displays help information.
+     */
+    @flag(format: "/?")
+    help: bool
+}

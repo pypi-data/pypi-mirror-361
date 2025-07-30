@@ -1,0 +1,14 @@
+fn test_float() {
+    let a = 3.14 // a=3.14
+    let b = -1.2 // b=-1.2
+
+    echo $a + $b // echo $(awk 'BEGIN { printf \"%.2f\", $a - $b }')
+
+    extension class float on operator +(other: float) -> float {
+        return ${
+            $(echo "{{&this}} + {{&other}}" | bc)
+        }
+    }
+
+    echo $a + $b // echo $(echo "$a + $b" | bc)
+}

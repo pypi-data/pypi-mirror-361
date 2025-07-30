@@ -1,0 +1,104 @@
+import "regexp"
+import { File } from "fs"
+
+type String = str
+
+pub comptime class String {
+    /// 从其他类型转换
+    static fn from_num(n: num, base: num = 10) -> str
+    static fn from_bool(b: bool) -> str
+
+    // ========== 类型转换 ==========
+    fn to_num() throws -> num
+    fn to_bool() throws -> bool
+    fn to_bytes() -> num[]
+
+    // ========== 查询方法 ==========
+    fn len() -> num
+    fn is_empty() -> bool
+    fn contains(sub: str) -> bool
+    fn starts_with(prefix: str) -> bool
+    fn ends_with(suffix: str) -> bool
+    fn find(sub: str) -> num  // 返回索引或-1
+
+    operator #() -> num
+    operator in(sub: str) -> bool
+
+    // ========== 不可变操作 ==========
+    fn concat(other: str) -> str
+    fn slice(start: num, end: num) -> str
+    fn repeat(count: num) -> str
+    fn replace(old: str, new: str, count: num = 1) -> str
+    fn replace_all(old: str, new: str) -> str
+    fn trim() -> str
+    fn trim_left() -> str
+    fn trim_right() -> str
+    fn to_upper() -> str
+    fn to_lower() -> str
+    fn reverse() -> str
+
+    operator +(other: str) -> str
+
+    fn hash() -> str
+
+    // ========== 模式匹配 ==========
+    fn match(regex: comptime str) -> bool
+    fn extract(regex: comptime str) -> str[]  // 捕获组
+
+    // ========== 格式化 ==========
+    fn format(args: ...any) -> str
+
+    operator a""() -> any
+    operator b""() -> any
+    operator c""() -> Command
+    operator d""() -> any
+    operator e""() -> any
+    operator f""() -> File
+    operator g""() -> any
+    operator h""() -> any
+    operator i""() -> any
+    operator j""() -> any
+    operator k""() -> any
+    operator l""() -> any
+    operator m""() -> any
+    operator n""() -> any
+    operator o""() -> any
+    operator p""() -> any
+    operator q""() -> any
+    operator r""() -> RegExp
+    operator s""() -> any
+    operator t""() -> any
+    operator u""() -> any
+    operator v""() -> any
+    operator w""() -> any
+    operator x""() -> any
+    operator y""() -> any
+    operator z""() -> any
+
+    operator A""() -> any
+    operator B""() -> any
+    operator C""() -> any
+    operator D""() -> any
+    operator E""() -> any
+    operator F""() -> any
+    operator G""() -> any
+    operator H""() -> any
+    operator I""() -> any
+    operator J""() -> any
+    operator K""() -> any
+    operator L""() -> any
+    operator M""() -> any
+    operator N""() -> any
+    operator O""() -> any
+    operator P""() -> any
+    operator Q""() -> any
+    operator R""() -> String
+    operator S""() -> any
+    operator T""() -> any
+    operator U""() -> any
+    operator V""() -> any
+    operator W""() -> any
+    operator X""() -> any
+    operator Y""() -> any
+    operator Z""() -> any
+}

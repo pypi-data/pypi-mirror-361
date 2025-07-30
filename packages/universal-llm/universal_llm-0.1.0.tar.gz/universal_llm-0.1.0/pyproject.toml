@@ -1,0 +1,33 @@
+[project]
+name = "universal-llm"
+version = "0.1.0"
+description = "Minimal universal LLM client - swap providers with one env var"
+readme = "README.md"
+authors = [
+    { name = "Ian McLaughlin", email = "ian.mclaughlin@prizeout.com" }
+]
+requires-python = ">=3.9"
+dependencies = [
+    "pydantic>=2.0.0",
+    "pydantic-settings>=2.0.0",
+    "python-dotenv>=1.0.0",
+    "typer>=0.9.0",
+    "rich>=13.0.0",
+    "httpx>=0.24.0",
+]
+
+[project.optional-dependencies]
+# All providers use core dependencies - no extras needed
+all = []
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "vcrpy>=5.0.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project.scripts]
+universal-llm = "universal_llm.cli:app"

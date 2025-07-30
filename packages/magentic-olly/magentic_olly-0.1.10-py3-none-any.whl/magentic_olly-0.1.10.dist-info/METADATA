@@ -1,0 +1,58 @@
+Metadata-Version: 2.4
+Name: magentic-olly
+Version: 0.1.10
+Summary: A package for custom opentelemetry instrumentation
+License: Copyright (c) 2025 Magentic AI
+        
+        All rights reserved.
+        
+        This software is proprietary and confidential. Unauthorized copying, distribution, modification, or use of this software, in whole or in part, is strictly prohibited without the express written permission of the copyright holder.
+        
+        For commercial or business use, a separate license agreement is required. Please contact the copyright holder for licensing information.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+        
+        
+Requires-Python: >=3.9, <4.0
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: boto3
+Requires-Dist: opentelemetry-api==1.18.0
+Requires-Dist: opentelemetry-sdk==1.18.0
+Requires-Dist: opentelemetry-exporter-otlp==1.18.0
+Requires-Dist: opentelemetry-exporter-otlp-proto-grpc==1.18.0
+Requires-Dist: opentelemetry-instrumentation-logging==0.39b0
+Requires-Dist: opentelemetry-instrumentation-aws-lambda==0.39b0
+Requires-Dist: opentelemetry-instrumentation-httpx==0.39b0
+Requires-Dist: opentelemetry-instrumentation-requests==0.39b0
+Requires-Dist: opentelemetry-instrumentation-urllib==0.39b0
+Requires-Dist: opentelemetry-instrumentation-botocore==0.39b0
+Requires-Dist: sqlalchemy
+Requires-Dist: clickhouse-sqlalchemy
+Requires-Dist: httpx
+Requires-Dist: requests
+Requires-Dist: pydantic
+Dynamic: license-file
+Dynamic: requires-python
+
+# Magentic Instrumentation
+
+A package for magentic ai observability systems.
+
+## Installation
+
+```bash
+pip install magentic-olly
+```
+
+## Usage
+
+```python
+import magentic_olly
+export_params = magentic_olly.HttpExportParams(
+    endpoint='https://{DOMAIN}/v1/traces',
+    token='{TOKEN}'  
+)
+magentic_olly.set_http_export_params(export_params)
+```
+

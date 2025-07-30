@@ -1,0 +1,30 @@
+include LICENSE
+include README.md
+include MANIFEST.in
+include pyproject.toml
+include setup.py
+
+# 只包含 Python 源码文件
+recursive-include src/mcpstore *.py
+
+# 包含数据文件
+recursive-include src/mcpstore/data *.json
+recursive-include src/mcpstore/data/defaults *
+recursive-include src/mcpstore/data/schemas *
+
+# 排除不需要的文件
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude *__pycache__*
+global-exclude test_*
+global-exclude *test*
+global-exclude *.log
+global-exclude .DS_Store
+global-exclude Thumbs.db
+
+# 排除特定目录
+prune src/tests
+prune src/web
+prune src/mcpservice
+prune src/__pycache__
+prune 古老的测试文件

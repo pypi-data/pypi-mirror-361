@@ -1,0 +1,114 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fastapi-cli-generator"
+version = "0.1.0"
+description = "A command-line tool for generating FastAPI projects with different architectural patterns"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    { name = "xukache", email = "2416695482@qq.com" },
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Code Generators",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+]
+keywords = ["fastapi", "cli", "generator", "scaffold", "template"]
+requires-python = ">=3.8"
+dependencies = [
+    "typer[all]>=0.9.0",
+    "rich>=13.0.0",
+    "jinja2>=3.1.0",
+    "pydantic>=2.0.0",
+    "questionary>=2.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/xukache/fastapi-cli-generator"
+Repository = "https://github.com/xukache/fastapi-cli-generator"
+Documentation = "https://github.com/xukache/fastapi-cli-generator#readme"
+"Bug Tracker" = "https://github.com/xukache/fastapi-cli-generator/issues"
+
+[project.scripts]
+fastapi-create = "fastapi_generator.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["fastapi_generator*", "app_name_*"]
+
+[tool.setuptools.package-data]
+fastapi_generator = ["py.typed"]
+"*" = ["*"]
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--cov=fastapi_generator",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+]

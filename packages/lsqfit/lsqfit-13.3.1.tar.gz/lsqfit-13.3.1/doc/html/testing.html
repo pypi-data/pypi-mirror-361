@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Non-Gaussian Behavior; Testing Fits &#8212; lsqfit 13.3.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=4848ba22" />
+    <link rel="stylesheet" type="text/css" href="_static/pyramid.css?v=310c80ee" />
+    <script src="_static/documentation_options.js?v=d9bf959d"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Case Study: Simple Extrapolation" href="case-extrapolation.html" />
+    <link rel="prev" title="Overview and Tutorial" href="overview.html" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<!--[if lte IE 6]>
+<link rel="stylesheet" href="_static/ie6.css" type="text/css" media="screen" charset="utf-8" />
+<![endif]-->
+
+  </head><body>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="case-extrapolation.html" title="Case Study: Simple Extrapolation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="overview.html" title="Overview and Tutorial"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lsqfit 13.3.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Non-Gaussian Behavior; Testing Fits</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="non-gaussian-behavior-testing-fits">
+<span id="non-gaussian-behavior"></span><h1>Non-Gaussian Behavior; Testing Fits<a class="headerlink" href="#non-gaussian-behavior-testing-fits" title="Link to this heading">¶</a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h2>
+<p>The various analyses in the Tutorial assume implicitly that every
+probability distribution relevant to a fit is Gaussian. The input
+data and priors are assumed Gaussian. The <code class="docutils literal notranslate"><span class="pre">chi**2</span></code> function is
+assumed to be well approximated by a Gaussian in the vicinity of
+its minimum, in order to estimate uncertainties for the best-fit
+parameters. Functions of those parameters are assumed to yield
+results that are described by Gaussian random variables. These assumptions
+are usually pretty good for high-statistics data, when standard deviations
+are small, but can lead to problems with low statistics.</p>
+<p>Here we present three methods for testing these assumptions.
+Some of these techniques, like the <em>statistical bootstrap</em> and
+Bayesian integration, can also be used to analyze non-Gaussian
+results.</p>
+</section>
+<section id="bayesian-integrals">
+<h2>Bayesian Integrals<a class="headerlink" href="#bayesian-integrals" title="Link to this heading">¶</a></h2>
+<p><a class="reference internal" href="lsqfit.html#lsqfit.vegas_fit" title="lsqfit.vegas_fit"><code class="xref py py-class docutils literal notranslate"><span class="pre">lsqfit.vegas_fit</span></code></a> provides an alternative fitting strategy
+(multi-dimensional Bayesian integrals) from that used by
+<a class="reference internal" href="lsqfit.html#lsqfit.nonlinear_fit" title="lsqfit.nonlinear_fit"><code class="xref py py-class docutils literal notranslate"><span class="pre">lsqfit.nonlinear_fit</span></code></a>. Both approaches assume that the fit parameters
+are described by a probability distribution whose
+probability density function (PDF) is proportional to
+<img class="math" src="_images/math/09fe19ab2bea5d5d6e8b95acf0de19cdb7250f2e.svg" alt="\exp(-\chi^2(p)/2)"/>.  <img class="math" src="_images/math/268aebf7e98eefd86b1672e74bcb8b5484820043.svg" alt="\chi^2(p)"/>
+has contributions from both the data and the prior:</p>
+<div class="math">
+<p><img src="_images/math/57dfc93acb2a4dc95f20ec85ad2c53913b5d2651.svg" alt="\chi^2(p) \equiv \Delta y^T \cdot\mathrm{cov}^{-1}_y \cdot \Delta y
+\: + \:
+\Delta p^T \cdot\mathrm{cov}^{-1}_\mathrm{prior}\cdot\Delta p,"/></p>
+</div><p>where <img class="math" src="_images/math/88a08bcacdb9a53852b04a5fdf6b79ab2367986c.svg" alt="\Delta y_i \equiv \overline y_i - f(x_i,p)"/>
+and <img class="math" src="_images/math/bd8bf40f10e797b0166d20258c588340316579eb.svg" alt="\Delta p_i\equiv \overline p_i^\mathrm{prior} - p_i"/>.
+Both of these approaches characterize this distribution by
+specifying <em>best-fit</em> mean values and covariances for the
+fit parameters (packaged as an array or dictionary of <code class="xref py py-class docutils literal notranslate"><span class="pre">gvar.GVar</span></code>s).
+<a class="reference internal" href="lsqfit.html#lsqfit.nonlinear_fit" title="lsqfit.nonlinear_fit"><code class="xref py py-class docutils literal notranslate"><span class="pre">lsqfit.nonlinear_fit</span></code></a> estimates the mean values
+and covariances from the minimum of <img class="math" src="_images/math/268aebf7e98eefd86b1672e74bcb8b5484820043.svg" alt="\chi^2(p)"/> and its
+curvature at the minimum, while <a class="reference internal" href="lsqfit.html#lsqfit.vegas_fit" title="lsqfit.vegas_fit"><code class="xref py py-class docutils literal notranslate"><span class="pre">lsqfit.vegas_fit</span></code></a> calculates the
+actual means and standard deviations of the parameters
+by evaluating the following integrals:</p>
+<div class="math">
+<p><img src="_images/math/6f9e22a873cade782f7b5106d74aa7657bd88909.svg" alt="\overline p_i &amp;\equiv \frac{1}{N_\mathrm{pdf}}\int d^np\,p_i\,\mathrm{e}^{-\chi^2(p)/2}\\[1.5ex]
+\mathrm{cov}(p_i,p_j) &amp;\equiv \frac{1}{N_\mathrm{pdf}}\int d^np\,(p_i - \overline p_i)(p_j - \overline p_j)\,\mathrm{e}^{-\chi^2(p)/2}\\[1.5ex]
+N_\mathrm{pdf} &amp;\equiv \int d^np\,\mathrm{e}^{-\chi^2(p)/2}"/></p>
+</div><p>The integrals are evaluated numerically, using adaptive Monte Carlo integration
+(<code class="xref py py-class docutils literal notranslate"><span class="pre">PDFIntegrator</span></code> from the <code class="xref py py-mod docutils literal notranslate"><span class="pre">vegas</span></code>
+module).
+The best-fit results from the two approaches agree when
+<img class="math" src="_images/math/268aebf7e98eefd86b1672e74bcb8b5484820043.svg" alt="\chi^2(p)"/> is well approximated by the quadratic expansion around its
+minimum — that is,
+insofar as
+<img class="math" src="_images/math/09fe19ab2bea5d5d6e8b95acf0de19cdb7250f2e.svg" alt="\exp(-\chi^2(p)/2)"/> is well approximated
+by a Gaussian distribution in the parameters.
+But the results can differ significantly otherwise; the output from <code class="docutils literal notranslate"><span class="pre">nonlinear_fit</span></code>
+is the Gaussian approximation to that from <code class="docutils literal notranslate"><span class="pre">vegas_fit</span></code>.</p>
+<p>To compare <code class="docutils literal notranslate"><span class="pre">vegas_fit</span></code> with <code class="docutils literal notranslate"><span class="pre">nonlinear_fit</span></code>, we revisit
+the analysis in the section
+on <a class="reference internal" href="overview.html#correlated-parameters"><span class="std std-ref">Correlated Parameters; Gaussian Bayes Factor</span></a>. We modify the end of the <code class="docutils literal notranslate"><span class="pre">main()</span></code> function
+in the original code to repeat the analysis using <code class="docutils literal notranslate"><span class="pre">vegas_fit</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">gvar</span> <span class="k">as</span> <span class="nn">gv</span>
+<span class="kn">import</span> <span class="nn">lsqfit</span>
+<span class="kn">import</span> <span class="nn">vegas</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_data</span><span class="p">()</span>
+    <span class="n">prior</span> <span class="o">=</span> <span class="n">make_prior</span><span class="p">()</span>
+
+    <span class="c1"># nonlinear_fit</span>
+    <span class="n">fit</span> <span class="o">=</span> <span class="n">lsqfit</span><span class="o">.</span><span class="n">nonlinear_fit</span><span class="p">(</span><span class="n">prior</span><span class="o">=</span><span class="n">prior</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">),</span> <span class="n">fcn</span><span class="o">=</span><span class="n">fcn</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="mi">20</span> <span class="o">*</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;nonlinear_fit&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">fit</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;p1/p0 =&#39;</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">fit</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;   prod(p) =&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">p</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;corr(p0,p1) = </span><span class="si">{:.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">evalcorr</span><span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">p</span><span class="p">[:</span><span class="mi">2</span><span class="p">])[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># vegas_fit</span>
+    <span class="n">vfit</span> <span class="o">=</span> <span class="n">lsqfit</span><span class="o">.</span><span class="n">vegas_fit</span><span class="p">(</span><span class="n">prior</span><span class="o">=</span><span class="n">prior</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">),</span> <span class="n">fcn</span><span class="o">=</span><span class="n">fcn</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="mi">20</span> <span class="o">*</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;vegas_fit&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">vfit</span><span class="p">)</span>
+    <span class="c1"># measure p1/p0 and prod(p)</span>
+    <span class="nd">@vegas</span><span class="o">.</span><span class="n">rbatchintegrand</span>
+    <span class="k">def</span> <span class="nf">g</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;p1/p0&#39;</span><span class="p">:</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;prod(p)&#39;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)}</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">vfit</span><span class="o">.</span><span class="n">stats</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;p1/p0 =&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">[</span><span class="s1">&#39;p1/p0&#39;</span><span class="p">],</span> <span class="s1">&#39;   prod(p) =&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">[</span><span class="s1">&#39;prod(p)&#39;</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;corr(p0,p1) = </span><span class="si">{:.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">evalcorr</span><span class="p">(</span><span class="n">vfit</span><span class="o">.</span><span class="n">p</span><span class="p">[:</span><span class="mi">2</span><span class="p">])[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]))</span>
+
+<span class="k">def</span> <span class="nf">make_data</span><span class="p">():</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="mf">4.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.167</span><span class="p">,</span> <span class="mf">0.125</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0833</span><span class="p">,</span> <span class="mf">0.0714</span><span class="p">,</span> <span class="mf">0.0625</span>
+        <span class="p">])</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">gvar</span><span class="p">([</span>
+        <span class="s1">&#39;0.198(14)&#39;</span><span class="p">,</span> <span class="s1">&#39;0.216(15)&#39;</span><span class="p">,</span> <span class="s1">&#39;0.184(23)&#39;</span><span class="p">,</span> <span class="s1">&#39;0.156(44)&#39;</span><span class="p">,</span> <span class="s1">&#39;0.099(49)&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;0.142(40)&#39;</span><span class="p">,</span> <span class="s1">&#39;0.108(32)&#39;</span><span class="p">,</span> <span class="s1">&#39;0.065(26)&#39;</span><span class="p">,</span> <span class="s1">&#39;0.044(22)&#39;</span><span class="p">,</span> <span class="s1">&#39;0.041(19)&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;0.044(16)&#39;</span>
+        <span class="p">])</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
+
+<span class="k">def</span> <span class="nf">make_prior</span><span class="p">():</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">gvar</span><span class="p">([</span><span class="s1">&#39;0(1)&#39;</span><span class="p">,</span> <span class="s1">&#39;0(1)&#39;</span><span class="p">,</span> <span class="s1">&#39;0(1)&#39;</span><span class="p">,</span> <span class="s1">&#39;0(1)&#39;</span><span class="p">])</span>
+    <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">20</span> <span class="o">*</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">gv</span><span class="o">.</span><span class="n">gvar</span><span class="p">(</span><span class="s1">&#39;0.0(1)&#39;</span><span class="p">)</span>        <span class="c1"># p[1] correlated with p[0]</span>
+    <span class="k">return</span> <span class="n">p</span>
+
+<span class="nd">@vegas</span><span class="o">.</span><span class="n">rbatchintegrand</span>
+<span class="k">def</span> <span class="nf">fcn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="c1"># add batch index to x if in batch mode</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Running this code gives the following output:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>-------------------- nonlinear_fit
+Least Squares Fit:
+  chi2/dof [dof] = 0.61 [11]    Q = 0.82    logGBF = 19.129
+
+Parameters:
+              0   0.149 (17)     [    0 ± 1.0 ]  
+              1    2.97 (34)     [     0 ± 20 ]  
+              2    1.23 (61)     [    0 ± 1.0 ]  *
+              3    0.59 (15)     [    0 ± 1.0 ]  
+
+Settings:
+  svdcut/n = 1e-12/0    tol = (1e-08*,1e-10,1e-10)    (itns/time = 18/0.0s)
+
+p1/p0 = 19.97(67)    prod(p) = 0.32(28)
+corr(p0,p1) = 0.96
+
+-------------------- vegas_fit
+Least Squares Fit:
+  chi2/dof [dof] = 0.66 [11]    Q = 0.78    logBF = 19.141(18)
+
+Parameters:
+              0   0.155 (14)     [    0 ± 1.0 ]  
+              1    3.11 (30)     [     0 ± 20 ]  
+              2    1.45 (54)     [    0 ± 1.0 ]  *
+              3    0.70 (18)     [    0 ± 1.0 ]  
+
+Settings:
+  svdcut/n = 1e-12/0    (time = 0.1s)
+  fitter = vegas_fit    (chi2/dof [dof] = 0.85 [135]    Q = 0.89)
+
+p1/p0 = 19.99(65)    prod(p) = 0.56(40)
+corr(p0,p1) = 0.94
+</pre></div>
+</div>
+<p>There are several things to notice about these results:</p>
+<ul>
+<li><p>The fit results <code class="docutils literal notranslate"><span class="pre">vfit.p</span></code> from <a class="reference internal" href="lsqfit.html#lsqfit.vegas_fit" title="lsqfit.vegas_fit"><code class="xref py py-class docutils literal notranslate"><span class="pre">lsqfit.vegas_fit</span></code></a> are quite similar
+to those from <a class="reference internal" href="lsqfit.html#lsqfit.nonlinear_fit" title="lsqfit.nonlinear_fit"><code class="xref py py-class docutils literal notranslate"><span class="pre">lsqfit.nonlinear_fit</span></code></a> (<code class="docutils literal notranslate"><span class="pre">fit.p</span></code>), as are <code class="docutils literal notranslate"><span class="pre">vfit.chi2</span></code>
+and <code class="docutils literal notranslate"><span class="pre">fit.chi2</span></code>, and <code class="docutils literal notranslate"><span class="pre">vfit.logBF</span></code> and <code class="docutils literal notranslate"><span class="pre">fit.logGBF</span></code>. This
+suggests that the Gaussian approximation used by
+<a class="reference internal" href="lsqfit.html#lsqfit.nonlinear_fit" title="lsqfit.nonlinear_fit"><code class="xref py py-class docutils literal notranslate"><span class="pre">lsqfit.nonlinear_fit</span></code></a> is a reasonable approximation to the
+full Bayesian analysis used by <a class="reference internal" href="lsqfit.html#lsqfit.vegas_fit" title="lsqfit.vegas_fit"><code class="xref py py-class docutils literal notranslate"><span class="pre">lsqfit.vegas_fit</span></code></a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">vfit.logBF</span></code> has an uncertainty of about 0.1%. This comes
+from the uncertainty in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">vegas</span></code> estimate of
+the norm of the PDF (<img class="math" src="_images/math/395e41e12e8d9558224d7c929220126f8615fbb3.svg" alt="N_\mathrm{pdf}"/> above).
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">vegas</span></code> uses adaptive Monte Carlo integration
+to estimate the values of integrals, as well as the
+uncertainties in those estimates.</p>
+<p>The accuracy of
+<a class="reference internal" href="lsqfit.html#lsqfit.vegas_fit" title="lsqfit.vegas_fit"><code class="xref py py-class docutils literal notranslate"><span class="pre">lsqfit.vegas_fit</span></code></a>’s integrals can almost always be
+improved by using information from the fit
+with <a class="reference internal" href="lsqfit.html#lsqfit.nonlinear_fit" title="lsqfit.nonlinear_fit"><code class="xref py py-class docutils literal notranslate"><span class="pre">lsqfit.nonlinear_fit</span></code></a>. For example, replacing
+the <code class="docutils literal notranslate"><span class="pre">vfit</span></code> line in the code above with</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">vfit</span> <span class="o">=</span> <span class="n">lsqfit</span><span class="o">.</span><span class="n">vegas_fit</span><span class="p">(</span><span class="n">prior</span><span class="o">=</span><span class="n">prior</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">),</span> <span class="n">fcn</span><span class="o">=</span><span class="n">fcn</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>reduces the error on <code class="docutils literal notranslate"><span class="pre">vfit.logBF</span></code> by about a factor of
+two:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>-------------------- vegas_fit   (param=fit.p)
+Least Squares Fit:
+  chi2/dof [dof] = 0.66 [11]    Q = 0.78    logBF = 19.159(8)
+
+Parameters:
+              0   0.155 (15)     [    0 ± 1.0 ]  
+              1    3.09 (31)     [     0 ± 20 ]  
+              2    1.44 (56)     [    0 ± 1.0 ]  *
+              3    0.70 (20)     [    0 ± 1.0 ]  
+
+Settings:
+  svdcut/n = 1e-12/0    (time = 0.1s)
+  fitter = vegas_fit    (chi2/dof [dof] = 0.85 [135]    Q = 0.9)
+
+p1/p0 = 20.00(65)    prod(p) = 0.54(40)
+corr(p0,p1) = 0.95
+</pre></div>
+</div>
+<p>The integrals for the means and covariances are similarly improved
+(compare <code class="docutils literal notranslate"><span class="pre">vfit.p.vegas_mean</span></code> and <code class="docutils literal notranslate"><span class="pre">vfit.p.vegas_cov</span></code>
+with and without <code class="docutils literal notranslate"><span class="pre">param=fit.p</span></code>).</p>
+<p>The integrator re-expresses the
+fit parameter integrals in terms of new variables that are
+optimized for integrating the (Gaussian) distribution
+corresponding to <code class="docutils literal notranslate"><span class="pre">param</span></code>. By default <code class="docutils literal notranslate"><span class="pre">param=prior</span></code>,
+but <code class="docutils literal notranslate"><span class="pre">param=fit.p</span></code> is almost certainly a better match
+to the actual PDF used in the integrals.</p>
+<p>A more
+succinct way to use results from <a class="reference internal" href="lsqfit.html#lsqfit.nonlinear_fit" title="lsqfit.nonlinear_fit"><code class="xref py py-class docutils literal notranslate"><span class="pre">lsqfit.nonlinear_fit</span></code></a>
+object <code class="docutils literal notranslate"><span class="pre">fit</span></code>
+is</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">vfit</span> <span class="o">=</span> <span class="n">lsqfit</span><span class="o">.</span><span class="n">vegas_fit</span><span class="p">(</span><span class="n">fit</span><span class="o">=</span><span class="n">fit</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">vfit</span></code>’s  <code class="docutils literal notranslate"><span class="pre">prior</span></code>, <code class="docutils literal notranslate"><span class="pre">data</span></code>, and <code class="docutils literal notranslate"><span class="pre">fcn</span></code>
+are copied from <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p>
+</li>
+<li><p>Values for <code class="docutils literal notranslate"><span class="pre">p[1]/p[0]</span></code> and for the product of all
+the <code class="docutils literal notranslate"><span class="pre">p[i]</span></code>s are obtained from <code class="docutils literal notranslate"><span class="pre">vfit.stats(g)</span></code>.
+This uses <code class="docutils literal notranslate"><span class="pre">vfit</span></code>’s (trained) integrator to evaluate
+the means and covariances of the components of <code class="docutils literal notranslate"><span class="pre">g(p)</span></code>.
+While results
+from the two fits agree well on <code class="docutils literal notranslate"><span class="pre">p[1]/p[0]</span></code>, results
+for <code class="docutils literal notranslate"><span class="pre">prod(p)</span></code> do not agree so well. This suggests that
+the distribution for <code class="docutils literal notranslate"><span class="pre">prod(p)</span></code> in not as well
+approximated by a Gaussian.</p>
+<p>More information about the
+distributions can be obtained from <code class="docutils literal notranslate"><span class="pre">vfit.stats</span></code> by
+using keywords <code class="docutils literal notranslate"><span class="pre">moments</span></code> and <code class="docutils literal notranslate"><span class="pre">histograms</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">s</span> <span class="o">=</span> <span class="n">vfit</span><span class="o">.</span><span class="n">stats</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">moments</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">histograms</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">stats</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="mi">20</span> <span class="o">*</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">stats</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+    <span class="n">plot</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">stats</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">plot_histogram</span><span class="p">()</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This results in the following output</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>-------------------- p1/p0
+   mean = 19.9973(45)   sdev = 0.6500(39)   skew = 0.046(23)   ex_kurt = 0.084(46)
+   split-normal: 19.972(15) +/- 0.6682(97)/0.6350(97)
+         median: 19.9901(68) +/- 0.663(10)/0.648(10)
+
+-------------------- prod(p)
+   mean = 0.5434(26)   sdev = 0.4008(48)   skew = 1.783(62)   ex_kurt = 4.87(48)
+   split-normal: 0.13617(99) +/- 0.5779(44)/0.0476(19)
+         median: 0.4387(28) +/- 0.4458(54)/0.2353(33)
+</pre></div>
+</div>
+<p>together with histogram plots for the distributions of
+<code class="docutils literal notranslate"><span class="pre">p[1]/p[0]</span></code> and <code class="docutils literal notranslate"><span class="pre">prod(p)</span></code>:</p>
+<a class="reference internal image-reference" href="_images/eg3.5a.png"><img alt="_images/eg3.5a.png" src="_images/eg3.5a.png" style="width: 95%;" /></a>
+<p>The distribution for <code class="docutils literal notranslate"><span class="pre">prod(p)</span></code> is clearly skewed. The plot
+shows the actual distribution (gray bars) and the
+Gaussian (blue dots) corresponding to <code class="docutils literal notranslate"><span class="pre">s['prod(p)']</span></code>, 0.55 ± 0.41.
+It also shows fits to two two-sided Gaussian models: one that is
+continuous (split-normal, solid green line) and another centered
+on the median that is discontinuous (red dashes). The median
+fit suggests that a better description of the <code class="docutils literal notranslate"><span class="pre">prod(p)</span></code> distribution
+might be 0.44 plus 0.45 minus 0.24, although any of the three
+models gives a reasonable impression
+of the range of possible values for <code class="docutils literal notranslate"><span class="pre">prod(p)</span></code>.</p>
+</li>
+<li><p>A simple way to create histograms and contour plots of the probability density
+is from samples drawn from the underlying distribution used in the fit:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">corner</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">wgts</span><span class="p">,</span><span class="n">psamples</span> <span class="o">=</span> <span class="n">vfit</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">nbatch</span><span class="o">=</span><span class="mi">100_000</span><span class="p">)</span>
+<span class="n">samples</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="n">samples</span><span class="p">[</span><span class="s1">&#39;p3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">psamples</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+<span class="n">samples</span><span class="p">[</span><span class="s1">&#39;p1/p0&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">psamples</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">psamples</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">samples</span><span class="p">[</span><span class="s1">&#39;prod(p)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">psamples</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">corner</span><span class="o">.</span><span class="n">corner</span><span class="p">(</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">samples</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">wgts</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="mi">3</span> <span class="o">*</span> <span class="p">[</span><span class="mf">0.99</span><span class="p">],</span>
+    <span class="n">show_titles</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">quantiles</span><span class="o">=</span><span class="p">[</span><span class="mf">0.16</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.84</span><span class="p">],</span>
+    <span class="n">plot_datapoints</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fill_contours</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Here <a class="reference internal" href="lsqfit.html#lsqfit.vegas_fit.sample" title="lsqfit.vegas_fit.sample"><code class="xref py py-meth docutils literal notranslate"><span class="pre">lsqfit.vegas_fit.sample()</span></code></a> is used to draw approximately 100,000
+samples whose weighted density is proportional to <img class="math" src="_images/math/09fe19ab2bea5d5d6e8b95acf0de19cdb7250f2e.svg" alt="\exp(-\chi^2(p)/2)"/>.
+The samples corresponding to parameter <code class="docutils literal notranslate"><span class="pre">p[d]</span></code> are <code class="docutils literal notranslate"><span class="pre">psamples[d,</span> <span class="pre">i]</span></code> where
+<code class="docutils literal notranslate"><span class="pre">i=0,1,2...100_000(approx)</span></code>; the corresponding weights are <code class="docutils literal notranslate"><span class="pre">wgts[i]</span></code>.
+Samples for the quantities of interest are
+collected in dictionary <code class="docutils literal notranslate"><span class="pre">samples</span></code>. The <code class="xref py py-mod docutils literal notranslate"><span class="pre">corner</span></code> Python module is used
+to create histograms of the probability density for each of the quantities in
+<code class="docutils literal notranslate"><span class="pre">sample</span></code>; it also creates contour plots of the joint densities for each
+pair of quantities:</p>
+<a class="reference internal image-reference" href="_images/eg3.5b.png"><img alt="_images/eg3.5b.png" src="_images/eg3.5b.png" style="width: 90%;" /></a>
+<p>The histograms are labeled by the median value plus or minus intervals that
+each enclose 34% of the probability (<code class="docutils literal notranslate"><span class="pre">quantiles=[0.16,</span> <span class="pre">0.5,</span> <span class="pre">0.84]</span></code>).</p>
+<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">corner</span></code> module (and the <code class="xref py py-mod docutils literal notranslate"><span class="pre">arviz</span></code> module) must be installed
+separately.</p>
+</li>
+<li><p>A <code class="xref py py-mod docutils literal notranslate"><span class="pre">vegas</span></code> integration is much faster if the integrand
+can process large batches of integration points
+simultaneously. An example is <code class="docutils literal notranslate"><span class="pre">fcn(x,</span> <span class="pre">p)</span></code> above. When
+called by <a class="reference internal" href="lsqfit.html#lsqfit.nonlinear_fit" title="lsqfit.nonlinear_fit"><code class="xref py py-class docutils literal notranslate"><span class="pre">lsqfit.nonlinear_fit</span></code></a>, parameter <code class="docutils literal notranslate"><span class="pre">p</span></code> represents
+a single point in parameter space with coordinates
+<code class="docutils literal notranslate"><span class="pre">p[d]</span></code> where <code class="docutils literal notranslate"><span class="pre">d=0...3</span></code>. When called by <code class="docutils literal notranslate"><span class="pre">vegas_fit</span></code>
+(in rbatch mode), <code class="docutils literal notranslate"><span class="pre">p</span></code> represents a large number of points
+in parameter space with coordinates <code class="docutils literal notranslate"><span class="pre">p[d,i]</span></code> where
+<code class="docutils literal notranslate"><span class="pre">d=0...3</span></code> labels the direction in parameter space, and
+<code class="docutils literal notranslate"><span class="pre">i</span></code>, the batch index, labels the different points in
+parameter space. The function checks to see if it is being used
+in batch mode, and adds a batch index to <code class="docutils literal notranslate"><span class="pre">x</span></code> if it
+is. The decorator <code class="docutils literal notranslate"><span class="pre">&#64;vegas.rbatchintegrand</span></code> tells
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">vegas</span></code> that the function can be called in batch mode.
+(See the <code class="xref py py-mod docutils literal notranslate"><span class="pre">vegas</span></code> documentation for more information.)</p></li>
+<li><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">vegas</span></code> uses an iterative algorithm to adapt to the
+PDF. By default, <a class="reference internal" href="lsqfit.html#lsqfit.vegas_fit" title="lsqfit.vegas_fit"><code class="xref py py-class docutils literal notranslate"><span class="pre">lsqfit.vegas_fit</span></code></a> uses 10 iterations to
+train the integrator to the PDF, and then 10 more,
+without further adaptation, to evaluate the integrals
+for the means <img class="math" src="_images/math/59a1f7cb07f30205cdf8315bb9a1b2313735a8f8.svg" alt="\overline p_i"/> and covariances
+<img class="math" src="_images/math/7e75f7747864829d370c0dee1ec83c61e35cbaa8.svg" alt="\mathrm{cov}(p_i,p_j)"/> of the fit parameters,
+and the PDF’s norm <img class="math" src="_images/math/395e41e12e8d9558224d7c929220126f8615fbb3.svg" alt="N_\mathrm{pdf}"/>  (see
+equations above). Printing <code class="docutils literal notranslate"><span class="pre">vfit.training.summary()</span></code>
+shows estimates for the norm <img class="math" src="_images/math/395e41e12e8d9558224d7c929220126f8615fbb3.svg" alt="N_\mathrm{pdf}"/>
+from each of the first 10 iterations (here without
+<code class="docutils literal notranslate"><span class="pre">param=fit.p</span></code>):</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>itn   integral        wgt average     chi2/dof        Q
+-------------------------------------------------------
+  1   6.7(6.7)e-06    6.7(6.7)e-06        0.00     1.00
+  2   1.04(41)e-06    1.06(41)e-06        0.71     0.40
+  3   0.0012(11)      1.06(41)e-06        0.98     0.37
+  4   2.8(1.0)e-05    1.11(41)e-06        2.93     0.03
+  5   2.90(76)e-05    1.19(41)e-06        5.59     0.00
+  6   7.4(3.3)e-05    1.20(41)e-06        5.47     0.00
+  7   4.44(83)e-05    1.30(41)e-06        9.02     0.00
+  8   4.66(67)e-05    1.47(41)e-06       14.32     0.00
+  9   5.26(79)e-05    1.61(41)e-06       17.73     0.00
+ 10   4.40(27)e-05    2.57(40)e-06       43.03     0.00
+
+</pre></div>
+</div>
+<p>The uncertainties in the first column
+are 25–60 times smaller after <code class="xref py py-mod docutils literal notranslate"><span class="pre">vegas</span></code> has adapted
+to the PDF.
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">vegas</span></code> averages results from different
+iterations, but results from the training iterations
+are frequently unreliable and so are discarded.
+The final results come from
+the final 10 iterations (see <code class="docutils literal notranslate"><span class="pre">vfit.p.summary()</span></code>).</p>
+<p>The accuracy of the integrals is determined by the number
+of iterations <code class="docutils literal notranslate"><span class="pre">nitn</span></code> used and, especially, by the number of integrand
+evaluations <code class="docutils literal notranslate"><span class="pre">neval</span></code> allowed for each iteration. The
+defaults for these parameters are <code class="docutils literal notranslate"><span class="pre">nitn=(10,10)</span></code> and
+<code class="docutils literal notranslate"><span class="pre">neval=1000</span></code>. The following</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">vfit</span> <span class="o">=</span> <span class="n">lsqfit</span><span class="o">.</span><span class="n">vegas_fit</span><span class="p">(</span><span class="n">fit</span><span class="o">=</span><span class="n">fit</span><span class="p">,</span> <span class="n">nitn</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">neval</span><span class="o">=</span><span class="mi">100_000</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>reduces the number of training iterations to 6 but also
+increases the number of integrand evaluations by a factor
+of 100. The integration errors are then about 20 times smaller,
+which is much smaller than is needed here. This particular
+problem, however, is relatively easy for <code class="xref py py-mod docutils literal notranslate"><span class="pre">vegas</span></code>; other problems could
+well require hundreds of thousands or millions of integration
+evaluations per iteration.</p>
+</li>
+<li><p>At the end of <a class="reference internal" href="overview.html#correlated-parameters"><span class="std std-ref">Correlated Parameters; Gaussian Bayes Factor</span></a>, we examined what happened
+to the <a class="reference internal" href="lsqfit.html#lsqfit.nonlinear_fit" title="lsqfit.nonlinear_fit"><code class="xref py py-class docutils literal notranslate"><span class="pre">lsqfit.nonlinear_fit</span></code></a> when the correlation (<code class="docutils literal notranslate"><span class="pre">p[1]</span></code> is approximately
+<code class="docutils literal notranslate"><span class="pre">20*p[0]</span></code>) was removed from the prior by setting</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">gvar</span><span class="p">([</span><span class="s1">&#39;0(1)&#39;</span><span class="p">,</span> <span class="s1">&#39;0(20)&#39;</span><span class="p">,</span> <span class="s1">&#39;0(1)&#39;</span><span class="p">,</span> <span class="s1">&#39;0(1)&#39;</span><span class="p">])</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>The fit result is completely different with the uncorrelated prior when
+using <a class="reference internal" href="lsqfit.html#lsqfit.nonlinear_fit" title="lsqfit.nonlinear_fit"><code class="xref py py-class docutils literal notranslate"><span class="pre">lsqfit.nonlinear_fit</span></code></a>. This
+is <em>not</em> the case with <a class="reference internal" href="lsqfit.html#lsqfit.vegas_fit" title="lsqfit.vegas_fit"><code class="xref py py-class docutils literal notranslate"><span class="pre">lsqfit.vegas_fit</span></code></a>, where the uncorrelated prior leads
+to the following fit:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>-------------------- vegas_fit   (uncorrelated prior)
+Least Squares Fit:
+  chi2/dof [dof] = 0.91 [11]    Q = 0.53    logBF = 18.566(793)
+
+Parameters:
+              0   0.126 (25)     [    0 ± 1.0 ]  
+              1    4.6 (1.2)     [     0 ± 20 ]  
+              2    1.28 (27)     [    0 ± 1.0 ]  *
+              3    1.04 (27)     [    0 ± 1.0 ]  *
+
+Settings:
+  svdcut/n = 1e-12/0    (time = 0.1s)
+  fitter = vegas_fit    (chi2/dof [dof] = 0.58 [135]    Q = 1)
+
+p1/p0 = 18.2(8.6)    prod(p) = 0.45(43)
+corr(p0,p1) = -0.93
+</pre></div>
+</div>
+<p>These results are quite similar to what is obtained with the
+correlated prior, although less accurate. This suggests
+that the Gaussian approximation assumed by <a class="reference internal" href="lsqfit.html#lsqfit.nonlinear_fit" title="lsqfit.nonlinear_fit"><code class="xref py py-class docutils literal notranslate"><span class="pre">lsqfit.nonlinear_fit</span></code></a> is
+unreliable for the uncorrelated problem. This might have
+been anticipated since three of the four parameters have
+means that are effectively zero (compared to their
+standard deviations).</p>
+</li>
+</ul>
+<p>A central assumption when using <a class="reference internal" href="lsqfit.html#lsqfit.nonlinear_fit" title="lsqfit.nonlinear_fit"><code class="xref py py-class docutils literal notranslate"><span class="pre">lsqfit.nonlinear_fit</span></code></a> or <a class="reference internal" href="lsqfit.html#lsqfit.vegas_fit" title="lsqfit.vegas_fit"><code class="xref py py-class docutils literal notranslate"><span class="pre">lsqfit.vegas_fit</span></code></a> is that
+the data are drawn from a Gaussian distribution.
+<a class="reference internal" href="case-outliers.html#outliers"><span class="std std-ref">Case Study: Outliers and Bayesian Integrals</span></a> shows how to use <code class="xref py py-class docutils literal notranslate"><span class="pre">vegas.PDFIntegrator</span></code>
+directly, rather than <a class="reference internal" href="lsqfit.html#lsqfit.vegas_fit" title="lsqfit.vegas_fit"><code class="xref py py-class docutils literal notranslate"><span class="pre">lsqfit.vegas_fit</span></code></a>,
+when the input data are not Gaussian. It  discusses
+two versions of a fit,  one with 5 parameters
+and the other with 22 parameters.</p>
+</section>
+<section id="bootstrap-error-analysis-non-gaussian-output">
+<h2>Bootstrap Error Analysis; Non-Gaussian Output<a class="headerlink" href="#bootstrap-error-analysis-non-gaussian-output" title="Link to this heading">¶</a></h2>
+<p>The bootstrap provides another way to check on a fit’s
+validity, and also a method for analyzing non-Gaussian outputs.
+The strategy is to:</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p>make a large number of “bootstrap copies” of the
+original input data and prior that differ from each other
+by random amounts characteristic of the underlying randomness
+in the original data and prior (see
+the documentation for</p>
+<blockquote>
+<div><p><a class="reference internal" href="lsqfit.html#lsqfit.nonlinear_fit.bootstrapped_fit_iter" title="lsqfit.nonlinear_fit.bootstrapped_fit_iter"><code class="xref py py-meth docutils literal notranslate"><span class="pre">lsqfit.nonlinear_fit.bootstrapped_fit_iter()</span></code></a></p>
+</div></blockquote>
+<p>for more information);</p>
+</li>
+<li><p>repeat the entire fit analysis for each bootstrap copy of
+the data and prior, extracting fit results from each;</p></li>
+<li><p>use the variation of the fit results from bootstrap copy
+to bootstrap copy to determine an approximate probability
+distribution (possibly non-Gaussian) for the each result.</p></li>
+</ol>
+</div></blockquote>
+<p>To illustrate, we revisit the fit in the section
+on <a class="reference internal" href="overview.html#positive-parameters"><span class="std std-ref">Positive Parameters; Non-Gaussian Priors</span></a>, where
+the goal is to average noisy data subject to
+the constraint that the average must be positive.
+The constraint is likely to introduce strong distortions
+in the probability density function (PDF) given that the
+fit analysis suggests a value of 0.011 ± 0.013.
+We will use a bootstrap analysis to investigate
+the distribution of the average. We do this
+by adding code right after the fit:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gvar</span> <span class="k">as</span> <span class="nn">gv</span>
+<span class="kn">import</span> <span class="nn">lsqfit</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">y</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">gvar</span><span class="p">([</span>
+    <span class="s1">&#39;-0.17(20)&#39;</span><span class="p">,</span> <span class="s1">&#39;-0.03(20)&#39;</span><span class="p">,</span> <span class="s1">&#39;-0.39(20)&#39;</span><span class="p">,</span> <span class="s1">&#39;0.10(20)&#39;</span><span class="p">,</span> <span class="s1">&#39;-0.03(20)&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;0.06(20)&#39;</span><span class="p">,</span> <span class="s1">&#39;-0.23(20)&#39;</span><span class="p">,</span> <span class="s1">&#39;-0.23(20)&#39;</span><span class="p">,</span> <span class="s1">&#39;-0.15(20)&#39;</span><span class="p">,</span> <span class="s1">&#39;-0.01(20)&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;-0.12(20)&#39;</span><span class="p">,</span> <span class="s1">&#39;0.05(20)&#39;</span><span class="p">,</span> <span class="s1">&#39;-0.09(20)&#39;</span><span class="p">,</span> <span class="s1">&#39;-0.36(20)&#39;</span><span class="p">,</span> <span class="s1">&#39;0.09(20)&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;-0.07(20)&#39;</span><span class="p">,</span> <span class="s1">&#39;-0.31(20)&#39;</span><span class="p">,</span> <span class="s1">&#39;0.12(20)&#39;</span><span class="p">,</span> <span class="s1">&#39;0.11(20)&#39;</span><span class="p">,</span> <span class="s1">&#39;0.13(20)&#39;</span>
+    <span class="p">])</span>
+
+<span class="c1"># nonlinear_fit</span>
+<span class="n">prior</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">BufferDict</span><span class="p">()</span>
+<span class="n">prior</span><span class="p">[</span><span class="s1">&#39;f(a)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">BufferDict</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.04</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">fcn</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)):</span>
+    <span class="k">return</span> <span class="n">N</span> <span class="o">*</span> <span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]]</span>
+
+<span class="n">fit</span> <span class="o">=</span> <span class="n">lsqfit</span><span class="o">.</span><span class="n">nonlinear_fit</span><span class="p">(</span><span class="n">prior</span><span class="o">=</span><span class="n">prior</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">fcn</span><span class="o">=</span><span class="n">fcn</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="mi">20</span> <span class="o">*</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;nonlinear_fit&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fit</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;a =&#39;</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">])</span>
+
+<span class="c1"># Nbs bootstrap copies</span>
+<span class="n">Nbs</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">a</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">bsfit</span> <span class="ow">in</span> <span class="n">fit</span><span class="o">.</span><span class="n">bootstrapped_fit_iter</span><span class="p">(</span><span class="n">Nbs</span><span class="p">):</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bsfit</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>
+<span class="n">avg_a</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">avg_data</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">spread</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="mi">20</span> <span class="o">*</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;bootstrap&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;a =&#39;</span><span class="p">,</span> <span class="n">avg_a</span><span class="p">)</span>
+<span class="n">counts</span><span class="p">,</span><span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">PDFStatistics</span><span class="p">(</span><span class="n">histogram</span><span class="o">=</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">counts</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="n">plot</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">plot_histogram</span><span class="p">()</span>
+<span class="n">plot</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
+<span class="n">plot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">fit.bootstrapped_fit_iter(Nbs)</span></code> produces fits <code class="docutils literal notranslate"><span class="pre">bsfit</span></code> for each of
+<code class="docutils literal notranslate"><span class="pre">Nbs=1000</span></code> different bootstrap copies of the input data (<code class="docutils literal notranslate"><span class="pre">y</span></code> and the prior).
+We collect the mean values for parameter <code class="docutils literal notranslate"><span class="pre">a</span></code>, ignoring the uncertainties, and
+then calculate the average and standard deviation from these results using
+<code class="xref py py-func docutils literal notranslate"><span class="pre">gvar.dataset.avg_data()</span></code>. We then use <code class="docutils literal notranslate"><span class="pre">gvar.PDFStatistics</span></code> to analyze
+the distribution of the <code class="docutils literal notranslate"><span class="pre">a</span></code> values and create a histogram of its PDF.</p>
+<p>The bootstrap estimate for <code class="docutils literal notranslate"><span class="pre">a</span></code> agrees reasonably well with the result from <a class="reference internal" href="lsqfit.html#lsqfit.nonlinear_fit" title="lsqfit.nonlinear_fit"><code class="xref py py-class docutils literal notranslate"><span class="pre">lsqfit.nonlinear_fit</span></code></a>,
+but the statistical analysis shows that the distribution of <code class="docutils literal notranslate"><span class="pre">a</span></code> values is skewed (towards
+positive <code class="docutils literal notranslate"><span class="pre">a</span></code> values):</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>-------------------- nonlinear_fit
+Least Squares Fit:
+  chi2/dof [dof] = 0.85 [20]    Q = 0.65    logGBF = 5.2385
+
+Parameters:
+           f(a)   -0.59 (96)     [    0 ± 1.0 ]  
+-----------------------------------------------
+              a   0.011 (13)     [ 0.020 (16) ]  
+
+Settings:
+  svdcut/n = 1e-12/0    tol = (1e-08*,1e-10,1e-10)    (itns/time = 15/0.1s)
+
+a = 0.011(13)
+
+-------------------- bootstrap
+a = 0.014(10)
+   mean = 0.013974667685490355   sdev = 0.010333   skew = 0.86437   ex_kurt = -0.22463
+   split-normal: None
+         median: 0.011050094668754508 +/- 0.014386/0.0069843
+</pre></div>
+</div>
+<p>This is confirmed by the histogram:</p>
+<a class="reference internal image-reference" href="_images/eg3.6a.png"><img alt="_images/eg3.6a.png" src="_images/eg3.6a.png" style="width: 60%;" /></a>
+<p>Fitting with <a class="reference internal" href="lsqfit.html#lsqfit.vegas_fit" title="lsqfit.vegas_fit"><code class="xref py py-class docutils literal notranslate"><span class="pre">lsqfit.vegas_fit</span></code></a> rather than <a class="reference internal" href="lsqfit.html#lsqfit.nonlinear_fit" title="lsqfit.nonlinear_fit"><code class="xref py py-class docutils literal notranslate"><span class="pre">lsqfit.nonlinear_fit</span></code></a> gives the same result as the
+bootstrap for the average value of <code class="docutils literal notranslate"><span class="pre">a</span></code>, but is 10x faster (and more accurate):</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>-------------------- vegas_fit
+Least Squares Fit:
+  chi2/dof [dof] = 0.85 [20]    Q = 0.65    logBF = 5.1599(3)
+
+Parameters:
+           f(a)   -0.50 (93)     [    0 ± 1.0 ]  
+              a   0.014 (10)     [ 0.020 (16) ]  
+
+Settings:
+  svdcut/n = 1e-12/0    (time = 0.3s)
+  fitter = vegas_fit    (chi2/dof [dof] = 1.2 [54]    Q = 0.14)
+
+</pre></div>
+</div>
+<p>The histogram from <a class="reference internal" href="lsqfit.html#lsqfit.vegas_fit" title="lsqfit.vegas_fit"><code class="xref py py-class docutils literal notranslate"><span class="pre">lsqfit.vegas_fit</span></code></a> is also similar to that from the bootstrap.</p>
+</section>
+<section id="testing-fits-with-simulated-data">
+<h2>Testing Fits with Simulated Data<a class="headerlink" href="#testing-fits-with-simulated-data" title="Link to this heading">¶</a></h2>
+<p>Ideally we would test a fitting protocol by doing fits of data similar to
+our actual fit but where we know the correct values for the fit parameters
+ahead of the fit. Method</p>
+<blockquote>
+<div><p><a class="reference internal" href="lsqfit.html#lsqfit.nonlinear_fit.simulated_fit_iter" title="lsqfit.nonlinear_fit.simulated_fit_iter"><code class="xref py py-meth docutils literal notranslate"><span class="pre">lsqfit.nonlinear_fit.simulated_fit_iter()</span></code></a></p>
+</div></blockquote>
+<p>returns an iterator that
+creates any number of such simulations of the original fit.</p>
+<p>A key assumption underlying least-squares fitting is that the fit
+data <code class="docutils literal notranslate"><span class="pre">y[i]</span></code> are random samples from a distribution whose mean
+is the fit function <code class="docutils literal notranslate"><span class="pre">fcn(x,</span> <span class="pre">fitp)</span></code> evaluated with the best-fit
+values <code class="docutils literal notranslate"><span class="pre">fitp</span></code> for the parameters. <code class="docutils literal notranslate"><span class="pre">simulated_fit_iter</span></code> iterators
+generate simulated data by drawing other random samples from the
+same distribution, assigning them the same covariance matrix as the
+original data. The simulated data are fit
+using the same priors and fitter settings
+as in the original fit, and the results (an <a class="reference internal" href="lsqfit.html#lsqfit.nonlinear_fit" title="lsqfit.nonlinear_fit"><code class="xref py py-class docutils literal notranslate"><span class="pre">lsqfit.nonlinear_fit</span></code></a>
+object) are returned by the iterator. The fits with simulated data should
+have good <code class="docutils literal notranslate"><span class="pre">chi**2</span></code> values, and the results from these fits
+should agree, within errors, with the original fit results since the
+simulated data are from the same distribution as the original data. There
+is a problem with the fitting protocol if this is not the case most of the
+time.</p>
+<p>To illustrate we again examine the fits
+in the section on <a class="reference internal" href="overview.html#correlated-parameters"><span class="std std-ref">Correlated Parameters; Gaussian Bayes Factor</span></a>:
+we add three fit simulations at the end of the <code class="docutils literal notranslate"><span class="pre">main()</span></code> function:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">gvar</span> <span class="k">as</span> <span class="nn">gv</span>
+<span class="kn">import</span> <span class="nn">lsqfit</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_data</span><span class="p">()</span>
+    <span class="n">prior</span> <span class="o">=</span> <span class="n">make_prior</span><span class="p">()</span>
+    <span class="n">fit</span> <span class="o">=</span> <span class="n">lsqfit</span><span class="o">.</span><span class="n">nonlinear_fit</span><span class="p">(</span><span class="n">prior</span><span class="o">=</span><span class="n">prior</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">),</span> <span class="n">fcn</span><span class="o">=</span><span class="n">fcn</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="mi">40</span> <span class="o">*</span> <span class="s1">&#39;*&#39;</span> <span class="o">+</span> <span class="s1">&#39; real fit&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="kc">True</span><span class="p">))</span>
+
+    <span class="c1"># 3 simulated fits</span>
+    <span class="k">for</span> <span class="n">sfit</span> <span class="ow">in</span> <span class="n">fit</span><span class="o">.</span><span class="n">simulated_fit_iter</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+        <span class="c1"># print simulated fit details</span>
+        <span class="nb">print</span><span class="p">(</span><span class="mi">40</span> <span class="o">*</span> <span class="s1">&#39;=&#39;</span> <span class="o">+</span> <span class="s1">&#39; simulation&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">sfit</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="kc">True</span><span class="p">))</span>
+
+        <span class="c1"># compare simulated fit results with exact values (pexact=fit.pmean)</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">sfit</span><span class="o">.</span><span class="n">p</span> <span class="o">-</span> <span class="n">sfit</span><span class="o">.</span><span class="n">pexact</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">sfit.p - pexact =&#39;</span><span class="p">,</span> <span class="n">diff</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">fmt_chi2</span><span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">chi2</span><span class="p">(</span><span class="n">diff</span><span class="p">)))</span>
+        <span class="nb">print</span>
+
+<span class="k">def</span> <span class="nf">make_data</span><span class="p">():</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="mf">4.</span>    <span class="p">,</span>  <span class="mf">2.</span>    <span class="p">,</span>  <span class="mf">1.</span>    <span class="p">,</span>  <span class="mf">0.5</span>   <span class="p">,</span>  <span class="mf">0.25</span>  <span class="p">,</span>  <span class="mf">0.167</span> <span class="p">,</span>  <span class="mf">0.125</span> <span class="p">,</span>
+        <span class="mf">0.1</span>   <span class="p">,</span>  <span class="mf">0.0833</span><span class="p">,</span>  <span class="mf">0.0714</span><span class="p">,</span>  <span class="mf">0.0625</span>
+        <span class="p">])</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">gvar</span><span class="p">([</span>
+        <span class="s1">&#39;0.198(14)&#39;</span><span class="p">,</span> <span class="s1">&#39;0.216(15)&#39;</span><span class="p">,</span> <span class="s1">&#39;0.184(23)&#39;</span><span class="p">,</span> <span class="s1">&#39;0.156(44)&#39;</span><span class="p">,</span> <span class="s1">&#39;0.099(49)&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;0.142(40)&#39;</span><span class="p">,</span> <span class="s1">&#39;0.108(32)&#39;</span><span class="p">,</span> <span class="s1">&#39;0.065(26)&#39;</span><span class="p">,</span> <span class="s1">&#39;0.044(22)&#39;</span><span class="p">,</span> <span class="s1">&#39;0.041(19)&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;0.044(16)&#39;</span>
+        <span class="p">])</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
+
+<span class="k">def</span> <span class="nf">make_prior</span><span class="p">():</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">gvar</span><span class="p">([</span><span class="s1">&#39;0(1)&#39;</span><span class="p">,</span> <span class="s1">&#39;0(1)&#39;</span><span class="p">,</span> <span class="s1">&#39;0(1)&#39;</span><span class="p">,</span> <span class="s1">&#39;0(1)&#39;</span><span class="p">])</span>
+    <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">20</span> <span class="o">*</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">gv</span><span class="o">.</span><span class="n">gvar</span><span class="p">(</span><span class="s1">&#39;0.0(1)&#39;</span><span class="p">)</span>        <span class="c1"># p[1] correlated with p[0]</span>
+    <span class="k">return</span> <span class="n">p</span>
+
+<span class="k">def</span> <span class="nf">fcn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This code produces the following output, showing how the input data
+fluctuate from simulation to simulation:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>**************************************** real fit
+Least Squares Fit:
+  chi2/dof [dof] = 0.61 [11]    Q = 0.82    logGBF = 19.129
+
+Parameters:
+              0   0.149 (17)     [    0 ± 1.0 ]  
+              1    2.97 (34)     [     0 ± 20 ]  
+              2    1.23 (61)     [    0 ± 1.0 ]  *
+              3    0.59 (15)     [    0 ± 1.0 ]  
+
+Fit:
+     x[k]          y[k]      f(x[k],p)
+--------------------------------------
+        4    0.198 (14)     0.193 (11)  
+        2    0.216 (15)     0.210 (10)  
+        1    0.184 (23)     0.209 (15)  *
+      0.5    0.156 (44)     0.177 (15)  
+     0.25    0.099 (49)     0.124 (13)  
+    0.167    0.142 (40)     0.094 (12)  *
+    0.125    0.108 (32)     0.075 (11)  *
+      0.1    0.065 (26)    0.0629 (96)  
+   0.0833    0.044 (22)    0.0538 (87)  
+   0.0714    0.041 (19)    0.0471 (79)  
+   0.0625    0.044 (16)    0.0418 (72)  
+
+Settings:
+  svdcut/n = 1e-12/0    tol = (1e-08*,1e-10,1e-10)    (itns/time = 18/0.1s)
+
+======================================== simulation
+Least Squares Fit:
+  chi2/dof [dof] = 1.4 [11]    Q = 0.18    logGBF = 13.7
+
+Parameters:
+              0   0.118 (11)     [    0 ± 1.0 ]  
+              1    2.36 (24)     [     0 ± 20 ]  
+              2    0.28 (34)     [    0 ± 1.0 ]  
+              3   0.416 (83)     [    0 ± 1.0 ]  
+
+Fit:
+     x[k]          y[k]      f(x[k],p)
+--------------------------------------
+        4    0.170 (14)     0.171 (11)  
+        2    0.211 (15)     0.207 (10)  
+        1    0.227 (23)     0.234 (17)  
+      0.5    0.184 (44)     0.209 (21)  
+     0.25    0.167 (49)     0.140 (16)  
+    0.167    0.211 (40)     0.101 (13)  **
+    0.125    0.028 (32)     0.078 (11)  *
+      0.1    0.087 (26)    0.0638 (97)  
+   0.0833    0.017 (22)    0.0537 (86)  *
+   0.0714    0.054 (19)    0.0464 (77)  
+   0.0625    0.034 (16)    0.0408 (69)  
+
+Settings:
+  svdcut/n = 1e-12/0    tol = (1e-08*,1e-10,1e-10)    (itns/time = 9/0.0s)
+
+
+sfit.p - pexact = [-0.031(11) -0.61(24) -0.95(34) -0.178(83)]
+chi2/dof [dof] = 3 [4]    Q = 0.018
+======================================== simulation
+Least Squares Fit:
+  chi2/dof [dof] = 1.4 [11]    Q = 0.15    logGBF = 14.64
+
+Parameters:
+              0   0.154 (17)     [    0 ± 1.0 ]  
+              1    3.08 (36)     [     0 ± 20 ]  
+              2    1.39 (65)     [    0 ± 1.0 ]  *
+              3    0.61 (15)     [    0 ± 1.0 ]  
+
+Fit:
+     x[k]          y[k]      f(x[k],p)
+--------------------------------------
+        4    0.211 (14)     0.197 (11)  *
+        2    0.197 (15)     0.211 (10)  
+        1    0.221 (23)     0.209 (14)  
+      0.5    0.122 (44)     0.177 (15)  *
+     0.25    0.019 (49)     0.125 (13)  **
+    0.167    0.112 (40)     0.095 (12)  
+    0.125    0.131 (32)     0.077 (11)  *
+      0.1    0.076 (26)    0.0641 (96)  
+   0.0833    0.032 (22)    0.0550 (87)  *
+   0.0714    0.052 (19)    0.0482 (79)  
+   0.0625    0.054 (16)    0.0429 (73)  
+
+Settings:
+  svdcut/n = 1e-12/0    tol = (1e-08*,1e-10,1e-10)    (itns/time = 15/0.0s)
+
+
+sfit.p - pexact = [0.005(17) 0.11(36) 0.17(65) 0.02(15)]
+chi2/dof [dof] = 0.031 [4]    Q = 1
+======================================== simulation
+Least Squares Fit:
+  chi2/dof [dof] = 0.72 [11]    Q = 0.72    logGBF = 18.305
+
+Parameters:
+              0   0.144 (16)     [    0 ± 1.0 ]  
+              1    2.89 (33)     [     0 ± 20 ]  
+              2    1.02 (56)     [    0 ± 1.0 ]  *
+              3    0.57 (14)     [    0 ± 1.0 ]  
+
+Fit:
+     x[k]          y[k]      f(x[k],p)
+--------------------------------------
+        4    0.210 (14)     0.193 (12)  *
+        2    0.193 (15)     0.213 (10)  *
+        1    0.225 (23)     0.216 (15)  
+      0.5    0.193 (44)     0.183 (16)  
+     0.25    0.123 (49)     0.127 (14)  
+    0.167    0.095 (40)     0.095 (12)  
+    0.125    0.054 (32)     0.076 (11)  
+      0.1    0.047 (26)    0.0628 (96)  
+   0.0833    0.083 (22)    0.0536 (86)  *
+   0.0714    0.052 (19)    0.0467 (78)  
+   0.0625    0.034 (16)    0.0414 (71)  
+
+Settings:
+  svdcut/n = 1e-12/0    tol = (1e-08*,1e-10,1e-10)    (itns/time = 10/0.0s)
+
+
+sfit.p - pexact = [-0.004(16) -0.09(33) -0.20(56) -0.02(14)]
+chi2/dof [dof] = 0.056 [4]    Q = 0.99
+</pre></div>
+</div>
+<p>The parameters <code class="docutils literal notranslate"><span class="pre">sfit.p</span></code> produced by the simulated fits agree well
+with the original fit parameters <code class="docutils literal notranslate"><span class="pre">pexact=fit.pmean</span></code>, with good
+fits in each case. We calculate the <code class="docutils literal notranslate"><span class="pre">chi**2</span></code> for the difference
+<code class="docutils literal notranslate"><span class="pre">sfit.p</span> <span class="pre">-</span> <span class="pre">pexact</span></code> in
+each case; good <code class="docutils literal notranslate"><span class="pre">chi**2</span></code> values validate the parameter values, standard
+deviations, and correlations.</p>
+</section>
+<section id="goodness-of-fit">
+<span id="id1"></span><h2>Goodness of Fit<a class="headerlink" href="#goodness-of-fit" title="Link to this heading">¶</a></h2>
+<p>The quality of a fit is often judged by the value of
+<code class="docutils literal notranslate"><span class="pre">chi**2/N</span></code>, where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the
+number of degrees of freedom.
+Conventionally we expect <code class="docutils literal notranslate"><span class="pre">chi**2/N</span></code> to be of order <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">±</span> <span class="pre">sqrt(2/N)</span></code>
+since fluctuations in the mean values of the data are of order the
+uncertainties in the data. More precisely the means are
+assumed to be random samples drawn from a Gaussian distribution whose
+means are given by the best-fit function and whose covariance matrix
+comes from
+the data. There are two situations where this measure of goodness-of-fit
+becomes unreliable.</p>
+<p>The first situation is when there is a large SVD cut on the data.
+As discussed in <a class="reference internal" href="overview.html#svd-cuts-statistics"><span class="std std-ref">SVD Cuts and Inadequate Statistics</span></a>, an SVD cut increases
+the uncertainties
+in the data without increasing the random fluctuations in the
+data means. As a result contributions
+from the parts of the <code class="docutils literal notranslate"><span class="pre">chi**2</span></code> function affected by the SVD cut
+tend to be much smaller than naively expected, artificially
+pulling <code class="docutils literal notranslate"><span class="pre">chi**2/N</span></code> down.</p>
+<p>The second situation that compromises <code class="docutils literal notranslate"><span class="pre">chi**2</span></code> is when some or all of
+the priors used in a fit are broad — that is, when a fit result for
+a parameter has a much
+smaller uncertainty than the corresponding prior, but a mean that
+is artificially
+close to the prior’s mean. This often arises when the means
+used in the priors are not random samples, which is
+frequently the case  (unlike for the fit data). Again contributions to <code class="docutils literal notranslate"><span class="pre">chi**2</span></code>
+associated with such priors tend to be much smaller than naively expected,
+pulling <code class="docutils literal notranslate"><span class="pre">chi**2</span></code> down.</p>
+<p>These complications can conspire to make <code class="docutils literal notranslate"><span class="pre">chi**2/N</span></code>
+significantly less than 1 when the fit is good. Of greater concern,
+they can mask evidence of a bad fit:  <code class="docutils literal notranslate"><span class="pre">chi**2/N</span> <span class="pre">≈</span> <span class="pre">1</span></code> is <em>not</em>
+necessarily evidence of a good fit in such situations.</p>
+<p>A simple way to address these situations is to redo the fit with
+keyword parameter <code class="docutils literal notranslate"><span class="pre">noise=True</span></code>.
+This causes <a class="reference internal" href="lsqfit.html#lsqfit.nonlinear_fit" title="lsqfit.nonlinear_fit"><code class="xref py py-class docutils literal notranslate"><span class="pre">lsqfit.nonlinear_fit</span></code></a> to
+add extra fluctuations to the means in the prior and the data
+that are characteristic of the probability distributions associated
+with the priors and the SVD cut, respectively:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span> <span class="o">=&gt;</span>  <span class="n">prior</span> <span class="o">+</span> <span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">prior</span><span class="p">)</span> <span class="o">-</span> <span class="n">gv</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">prior</span><span class="p">))</span>
+    <span class="n">y</span> <span class="o">=&gt;</span>  <span class="n">y</span> <span class="o">+</span> <span class="n">gv</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">correction</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>These fluctuations
+should leave fit results unchanged (within errors) but increase
+<code class="docutils literal notranslate"><span class="pre">chi**2/N</span></code> so it is of order one.</p>
+<p>To add this test to the fit from <a class="reference internal" href="overview.html#svd-cuts-statistics"><span class="std std-ref">SVD Cuts and Inadequate Statistics</span></a>, we modify the
+code to include a second fit at the end:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">gvar</span> <span class="k">as</span> <span class="nn">gv</span>
+<span class="kn">import</span> <span class="nn">lsqfit</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">ysamples</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">[</span><span class="mf">0.0092441016</span><span class="p">,</span> <span class="mf">0.0068974057</span><span class="p">,</span> <span class="mf">0.0051480509</span><span class="p">,</span> <span class="mf">0.0038431422</span><span class="p">,</span> <span class="mf">0.0028690492</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.0092477405</span><span class="p">,</span> <span class="mf">0.0069030565</span><span class="p">,</span> <span class="mf">0.0051531383</span><span class="p">,</span> <span class="mf">0.0038455855</span><span class="p">,</span> <span class="mf">0.0028700587</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.0092558569</span><span class="p">,</span> <span class="mf">0.0069102437</span><span class="p">,</span> <span class="mf">0.0051596569</span><span class="p">,</span> <span class="mf">0.0038514537</span><span class="p">,</span> <span class="mf">0.0028749153</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.0092294581</span><span class="p">,</span> <span class="mf">0.0068865156</span><span class="p">,</span> <span class="mf">0.0051395262</span><span class="p">,</span> <span class="mf">0.003835656</span><span class="p">,</span> <span class="mf">0.0028630454</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.009240534</span><span class="p">,</span> <span class="mf">0.0068961523</span><span class="p">,</span> <span class="mf">0.0051480046</span><span class="p">,</span> <span class="mf">0.0038424661</span><span class="p">,</span> <span class="mf">0.0028675632</span><span class="p">],</span>
+        <span class="p">]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">avg_data</span><span class="p">(</span><span class="n">ysamples</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">15.</span><span class="p">,</span> <span class="mf">16.</span><span class="p">,</span> <span class="mf">17.</span><span class="p">,</span> <span class="mf">18.</span><span class="p">,</span> <span class="mf">19.</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">fcn</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">p</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">gv</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span> <span class="n">p</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+    <span class="n">prior</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">gvar</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="s1">&#39;0.75(5)&#39;</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="s1">&#39;0.30(3)&#39;</span><span class="p">))</span>
+    <span class="n">fit</span> <span class="o">=</span> <span class="n">lsqfit</span><span class="o">.</span><span class="n">nonlinear_fit</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">prior</span><span class="o">=</span><span class="n">prior</span><span class="p">,</span> <span class="n">fcn</span><span class="o">=</span><span class="n">fcn</span><span class="p">,</span> <span class="n">svdcut</span><span class="o">=</span><span class="mf">0.0028</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="kc">True</span><span class="p">))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">================ Add noise to prior, SVD&#39;</span><span class="p">)</span>
+    <span class="n">noisyfit</span> <span class="o">=</span> <span class="n">lsqfit</span><span class="o">.</span><span class="n">nonlinear_fit</span><span class="p">(</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">prior</span><span class="o">=</span><span class="n">prior</span><span class="p">,</span> <span class="n">fcn</span><span class="o">=</span><span class="n">fcn</span><span class="p">,</span> <span class="n">svdcut</span><span class="o">=</span><span class="mf">0.0028</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">noisyfit</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="kc">True</span><span class="p">))</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Running this code gives the following output:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Least Square Fit:
+  chi2/dof [dof] = 0.38 [5]    Q = 0.86    logGBF = 53.598
+
+Parameters:
+              a    0.74338 (29)      [ 0.750 (50) ]  
+              b   0.292480 (42)      [ 0.300 (30) ]  
+
+Settings:
+  svdcut/n = 0.0028/3    tol = (1e-08*,1e-10,1e-10)    (itns/time = 5/0.0)
+
+
+================ Add noise to prior, SVD
+Least Square Fit:
+  chi2/dof [dof] = 0.81 [5]    Q = 0.54    logGBF = 52.523
+
+Parameters:
+              a    0.74343 (29)      [ 0.803 (50) ]  *
+              b   0.292485 (42)      [ 0.314 (30) ]  
+
+Fit:
+      key            y[key]         f(p)[key]
+---------------------------------------------
+        0    0.0092436 (39)    0.0092443 (32)  
+        1    0.0068987 (35)    0.0069000 (26)  
+        2    0.0051496 (30)    0.0051502 (21)  
+        3    0.0038437 (23)    0.0038441 (17)  
+        4    0.0028689 (17)    0.0028693 (14)  
+
+Settings:
+  svdcut/n = 0.0028/3*    tol = (1e-08*,1e-10,1e-10)    (itns/time = 5/0.0)
+
+</pre></div>
+</div>
+<p>The fit with extra noise has a larger <code class="docutils literal notranslate"><span class="pre">chi**2</span></code>, as expected,
+but is still a good fit. It also
+gives fit parameters that agree within errors
+with those from the
+original fit. In general, there is probably something wrong with
+the original fit (e.g., <code class="docutils literal notranslate"><span class="pre">svdcut</span></code>
+too small, or priors inconsistent with the fit data)
+if adding noise makes <code class="docutils literal notranslate"><span class="pre">chi**2/N</span></code> signficantly larger than one,
+or changes the best-fit values of the parameters significantly.</p>
+</section>
+<section id="fit-residuals-and-q-q-plots">
+<span id="fit-residuals"></span><h2>Fit Residuals and Q-Q Plots<a class="headerlink" href="#fit-residuals-and-q-q-plots" title="Link to this heading">¶</a></h2>
+<p>It can be useful to examine the normalized residuals from a fit (in array
+<code class="docutils literal notranslate"><span class="pre">fit.residuals</span></code>). These are the differences between
+the data and the corresponding values from the fit function using the best-fit
+values for the fit parameters. The differences are projected onto the
+eigenvectors of the correlation matrix and normalized by dividing by the
+square root of the corresponding eigenvalues.
+The statistical assumptions underlying <a class="reference internal" href="lsqfit.html#lsqfit.nonlinear_fit" title="lsqfit.nonlinear_fit"><code class="xref py py-class docutils literal notranslate"><span class="pre">lsqfit.nonlinear_fit</span></code></a> imply that the
+normalized fit residuals should be uncorrelated and distributed
+randomly about zero in
+a Gaussian distribution.</p>
+<p>One way to test whether residuals from a fit have a Gaussian distribution
+is to make a <em>Q-Q plot.</em> Plots for the two fits from the previous section
+(one without extra noise on the left, and the other with noise) are:</p>
+<a class="reference internal image-reference" href="_images/eg10e1.png"><img alt="_images/eg10e1.png" src="_images/eg10e1.png" style="width: 49%;" /></a>
+<a class="reference internal image-reference" href="_images/eg10e2.png"><img alt="_images/eg10e2.png" src="_images/eg10e2.png" style="width: 49%;" /></a>
+<p>These plots were made using</p>
+<blockquote>
+<div><p><a class="reference internal" href="lsqfit.html#lsqfit.nonlinear_fit.qqplot_residuals" title="lsqfit.nonlinear_fit.qqplot_residuals"><code class="xref py py-meth docutils literal notranslate"><span class="pre">lsqfit.nonlinear_fit.qqplot_residuals()</span></code></a>,</p>
+</div></blockquote>
+<p>by adding the following lines at the end
+of the <code class="docutils literal notranslate"><span class="pre">main()</span></code> method:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fit</span><span class="o">.</span><span class="n">qqplot_residuals</span><span class="p">()</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">noisyfit</span><span class="o">.</span><span class="n">qqplot_residuals</span><span class="p">()</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>In each case the residuals are first ordered, from smallest to largest.
+They are then plotted against the value
+expected for a residual at that position in the list if
+the list elements were drawn at
+random from a Gaussian distribution of unit width and zero mean. (For
+example, given 100 samples from the Gaussian distribution, the sample
+in position 16 of the ordered list should have a value around -1 since
+16% of the values should be more than one standard deviation below the
+mean.) The residuals are consistent with a Gaussian distribution if they
+fall on or near a straight line in such a plot.</p>
+<p>The plots show fits of the residuals to straight lines (red solid lines).
+The residuals in the left plot (without additional noise) are reasonably
+consistent with a straight line (and, therefore, a Gaussian distribution),
+but the slope (0.55) is much less than
+one. This is because <code class="docutils literal notranslate"><span class="pre">chi2/dof</span> <span class="pre">=</span> <span class="pre">0.38</span></code> for this fit
+is much smaller than one. Typically
+we expect the slope to be roughly the square root of <code class="docutils literal notranslate"><span class="pre">chi2/dof</span></code>
+(since <code class="docutils literal notranslate"><span class="pre">chi2</span></code> equals the sum of the residuals squared).</p>
+<p>The residuals in the right plot are also quite linear in the Q-Q plot.
+In this case the fit residuals include extra noise associated with
+the priors and with the SVD cut, as discussed in the previous section.
+As a result <code class="docutils literal notranslate"><span class="pre">chi2/dof</span> <span class="pre">=</span> <span class="pre">0.81</span></code> is much closer to one, as is the
+resulting slope (0.90) in the Q-Q plot. The fit line through
+the residuals is much closer here to the dashed line in the plot,
+which is what would result if the residuals had unit standard
+deviation and zero mean.</p>
+<p>The fits pictured above have relatively few residuals.
+Q-Q plots become increasingly
+compelling as the number of residuals increases.
+The following plots, from fits without (left)
+and with (right) prior/SVD noise,
+come from a lattice QCD analysis with 383 residuals:</p>
+<a class="reference internal image-reference" href="_images/bmixing1.png"><img alt="_images/bmixing1.png" src="_images/bmixing1.png" style="width: 49%;" /></a>
+<a class="reference internal image-reference" href="_images/bmixing2.png"><img alt="_images/bmixing2.png" src="_images/bmixing2.png" style="width: 49%;" /></a>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Non-Gaussian Behavior; Testing Fits</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#bayesian-integrals">Bayesian Integrals</a></li>
+<li><a class="reference internal" href="#bootstrap-error-analysis-non-gaussian-output">Bootstrap Error Analysis; Non-Gaussian Output</a></li>
+<li><a class="reference internal" href="#testing-fits-with-simulated-data">Testing Fits with Simulated Data</a></li>
+<li><a class="reference internal" href="#goodness-of-fit">Goodness of Fit</a></li>
+<li><a class="reference internal" href="#fit-residuals-and-q-q-plots">Fit Residuals and Q-Q Plots</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="overview.html"
+                          title="previous chapter">Overview and Tutorial</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="case-extrapolation.html"
+                          title="next chapter">Case Study: Simple Extrapolation</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/testing.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="case-extrapolation.html" title="Case Study: Simple Extrapolation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="overview.html" title="Overview and Tutorial"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lsqfit 13.3.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Non-Gaussian Behavior; Testing Fits</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2009-2023, G. P. Lepage.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    </div>
+  </body>
+</html>

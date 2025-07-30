@@ -1,0 +1,43 @@
+# Crawl Data Shared
+
+Shared internal package for microservices in the Crawl Data application.
+
+## Installation
+
+```bash
+pip install crawl-data-shared
+```
+
+## Usage
+
+```python
+from shared.response import make_response
+from shared.utils import hash_password, create_token
+from shared.middleware import create_auth_middleware
+```
+
+## Features
+
+- **Response utilities**: Standardized API responses
+- **Authentication**: JWT token management
+- **Middleware**: Request logging, authentication middleware
+- **Database utilities**: Common database operations
+- **Error handling**: Centralized error handling
+- **Validation**: Input validation decorators
+
+## Development
+
+```bash
+# Install in development mode
+pip install -e .
+
+# Run tests
+python -m pytest
+
+# Build package
+python setup.py sdist bdist_wheel
+```
+
+## License
+
+MIT License 

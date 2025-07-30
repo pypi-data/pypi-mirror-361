@@ -1,0 +1,259 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: lint and style checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install black black[jupyter] ruff
+      - name: Black style check
+        run: |
+          black --check .
+      - name: Lint with ruff
+        run: |
+          ruff check .
+
+  build_0:
+    name: xradar unit tests - linux
+    runs-on: ubuntu-latest
+    needs: [lint]
+    defaults:
+      run:
+        shell: bash -l {0}
+    env:
+      CONDA_ENV_FILE: ci/unittests.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.13"]
+        numpy-version: ["1", "2"]
+        exclude:
+          - python-version: "3.13"
+            numpy-version: "1"
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Install micromamba environment
+      uses: mamba-org/setup-micromamba@v1
+      with:
+          environment-name: xradar-unit-tests
+          environment-file: ${{env.CONDA_ENV_FILE}}
+          cache-environment: true
+          cache-environment-key: "${{runner.os}}-${{runner.arch}}-py${{env.PYTHON_VERSION}}-${{env.TODAY}}-${{hashFiles(env.CONDA_ENV_FILE)}}"
+          create-args: >-
+              python=${{matrix.python-version}}
+              numpy=${{matrix.numpy-version}}
+              conda
+    - name: Install xradar
+      run: |
+        python -m pip install . --no-deps
+    - name: Version Info
+      run: |
+        python -c "import xradar; print(xradar.version.version)"
+    - name: Test with pytest
+      run: |
+        pytest -n auto --dist loadfile --verbose --durations=15 --cov-report xml:coverage_unit.xml --cov=xradar --pyargs tests
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./coverage_unit.xml
+        flags: unittests
+        env_vars: RUNNER_OS,PYTHON_VERSION
+        name: codecov-gha
+        fail_ci_if_error: false
+        token: ${{ secrets.CODECOV_TOKEN}}
+
+  build_1:
+    name: xradar notebook tests - linux
+    runs-on: ubuntu-latest
+    needs: [lint]
+    defaults:
+      run:
+        shell: bash -l {0}
+    env:
+      CONDA_ENV_FILE: ci/notebooktests.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.13"]
+        numpy-version: ["2"]
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Install micromamba environment
+      uses: mamba-org/setup-micromamba@v1
+      with:
+          environment-name: xradar-notebook-tests
+          environment-file: ${{env.CONDA_ENV_FILE}}
+          cache-environment: true
+          cache-environment-key: "${{runner.os}}-${{runner.arch}}-py${{env.PYTHON_VERSION}}-${{env.TODAY}}-${{hashFiles(env.CONDA_ENV_FILE)}}"
+          create-args: >-
+              python=${{matrix.python-version}}
+              numpy=${{matrix.numpy-version}}
+              conda
+    - name: Install xradar
+      run: |
+        python -m pip install . --no-deps
+    - name: Version Info
+      run: |
+        python -c "import xradar; print(xradar.version.version)"
+    - name: Test with pytest
+      run: |
+        pytest -n auto --dist loadscope --verbose --durations=15 --cov-report xml:coverage_notebook.xml --cov=xradar --pyargs examples/notebooks
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./coverage_notebook.xml
+        flags: notebooktests
+        env_vars: RUNNER_OS,PYTHON_VERSION
+        name: codecov-gha
+        fail_ci_if_error: false
+        token: ${{ secrets.CODECOV_TOKEN}}
+
+  build_2:
+    name: xarray nightly tests - linux
+    runs-on: ubuntu-latest
+    needs: [ lint ]
+    continue-on-error: true
+    defaults:
+      run:
+        shell: bash -l {0}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ "3.13" ]
+        numpy-version: [ "2" ]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install micromamba environment
+        uses: mamba-org/setup-micromamba@v1
+        with:
+          environment-name: xradar-unit-tests
+          cache-environment: true
+          cache-environment-key: "${{runner.os}}-${{runner.arch}}-py${{env.PYTHON_VERSION}}-${{env.TODAY}}-${{hashFiles(env.CONDA_ENV_FILE)}}"
+          create-args: >-
+            python=${{matrix.python-version}}
+            cmweather
+            dask
+            fsspec
+            h5netcdf
+            h5py
+            lat_lon_parser
+            netCDF4
+            open-radar-data>=0.4.2
+            packaging
+            pandas
+            pip
+            pyproj
+            pytest
+            pytest-doctestplus
+            pytest-sugar
+            pytest-xdist
+            scipy
+            setuptools
+            wheel
+            xmltodict
+            numpy=${{matrix.numpy-version}}
+            conda
+      - name: Install xarray
+        run: |
+          python -m pip install --no-deps --ignore-installed --no-cache-dir -vvv \
+          git+https://github.com/pydata/xarray.git@main
+      - name: Install xradar
+        run: |
+          python -m pip install --no-deps .
+      - name: Version Info
+        run: |
+          python -c "import xradar; print(xradar.version.version)"
+      - name: Test with pytest
+        run: |
+          pytest -n auto --dist loadscope --verbose --durations=15 --pyargs tests
+
+  test_build_distribution_testpypi:
+    name: test build distribution for testpypi
+    needs: [lint, build_0]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build setuptools wheel twine toml-cli
+      - name: Package
+        run: |
+          toml set --toml-path pyproject.toml tool.setuptools_scm.local_scheme "no-local-version"
+          git update-index --assume-unchanged pyproject.toml
+          python -m build
+          cp dist/xradar*.gz dist/xradar1.gz
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: xradar-1-${{github.event.number}}
+          path: dist/xradar1.gz
+      - name: Upload to TestPyPI
+        if: ${{ github.event_name == 'push' }}
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.TESTPYPI_API_TOKEN }}
+        run: |
+          rm -f dist/xradar1.gz
+          twine upload --repository testpypi dist/*
+
+  test_build_distribution_pypi:
+    name: test build distribution
+    needs: [lint, build_0, test_build_distribution_testpypi]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build setuptools wheel
+      - name: Package
+        run: |
+          python -m build
+          cp dist/xradar*.gz dist/xradar0.gz
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: xradar-0-${{github.event.number}}
+          path: dist/xradar0.gz

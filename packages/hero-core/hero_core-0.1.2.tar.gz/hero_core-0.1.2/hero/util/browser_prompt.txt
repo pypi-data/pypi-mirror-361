@@ -1,0 +1,358 @@
+<tool name="go_to_url">
+    <desc>Go to the specified URL</desc>
+    <params>
+        <url type="string">Can jump to a webpage, URL is obtained from the **href** attribute of the **a** tag in **web_content**</url>
+        <reason type="string">The reason for using this URL</reason>
+    </params>
+    <example>
+    [
+        {
+            "tool": "go_to_url",
+            "params": {
+                "url": "https://www.google.com",
+                "reason": "reason"
+            }
+        }
+    ]
+    </example>
+</tool>
+
+
+<tool name="click_button_by_selector">
+    <desc>Can click on an element on the **web_content**</desc>
+    <params>
+        <selector type="string">The selector of the element to operate, **DO NOT generate it yourself**. Don't select the **a** tag, use the `go_to_url` tool instead.</selector>
+        <outer_html type="string">The outer html of the element to operate, **DO NOT generate it yourself**, get the **outer_html** attribute of the element from **web_content**</outer_html>
+        <reason type="string">The reason for clicking on this element</reason>
+    </params>
+    <example>
+    [
+        {
+            "tool": "click_button_by_selector",
+            "params": {
+                "selector": "button[class='button-1']",
+                "outer_html": "<button class='button-1'>Click me</button>",
+                "reason": "reason"
+            }
+        }
+    ]
+    </example>
+</tool>
+
+
+<tool name="input_text_by_selector">
+    <desc>Enter text on a webpage, for example: type text in a search box</desc>
+    <params>
+        <selector type="string">The selector of the element to operate, **DO NOT generate it yourself**</selector>
+        <text type="string">The text to enter</text>
+        <outer_html type="string">The outer html of the element to operate, **DO NOT generate it yourself**, get the **outer_html** attribute of the element from **web_content**</outer_html>
+        <reason type="string">The reason for entering this text</reason>
+    </params>
+    <example>
+    [
+        {
+            "tool": "input_text_by_selector",
+            "params": {
+                "selector": "input[id='text-input']",
+                "text": "who is the goat of basketball",
+                "outer_html": "<input id='text-input' type='text'>",
+                "reason": "reason"
+            }
+        }
+    ]
+    </example>
+</tool>
+
+
+<tool name="select_option_by_selector">
+    <desc>Select an element on the webpage, for example: select an option in a dropdown, radio button, checkbox, etc.</desc>
+    <params>
+        <selector type="string">The selector of the element to operate, **DO NOT generate it yourself**</selector>
+        <value type="string">The value to select</value>
+        <outer_html type="string">The outer html of the element to operate, **DO NOT generate it yourself**, get the **outer_html** attribute of the element from **web_content**</outer_html>
+        <reason type="string">The reason for selecting this value</reason>
+    </params>
+    <example>
+    [
+        {
+            "tool": "select_option_by_selector",
+            "params": {
+                "selector": "select[id='select-1']",
+                "value": "search-alias=stripbooks-intl-ship",
+                "outer_html": "<select id='select-1'><option value='search-alias=stripbooks-intl-ship'>search-alias=stripbooks-intl-ship</option></select>",
+                "reason": "reason"
+            }
+        },
+        {
+            "tool": "select_option_by_selector",
+            "params": {
+                "selector": "input[id='input-2'][value='hardcover']",
+                "value": "hardcover",
+                "outer_html": "<input id='input-2' value='hardcover'>",
+                "reason": "reason"
+            }
+        }
+    ]
+    </example>
+</tool>
+
+
+<tool name="check_image_by_selector">
+    <desc>By judging the image's src, alt, title, and other attributes, determine if the image might contain key information. If it may, use the check_image tool to recognize the image content with multimodal capabilities.</desc>
+    <params>
+        <selector type="string">The selector of the element to operate, **DO NOT generate it yourself**</selector>
+        <reason type="string">The reason for checking this image</reason>
+    </params>
+    <example>
+    [
+        {
+            "tool": "check_image_by_selector",
+            "params": {
+                "selector": "img[src='https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png']",
+                "reason": "reason"
+            }
+        }
+    ]
+    </example>
+</tool>
+
+
+<tool name="press_enter">
+    <desc>Press the Enter key on the keyboard</desc>
+    <params>
+        <reason type="string">The reason for pressing the Enter key</reason>
+    </params>
+    <example>
+        [
+            {
+                "tool": "press_enter",
+                "params": {
+                    "reason": "reason"
+                }
+            }
+        ]
+    </example>
+</tool>
+
+
+<tool name="focus_on_element_by_selector">
+    <desc>Focus on an element on the webpage</desc>
+    <params>
+        <selector type="string">The selector of the element to focus on, **DO NOT generate it yourself**</selector>
+        <reason type="string">The reason for focusing on this element</reason>
+    </params>
+    <example>
+    [
+        {
+            "tool": "focus_on_element_by_selector",
+            "params": {
+                "selector": "input[id='text-input']",
+                "reason": "reason"
+            }
+        }
+    ]
+    </example>
+</tool>
+
+
+<tool name="refresh_page">
+    <desc>Refresh the webpage</desc>
+    <params>
+        <reason type="string">The reason for refreshing the page</reason>
+    </params>
+    <example>
+    [
+        {
+            "tool": "refresh_page",
+            "params": {
+                "reason": "reason"
+            }
+        }
+    ]
+    </example>
+</tool>
+
+
+<tool name="go_back">
+    <desc>Go back to the previous page</desc>
+    <params>
+        <reason type="string">The reason for going back to the previous page</reason>
+    </params>
+    <example>
+    [
+        {
+            "tool": "go_back",
+            "params": {
+                "reason": "reason"
+            }
+        }
+    ]
+    </example>
+</tool>
+
+
+<tool name="go_to_start_page">
+    <desc>Close the current page</desc>
+    <params>
+        <reason type="string">The reason for closing the current page</reason>
+    </params>
+    <example>
+    [
+        {
+            "tool": "go_to_start_page",
+            "params": {
+                "reason": "reason"
+            }
+        }
+    ]
+    </example>
+</tool>
+
+
+<tool name="write_a_note">
+    <desc>Write a note when key information is found while browsing a webpage, saving it in a markdown file</desc>
+    <params>
+        <note type="string">The note to write</note>
+        <write_file type="string">The file name to write the note to, and save it in the current directory</write_file>
+        <reason type="string">The reason for writing this note</reason>
+    </params>
+    <example>
+    [
+        {
+            "tool": "write_a_note",
+            "params": {
+                "note": "note", "write_file": "note.md", "reason": "reason"
+            }
+        }
+    ]
+    </example>
+</tool>
+
+<tool name="scroll_to_bottom">
+    <desc>Scroll down the webpage to the bottom</desc>
+    <params>
+        <reason type="string">The reason for scrolling down to the bottom</reason>
+    </params>
+    <example>
+    [
+        {
+            "tool": "scroll_to_bottom",
+            "params": {
+                "reason": "reason"
+            }
+        }
+    ]
+    </example>
+</tool>
+
+
+<tool name="download_file_and_stop">
+    <desc>Download a file from the webpage</desc>
+    <params>
+        <url type="string">The URL of the file to download</url>
+        <reason type="string">The reason for downloading this file</reason>
+    </params>
+    <example>
+    [
+        {
+            "tool": "download_file_and_stop",
+            "params": {
+                "url": "https://www.google.com", "reason": "reason"
+            }
+        }
+    ]
+    </example>
+</tool>
+
+
+<tool name="switch_to_page">
+    <desc>Switch to a specific page index</desc>
+    <params>
+        <index type="int">The index of the page to switch to</index>
+        <reason type="string">The reason for switching to this page</reason>
+    </params>
+    <example>
+    [
+        {
+            "tool": "switch_to_page",
+            "params": {
+                "index": 0, "reason": "reason"
+            }
+        }
+    ]
+    </example>
+</tool>
+
+
+<tool name="search_and_stop">
+    <desc>Needs to call a search engine, such as Google, to get more extensive information. Describe the demand query clearly and stop browsing the webpage. Call another AI assistant to search.</desc>
+    <params>
+        <query type="string">The query to search for</query>
+        <reason type="string">The reason for searching</reason>
+    </params>
+    <example>
+    [
+        {
+            "tool": "search_and_stop",
+            "params": {
+                "query": "query", "reason": "reason"
+            }
+        }
+    ]
+    </example>
+</tool>
+
+
+<tool name="write_code_to_reach_purpose_and_stop">
+    <desc>If a large number of repetitive operations are needed later, you should write code to reach the purpose instead of continuing to dispatch tasks. However, you cannot generate the code yourself; instead, describe the demand clearly and stop browsing the webpage. Call another AI assistant to write the code.</desc>
+    <params>
+        <demand type="string">The detailed code demand, including the webpage url to operate, the element to click, the text to input, the link parameters, etc.</demand>
+        <reason type="string">The reason for writing this code</reason>
+    </params>
+    <example>
+    [
+        {
+            "tool": "write_code_to_reach_purpose_and_stop",
+            "params": {
+                "demand": "demand", "reason": "reason"
+            }
+        }
+    ]
+    </example>
+</tool>
+
+
+<tool name="purpose_completed_and_stop">
+    <desc>You have reached the purpose of browsing the webpage. Describe the answer clearly and stop browsing the webpage. Or you have done a lot of operations, but the purpose is not yet completed, describe the remaining purpose clearly and stop browsing the webpage.</desc>
+    <params>
+        <answer type="string">The answer to the purpose</answer>
+        <reason type="string">The reason for reaching the purpose</reason>
+    </params>
+    <example>
+    [
+        {
+            "tool": "purpose_completed_and_stop",
+            "params": {
+                "answer": "answer", "reason": "reason"
+            }
+        }
+    ]
+    </example>
+</tool>
+
+<tool name="request_for_human_assistance">
+    <desc>If you encounter a problem that you cannot solve, you can use this tool to request for human assistance.</desc>
+    <params>
+        <reason type="string">The reason for requesting for human assistance</reason>
+    </params>
+    <example>
+    [
+        {
+            "tool": "request_for_human_assistance",
+            "params": {
+                "reason": "reason"
+            }
+        }
+    ]
+    </example>
+</tool>

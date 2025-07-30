@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "nest-rpc-client"
+version = "1.0.2"
+description = ""
+authors = ["Urazmaxambetov Serik <urazmaxambetovserik@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+aio-pika = "^9.5.5"
+redis = "^6.2.0"
+nats-py = "^2.10.0"
+
+[tool.poetry.extras]
+rabbitmq = ["aio-pika"]
+redis = ["redis"]
+nats = ["nats-py"]
+all = ["aio-pika", "redis", "nats"]
+
+[project.urls]
+Homepage = "https://github.com/urazmaxambetovserik/nest-rpc-client"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.4.1"
+pytest-asyncio = "^1.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

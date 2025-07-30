@@ -1,0 +1,140 @@
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "maxine"
+version = "0.1.1"
+description = "MAXINE: Multifunctional Agent with eXceptional Intelligence, Nominal Efficiency"
+authors = ["Omar Ahmed <omaremadeldin@hotmail.com>"]
+packages = [{ include = "src" }]
+readme = "README.md"
+homepage = "https://github.com/anaeldocyaklab/maxine"
+repository = "https://github.com/anaeldocyaklab/maxine"
+keywords = ["ai", "agent", "langchain", "ollama"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+]
+
+[tool.poetry.dependencies]
+python = ">=3.13,<4.0"
+langchain = ">=0.3.26,<0.4.0"
+requests = ">=2.32.4,<3.0.0"
+aiohttp = ">=3.10.0,<4.0.0"
+aiofiles = ">=24.1.0,<25.0.0"
+beautifulsoup4 = ">=4.13.4,<5.0.0"
+langchain-community = ">=0.3.27,<0.4.0"
+langchain-experimental = ">=0.3.4,<0.4.0"
+langchain-ollama = ">=0.3.3,<0.4.0"
+langserve = { extras = ["all"], version = "^0.3.1" }
+fastapi = ">=0.116.0,<0.120.0"
+uvicorn = "0.35.0"
+orjson = ">=3.10.0,<4.0.0"
+httpx = ">=0.28.1,<1.0.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = ">=8.0.0"
+black = ">=25.1.0"
+ruff = ">=0.12.2"
+mypy = ">=1.11.0"
+pre-commit = ">=4.0.0"
+watchdog = "^6.0.0"
+poetry-dotenv-plugin = "^0.2.0"
+keyring = "^25.6.0"
+
+[tool.poetry.scripts]
+maxine = "src.server:main"
+pre-commit-check = "scripts.pre_commit:main"
+setup-dev = "scripts.setup_dev:main"
+
+# Ruff configuration
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+select = [
+    "E",
+    "W",
+    "F",
+    "I",
+    "B",
+    "C4",
+    "UP",
+    "ARG",
+    "SIM",
+    "PTH",
+    "ERA",
+    "PL",
+    "RUF",
+]
+ignore = ["E501", "B008", "PLR0913", "PLR0915", "ERA001"]
+
+# Black configuration
+[tool.black]
+line-length = 88
+target-version = ['py313']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+# MyPy configuration
+[tool.mypy]
+python_version = "3.13"
+check_untyped_defs = true
+disallow_any_generics = true
+disallow_incomplete_defs = true
+disallow_untyped_decorators = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+no_implicit_optional = true
+no_implicit_reexport = true
+strict_equality = true
+warn_redundant_casts = true
+warn_return_any = true
+warn_unreachable = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+# Pytest configuration
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = ["--strict-markers", "--strict-config", "--disable-warnings", "-ra"]
+testpaths = ["tests"]
+pythonpath = ["src"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+]
+
+# Coverage configuration
+[tool.coverage.run]
+source = ["src"]
+omit = ["*/tests/*", "*/test_*", "*/__pycache__/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]

@@ -1,0 +1,151 @@
+Metadata-Version: 2.4
+Name: engelliler-sarayi
+Version: 0.2.0
+Summary: Görsel, işitsel ve bilişsel erişilebilirlik için Python araçları.
+Home-page: https://github.com/kullanici-adiniz/engelliler-sarayi-projesi
+Author: Miraç Birben
+Author-email: miracbirben@gmail.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Utilities
+Classifier: Topic :: Text Processing
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pyttsx3
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+Elbette. İşte v2.0'ın tüm yeni özelliklerini (okunabilirlik analizi dahil) ve mevcut iyileştirmeleri kapsayan, baştan sona düzenlenmiş README.md dosyasının içeriği.
+
+Bu metin, projenizin vitrinini profesyonel ve anlaşılır bir şekilde sunar. Sadece bu metni kopyalayıp README.md dosyanızın içine yapıştırmanız yeterlidir.
+
+Engelliler Sarayı Kütüphanesi (v0.2.0)
+
+Engelliler Sarayı, Python geliştiricilerinin daha erişilebilir dijital ürünler yaratmalarına yardımcı olmak amacıyla geliştirilmiş bir araç setidir. Bu kütüphane, özellikle görme, işitme ve bilişsel erişilebilirlik alanlarında pratik ve kullanımı kolay fonksiyonlar sunar.
+
+v2.0 Yenilikleri Neler?
+
+Yeni Modül: Okunabilirlik Analizi! Artık bir metnin ne kadar kolay anlaşılabildiğini (Türkçe için Flesch-Kincaid formülüne göre) analiz edebilirsiniz.
+
+Gelişmiş Kontrast Analizi: Kontrast oranı kontrolü artık WCAG standartlarının 'AA' ve 'AAA' seviyelerini destekliyor ve sonuç olarak detaylı bir sözlük döndürüyor.
+
+Sesi Dosyaya Kaydetme: Metinleri sadece seslendirmekle kalmaz, artık doğrudan bir .mp3 dosyasına kaydedebilirsiniz.
+
+Sesleri Listeleme: Sisteminize yüklü olan sesleri ve dillerini listeleyerek tam kontrol sahibi olmanızı sağlar.
+
+Ses Seviyesi Ayarı: Seslendirmenin yüksekliğini ayarlayabilirsiniz.
+
+Kurulum
+
+Kütüphaneyi pip kullanarak kurabilir veya mevcut sürümünüzü güncelleyebilirsiniz:
+
+Generated bash
+pip install engelliler-sarayi --upgrade
+
+Kullanım Örnekleri
+1. Metin Okunabilirliğini Analiz Etme
+
+Bir metnin ne kadar anlaşılır olduğunu öğrenin. Bu, geniş bir kitleye hitap eden içerikler oluşturmak için harikadır.
+
+Generated python
+import engelliler_sarayi
+import json # Sonuçları daha okunaklı yazdırmak için
+
+# Zor ve akademik bir metin
+zor_metin = "Endüstriyel toplumların yapısal dönüşümü, sosyoekonomik paradigmaların " \
+            "yeniden değerlendirilmesini gerektiren komplike bir fenomen olarak kabul edilmektedir."
+
+analiz_sonucu = engelliler_sarayi.analiz_et_okunabilirlik(zor_metin)
+
+print("Okunabilirlik Analizi:")
+print(json.dumps(analiz_sonucu, indent=2, ensure_ascii=False))
+IGNORE_WHEN_COPYING_START
+content_copy
+download
+Use code with caution.
+Python
+IGNORE_WHEN_COPYING_END
+
+Örnek Çıktı:
+
+Generated json
+{
+  "skor": 34.25,
+  "yorum": "Zor (Üniversite seviyesi)",
+  "detaylar": {
+    "kelime_sayisi": 15,
+    "cumle_sayisi": 1,
+    "hece_sayisi": 59
+  }
+}
+IGNORE_WHEN_COPYING_START
+content_copy
+download
+Use code with caution.
+Json
+IGNORE_WHEN_COPYING_END
+2. Gelişmiş Renk Kontrastı Analizi
+
+'AA' (standart) veya 'AAA' (gelişmiş) seviyelerini kontrol edebilir ve sonuçları detaylı bir sözlük olarak alabilirsiniz.
+
+Generated python
+# 'AAA' seviyesi için bir renk kombinasyonunu test edelim
+sonuc = engelliler_sarayi.check_contrast_ratio(
+    text_color="#FFFFFF", 
+    background_color="#4D4D4D", 
+    level='AAA'
+)
+
+print("\nKontrast Analizi Sonucu:")
+print(json.dumps(sonuc, indent=2, ensure_ascii=False))
+
+if sonuc['is_accessible']:
+    print(f"-> Bu renkler 'AAA' seviyesi için uygundur!")
+else:
+    print(f"-> Bu renkler 'AAA' için yetersiz. Gerekli oran >{sonuc['threshold']}," \
+          f" mevcut oran {sonuc['ratio']:.2f}")
+IGNORE_WHEN_COPYING_START
+content_copy
+download
+Use code with caution.
+Python
+IGNORE_WHEN_COPYING_END
+3. Sesi Dosyaya Kaydetme ve Gelişmiş Seslendirme
+
+Metinleri doğrudan bir ses dosyasına kaydedin veya ses seviyesi, hız gibi ayarları kullanarak seslendirin.
+
+Generated python
+# Adım A: Önce sistemdeki sesleri keşfedelim
+mevcut_sesler = engelliler_sarayi.listele_sesleri()
+print(f"\nSistemde toplam {len(mevcut_sesler)} adet ses bulundu.")
+
+# Adım B: Bir metni dosyaya kaydedelim
+metin = "Bu metin, şimdi bir MP3 dosyası olarak kaydedilecek."
+print(f"'{metin}' cümlesi 'sesli_mesaj.mp3' dosyasına kaydediliyor...")
+engelliler_sarayi.metni_seslendir(metin, dosya_yolu="sesli_mesaj.mp3")
+
+# Adım C: Gelişmiş seçeneklerle seslendirelim
+print("Gelişmiş seçeneklerle seslendirme yapılıyor...")
+engelliler_sarayi.metni_seslendir(
+    metin="Bu, daha kontrollü bir seslendirme örneğidir.",
+    hiz=160,              # Konuşma hızını biraz yavaşlattık
+    ses_seviyesi=0.8,     # Ses seviyesini %80'e ayarladık
+)
+IGNORE_WHEN_COPYING_START
+content_copy
+download
+Use code with caution.
+Python
+IGNORE_WHEN_COPYING_END

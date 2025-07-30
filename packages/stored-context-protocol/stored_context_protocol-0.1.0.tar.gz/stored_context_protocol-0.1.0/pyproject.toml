@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+license-files = []
+
+[project]
+name = "stored-context-protocol"
+version = "0.1.0"
+authors = [
+  { name="SCP Team", email="scp@olives.chat" },
+]
+description = "A Python library for managing and retrieving contextual information using OpenAI's function calling"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "openai>=1.0.0",
+    "python-dotenv>=0.19.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/QuitCool/stored-context-protocol"
+"Bug Reports" = "https://github.com/QuitCool/stored-context-protocol/issues"
+"Source" = "https://github.com/QuitCool/stored-context-protocol"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=22.0.0",
+    "flake8>=4.0.0",
+    "mypy>=0.900",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["stored_context_protocol*"]
+
+[tool.setuptools.package-data]
+"*" = ["py.typed"]

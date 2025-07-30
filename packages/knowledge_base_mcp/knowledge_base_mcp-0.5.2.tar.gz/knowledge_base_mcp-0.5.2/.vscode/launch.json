@@ -1,0 +1,63 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Knowledge Base MCP: Elasticsearch",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "knowledge_base_mcp.main",
+            "cwd": "${workspaceFolder}",
+            "justMyCode": false,
+            "envFile": "${workspaceFolder}/.env",
+            "args": [
+                "elasticsearch",
+                "run",
+                "--transport",
+                "sse"
+            ]
+        },
+        {
+            "name": "Knowledge Base MCP: DuckDB",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "knowledge_base_mcp.main",
+            "cwd": "${workspaceFolder}",
+            "justMyCode": false,
+            "args": [
+                "duckdb",
+                "persistent",
+                "run",
+                "--transport",
+                "sse"
+            ]
+        },
+        // Debug Tests config
+        {
+            "name": "Python: Debug Tests",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "purpose": [
+                "debug-test"
+            ],
+            "args": [
+                "-vv",
+                "-s" // Disable Captures
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+        {
+            "name": "Python Debugger: Current File (Check Import Time)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "pythonArgs": ["-X importtime"]
+        },
+    ]
+}

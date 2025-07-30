@@ -1,0 +1,3 @@
+DEFAULT_EMAIL_SENDER = "no-reply@epok.ai"
+EMAIL_SUBJECT_PREFIX = "[Epok] "
+EPOK_WHATSAPP_DEFAULT = True

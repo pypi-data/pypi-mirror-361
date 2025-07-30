@@ -1,0 +1,134 @@
+Metadata-Version: 2.4
+Name: pywhipper
+Version: 0.1.0
+Summary: Line-by-line Python code profiler with optional memory tracking.
+Home-page: https://github.com/soorajInsights/pywhipper
+Author: Sooraj KK
+Author-email: soorajkknmd@gmail.com
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Debuggers
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: license-file
+
+# pywhipper
+
+![PyPI Version](https://img.shields.io/pypi/v/pywhipper?color=brightgreen)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+
+**pywhipper** is a lightweight, zero-dependency Python profiler designed for developers who want clear, line-by-line insights into the runtime and memory behavior of their code. With support for both function-level and block-level profiling, pywhipper is an ideal tool for rapid debugging and performance analysis.
+
+---
+
+## 📦 Installation
+
+Install pywhipper directly from PyPI:
+
+```bash
+pip install pywhipper
+```
+
+---
+
+## 🚀 Key Features
+
+* 🔍 Line-by-line execution time tracking
+* 🧠 Optional memory usage measurement (via `tracemalloc`)
+* 🧩 Profile entire functions with `@whip`
+* ⚡ Profile code blocks with `with whip()`
+* 📋 Clean, readable console outputs
+
+---
+
+## 🧪 Quick Start
+
+### Profile an Entire Function & Profile a Specific Code Block
+
+```python
+from pywhipper import whip
+
+# -------------------------------
+# ✅ Approach 1 – Manual reverse
+# -------------------------------
+
+@whip(use_memory=True)
+def reverse_string(s):
+    string_list = list(s)
+    left = 0
+    right = len(string_list) - 1
+
+    while left < right:
+        string_list[left], string_list[right] = string_list[right], string_list[left]
+        left += 1
+        right -= 1
+    return "".join(string_list)
+
+string = 'sooraj'
+print("Approach 1 result:", reverse_string(string))
+
+
+# -------------------------------
+# ✅ Approach 2 – Python slicing
+# -------------------------------
+
+with whip("Approach 2 slice reverse", use_memory=True):
+    print("Approach 2 result:", string[::-1])
+
+```
+
+---
+
+## 📊 Example Output
+
+```
+Profiling Function: reverse_string
+Total Time: 0.000709 seconds
+Memory measured in KB (approx)
+------------------------------------------------------------
+demo.py:9 | 0.000016s | +0.12 KB | string_list = list(s)
+demo.py:10 | 0.000379s | +19.35 KB | left = 0
+demo.py:11 | 0.000017s | +0.00 KB | right = len(string_list) - 1
+demo.py:13 | 0.000017s | +0.00 KB | while left < right:
+demo.py:14 | 0.000018s | +0.00 KB | string_list[left], string_list[right] = string_list[right], string_list[left]
+demo.py:15 | 0.000019s | +0.00 KB | left += 1
+demo.py:16 | 0.000017s | +0.00 KB | right -= 1
+------------------------------------------------------------
+Approach 1 result: jaroos
+
+Timing block: Approach 2 slice reverse
+Approach 2 result: jaroos
+Done in 0.000037s | Memory: +0.45 KB
+
+```
+
+---
+
+## 📌 License
+
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+
+---
+
+## 🙋‍♂️ Author & Contributions
+
+Developed by **SOORAJ K K**.
+
+* GitHub: [https://github.com/soorajInsights/pywhipper](https://github.com/soorajInsights/pywhipper)
+* Contributions, bug reports, and feature requests are welcome via [GitHub Issues](https://github.com/soorajInsights/pywhipper/issues).
+
+---
+
+## ⭐️ Why pywhipper?
+
+pywhipper is designed for developers who want just the right amount of visibility into their code's behavior — without the overhead or complexity of full-scale profilers. Whether you're debugging a slow function, understanding memory leaks, or optimizing a script, pywhipper makes performance transparent, fast, and actionable.
+
+---
+
+Thank you for using pywhipper.

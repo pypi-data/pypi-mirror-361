@@ -1,0 +1,17 @@
+#!/bin/sh
+GITGUI_GITEXECDIR=/libexec/git-core
+GITGUI_LIBDIR=/share/git-gui/lib
+GITGUI_RELATIVE=
+SHELL_PATH=/bin/sh
+TCLTK_PATH=wish
+TCL_PATH=tclsh
+TKEXECUTABLE=/System/Library/Frameworks/Tk.framework/Resources/Wish.app/Contents/MacOS/Wish
+GITGUI_VERSION=0.21.GITGUI
+if test "z$*" = zversion ||
+   test "z$*" = z--version
+then
+echo "git-gui version $GITGUI_VERSION"
+else
+libdir="${GIT_GUI_LIB_DIR:-$GITGUI_LIBDIR}"
+exec "$libdir/Git Gui.app/Contents/MacOS/$(basename "$TKEXECUTABLE")" "$0" "$@"
+fi

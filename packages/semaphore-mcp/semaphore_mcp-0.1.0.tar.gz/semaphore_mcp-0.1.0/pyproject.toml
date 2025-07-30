@@ -1,0 +1,73 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "semaphore-mcp"
+version = "0.1.0"
+authors = [
+    {name = "Colin McNaughton"},
+]
+description = "Model Context Protocol (MCP) server for SemaphoreUI automation"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+keywords = ["mcp", "model-context-protocol", "semaphore", "ansible", "automation", "devops"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators", 
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Systems Administration",
+]
+dependencies = [
+    "requests>=2.31.0",
+    "pydantic>=2.5.0",
+    "python-dotenv>=1.0.0",
+    "mcp>=1.9.3",
+    "aiohttp>=3.8.5",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.1", 
+    "black>=23.0.0",
+    "isort>=5.12.0",
+]
+server = [
+    "fastapi>=0.104.0",
+    "uvicorn>=0.23.2",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/cloin/semaphore-mcp"
+"Bug Tracker" = "https://github.com/cloin/semaphore-mcp/issues"
+"Documentation" = "https://github.com/cloin/semaphore-mcp#readme"
+"Source Code" = "https://github.com/cloin/semaphore-mcp"
+
+[project.scripts]
+semaphore-mcp = "semaphore_mcp.scripts.start_server:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+line_length = 88
+
+[tool.black]
+line-length = 88
+target-version = ['py39']

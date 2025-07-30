@@ -1,0 +1,37 @@
+version: "1.0"
+pipeline:
+  input:
+    - name: "length_check"
+      type: "length_filter"
+      enabled: true
+      min_length: 0
+      max_length: 10000
+      on_error: "block"
+    
+    - name: "pii_detection"
+      type: "regex_filter"
+      enabled: true
+      patterns: [
+        "\\b\\d{3}-\\d{2}-\\d{4}\\b",  # SSN
+        "\\b\\d{4}-\\d{4}-\\d{4}-\\d{4}\\b",  # Credit card
+        "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b",  # Email
+        "\\b\\d{3}-\\d{3}-\\d{4}\\b",  # Phone number
+        "\\b\\d{5}(-\\d{4})?\\b",  # ZIP code
+        "\\b[A-Z][a-z]+\\s+[A-Z][a-z]+\\b",  # Full name
+        "\\b[A-Z][a-z]+\\s+[A-Z][a-z]+\\s+[A-Z][a-z]+\\b",  # Three-part name
+        "\\b\\d{1,2}/\\d{1,2}/\\d{4}\\b",  # Date of birth
+        "\\b[A-Z][a-z]+\\s+[A-Z][a-z]+\\s+[A-Z][a-z]+\\s+[A-Z][a-z]+\\b"  # Four-part name
+      ]
+      action: "warn"
+      on_error: "block"
+    
+    - name: "medical_identifiers"
+      type: "regex_filter"
+      enabled: true
+      patterns: [
+        "\\b[A-Z]{2}-\\d{6}\\b",  # Medical record numbers like MR-2024-001234
+        "\\bRX-\\d{6}\\b",  # Prescription numbers like RX-987654
+        "\\b\\d{9}\\b"  # Insurance numbers (9 digits)
+      ]
+      action: "warn"
+      on_error: "block" 

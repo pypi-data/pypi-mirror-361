@@ -1,0 +1,17 @@
+# Phase 5a: Simple Code Generation Filter Configuration
+# This configuration uses regex patterns for fast code generation detection without AI
+
+guardrails:
+  - name: "simple_code_generation"
+    type: "code_generation"
+    enabled: true
+    categories: ["code_blocks", "programming_keywords", "code_injection", "file_operations", "system_commands"]
+    confidence_threshold: 0.6
+    min_keywords: 3
+    on_error: "warn"
+
+# Configuration Options:
+# - categories: List of code types to detect (code_blocks, programming_keywords, code_injection, file_operations, system_commands)
+# - confidence_threshold: Minimum confidence to block content (0.0 to 1.0)
+# - min_keywords: Minimum number of keywords required to trigger detection
+# - on_error: Action when filter fails (block, allow, warn) 

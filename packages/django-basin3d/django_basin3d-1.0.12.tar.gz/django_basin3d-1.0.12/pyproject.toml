@@ -1,0 +1,68 @@
+[build-system]
+requires = ["setuptools>=61.2", "wheel", "setuptools-git-versioning", ]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools-git-versioning]
+enabled = true
+template = "{tag}"
+dev_template = "{tag}.post{ccount}"
+dirty_template = "{tag}.post{ccount}+dirty"
+
+[project]
+name = "django-basin3d"
+dynamic = ["version"]
+authors = [{ name = "Valerie C Hendrix", email = "vchendrix@lbl.gov" },
+    { name = "Danielle Svehla Christianson", email = "dschristianson@lbl.gov" },
+    { name = "Charuleka Varadharajan", email = "cvaradharajan@lbl.gov" }]
+maintainers = [
+    { name = "Valerie C Hendrix", email = "vchendrix@lbl.gov" },
+    { name = "Danielle Svehla Christianson", email = "dschristianson@lbl.gov" },
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python",
+    "License :: OSI Approved :: BSD License",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Hydrology"
+]
+description = "BASIN-3D Django Web Framework"
+license = { file = "LICENSE" }
+readme = "README.md"
+requires-python = '>=3.8,<3.11'
+dependencies = [
+    'basin3d==1.2.0',
+    'django==4.0',
+    'djangorestframework',
+    'django-filter',
+    'markdown',
+    'pygments'
+]
+
+[project.optional-dependencies]
+dev = ['pytest', 'pytest-mypy', 'pytest-cov', 'pytest-django', 'flake8',
+    'types-PyYAML', 'types-chardet', 'types-cryptography', 'types-requests']
+docs = ['sphinx<=6.2.1',
+    'sphinx-autodoc-typehints<=1.23.0',
+    'graphviz',
+    'sphinx_rtd_theme',
+    'tomli',
+    'myst-parser']
+
+[project.urls]
+homepage = "https://github.com/BASIN-3D/django-basin3d"
+documentation = "https://django-basin3d.readthedocs.io"
+repository = "https://github.com/BASIN-3D"
+changelog = "https://github.com/BASIN-3D/django-basin3d/blob/main/CHANGES.md"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["django_basin3d**"]  # package names should match these glob patterns (["*"] by default)
+exclude = [] # exclude packages matching these glob patterns (empty by default)
+namespaces = false  # to disable scanning PEP 420 namespaces (true by default)

@@ -1,0 +1,136 @@
+# pyproject.toml
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "openfeature-provider-flagd"
+version = "0.2.5"
+description = "OpenFeature provider for the flagd flag evaluation engine"
+readme = "README.md"
+authors = [{ name = "OpenFeature", email = "openfeature-core@groups.io" }]
+license = { file = "LICENSE" }
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+keywords = []
+dependencies = [
+  "openfeature-sdk>=0.6.0",
+  "grpcio>=1.68.1",
+  "protobuf>=4.29.2",
+  "mmh3>=4.1.0",
+  "panzi-json-logic>=1.0.1",
+  "semver>=3,<4",
+  "pyyaml>=6.0.1",
+  "cachebox"
+]
+requires-python = ">=3.9"
+
+[project.urls]
+Homepage = "https://github.com/open-feature/python-sdk-contrib"
+
+[tool.hatch]
+
+[tool.hatch.envs.hatch-test]
+dependencies = [
+  "coverage[toml]>=6.5",
+  "pytest",
+  "pytest-bdd",
+  "testcontainers",
+  "asserts",
+  "grpcio-health-checking==1.73.1",
+]
+pre-install-commands = [
+  "hatch build",
+]
+
+[tool.hatch.envs.hatch-test.scripts]
+run = "pytest {args:tests}"
+run-cov = "coverage run -m pytest {args:tests}"
+cov-combine = "coverage combine"
+cov-report = [
+  "coverage xml",
+  "coverage html",
+  "coverage report",
+]
+cov = [
+  "test-cov",
+  "cov-report",
+]
+
+
+[tool.hatch.envs.mypy]
+dependencies = [
+  "mypy[faster-cache]>=1.13.0",
+  "types-protobuf",
+  "types-pyyaml",
+]
+pre-install-commands = [
+  "hatch build",
+]
+
+[tool.hatch.envs.mypy.scripts]
+run = "mypy"
+
+[tool.hatch.build.hooks.protobuf]
+generate_pyi = false
+dependencies = [
+    "hatch-protobuf",
+    "mypy-protobuf~=3.0",
+]
+proto_paths = [
+  ".",
+]
+output_path = "src/"
+
+[[tool.hatch.build.hooks.protobuf.generators]]
+name = "mypy"
+outputs = ["{proto_path}/{proto_name}_pb2.pyi"]
+
+[[tool.hatch.build.hooks.protobuf.generators]]
+name = "mypy_grpc"
+outputs = ["{proto_path}/{proto_name}_pb2_grpc.pyi"]
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+  ".gitignore",
+  "/openfeature",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/openfeature"]
+
+[tool.coverage.run]
+omit = [
+  # exclude generated files
+  "src/openfeature/schemas/*",
+  "tests/**",
+]
+
+[tool.mypy]
+mypy_path = "src"
+files = "src"
+
+python_version = "3.9" # should be identical to the minimum supported version
+namespace_packages = true
+explicit_package_bases = true
+local_partial_types = true
+pretty = true
+
+strict = true
+disallow_any_generics = false
+
+[[tool.mypy.overrides]]
+module = [
+    "grpc.*",
+    "json_logic.*",
+]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
+    "openfeature.schemas.*"
+]
+warn_unused_ignores = false

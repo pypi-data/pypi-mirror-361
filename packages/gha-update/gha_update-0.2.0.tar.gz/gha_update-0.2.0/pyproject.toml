@@ -1,0 +1,177 @@
+[project]
+name = "gha-update"
+version = "0.2.0"
+description = "Update GitHub Actions version pins in GitHub workflow files."
+readme = "README.md"
+authors = [{ name = "David Lord" }]
+license = "MIT"
+license-files = ["LICENSE.txt"]
+requires-python = ">=3.12"
+dependencies = [
+    "click",
+    "httpx",
+]
+
+[project.urls]
+Changes = "https://gha-update.readthedocs.io/page/changes/"
+Documentation = "https://gha-update.readthedocs.io"
+Source = "https://github.com/davidism/gha-update/"
+
+[project.scripts]
+gha-update = "gha_update._cli:cli"
+
+[build-system]
+requires = ["flit-core<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.module]
+name = "gha_update"
+
+[dependency-groups]
+dev = [
+    "mypy",
+    "pre-commit",
+    "pre-commit-uv",
+    "pyright",
+    "pytest",
+    "pytest-asyncio",
+    "pytest-cov",
+    "ruff",
+    "tox",
+    "tox-uv",
+]
+docs = [
+    "furo",
+    "myst-parser",
+    "sphinx",
+]
+docs-auto = [
+    "sphinx-autobuild",
+]
+pre-commit = [
+    "pre-commit",
+    "pre-commit-uv",
+]
+tests = [
+    "pytest",
+    "pytest-asyncio",
+    "pytest-cov",
+]
+typing = [
+    "mypy",
+    "pyright",
+    "pytest",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = [
+    "error",
+]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.coverage.run]
+branch = true
+source = ["gha_update"]
+
+[tool.coverage.paths]
+source = ["src", "*/site-packages"]
+
+[tool.coverage.report]
+exclude_also = [
+    "if t.TYPE_CHECKING",
+    "raise NotImplementedError",
+    ": \\.{3}",
+]
+
+[tool.mypy]
+python_version = "3.12"
+files = ["src"]
+show_error_codes = true
+pretty = true
+strict = true
+
+[tool.pyright]
+pythonVersion = "3.12"
+include = ["src"]
+typeCheckingMode = "standard"
+
+[tool.ruff]
+src = ["src"]
+fix = true
+show-fixes = true
+output-format = "full"
+
+[tool.ruff.lint]
+select = [
+    "B",  # flake8-bugbear
+    "E",  # pycodestyle error
+    "F",  # pyflakes
+    "I",  # isort
+    "UP",  # pyupgrade
+    "W",  # pycodestyle warning
+]
+
+[tool.ruff.lint.isort]
+force-single-line = true
+order-by-type = false
+
+[tool.tox]
+env_list = [
+#    "py3.13", "py3.12",
+    "style",
+    "typing",
+    "docs",
+]
+
+[tool.tox.env_run_base]
+runner = "uv-venv-lock-runner"
+package = "wheel"
+wheel_build_env = ".pkg"
+constrain_package_deps = true
+use_frozen_constraints = true
+dependency_groups = ["tests"]
+commands = [[
+    "pytest", "-v", "--tb=short", "--basetemp={env_tmp_dir}",
+    "--cov", "--cov-report=term-missing",
+    { replace = "posargs", default = [], extend = true },
+]]
+
+[tool.tox.env.style]
+dependency_groups = ["pre-commit"]
+skip_install = true
+commands = [["pre-commit", "run", "--all-files"]]
+
+[tool.tox.env.typing]
+dependency_groups = ["typing"]
+commands = [
+    ["mypy"],
+    ["pyright"],
+#    ["pyright", "--verifytypes", "gha_update", "--ignoreexternal"],
+]
+
+[tool.tox.env.docs]
+dependency_groups = ["docs"]
+commands = [["sphinx-build", "-E", "-W", "-b", "dirhtml", "docs", "docs/_build/dirhtml"]]
+
+[tool.tox.env.docs-auto]
+dependency_groups = ["docs", "docs-auto"]
+commands = [["sphinx-autobuild", "-W", "-b", "dirhtml", "--watch", "src", "docs", "docs/_build/dirhtml"]]
+
+[tool.tox.env.update-actions]
+labels = ["update"]
+dependency_groups = []
+commands = [["python", "-m", "gha_update"]]
+
+[tool.tox.env.update-pre_commit]
+labels = ["update"]
+dependency_groups = ["pre-commit"]
+skip_install = true
+commands = [["pre-commit", "autoupdate", "--freeze", "-j4"]]
+
+[tool.tox.env.update-requirements]
+labels = ["update"]
+dependency_groups = []
+skip_install = true
+commands = [["uv", "lock", { replace = "posargs", default = ["-U"], extend = true }]]

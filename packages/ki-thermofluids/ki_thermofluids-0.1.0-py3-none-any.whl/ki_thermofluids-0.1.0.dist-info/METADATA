@@ -1,0 +1,62 @@
+Metadata-Version: 2.3
+Name: ki_thermofluids
+Version: 0.1.0
+Summary: Thermofluid calculations. Home of ThermoState, FlowState, Orifice, and MinorLoss.
+Author: Shiva Bernath
+Author-email: shiva@karmanindustries.com
+Requires-Python: >=3.11
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Dist: coolprop (>=6.8.0,<7.0.0)
+Requires-Dist: ki-util (>=0.2.0,<0.3.0)
+Requires-Dist: numpy (>=2.3.1,<3.0.0)
+Requires-Dist: pandas (>=2.3.1,<3.0.0)
+Requires-Dist: pint (>=0.24.4,<0.25.0)
+Requires-Dist: pytest (>=8.4.1,<9.0.0)
+Requires-Dist: scipy (>=1.16.0,<2.0.0)
+Description-Content-Type: text/markdown
+
+
+# Karman Industries - Thermofluids
+
+### Variable naming conventions
+#### Variables
+| Common Variables | Default Units | Discription                |
+|------------------|---------------|----------------------------|
+| P                | W             | Power                      |
+| p                | Pa            | Pressure                   |
+| T                | K             | Temperature                |
+| h                | J/kg          | Specific Enthalpy          |
+| s                | J/kgK         | Specific Entropy           |
+| e                | J/kg          | Sp. Internal Energy        |
+| H                | J             | Enthalpy                   |
+| S                | J/K           | Entropy                    |
+| E                | J             | (Internal) Energy          |
+| eta              | -             | Efficiency                 |
+| phi              | -             | Flow coefficient           |
+| psi              | -             | Head coefficient           |
+| omega            | rad/s         | Rotational speed           |
+| mdot             | kg/s          | Mass flowrate              |
+| vdot             | m3/s          | Volumetric flowrate        | 
+| rho              | kg/m3         | Density                    | 
+| pr               | -             | Pressure ratio             |  
+| Q                | W             | Heat transferred           | 
+| W                | W             | Work transferred           | 
+| COP              | -             | Coefficient of Performance | 
+| num              | int           | Number of                  | 
+| dhp              | J/kg          | Polytropic head            |
+
+
+#### Indicating units
+It is encouraged to add units to variable names. This is done via the folling format `varname_subscript__unitNumerator_unitDenominator`:
+- Use a double underscore to seperate the variable name and subscript from the unit.
+- Use a single underscore to seperate the numerator from the denominator
+
+Examples include:
+```
+h_isen__J_kg            # the isentropic specific enthalpy with units kJ/kg 
+A_xsection__m2          # Cross-sectional area in m2
+mdot_inlet__kg_s        # Flow rate in kg/s
+```

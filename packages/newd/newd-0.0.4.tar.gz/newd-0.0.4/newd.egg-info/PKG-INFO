@@ -1,0 +1,162 @@
+Metadata-Version: 2.4
+Name: newd
+Version: 0.0.4
+Summary: Nudity detection through deep learning
+Home-page: https://github.com/iBz-04/newd
+Author: iBz-04
+Author-email: issakaibrahimrayamah@gmail.com
+License: GPL-3.0-or-later
+Project-URL: Documentation, https://github.com/iBz-04/newd#readme
+Project-URL: Source, https://github.com/iBz-04/newd
+Project-URL: Tracker, https://github.com/iBz-04/newd/issues
+Keywords: nsfw nudity detection computer vision ai
+Classifier: License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Multimedia :: Graphics :: Graphics Conversion
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6.0
+Description-Content-Type: text/markdown
+License-File: LICENSE.md
+Requires-Dist: pillow
+Requires-Dist: opencv-python-headless>=4.5.1.48
+Requires-Dist: tqdm
+Requires-Dist: scikit-image
+Requires-Dist: onnxruntime
+Provides-Extra: dev
+Requires-Dist: check-manifest; extra == "dev"
+Requires-Dist: twine; extra == "dev"
+Requires-Dist: wheel; extra == "dev"
+Requires-Dist: build; extra == "dev"
+Provides-Extra: test
+Requires-Dist: pytest; extra == "test"
+Requires-Dist: coverage; extra == "test"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license
+Dynamic: license-file
+Dynamic: project-url
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+
+## Overview
+
+ `newd` analyzes images and identifies specific NSFW body parts with high accuracy. It can also optionally censor detected areas.
+
+## Installation
+
+```bash
+pip install newd
+```
+
+## Usage
+
+### Basic Detection
+
+```python
+from newd import detect
+
+# Standard detection with default settings
+results = detect('path/to/image.jpg')
+print(results)
+```
+
+### Advanced Options
+
+```python
+# Faster detection with slightly reduced accuracy
+results = detect('image.jpg', mode="fast")
+
+# Adjust detection sensitivity
+results = detect('image.jpg', min_prob=0.3)  # Lower threshold catches more potential matches
+
+# Combine options
+results = detect('image.jpg', mode="fast", min_prob=0.3)
+```
+
+### Compatible Input Types
+
+The `detect()` function accepts:
+- String file paths
+- Images loaded with OpenCV (`cv2`)
+- Images loaded with PIL/Pillow
+
+## Output Format
+
+Detection results are returned as a list of dictionaries:
+
+```python
+[
+  {
+    'box': [x1, y1, x2, y2],  # Bounding box coordinates (top-left, bottom-right)
+    'score': 0.825,           # Confidence score (0-1)
+    'label': 'EXPOSED_BREAST_F'  # Classification label
+  },
+  # Additional detections...
+]
+```
+
+## First-Time Use
+
+When importing `newd` for the first time, it will download a 139MB model file to your home directory (`~/.newd/`). This happens only once.
+
+## Performance Notes
+
+- Standard mode: Best accuracy, normal processing speed
+- Fast mode: ~3x faster processing with slightly reduced accuracy
+
+---
+
+## Censoring / Redacting Detected Regions
+
+`newd.censor()` masks detected NSFW regions with solid black rectangles. Use it when you need to create a safe-for-work version of an image.
+
+```python
+from newd import censor
+
+# Censor all detected areas and write the result
+censored_img = censor(
+    'image.jpg',
+    out_path='image_censored.jpg'  # file will be written to disk
+)
+
+# Only censor specific labels (e.g. exposed anus & male genitals)
+selected_parts = ['EXPOSED_ANUS_F', 'EXPOSED_GENITALIA_M']
+censored_img = censor(
+    'image.jpg',
+    out_path='image_censored.jpg',
+    parts_to_blur=selected_parts
+)
+```
+
+Function parameters:
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `img_path` | str / Path | Source image or path. |
+| `out_path` | str / Path, optional | Destination path; if omitted you can still obtain the result via the return value when `visualize=True`. |
+| `visualize` | bool, default `False` | If `True`, the censored `numpy.ndarray` image is returned for display (`cv2.imshow`, etc.). |
+| `parts_to_blur` | List[str], optional | Restrict censoring to given label names. When empty, all detected labels are censored. |
+
+If neither `out_path` nor `visualize=True` is supplied, the function exits early because there is nowhere to deliver the censored image.
+
+---
+
+
+

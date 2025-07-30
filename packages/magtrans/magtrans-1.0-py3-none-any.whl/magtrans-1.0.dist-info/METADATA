@@ -1,0 +1,198 @@
+Metadata-Version: 2.1
+Name: magtrans
+Version: 1.0
+Summary: MagTrans: Magnetic Transition Estimator
+Home-page: https://github.com/gmp007/MagTrans
+Author: Chinedu Ekuma
+Author-email: cekuma1@gmail.com, che218@lehigh.edu
+License: MIT
+Description-Content-Type: text/markdown
+Requires-Dist: numpy >=1.20.0
+Requires-Dist: matplotlib >=3.8.0
+Requires-Dist: pymatgen >=2023.10.11
+Requires-Dist: custodian >=2023.10.11
+Requires-Dist: ase >=3.22.1
+Requires-Dist: sympy >=1.8
+Requires-Dist: numba >=0.56.4
+
+# MagTrans — Magnetic Transition Estimator
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](#license)  
+[![Python](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/)  
+
+**MagTrans** is a fully automated pipeline for predicting magnetic transition temperatures (Curie and Néel) from first principles:
+
+- **Enumerates** all collinear spin configurations in a crystal (1D, 2D, 3D)  
+- **Performs ab initio** DFT relaxations, static, and SOC calculations via VASP + Custodian  
+- **Fits** a Heisenberg + anisotropy Hamiltonian  
+- **Executes Monte Carlo** simulations to extract transition temperatures  
+
+---
+
+## 🚀 Features
+
+- End-to-end automation: **enumeration → DFT → Hamiltonian → Monte Carlo**  
+- Symmetry-aware collinear spin enumeration using **KD-Tree + space group reduction**  
+- Lightweight config via a plain-text `input` file  
+- Support for **high-accuracy functionals**, GPU acceleration  
+- Compatible with **PBE, SCAN, R2SCAN, RVV10**, DFT+U, and vdW corrections  
+- Modular execution with flags: `--only-mc`, `--jij`  
+
+---
+
+## 📦 Installation
+
+1. **Clone the repository:**
+
+   ```bash
+   git clone https://github.com/your-org/MagTrans.git
+   cd MagTrans
+   ```
+
+2. **Create & activate a virtual environment:**
+
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate
+   pip install -r requirements.txt
+   ```
+
+3. **Ensure dependencies** such as **VASP, Custodian, ASE,** and **pymatgen** are installed and configured properly.
+
+---
+
+## ⚙️ Input File (`input`)
+
+Place a plain-text file named `input` in the working directory. Below is an annotated example for **BaNiCl₃**:
+
+```ini
+system_dimension         = 2D
+structure_file           = BaNiCl3.vasp
+XC_functional            = PBE
+DFT_supercell_size       = 1 1 1
+VASP_command_std         = mpirun -np 2 vasp_std
+VASP_command_ncl         = mpirun -np 2 vasp_ncl
+accuracy                 = high
+
+# Magnetic enumeration
+mag_prec                 = 0.003
+enum_prec                = 1e-7
+max_neighbors            = 4
+mag_from                 = OSZICAR
+
+# GPU and layer flags
+GPU_accel                = True
+more_than_2_metal_layers = False
+
+# DFT+U and vdW
+dftu                     = false
+LDAUTYPE                 = 2
+LDAUU                    = Ni 6.0
+LDAUJ                    = Ni 1.0
+LVDW                     = True
+
+# Plane-wave basis
+ENCUT                    = 450
+NSIM                     = 4
+KPAR                     = 2
+NPAR                     = 2
+NCORE                    = 1
+
+# k-points
+kpoints_density_relax    = 10
+kpoints_density_static   = 20
+
+# I/O
+log_filename             = BaNiCl3.log
+potential_directory      = /home/potential
+```
+
+> 💡 **Tip:** Any missing tags are automatically filled with defaults at runtime.
+
+---
+
+## 🛠️ Usage
+
+From the project root:
+
+```bash
+# Full workflow: spin enumeration → DFT → fit Hamiltonian → Monte Carlo
+./MagTrans
+
+# Run only Monte Carlo (requires existing input_MC + DFT outputs)
+./magtrans --only-mc
+
+# Generate exchange interaction file (Jij) for Vampire simulations
+./magtrans --jij [--exc_type isotropic|tensorial]
+```
+
+---
+
+## 📖 How It Works
+
+1. **`parse_input()`**  
+   Parses the input file and sets global parameters.
+
+2. **Structure Preparation**  
+   Converts structure with ASE → pymatgen; applies vacuum or strain if needed.
+
+3. **Spin Enumeration**  
+   Uses KD-tree + symmetry operators to enumerate unique collinear configs.
+
+4. **DFT Execution**  
+   Performs relaxation → static → SOC DFT runs, using Custodian for error handling.
+
+5. **Hamiltonian Fitting**  
+   Symbolically solves or fits via least-squares a Heisenberg + anisotropy model (up to 4 shells).
+
+6. **Monte Carlo Simulation**  
+   Computes temperature-dependent properties using Metropolis / Hybrid / SSE-QMC.
+
+7. **Output & Visualization**
+
+   - `*_Heisenberg_mc.png` — Plots of energy, magnetization, $C_v$, and susceptibility  
+   - `heisenberg_mc_data.txt` — Full thermodynamic dataset  
+
+---
+
+## 📂 Project Structure
+
+```text
+├── file.vasp              # Input structure file (POSCAR)
+├── input                     # Input parameter file
+├── MagTrans                      # Main executable script
+├── run_CurieD.py             # Core workflow module
+├── exchange_generator.py     # Jij generator for MC/Vampire
+├── mc_class.py               # Monte Carlo implementation
+├── requirements.txt          # Python dependencies
+├── README.md                 # ← This file
+└── examples/                 # Sample cases and output
+```
+
+---
+
+## 🧑‍💻 Contributing
+
+We welcome contributions!
+
+1. Fork the repo & clone it locally  
+2. Create a new feature branch  
+3. Add tests + documentation for your changes  
+4. Submit a pull request (PR)
+
+Please follow [PEP8](https://www.python.org/dev/peps/pep-0008/) and write clear commit messages.
+
+---
+
+## 📜 License
+
+This project is licensed under the **MIT License**. See [LICENSE](LICENSE) for details.
+
+---
+
+## ✉️ Contact
+
+**Chinedu Ekuma**  
+Department of Physics, Lehigh University  
+📧 [cekuma1@gmail.com](mailto:cekuma1@gmail.com) | [che218@lehigh.edu](mailto:che218@lehigh.edu)
+

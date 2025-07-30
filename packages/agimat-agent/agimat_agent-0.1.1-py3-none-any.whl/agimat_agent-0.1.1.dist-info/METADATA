@@ -1,0 +1,405 @@
+Metadata-Version: 2.4
+Name: agimat-agent
+Version: 0.1.1
+Summary: 基于 FastAPI 和 LangGraph 的智能代理管理平台
+Project-URL: Homepage, https://github.com/your-username/agimat-agent
+Project-URL: Repository, https://github.com/your-username/agimat-agent
+Project-URL: Documentation, https://github.com/your-username/agimat-agent#readme
+Author-email: Your Name <your.email@example.com>
+License: MIT
+Keywords: agent,ai,fastapi,langchain,mcp
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.12
+Requires-Dist: aiofiles
+Requires-Dist: aiohttp
+Requires-Dist: build>=1.2.2.post1
+Requires-Dist: email-validator
+Requires-Dist: fastapi
+Requires-Dist: fastmcp
+Requires-Dist: google-generativeai
+Requires-Dist: jinja2
+Requires-Dist: langchain
+Requires-Dist: langchain-anthropic
+Requires-Dist: langchain-community
+Requires-Dist: langchain-core
+Requires-Dist: langchain-experimental
+Requires-Dist: langchain-google-genai
+Requires-Dist: langchain-mcp-adapters
+Requires-Dist: langchain-openai
+Requires-Dist: langchain-tavily
+Requires-Dist: langgraph
+Requires-Dist: langsmith
+Requires-Dist: mcp
+Requires-Dist: motor
+Requires-Dist: openai
+Requires-Dist: passlib[bcrypt]
+Requires-Dist: psutil
+Requires-Dist: pydantic
+Requires-Dist: pydantic-settings
+Requires-Dist: python-dateutil
+Requires-Dist: python-dotenv
+Requires-Dist: python-jose[cryptography]
+Requires-Dist: python-multipart
+Requires-Dist: pytz
+Requires-Dist: pyyaml
+Requires-Dist: requests
+Requires-Dist: streamlit>=1.28.0
+Requires-Dist: tenacity
+Requires-Dist: twine>=6.1.0
+Requires-Dist: uvicorn
+Requires-Dist: wavespeed-mcp>=0.1.6
+Provides-Extra: dev
+Requires-Dist: black>=24.1.1; extra == 'dev'
+Requires-Dist: flake8>=7.0.0; extra == 'dev'
+Requires-Dist: httpx>=0.27; extra == 'dev'
+Requires-Dist: isort>=5.13.2; extra == 'dev'
+Requires-Dist: mypy>=1.8.0; extra == 'dev'
+Requires-Dist: pytest-asyncio>=0.23.5; extra == 'dev'
+Requires-Dist: pytest>=8.0.0; extra == 'dev'
+Description-Content-Type: text/markdown
+
+# 🤖 AGI-MAT Agent Management Platform
+
+基于 FastAPI 和 LangGraph 的智能代理管理平台，支持多种大语言模型和MCP工具集成。
+
+## ✨ 主要特性
+
+- 🎯 **多模型支持** - 支持 Claude、Gemini、GPT、豆包等主流模型
+- 🛠️ **MCP工具集成** - 内置本地工具和外部MCP服务器支持
+- 🔄 **流式响应** - 支持实时流式对话和WebSocket连接
+- 📊 **可观测性** - 集成LangSmith追踪和监控
+- 🔌 **插件化架构** - 灵活的工具和模型扩展机制
+
+## 🚀 支持的模型
+
+### Anthropic Claude
+- `claude-3-5-sonnet` - 最新平衡型模型
+- `claude-3-5-haiku` - 快速轻量级模型
+- `claude-3-opus` - 最强推理能力模型
+
+### Google Gemini
+- `gemini-1.5-pro` - 高性能多模态模型
+- `gemini-1.5-flash` - 快速响应模型
+
+### OpenAI
+- `gpt-4o-mini` - 轻量级多模态模型
+- `gpt-4o` - 完整多模态模型
+
+### 国产模型
+- `doubao-1-5-lite-32k-250115` - 字节跳动豆包
+
+## 📦 快速开始
+
+### 1. 环境准备
+
+```bash
+# 克隆项目
+git clone <repository-url>
+cd agimat-agent
+
+# 创建虚拟环境
+python -m venv .venv
+source .venv/bin/activate  # Linux/Mac
+# 或 .venv\Scripts\activate  # Windows
+
+# 安装依赖
+pip install -r requirements.txt
+```
+
+### 2. 使用 uv 管理环境依赖
+
+```bash
+# 同步依赖
+uv sync
+
+# 直接启动
+uv run main.py
+```
+
+## 🖥️ CLI 命令行工具
+
+AGI-MAT Agent 提供了便捷的命令行工具来管理服务。
+
+### 基本命令
+
+```bash
+# 查看帮助
+agimat --help
+
+# 启动后端服务器
+agimat server
+
+# 启动前端UI
+agimat ui
+
+# 打开配置目录
+agimat config
+```
+
+### 详细用法
+
+#### 启动后端服务器
+
+```bash
+# 使用默认配置启动服务器
+agimat server
+
+# 指定端口启动
+agimat server --port 9000
+
+# 指定主机地址
+agimat server --host 0.0.0.0 --port 8000
+
+# 使用自定义配置文件
+agimat server --config /path/to/custom/config.yaml
+```
+
+#### 启动前端UI
+
+```bash
+# 使用默认端口启动UI
+agimat ui
+
+# 指定UI端口
+agimat ui --port 8502
+
+# 使用自定义配置文件
+agimat ui --config /path/to/custom/config.yaml
+```
+
+#### 管理配置文件
+
+```bash
+# 打开配置目录（使用系统默认方式）
+agimat config
+
+# 使用VS Code打开配置目录
+agimat config --editor code
+
+# 使用vim打开配置目录
+agimat config --editor vim
+
+# 使用nano打开配置目录
+agimat config --editor nano
+```
+
+### 配置文件说明
+
+AGI-MAT Agent 会自动在 `~/.agimat/` 目录下创建配置文件：
+
+#### 主配置文件 (`~/.agimat/conf.yaml`)
+
+包含 AGI-MAT Agent 的基本配置，如服务器地址、模型参数等。
+
+#### 环境变量文件 (`~/.agimat/env`)
+
+包含各种API密钥和服务器配置，如：
+- OpenAI API 配置
+- Google AI 配置  
+- Anthropic 配置
+- LangSmith 配置
+- 数据库配置
+- 服务器配置
+- 日志配置
+
+#### MCP配置文件 (`~/.agimat/mcp.json`)
+
+包含MCP服务器的配置信息，支持各种外部工具集成。
+
+### 配置优先级
+
+1. 命令行参数指定的配置文件
+2. `~/.agimat/conf.yaml`
+3. 项目根目录的 `conf.yaml`
+4. 默认配置
+
+### 首次运行
+
+首次运行 `agimat` 命令时，系统会自动：
+
+1. 创建 `~/.agimat/` 配置目录
+2. 生成默认的配置文件
+3. 创建环境变量模板文件
+4. 设置MCP工具配置
+
+### 故障排除
+
+#### 常见问题
+
+**Q: 配置文件在哪里？**
+A: 默认位置是 `~/.agimat/` 目录，使用 `agimat config` 命令可以快速打开。
+
+**Q: 如何修改API密钥？**
+A: 编辑 `~/.agimat/env` 文件，或者使用 `agimat config --editor code` 打开配置目录。
+
+**Q: 端口被占用怎么办？**
+A: 使用 `--port` 参数指定其他端口，例如：`agimat server --port 9000`
+
+**Q: 如何查看日志？**
+A: 在 `~/.agimat/env` 文件中设置 `LOG_LEVEL=DEBUG` 查看详细日志。
+
+### 3. 配置模型
+
+使用CLI工具快速配置：
+
+```bash
+# 打开配置目录
+agimat config
+
+# 或者使用VS Code编辑配置
+agimat config --editor code
+```
+
+编辑 `~/.agimat/env` 文件，配置你的API密钥：
+
+```bash
+# OpenAI API 配置
+OPENAI_API_KEY=your_openai_api_key_here
+
+# Google AI 配置  
+GOOGLE_API_KEY=your_google_api_key_here
+
+# Anthropic 配置
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+```
+
+### 4. 启动服务
+
+使用CLI工具启动服务：
+
+```bash
+# 启动后端服务器
+agimat server
+
+# 启动前端UI
+agimat ui
+
+# 或者同时启动两个服务（在不同终端）
+agimat server --port 8000
+agimat ui --port 8501
+```
+
+服务将在 `http://localhost:8000` 启动，UI在 `http://localhost:8501`。
+
+## 🔧 使用示例
+
+### API调用
+
+```bash
+# 基础对话
+curl -X POST "http://localhost:8000/api/v1/agents/invoke" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "agent_name": "agent_test",
+    "query": "你好，请介绍一下你自己",
+    "task_id": "test-task-1"
+  }'
+```
+
+### 流式对话
+
+```bash
+# SSE流式响应
+curl -X POST "http://localhost:8000/api/v1/agents/stream" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "agent_name": "agent_test", 
+    "query": "写一首关于AI的诗",
+    "task_id": "stream-task-1"
+  }'
+```
+
+### WebSocket连接
+
+```javascript
+const ws = new WebSocket('ws://localhost:8000/api/v1/agents/ws');
+
+ws.onopen = () => {
+  ws.send(JSON.stringify({
+    agent_name: "agent_test",
+    query: "解释一下量子计算的原理",
+    task_id: "ws-task-1"
+  }));
+};
+
+ws.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  console.log(data);
+};
+```
+
+## 🧪 测试配置
+
+运行模型配置测试：
+
+```bash
+# 完整测试
+python test_models.py
+
+# 快速测试
+python test_models.py --quick
+```
+
+## 📚 文档
+
+- [多模型配置指南](MULTI_MODEL_SETUP.md) - 详细的模型配置说明
+- [MCP工具文档](MCP_FASTMCP_IMPLEMENTATION.md) - MCP工具集成指南
+- [API文档](http://localhost:8000/docs) - 启动服务后访问
+
+## 🏗️ 项目结构
+
+```
+agimat-agent/
+├── api/                    # API路由层
+│   └── agent.py           # Agent API端点
+├── core/                  # 核心业务逻辑
+│   ├── apps/
+│   │   ├── agents/        # Agent实现
+│   │   ├── mcp/          # MCP工具集成
+│   │   ├── tools/        # 本地工具
+│   │   └── builder/      # Agent构建器
+│   └── models/           # 数据模型
+├── lib/                  # 通用库
+│   ├── llm_provider.py   # 多模型支持
+│   └── config.py         # 配置管理
+├── conf.yaml            # 主配置文件
+├── main.py             # 应用入口
+└── requirements.txt    # 依赖包
+```
+
+## 🎨 UI 启动
+
+使用CLI工具启动UI：
+
+```bash
+# 使用默认端口启动UI
+agimat ui
+
+# 指定端口启动UI
+agimat ui --port 8501
+
+# 使用uv直接启动（如果需要）
+uv run streamlit run ui/ui.py --server.port 8501
+```
+
+## 🤝 贡献指南
+
+1. Fork 本仓库
+2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 创建 Pull Request
+
+## 📄 许可证
+
+本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
+
+## 🙏 致谢
+
+- [LangChain](https://github.com/langchain-ai/langchain) - 强大的LLM应用框架
+- [FastAPI](https://github.com/tiangolo/fastapi) - 现代化的Web API框架
+- [MCP](https://github.com/modelcontextprotocol) - 模型上下文协议

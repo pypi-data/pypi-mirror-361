@@ -1,0 +1,15 @@
+# Phase 5a: Simple PII Detection Filter Configuration
+# This configuration uses regex patterns for fast PII detection without AI
+
+guardrails:
+  - name: "simple_pii_detection"
+    type: "pii_detection"
+    enabled: true
+    patterns: ["ssn", "credit_card", "email", "phone", "ip_address"]
+    confidence_threshold: 0.8
+    on_error: "block"
+
+# Configuration Options:
+# - patterns: List of PII types to detect (ssn, credit_card, email, phone, ip_address, driver_license, passport, bank_account)
+# - confidence_threshold: Minimum confidence to block content (0.0 to 1.0)
+# - on_error: Action when filter fails (block, allow, warn) 

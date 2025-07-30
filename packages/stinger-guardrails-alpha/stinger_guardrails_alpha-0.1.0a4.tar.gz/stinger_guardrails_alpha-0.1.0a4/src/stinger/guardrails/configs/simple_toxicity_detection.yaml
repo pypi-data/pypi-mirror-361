@@ -1,0 +1,15 @@
+# Phase 5a: Simple Toxicity Detection Filter Configuration
+# This configuration uses regex patterns for fast toxicity detection without AI
+
+guardrails:
+  - name: "simple_toxicity_detection"
+    type: "toxicity_detection"
+    enabled: true
+    categories: ["hate_speech", "harassment", "threats", "sexual_harassment", "violence"]
+    confidence_threshold: 0.7
+    on_error: "block"
+
+# Configuration Options:
+# - categories: List of toxicity types to detect (hate_speech, harassment, threats, sexual_harassment, violence)
+# - confidence_threshold: Minimum confidence to block content (0.0 to 1.0)
+# - on_error: Action when filter fails (block, allow, warn) 

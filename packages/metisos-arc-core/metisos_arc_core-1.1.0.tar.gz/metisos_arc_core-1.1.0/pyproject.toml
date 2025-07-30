@@ -1,0 +1,102 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "metisos-arc-core"
+version = "1.1.0"
+description = "ARC Core - Adaptive Recursive Consciousness Engine with Teaching Pack System"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "Apache-2.0"}
+authors = [
+    {name = "Metisos", email = "support@metisos.com"}
+]
+maintainers = [
+    {name = "Metisos", email = "support@metisos.com"}
+]
+keywords = [
+    "AI", "consciousness", "neural-networks", "adaptive-learning", 
+    "teaching-packs", "biological-learning", "LoRA", "transformers"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+dependencies = [
+    "torch>=1.9.0",
+    "transformers>=4.20.0",
+    "peft>=0.3.0",
+    "accelerate>=0.20.0",
+    "datasets>=2.0.0",
+    "tokenizers>=0.13.0",
+    "huggingface-hub>=0.15.0",
+    "click>=8.0.0",
+    "pyyaml>=6.0",
+    "numpy>=1.21.0",
+    "tqdm>=4.64.0",
+    "psutil>=5.8.0",
+    "scikit-learn>=1.0.0",
+]
+
+[project.optional-dependencies]
+gpu = [
+    "torch[cuda]",
+    "accelerate[cuda]",
+]
+apple = [
+    "torch[mps]",
+]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=22.0.0",
+    "flake8>=5.0.0",
+    "mypy>=1.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/metisos/arc_coreV1"
+Documentation = "https://github.com/metisos/arc_coreV1/blob/main/README.md"
+Repository = "https://github.com/metisos/arc_coreV1.git"
+Issues = "https://github.com/metisos/arc_coreV1/issues"
+Changelog = "https://github.com/metisos/arc_coreV1/releases"
+
+[project.scripts]
+arc = "cli.arc:cli"
+
+[tool.setuptools.packages.find]
+include = ["arc_core*", "cli*"]
+exclude = ["tests*"]
+
+[tool.setuptools.package-data]
+arc_core = ["*.json", "*.yaml", "*.yml"]
+cli = ["*.json", "*.yaml", "*.yml"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]

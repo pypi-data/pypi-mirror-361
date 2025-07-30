@@ -1,0 +1,120 @@
+Metadata-Version: 2.4
+Name: lims2-sdk
+Version: 0.3.0
+Summary: 生信云平台 Python SDK，提供图表上传和文件存储功能
+Author-email: Lims2 Team <support@lims2.com>
+License-Expression: MIT
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: requests>=2.25.0
+Requires-Dist: click>=8.0.0
+Requires-Dist: plotly>=5.0.0
+Requires-Dist: oss2>=2.15.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"
+
+# Lims2 SDK
+
+[![Version](https://img.shields.io/badge/version-0.3.0-blue.svg)](https://github.com/huangzhibo/lims2-sdk)
+[![Python](https://img.shields.io/badge/python-≥3.8-green.svg)](https://www.python.org/)
+
+生信云平台 Python SDK，提供图表上传和文件存储功能。
+
+**当前版本**: v0.3.0
+
+## 功能特性
+
+- **图表服务**：支持 Plotly、Cytoscape、图片、PDF 格式上传
+- **文件存储**：通过 STS 凭证上传文件到阿里云 OSS，支持断点续传
+- **命令行工具**：提供便捷的 CLI 命令
+- **精度控制**：使用 decimal 库精确四舍五入，默认保留3位小数，减少 JSON 文件大小（可减少 15-60%）
+
+## 安装配置
+
+### 推荐方式：从 PyPI 安装
+```bash
+pip install lims2-sdk
+```
+
+### 设置环境变量：
+
+```bash
+export LIMS2_API_URL="your-api"
+export LIMS2_API_TOKEN="your-api-token"
+```
+
+## 命令行使用
+
+** 详细参数说明使用 --help 查询 **
+
+### 图表上传
+```bash
+# 上传图表文件（完整参数示例）
+lims2 chart upload plot.json -p proj_001 -n "基因表达分析" -s sample_001 -t heatmap -d "差异表达热图" -c A_vs_B -a Expression_statistics --precision 3
+```
+
+### 文件存储
+```bash
+# 上传单个文件（完整参数示例）
+lims2 storage upload results.csv -p proj_001 -a Expression_statistics -c results -s sample_001 -d "差异表达结果"
+
+# 上传目录
+lims2 storage upload-dir output/ -p proj_001 -a qc_analysis -c results -s sample_001
+```
+
+## Python SDK 使用
+
+```python
+from lims2 import Lims2Client
+
+# 初始化客户端
+client = Lims2Client()
+
+# 上传图表（完整参数示例）
+client.chart.upload(
+    data_source="plot.json",        # 图表数据源：字典、文件路径或 Path 对象
+    project_id="proj_001",          # 项目 ID（必需）
+    chart_name="基因表达分析",        # 图表名称（必需）
+    sample_id="sample_001",         # 样本 ID（可选）
+    chart_type="heatmap",           # 图表类型（可选）
+    description="差异表达基因热图",   # 图表描述（可选）
+    contrast="A_vs_B",              # 对比策略（可选）
+    analysis_node="Expression_statistics",  # 分析节点名称（可选）
+    precision=3                     # 浮点数精度：0-10位小数（默认3）
+)
+
+# 上传文件（完整参数示例）
+client.storage.upload_file(
+    file_path="results.csv",        # 文件路径（必需）
+    project_id="proj_001",          # 项目 ID（必需）
+    analysis_node="Expression_statistics",  # 分析节点名称（必需）
+    file_category="results",        # 文件分类（必需）
+    sample_id="sample_001",         # 样本 ID（可选）
+    description="差异表达结果文件",   # 文件描述（可选）
+    progress_callback=lambda consumed, total: print(f"进度: {consumed/total*100:.1f}%")  # 进度回调函数（可选）
+)
+
+# 上传目录
+client.storage.upload_directory(
+    dir_path="output/",              # 目录路径（必需）
+    project_id="proj_001",          # 项目 ID（必需）
+    analysis_node="qc_analysis",    # 分析节点名称（必需）
+    file_category="results",        # 文件分类（必需）
+    sample_id="sample_001",         # 样本 ID（可选）
+    recursive=True                  # 是否递归上传子目录（默认 True）
+)
+```
+
+## 支持的数据格式
+
+### 图表格式
+- **Plotly**: 包含 `data` 和 `layout` 字段的字典
+- **Cytoscape**: 包含 `elements` 或 `nodes`+`edges` 字段的字典  
+- **图片**: PNG, JPG, JPEG, SVG
+- **其他**: PDF
+
+### 文件格式
+- 支持任意格式的文件上传
+- 自动处理大文件（>10MB）的断点续传
+- 提供进度回调支持

@@ -1,0 +1,115 @@
+<section id="about" class="py-24 bg-white">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Section header with elegant typography -->
+    <div class="text-center max-w-3xl mx-auto mb-20">
+      <span class="inline-block text-xs uppercase tracking-widest text-gray-500 mb-3">About Our Brand</span>
+      <h2 class="text-3xl sm:text-4xl font-light text-gray-900 mb-4">
+        {{ sections.about.title }}
+      </h2>
+      <div class="w-16 h-px bg-gray-300 mx-auto mb-6"></div>
+      <p class="text-gray-600 font-light">
+        {{sections.about.content}}
+      </p>
+    </div>
+    
+    <div class="grid lg:grid-cols-[60%_40%] gap-12 items-center justify-center">
+      <!-- Media Container with sharp corners matching Features v1 -->
+      <div>
+        {% if sections.about.media.type == 'image' %}
+        <div class="relative overflow-hidden group">
+          <!-- Main image with hover effect -->
+          <img
+            src="{{ sections.about.media.src }}"
+            alt="{{ sections.about.media.alt }}"
+            class="w-full aspect-[3/4] object-cover transform transition-transform duration-700 group-hover:scale-105"
+            loading="{{ 'lazy' if sections.about.media.lazyLoad }}"
+          />
+          <!-- Subtle gradient overlay -->
+          <div class="absolute inset-0 bg-gradient-to-tr from-gray-900/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <!-- Minimal caption like in Features v1 -->
+          <div class="absolute bottom-4 right-4 bg-white py-1 px-3 text-xs tracking-wider text-gray-500">
+            Our Story
+          </div>
+        </div>
+        {% else %}
+        <div
+          id="video-container"
+          class="relative aspect-video overflow-hidden group"
+        >
+          <!-- Video overlay with enhanced styling -->
+          <div
+            class="absolute inset-0 bg-gradient-to-tr from-gray-900/60 to-gray-900/30 flex items-center justify-center group cursor-pointer z-10 transition-opacity duration-300"
+            id="video-overlay"
+          >
+            <div
+              class="w-16 h-16 bg-white/90 backdrop-blur-sm flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:bg-white"
+            >
+              <i class="ri-play-fill text-3xl text-gray-900"></i>
+            </div>
+          </div>
+          <video
+            id="demo-video"
+            class="w-full h-full object-cover"
+            poster="{{ sections.about.media.poster }}"
+            controls
+          >
+            <source src="{{ sections.about.media.src }}" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Features Grid with card styling -->
+      <div class="grid grid-cols-2 gap-6">
+        {% for item in sections.about.items %}
+        <div class="bg-white p-6 border border-gray-100 shadow-sm hover:shadow transition-all duration-300">
+          <div
+            class="w-10 h-10 flex items-center justify-center mb-4"
+          >
+            <i class="{{ item.icon }} text-xl text-gray-700"></i>
+          </div>
+          <h3 class="text-lg font-light text-gray-900 mb-2">{{ item.title }}</h3>
+          <div class="w-8 h-px bg-gray-200 mb-3"></div>
+          <p class="text-gray-600 text-sm font-light">{{ item.description }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    
+    <!-- Optional CTA button matching Hero v5 style -->
+    <div class="text-center mt-16">
+      <a 
+        href="#contact" 
+        class="inline-flex items-center px-8 py-3 border border-gray-900 text-gray-900 font-light text-sm tracking-widest uppercase hover:bg-gray-900 hover:text-white transition-colors duration-300"
+      >
+        Learn More About Us
+      </a>
+    </div>
+  </div>
+  
+  <!-- Video player script -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Video player functionality
+      const videoContainer = document.getElementById("video-container");
+      if (!videoContainer) return;
+      
+      const overlay = document.getElementById("video-overlay");
+      if (!overlay) return;
+      
+      const videoElement = document.getElementById("demo-video");
+      
+      overlay.addEventListener("click", function () {
+        overlay.style.opacity = 0;
+        setTimeout(() => {
+          overlay.style.display = "none";
+        }, 300);
+        
+        if (videoElement) {
+          videoElement.play();
+        }
+      });
+    });
+  </script>
+</section>

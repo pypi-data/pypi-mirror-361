@@ -1,0 +1,227 @@
+<nav class="sticky top-0 w-full bg-white/90 backdrop-blur-md z-50 transition-all duration-300">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between h-16 items-center">
+      <div class="flex items-center">
+        <a href="/" class="relative group">
+          <span class="absolute -inset-1 rounded-lg blur opacity-0 group-hover:opacity-25 transition duration-500 group-hover:duration-200 animate-tilt bg-gradient-to-r from-amber-400 to-rose-400"></span>
+          <span class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-amber-500 to-rose-500 relative">
+            {{ settings.seo.title.split(' - ')[0] }}
+          </span>
+        </a>
+      </div>
+      
+      <!-- Desktop navigation -->
+      <div class="hidden md:flex items-center space-x-8">
+        {% for link in sections.navigation.items %}
+        <a 
+          href="{{ link.url }}" 
+          class="text-sm font-medium text-gray-700 hover:text-amber-500 relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-gradient-to-r after:from-amber-400 after:to-rose-400 hover:after:w-full after:transition-all after:duration-300"
+        >
+          {{ link.label }}
+        </a>
+        {% endfor %}
+        
+        <!-- CTA Buttons -->
+        {% if sections.navigation.ctaItems and sections.navigation.ctaItems|length > 0 %}
+        {% for ctaItem in sections.navigation.ctaItems %}
+        <a
+          href="{{ ctaItem.url }}"
+          class="relative overflow-hidden group inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full text-white bg-gradient-to-r from-amber-400 to-rose-400 hover:shadow-lg hover:shadow-amber-200/50 transition-all duration-300 hover:-translate-y-0.5"
+        >
+          <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-amber-400 to-rose-400"></span>
+          <span class="absolute inset-0 w-0 bg-gradient-to-r from-rose-400 to-amber-400 transition-all duration-300 ease-out group-hover:w-full"></span>
+          <span class="relative z-10">{{ ctaItem.label }}</span>
+        </a>
+        {% endfor %}
+        {% endif %}
+      </div>
+      
+      <!-- Mobile menu button -->
+      <div class="md:hidden">
+        <button id="mobile-menu-button" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-amber-500 focus:outline-none transition-colors duration-300">
+          <span class="sr-only">Open main menu</span>
+          <!-- Hamburger icon -->
+          <svg class="block h-6 w-6" id="hamburger-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <!-- Close icon -->
+          <svg class="hidden h-6 w-6" id="close-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="hidden md:hidden bg-white/95 backdrop-blur-md border-t border-amber-100">
+    <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+      {% for link in sections.navigation.items %}
+      <a
+        href="{{ link.url }}"
+        class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-amber-500 hover:bg-amber-50/50 transition-all duration-300"
+      >
+        {{ link.label }}
+      </a>
+      {% endfor %}
+      
+      <!-- CTA Buttons -->
+      {% if sections.navigation.ctaItems and sections.navigation.ctaItems|length > 0 %}
+      <div class="pt-2 pb-1">
+        {% for ctaItem in sections.navigation.ctaItems %}
+        <a
+          href="{{ ctaItem.url }}"
+          class="relative overflow-hidden group block w-full text-center mt-2 px-3 py-3 rounded-lg text-base font-medium text-white"
+        >
+          <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-amber-400 to-rose-400 transition-all duration-300"></span>
+          <span class="absolute inset-0 w-0 bg-gradient-to-r from-rose-400 to-amber-400 transition-all duration-300 ease-out group-hover:w-full"></span>
+          <span class="relative z-10">{{ ctaItem.label }}</span>
+        </a>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</nav>
+
+<style>
+  /* Fancy animations */
+  @keyframes tilt {
+    0%, 50%, 100% {
+      transform: rotate(0deg);
+    }
+    25% {
+      transform: rotate(0.5deg);
+    }
+    75% {
+      transform: rotate(-0.5deg);
+    }
+  }
+  
+  .animate-tilt {
+    animation: tilt 10s infinite linear;
+  }
+  
+  /* Mobile menu animations */
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-slideDown {
+    animation: slideDown 0.3s ease-out forwards;
+  }
+  
+  /* Hover animations for nav links */
+  @keyframes pulse-subtle {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.85;
+    }
+  }
+  
+  .animate-pulse-subtle {
+    animation: pulse-subtle 2s ease-in-out infinite;
+  }
+  
+  /* Fancy hover effects */
+  nav a.hover-lift {
+    transition: transform 0.2s ease;
+  }
+  
+  nav a.hover-lift:hover {
+    transform: translateY(-2px);
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const nav = document.querySelector('nav');
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const hamburgerIcon = document.getElementById('hamburger-icon');
+    const closeIcon = document.getElementById('close-icon');
+    let lastScrollTop = 0;
+    const navHeight = nav.offsetHeight;
+    
+    // Toggle mobile menu
+    mobileMenuButton.addEventListener('click', function() {
+      const isOpen = mobileMenu.classList.contains('block');
+      
+      if (isOpen) {
+        // Close menu
+        mobileMenu.classList.remove('block', 'animate-slideDown');
+        mobileMenu.classList.add('hidden');
+        hamburgerIcon.classList.remove('hidden');
+        closeIcon.classList.add('hidden');
+      } else {
+        // Open menu
+        mobileMenu.classList.remove('hidden');
+        mobileMenu.classList.add('block', 'animate-slideDown');
+        hamburgerIcon.classList.add('hidden');
+        closeIcon.classList.remove('hidden');
+      }
+    });
+    
+    // Change navigation background on scroll
+    window.addEventListener('scroll', function() {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      
+      // Add shadow and adjust opacity when scrolling down
+      if (scrollTop > 10) {
+        nav.classList.add('shadow-md');
+        nav.classList.remove('bg-white/90');
+        nav.classList.add('bg-white/98');
+      } else {
+        nav.classList.remove('shadow-md');
+        nav.classList.add('bg-white/90');
+        nav.classList.remove('bg-white/98');
+      }
+      
+      // Hide/show navigation based on scroll direction (smart navigation)
+      if (scrollTop > lastScrollTop && scrollTop > navHeight) {
+        // Scrolling down - hide nav
+        nav.style.transform = 'translateY(-100%)';
+      } else {
+        // Scrolling up - show nav
+        nav.style.transform = 'translateY(0)';
+      }
+      
+      lastScrollTop = scrollTop;
+    });
+    
+    // Add hover animation classes to desktop nav links
+    const desktopNavLinks = document.querySelectorAll('.md\\:flex a:not([class*="rounded-full"])');
+    desktopNavLinks.forEach(link => {
+      link.classList.add('hover-lift');
+    });
+    
+    // Highlight active nav item based on current page
+    const currentPath = window.location.pathname;
+    const navLinks = document.querySelectorAll('nav a');
+    
+    navLinks.forEach(link => {
+      const linkPath = new URL(link.href, window.location.origin).pathname;
+      
+      if (currentPath === linkPath || 
+          (currentPath.startsWith(linkPath) && linkPath !== '/')) {
+        link.classList.add('text-amber-500');
+        link.classList.add('font-semibold');
+      }
+    });
+    
+    // Add subtle animation to logo
+    const logo = document.querySelector('nav a[href="/"]');
+    if (logo) {
+      logo.classList.add('animate-pulse-subtle');
+    }
+  });
+</script>

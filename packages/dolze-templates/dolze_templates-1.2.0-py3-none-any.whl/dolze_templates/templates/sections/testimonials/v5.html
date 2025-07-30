@@ -1,0 +1,111 @@
+<section id="testimonials" class="py-24 bg-gradient-to-br from-blue-50 to-purple-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    {# — Section Heading — #}
+    <div class="text-center mb-16" data-aos="fade-up">
+      <span class="inline-block px-4 py-1 rounded-full bg-primary/10 text-primary font-medium text-sm mb-4">TESTIMONIALS</span>
+      <h2 class="text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600">
+        {{ sections.testimonials.title }}
+      </h2>
+      {%- if sections.testimonials.subtitle %}
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto mt-6">
+        {{ sections.testimonials.subtitle }}
+      </p>
+      {%- endif %}
+    </div>
+
+    {# — Floating Testimonial Cards — #}
+    <div class="testimonial-container relative h-[600px] max-w-5xl mx-auto" data-aos="fade-up" data-aos-delay="200">
+      {%- for t in sections.testimonials.items %}
+      <div class="testimonial-bubble absolute transition-all duration-700 ease-in-out"
+           style="--index: {{ loop.index0 }}; --total: {{ sections.testimonials.items|length }};"
+           data-index="{{ loop.index0 }}">
+        <div class="relative bg-white backdrop-blur-sm bg-opacity-80 p-8 rounded-[2rem] shadow-[0_20px_50px_rgba(8,112,184,0.1)] border border-white overflow-hidden">
+          <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/40 to-purple-400/40"></div>
+          
+          {# Rating stars at the top #}
+          <div class="flex mb-6">
+            {# Render filled stars #}
+            {% for _ in range(t.rating) %}
+            <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+            </svg>
+            {% endfor %}
+            
+            {# Render empty stars up to 5 #}
+            {% for _ in range(5 - t.rating) %}
+            <svg class="w-5 h-5 text-gray-200" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+            </svg>
+            {% endfor %}
+          </div>
+          
+          {# Quote text with decorative quotes #}
+          <div class="relative">
+            <div class="absolute -top-4 -left-2 text-primary/10 transform scale-150">
+              <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M11.875 17.5H7.5C6.375 17.5 5.46875 17.0312 4.78125 16.0938C4.09375 15.1562 3.75 14.0625 3.75 12.8125C3.75 11.5625 4.09375 10.4688 4.78125 9.53125C5.46875 8.59375 6.375 8.125 7.5 8.125H8.75C9.0625 8.125 9.32812 8.01562 9.54688 7.79688C9.76562 7.57812 9.875 7.3125 9.875 7C9.875 6.6875 9.76562 6.42188 9.54688 6.20312C9.32812 5.98438 9.0625 5.875 8.75 5.875H7.5C5.75 5.875 4.29688 6.48438 3.14062 7.70312C1.98438 8.92188 1.40625 10.4375 1.40625 12.25V20C1.40625 21.8125 1.98438 23.3281 3.14062 24.5469C4.29688 25.7656 5.75 26.375 7.5 26.375H11.875C13.625 26.375 15.0781 25.7656 16.2344 24.5469C17.3906 23.3281 17.9688 21.8125 17.9688 20V17.5C17.9688 16.375 17.5 15.4688 16.5625 14.7812C15.625 14.0938 14.5312 13.75 13.2812 13.75C12.0312 13.75 10.9375 14.0938 10 14.7812C9.0625 15.4688 8.59375 16.375 8.59375 17.5H11.875ZM26.875 17.5H22.5C21.375 17.5 20.4688 17.0312 19.7812 16.0938C19.0938 15.1562 18.75 14.0625 18.75 12.8125C18.75 11.5625 19.0938 10.4688 19.7812 9.53125C20.4688 8.59375 21.375 8.125 22.5 8.125H23.75C24.0625 8.125 24.3281 8.01562 24.5469 7.79688C24.7656 7.57812 24.875 7.3125 24.875 7C24.875 6.6875 24.7656 6.42188 24.5469 6.20312C24.3281 5.98438 24.0625 5.875 23.75 5.875H22.5C20.75 5.875 19.2969 6.48438 18.1406 7.70312C16.9844 8.92188 16.4062 10.4375 16.4062 12.25V20C16.4062 21.8125 16.9844 23.3281 18.1406 24.5469C19.2969 25.7656 20.75 26.375 22.5 26.375H26.875C28.625 26.375 30.0781 25.7656 31.2344 24.5469C32.3906 23.3281 32.9688 21.8125 32.9688 20V17.5C32.9688 16.375 32.5 15.4688 31.5625 14.7812C30.625 14.0938 29.5312 13.75 28.2812 13.75C27.0312 13.75 25.9375 14.0938 25 14.7812C24.0625 15.4688 23.5938 16.375 23.5938 17.5H26.875Z" fill="currentColor"/>
+              </svg>
+            </div>
+            <p class="text-gray-700 text-lg leading-relaxed mb-8 px-4">
+              {{ t.quote }}
+            </p>
+          </div>
+          
+          {# Author info with modern layout #}
+          <div class="flex items-center">
+            <div class="relative mr-4">
+              {%- if t.avatar %}
+              <div class="w-16 h-16 rounded-2xl overflow-hidden border-2 border-primary/20 p-0.5 bg-gradient-to-br from-primary/20 to-purple-400/20">
+                <img
+                  src="{{ t.avatar }}"
+                  alt="{{ t.author }}"
+                  class="w-full h-full object-cover rounded-xl"
+                />
+              </div>
+              {%- else %}
+              {# Fallback to initials #}
+              {% set parts = t.author.split(' ') %}
+              <div class="w-16 h-16 rounded-2xl overflow-hidden border-2 border-primary/20 p-0.5 bg-gradient-to-br from-primary/20 to-purple-400/20">
+                <div class="w-full h-full rounded-xl bg-gradient-to-br from-primary/10 to-purple-400/10 flex items-center justify-center">
+                  <span class="text-xl font-semibold text-primary">
+                    {{ parts[0][0] }}{{ parts[1][0] if parts|length > 1 else '' }}
+                  </span>
+                </div>
+              </div>
+              {%- endif %}
+              <div class="absolute -bottom-1 -right-1 bg-gradient-to-br from-primary to-purple-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+            </div>
+            <div>
+              <h4 class="font-bold text-gray-900">{{ t.author }}</h4>
+              <p class="text-sm text-primary">{{ t.role }}</p>
+            </div>
+          </div>
+          
+          {# Decorative elements #}
+          <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/5 to-purple-400/5 rounded-bl-[100px] -z-10"></div>
+          <div class="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/5 to-purple-400/5 rounded-tr-[100px] -z-10"></div>
+        </div>
+      </div>
+      {%- endfor %}
+    </div>
+    
+    {# Navigation controls #}
+    <div class="flex justify-center items-center mt-10">
+      <button class="prev-button bg-white rounded-full p-3 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all duration-300 transform hover:-translate-x-1 mx-2 group">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400 group-hover:text-primary transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      
+      <div class="flex space-x-3 dots-container">
+        {%- for t in sections.testimonials.items %}
+        <button class="w-2.5 h-2.5 rounded-full transition-all duration-300 focus:outline-none dot {% if loop.first %}bg-gradient-to-r from-primary to-purple-500 scale-150{% else %}bg-gray-300{% endif %}" data-index="{{ loop.index0 }}"></button>
+        {%- endfor %}
+      </div>
+      
+      <button class="next-button bg-white rounded-full p-3 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all duration-300 transform hover:translate-x-1 mx-2 group">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray

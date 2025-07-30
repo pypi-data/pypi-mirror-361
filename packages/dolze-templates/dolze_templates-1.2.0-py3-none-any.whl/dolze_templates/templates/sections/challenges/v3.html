@@ -1,0 +1,51 @@
+<section
+  id="challenges"
+  class="py-16 bg-gradient-to-br from-primary/10 to-secondary/5 overflow-hidden"
+>
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 text-center mb-8">
+      {{ sections.challenges.title }}
+    </h2>
+    <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+      {{ sections.challenges.subtitle }}
+    </p>
+
+    <!-- Mobile: horizontal snap; Desktop: grid -->
+    <div
+      class="overflow-x-auto snap-x snap-mandatory flex space-x-6 sm:space-x-0 sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-6"
+    >
+      {% for item in sections.challenges.items %}
+      <div
+        class="snap-center min-w-[80%] sm:min-w-0 bg-white p-6 rounded-sm shadow-md transform hover:-translate-y-2 transition duration-300 relative"
+      >
+        <!-- Card content -->
+        <div class="p-6">
+          <!-- Icon with rectangular background -->
+          <div class="relative w-16 h-16 mb-5">
+            <div
+              class="absolute inset-0 bg-{{ item.color }}-100 rounded-sm"
+            ></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <i class="{{ item.icon }} text-{{ item.color }}-600 text-3xl"></i>
+            </div>
+          </div>
+
+          <!-- Title and description -->
+          <h3 class="text-xl font-bold text-gray-800 mb-3">{{ item.value }}</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">{{ item.label }}</p>
+          
+          <!-- Rectangular CTA button -->
+          <a href="#" class="inline-block mt-6 px-6 py-2 bg-{{ item.color }}-500 text-white rounded-sm hover:bg-{{ item.color }}-600 transition-colors duration-300">
+            Learn More
+          </a>
+        </div>
+
+        <!-- Hover effect overlay -->
+        <div
+          class="absolute inset-0 bg-{{ item.color }}-500 opacity-0 hover:opacity-10 transition-opacity duration-300"
+        ></div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

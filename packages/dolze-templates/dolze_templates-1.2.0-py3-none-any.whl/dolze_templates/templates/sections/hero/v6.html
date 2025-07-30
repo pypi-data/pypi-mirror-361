@@ -1,0 +1,270 @@
+<section class="relative min-h-screen overflow-hidden bg-gradient-to-br from-rose-50 via-amber-50 to-yellow-50" id="hero">
+  <!-- Animated background patterns -->
+  <div class="absolute inset-0 overflow-hidden">
+    <!-- Honeycomb pattern -->
+    <div class="absolute inset-0 opacity-10">
+      <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="honeycomb" width="56" height="100" patternUnits="userSpaceOnUse" patternTransform="scale(2) rotate(0)">
+            <path d="M28 66L0 50L0 16L28 0L56 16L56 50L28 66Z M28 33L56 16L56 50L28 66L0 50L0 16L28 0L56 16L28 33Z" stroke="rgba(245, 158, 11, 0.3)" fill="none"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#honeycomb)"/>
+      </svg>
+    </div>
+    
+    <!-- Floating elements -->
+    <div class="absolute top-1/4 left-1/5 w-64 h-64 bg-gradient-to-br from-amber-200/30 to-rose-200/30 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-float"></div>
+    <div class="absolute bottom-1/3 right-1/4 w-80 h-80 bg-gradient-to-br from-rose-200/30 to-yellow-200/30 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-float animation-delay-4000"></div>
+  </div>
+
+  <!-- Main content -->
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-20 flex items-center min-h-[90vh]">
+    <!-- Split layout -->
+    <div class="grid lg:grid-cols-2 gap-12 items-center w-full">
+      <!-- Left content column -->
+      <div class="space-y-6">
+        <!-- Animated badge -->
+        <div class="inline-flex items-center px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm shadow-sm border border-amber-200 text-amber-700 font-medium animate-fade-in-up">
+          <span class="flex h-2 w-2 rounded-full bg-amber-500 mr-2 animate-pulse"></span>
+          <span>{{ sections.hero.badge }}</span>
+        </div>
+        
+        <!-- Main heading with animated typing effect -->
+        <h1 class="text-5xl md:text-6xl font-bold text-slate-800 leading-tight animate-fade-in-up animation-delay-300" id="typed-heading">
+          {{ sections.hero.title }}
+        </h1>
+        
+        <!-- Subtitle with gradient -->
+        {% if sections.hero.subtitles %}
+        <div class="flex flex-wrap gap-3 animate-fade-in-up animation-delay-600">
+          {% for subtitle in sections.hero.subtitles %}
+          <span class="text-lg font-medium px-4 py-1 rounded-full bg-gradient-to-r from-amber-200 to-rose-200 text-amber-800">{{ subtitle }}</span>
+          {% endfor %}
+        </div>
+        {% endif %}
+        
+        <!-- Description -->
+        <p class="text-xl text-slate-600 max-w-xl animate-fade-in-up animation-delay-900">
+          {{ sections.hero.description }}
+        </p>
+        
+        <!-- Interactive CTA section -->
+        <div class="flex flex-col sm:flex-row gap-5 pt-4 animate-fade-in-up animation-delay-1200">
+          {% for btn in sections.hero.ctaButtons %}
+          <a 
+            href="{{ btn.url }}" 
+            class="{% if btn.style == 'filled' %}
+              relative overflow-hidden group inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-amber-400 to-rose-400 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1
+            {% else %}
+              inline-flex items-center justify-center px-8 py-4 bg-white text-slate-700 font-medium rounded-xl border border-slate-200 hover:border-amber-300 hover:bg-amber-50 transition-all duration-300
+            {% endif %}"
+            {% if btn.modalVideo %}data-modal-trigger="video-modal"{% endif %}
+          >
+            {% if btn.style == 'filled' %}
+            <!-- Animated background for primary button -->
+            <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-amber-400 to-rose-400"></span>
+            <span class="absolute inset-0 w-0 bg-gradient-to-r from-rose-400 to-amber-400 transition-all duration-300 ease-out group-hover:w-full"></span>
+            {% endif %}
+            
+            <!-- Icon if specified -->
+            {% if btn.icon %}
+            <svg class="w-5 h-5 mr-2 {% if btn.style == 'filled' %}text-white{% else %}text-amber-500{% endif %}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ btn.icon }}"></path>
+            </svg>
+            {% endif %}
+            
+            <span class="relative z-10">{{ btn.label }}</span>
+          </a>
+          {% endfor %}
+        </div>
+        
+        <!-- Additional features or benefits -->
+        <div class="pt-8 mt-4 grid grid-cols-2 gap-4 animate-fade-in-up animation-delay-1500">
+          {% for i in range(sections.hero.features | length) %}
+          <div class="flex items-start space-x-3">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div>
+              <p class="font-medium text-slate-800">{{ sections.hero.features[i].title | default('Feature ' ~ (i+1)) }}</p>
+              <p class="text-sm text-slate-600">{{ sections.hero.features[i].description | default('Brief description of this feature') }}</p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      
+      <!-- Right image column -->
+      <div class="relative">
+        <!-- Main image with decorative elements -->
+        <div class="relative rounded-2xl overflow-hidden shadow-2xl border-8 border-white animate-fade-in-right">
+          <!-- Image with fixed aspect ratio -->
+          <div class="aspect-[3/4] w-full">
+            <img 
+              src="{{ sections.hero.heroImage.src }}" 
+              alt="{{ sections.hero.heroImage.alt }}" 
+              class="w-full h-full object-cover"
+              loading="{% if sections.hero.heroImage.lazyLoad %}lazy{% else %}eager{% endif %}"
+            />
+          </div>
+        </div>
+        
+        <!-- Decorative elements -->
+        <div class="absolute -top-6 -right-6 w-32 h-32 bg-gradient-to-bl from-amber-200 to-rose-200 rounded-full opacity-70 -z-10"></div>
+        <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-gradient-to-tr from-rose-200 to-yellow-200 rounded-full opacity-70 -z-10"></div>
+      </div>
+    </div>
+    
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center animate-bounce">
+      <span class="text-sm text-amber-700 font-medium mb-2">Scroll to explore</span>
+      <svg class="w-6 h-6 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+      </svg>
+    </div>
+  </div>
+  
+  <!-- Video modal -->
+  <div id="video-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 opacity-0 invisible transition-all duration-300">
+    <div class="relative bg-white rounded-2xl overflow-hidden max-w-4xl w-full max-h-[80vh]">
+      <button class="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors duration-300" data-modal-close>
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+      <div class="aspect-video">
+        <iframe id="video-frame" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+  
+  <style>
+    /* Animations */
+    @keyframes fade-in-up {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes fade-in-right {
+      from { opacity: 0; transform: translateX(40px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    
+    @keyframes float {
+      0% { transform: translate(0px, 0px) scale(1); }
+      33% { transform: translate(20px, -30px) scale(1.05); }
+      66% { transform: translate(-10px, 20px) scale(0.95); }
+      100% { transform: translate(0px, 0px) scale(1); }
+    }
+    
+    .animate-fade-in-up {
+      animation: fade-in-up 0.8s ease-out forwards;
+    }
+    
+    .animate-fade-in-right {
+      animation: fade-in-right 0.8s ease-out forwards;
+    }
+    
+    .animate-float {
+      animation: float 15s ease-in-out infinite;
+    }
+    
+    .animation-delay-300 { animation-delay: 300ms; }
+    .animation-delay-600 { animation-delay: 600ms; }
+    .animation-delay-900 { animation-delay: 900ms; }
+    .animation-delay-1200 { animation-delay: 1200ms; }
+    .animation-delay-1500 { animation-delay: 1500ms; }
+    .animation-delay-3000 { animation-delay: 3000ms; }
+    .animation-delay-4000 { animation-delay: 4000ms; }
+  </style>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Typing effect for heading
+      const heading = document.getElementById('typed-heading');
+      if (heading) {
+        const text = heading.textContent.trim();
+        heading.textContent = '';
+        let i = 0;
+        
+        function typeWriter() {
+          if (i < text.length) {
+            heading.textContent += text.charAt(i);
+            i++;
+            setTimeout(typeWriter, 50);
+          }
+        }
+        
+        // Start typing after a short delay
+        setTimeout(typeWriter, 800);
+      }
+      
+      // Modal functionality
+      const modalTriggers = document.querySelectorAll('[data-modal-trigger]');
+      const modalCloseButtons = document.querySelectorAll('[data-modal-close]');
+      
+      modalTriggers.forEach(trigger => {
+        trigger.addEventListener('click', function(e) {
+          e.preventDefault();
+          const modalId = this.getAttribute('data-modal-trigger');
+          const modal = document.getElementById(modalId);
+          
+          if (modal) {
+            // Set video source if it's a video modal
+            if (modalId === 'video-modal') {
+              const videoFrame = document.getElementById('video-frame');
+              if (videoFrame) {
+                // Get video URL from data attribute or use a default
+                const videoUrl = this.getAttribute('data-video-url') || 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1';
+                videoFrame.setAttribute('src', videoUrl);
+              }
+            }
+            
+            // Show modal
+            modal.classList.remove('opacity-0', 'invisible');
+            document.body.style.overflow = 'hidden';
+          }
+        });
+      });
+      
+      modalCloseButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const modal = this.closest('[id$="-modal"]');
+          if (modal) {
+            modal.classList.add('opacity-0', 'invisible');
+            document.body.style.overflow = '';
+            
+            // Stop video if it's a video modal
+            if (modal.id === 'video-modal') {
+              const videoFrame = document.getElementById('video-frame');
+              if (videoFrame) {
+                videoFrame.setAttribute('src', '');
+              }
+            }
+          }
+        });
+      });
+      
+      // Close modal when clicking outside content
+      document.querySelectorAll('[id$="-modal"]').forEach(modal => {
+        modal.addEventListener('click', function(e) {
+          if (e.target === this) {
+            this.classList.add('opacity-0', 'invisible');
+            document.body.style.overflow = '';
+            
+            // Stop video if it's a video modal
+            if (this.id === 'video-modal') {
+              const videoFrame = document.getElementById('video-frame');
+              if (videoFrame) {
+                videoFrame.setAttribute('src', '');
+              }
+            }
+          }
+        });
+      });
+    });
+  </script>
+</section>

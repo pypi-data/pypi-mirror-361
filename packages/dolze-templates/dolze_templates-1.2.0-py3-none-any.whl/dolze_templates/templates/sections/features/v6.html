@@ -1,0 +1,366 @@
+<section id="features" class="py-24 bg-gradient-to-br from-rose-50 via-amber-50 to-yellow-50 relative overflow-hidden">
+  <!-- Background elements -->
+  <div class="absolute inset-0 overflow-hidden">
+    <!-- Diagonal pattern -->
+    <div class="absolute inset-0 opacity-10">
+      <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="diagonalPattern" width="40" height="40" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <rect width="100%" height="2" fill="rgba(245, 158, 11, 0.3)" />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#diagonalPattern)" />
+      </svg>
+    </div>
+    
+    <!-- Floating elements -->
+    <div class="absolute top-0 right-0 w-1/3 h-1/3 bg-gradient-to-bl from-amber-500/20 to-transparent rounded-full opacity-70 blur-3xl transform-gpu animate-drift-tr"></div>
+    <div class="absolute bottom-0 left-0 w-1/3 h-1/3 bg-gradient-to-tr from-rose-500/20 to-transparent rounded-full opacity-70 blur-3xl transform-gpu animate-drift-bl"></div>
+    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1/2 h-1/2 bg-gradient-to-br from-amber-500/10 via-rose-500/10 to-amber-500/10 rounded-full opacity-50 blur-3xl transform-gpu animate-breathe"></div>
+  </div>
+  
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Section header -->
+    <div class="text-center max-w-3xl mx-auto mb-16 opacity-0 transform translate-y-8 transition duration-1000 ease-out" data-animate="init">
+      <span class="inline-block px-4 py-1 rounded-full text-sm font-medium bg-amber-100 text-amber-700 mb-4 relative overflow-hidden">
+        <span class="relative z-10">{{ sections.features.badge | default('Powerful Features') }}</span>
+        <span class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-gleam"></span>
+      </span>
+      <h2 class="text-4xl md:text-5xl font-bold text-slate-700 mb-4 tracking-tight" id="features-heading-v6">
+        {{ sections.features.title }}
+      </h2>
+      <p class="text-lg text-slate-500 max-w-2xl mx-auto">
+        {{ sections.features.subtitle }}
+      </p>
+      <!-- Animated accent line -->
+      <div class="mt-6 mx-auto w-20 h-1 bg-gradient-to-r from-amber-300 to-rose-300 rounded-full" data-animate="underline"></div>
+    </div>
+    
+    <!-- Features grid -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {% for feature in sections.features.items %}
+      <div class="bg-white rounded-xl shadow-sm border border-amber-100/50 p-8 transition-all duration-500 ease-out opacity-0 transform translate-y-8 hover:shadow-lg hover:border-amber-300/50 group" data-animate="feature" data-delay="{{ loop.index0 * 150 }}">
+        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-amber-100 to-rose-100 flex items-center justify-center text-amber-700 mb-6 transition-all duration-500 ease-out relative overflow-hidden group-hover:bg-gradient-to-r group-hover:from-amber-200 group-hover:to-rose-200">
+          <div class="absolute inset-0 bg-white/0 group-hover:bg-white/10 transform rotate-0 group-hover:rotate-180 transition-all duration-700 ease-out rounded-lg"></div>
+          <i class="{{ feature.icon }} relative z-10 transition-transform duration-500 ease-out group-hover:scale-110" aria-hidden="true"></i>
+        </div>
+        <h3 class="text-xl font-semibold text-slate-700 mb-3 transition-colors duration-300 ease-out group-hover:text-amber-600">{{ feature.title }}</h3>
+        <p class="text-slate-600 transition-all duration-300 ease-out">{{ feature.subtitle }}</p>
+        
+        {% if feature.media %}
+        <div class="mt-6 rounded-lg overflow-hidden relative">
+          <div class="absolute inset-0 bg-gradient-to-tr from-amber-500/30 to-rose-500/30 opacity-0 group-hover:opacity-30 transition-opacity duration-500 ease-out z-10"></div>
+          <img 
+            src="{{ feature.media.src }}" 
+            alt="{{ feature.media.alt }}" 
+            class="w-full h-auto object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+          >
+        </div>
+        {% endif %}
+        
+        {% if feature.details %}
+        <div class="mt-4 pt-4 border-t border-amber-100/50">
+          <ul class="space-y-2">
+            {% for detail in feature.details %}
+            <li class="flex items-start">
+              <div class="flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-amber-400 to-rose-400 flex items-center justify-center text-white mt-0.5 opacity-0 transform -translate-x-4 transition-all duration-500 ease-out group-hover:opacity-100 group-hover:translate-x-0" style="transition-delay: {{ loop.index0 * 100 + 200 }}ms">
+                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <span class="ml-2 text-slate-600 transform transition-all duration-500 ease-out group-hover:translate-x-2" style="transition-delay: {{ loop.index0 * 100 + 200 }}ms">{{ detail }}</span>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    
+    <!-- Feature highlight (if available) -->
+    {% if sections.features.highlight %}
+    <div class="mt-20 bg-gradient-to-r from-amber-50 to-rose-50 rounded-2xl p-8 md:p-12 shadow-sm overflow-hidden relative opacity-0 transform translate-y-8 transition duration-1000 ease-out" data-animate="highlight">
+      <div class="absolute inset-0 overflow-hidden">
+        <div class="absolute top-0 right-0 w-1/3 h-1/3 bg-gradient-to-bl from-amber-500/10 to-transparent rounded-full opacity-70 blur-3xl transform-gpu animate-drift-slow"></div>
+        <div class="absolute bottom-0 left-0 w-1/3 h-1/3 bg-gradient-to-tr from-rose-500/10 to-transparent rounded-full opacity-70 blur-3xl transform-gpu animate-drift-slow-reverse"></div>
+      </div>
+      
+      <div class="relative z-10 flex flex-col md:flex-row items-center gap-8 md:gap-12">
+        <div class="md:w-1/2 opacity-0 transform translate-x-8 transition duration-700 ease-out" data-animate="highlight-content">
+          <span class="inline-block px-4 py-1 rounded-full text-sm font-medium bg-amber-100 text-amber-700 mb-4 relative overflow-hidden">
+            <span class="relative z-10">{{ sections.features.highlight.badge | default('Featured') }}</span>
+            <span class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-gleam"></span>
+          </span>
+          <h3 class="text-3xl font-bold text-slate-700 mb-4">{{ sections.features.highlight.title }}</h3>
+          <p class="text-lg text-slate-600 mb-6">{{ sections.features.highlight.description }}</p>
+          
+          {% if sections.features.highlight.items %}
+          <ul class="space-y-3 mb-8">
+            {% for item in sections.features.highlight.items %}
+            <li class="flex items-start opacity-0 transform translate-y-4 transition duration-500 ease-out" data-animate="highlight-item" data-delay="{{ loop.index0 * 150 }}">
+              <div class="flex-shrink-0 w-6 h-6 rounded-full bg-gradient-to-r from-amber-400 to-rose-400 flex items-center justify-center text-white mt-0.5">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <span class="ml-3 text-slate-700">{{ item }}</span>
+            </li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+          
+          {% if sections.features.highlight.cta %}
+          <a href="{{ sections.features.highlight.cta.url }}" class="inline-flex items-center px-5 py-3 rounded-lg bg-gradient-to-r from-amber-500 to-rose-500 text-white font-medium transition-all duration-300 ease-out hover:shadow-lg hover:shadow-amber-500/20 transform hover:-translate-y-1 opacity-0" data-animate="highlight-cta">
+            {{ sections.features.highlight.cta.label }}
+            <svg class="ml-2 w-5 h-5 transition-transform duration-300 ease-out group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </a>
+          {% endif %}
+        </div>
+        
+        {% if sections.features.highlight.media %}
+        <div class="md:w-1/2 opacity-0 transform -translate-x-8 transition duration-700 ease-out" data-animate="highlight-media">
+          <div class="rounded-xl overflow-hidden shadow-lg relative group">
+            <div class="absolute inset-0 bg-gradient-to-tr from-amber-500/30 to-rose-500/30 opacity-0 group-hover:opacity-30 transition-opacity duration-500 ease-out z-10"></div>
+            <img 
+              src="{{ sections.features.highlight.media.src }}" 
+              alt="{{ sections.features.highlight.media.alt }}" 
+              class="w-full h-auto object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+            >
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+  /* Refined animations */
+  @keyframes gleam {
+    0% {
+      transform: translateX(-100%);
+    }
+    20%, 100% {
+      transform: translateX(100%);
+    }
+  }
+  
+  .animate-gleam {
+    animation: gleam 4s ease-in-out infinite;
+  }
+  
+  @keyframes breathe {
+    0%, 100% {
+      opacity: 0.3;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+      opacity: 0.6;
+      transform: translate(-50%, -50%) scale(1.05);
+    }
+  }
+  
+  .animate-breathe {
+    animation: breathe 8s ease-in-out infinite;
+  }
+  
+  @keyframes drift-tr {
+    0%, 100% {
+      transform: translate(0, 0);
+    }
+    50% {
+      transform: translate(-30px, 30px);
+    }
+  }
+  
+  .animate-drift-tr {
+    animation: drift-tr 20s ease-in-out infinite;
+  }
+  
+  @keyframes drift-bl {
+    0%, 100% {
+      transform: translate(0, 0);
+    }
+    50% {
+      transform: translate(30px, -30px);
+    }
+  }
+  
+  .animate-drift-bl {
+    animation: drift-bl 20s ease-in-out infinite;
+  }
+  
+  @keyframes drift-slow {
+    0%, 100% {
+      transform: translate(0, 0);
+    }
+    25% {
+      transform: translate(-15px, 15px);
+    }
+    50% {
+      transform: translate(0, 30px);
+    }
+    75% {
+      transform: translate(15px, 15px);
+    }
+  }
+  
+  .animate-drift-slow {
+    animation: drift-slow 30s ease-in-out infinite;
+  }
+  
+  @keyframes drift-slow-reverse {
+    0%, 100% {
+      transform: translate(0, 0);
+    }
+    25% {
+      transform: translate(15px, -15px);
+    }
+    50% {
+      transform: translate(0, -30px);
+    }
+    75% {
+      transform: translate(-15px, -15px);
+    }
+  }
+  
+  .animate-drift-slow-reverse {
+    animation: drift-slow-reverse 30s ease-in-out infinite;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Typing effect for heading matching about v5
+    const heading = document.getElementById('features-heading-v6');
+    if (heading) {
+      const text = heading.textContent.trim();
+      heading.textContent = '';
+      let i = 0;
+      
+      function typeWriter() {
+        if (i < text.length) {
+          heading.textContent += text.charAt(i);
+          i++;
+          setTimeout(typeWriter, 50);
+        }
+      }
+      
+      // Start typing after a short delay
+      setTimeout(typeWriter, 800);
+    }
+    
+    // Initialize AOS (Animate on Scroll) if available
+    if (typeof AOS !== 'undefined') {
+      AOS.init({
+        duration: 800,
+        easing: 'ease-out',
+        once: true
+      });
+    }
+    
+    // Custom animation system
+    const animateElements = document.querySelectorAll('[data-animate]');
+    
+    // Initial animation for header
+    setTimeout(() => {
+      const headerElement = document.querySelector('[data-animate="init"]');
+      if (headerElement) {
+        headerElement.classList.remove('opacity-0', 'translate-y-8');
+      }
+      
+      // Animate underline after header appears
+      setTimeout(() => {
+        const underlineElement = document.querySelector('[data-animate="underline"]');
+        if (underlineElement) {
+          underlineElement.classList.add('scale-x-100');
+          underlineElement.classList.remove('scale-x-0');
+        }
+      }, 500);
+    }, 300);
+    
+    // Intersection Observer for scroll-triggered animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const element = entry.target;
+          const animationType = element.getAttribute('data-animate');
+          const delay = parseInt(element.getAttribute('data-delay') || 0);
+          
+          setTimeout(() => {
+            // Feature cards animation
+            if (animationType === 'feature') {
+              element.classList.remove('opacity-0', 'translate-y-8');
+            }
+            
+            // Highlight section animation
+            if (animationType === 'highlight') {
+              element.classList.remove('opacity-0', 'translate-y-8');
+              
+              // Animate highlight content after parent appears
+              setTimeout(() => {
+                const contentElement = document.querySelector('[data-animate="highlight-content"]');
+                if (contentElement) {
+                  contentElement.classList.remove('opacity-0', 'translate-x-8');
+                }
+                
+                const mediaElement = document.querySelector('[data-animate="highlight-media"]');
+                if (mediaElement) {
+                  mediaElement.classList.remove('opacity-0', '-translate-x-8');
+                }
+                
+                // Animate highlight items with staggered delay
+                const itemElements = document.querySelectorAll('[data-animate="highlight-item"]');
+                itemElements.forEach((item, index) => {
+                  const itemDelay = parseInt(item.getAttribute('data-delay') || 0);
+                  setTimeout(() => {
+                    item.classList.remove('opacity-0', 'translate-y-4');
+                  }, 300 + itemDelay);
+                });
+                
+                // Animate CTA button
+                setTimeout(() => {
+                  const ctaElement = document.querySelector('[data-animate="highlight-cta"]');
+                  if (ctaElement) {
+                    ctaElement.classList.remove('opacity-0');
+                  }
+                }, 800);
+              }, 300);
+            }
+            
+            // Highlight item animation (when observed individually)
+            if (animationType === 'highlight-item') {
+              element.classList.remove('opacity-0', 'translate-y-4');
+            }
+          }, delay);
+          
+          observer.unobserve(element);
+        }
+      });
+    }, { threshold: 0.15 });
+    
+    animateElements.forEach(element => {
+      observer.observe(element);
+    });
+    
+    // Subtle hover effects for feature cards
+    const featureCards = document.querySelectorAll('[data-animate="feature"]');
+    
+    featureCards.forEach(card => {
+      card.addEventListener('mouseenter', function() {
+        // Add subtle pulse effect to icon on hover
+        const icon = this.querySelector('i');
+        if (icon) {
+          icon.classList.add('scale-110');
+          setTimeout(() => {
+            icon.classList.remove('scale-110');
+          }, 300);
+        }
+      });
+    });
+  });
+</script>

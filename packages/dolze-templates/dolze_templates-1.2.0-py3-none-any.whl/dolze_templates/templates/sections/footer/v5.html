@@ -1,0 +1,158 @@
+<footer
+  class="pt-20 pb-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/20 text-gray-800 font-inter relative overflow-hidden"
+  id="footer"
+  aria-label="Footer"
+>
+  <!-- Decorative elements -->
+  <div class="absolute inset-0 pointer-events-none overflow-hidden">
+    <div class="absolute -top-24 -right-24 w-96 h-96 bg-blue-100/30 rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-indigo-100/30 rounded-full blur-3xl"></div>
+    <!-- Subtle grid pattern -->
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMxMTExMTEiIGZpbGwtb3BhY2l0eT0iMC4wMiI+PHBhdGggZD0iTTM2IDM0aDR2NGgtNHptMCA4aDR2NGgtNHptLTh2LTRoNHY0aC00em0wIDhoNHY0aC00em0tOC04aDR2NGgtNHoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-30"></div>
+  </div>
+
+  <div class="max-w-7xl mx-auto relative z-10">
+    <!-- Main footer content -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 lg:gap-12">
+      <!-- Brand section - takes 4 columns on md screens -->
+      <div class="md:col-span-4 space-y-6">
+        <a
+          href="{{ sections.footer.brand.href | default('#') }}"
+          class="inline-block"
+        >
+          <div class="flex items-center space-x-2">
+            <!-- Logo shape -->
+            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+              <span class="text-white font-bold text-xl">{{ sections.footer.brand.name | slice(0, 1) }}</span>
+            </div>
+            <span class="text-2xl font-poppins font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+              {{ sections.footer.brand.name }}
+            </span>
+          </div>
+        </a>
+        
+        <p class="text-gray-600 leading-relaxed">
+          {{ sections.footer.brand.description.text }}
+        </p>
+        
+        {% if sections.footer.brand.socialLinks is defined %}
+        <div class="flex mt-6 space-x-4">
+          {% for social in sections.footer.brand.socialLinks.links %}
+          <a
+            href="{{ social.url }}"
+            class="group relative w-10 h-10 flex items-center justify-center rounded-full bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1"
+            aria-label="{{ social.platform }}"
+          >
+            <!-- Hover effect -->
+            <span class="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+            <i class="{{ social.icon }} text-lg text-blue-600 group-hover:text-white relative z-10 transition-colors duration-300"></i>
+          </a>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Navigation Columns - each takes 2 columns on md screens -->
+      {% for column in sections.footer.navigation %}
+      <div class="md:col-span-2">
+        <h3 class="text-lg font-poppins font-semibold text-gray-900 mb-5 relative inline-block">
+          {{ column.title }}
+          <!-- Decorative underline -->
+          <span class="absolute -bottom-1 left-0 w-12 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full"></span>
+        </h3>
+        
+        <ul class="space-y-3">
+          {% for link in column.links %}
+          <li>
+            <a
+              href="{{ link.url }}"
+              class="text-gray-600 hover:text-blue-600 transition-colors duration-300 flex items-center group"
+              aria-label="{{ link.ariaLabel | default(link.label) }}"
+            >
+              <!-- Hover indicator -->
+              <span class="w-0 h-0.5 bg-blue-500 mr-0 group-hover:w-2 group-hover:mr-2 transition-all duration-300"></span>
+              {{ link.label }}
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endfor %}
+
+      <!-- Subscribe section - takes 4 columns on md screens -->
+      {% if sections.footer.subscribe is defined %}
+      <div class="md:col-span-4">
+        <h3 class="text-lg font-poppins font-semibold text-gray-900 mb-5 relative inline-block">
+          {{ sections.footer.subscribe.title }}
+          <!-- Decorative underline -->
+          <span class="absolute -bottom-1 left-0 w-12 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full"></span>
+        </h3>
+        
+        <form class="space-y-3">
+          <div class="relative">
+            <input
+              type="email"
+              placeholder="{{ sections.footer.subscribe.input.placeholder }}"
+              class="w-full px-4 py-3 rounded-lg bg-white/80 backdrop-blur-sm border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200/50 outline-none text-gray-800 shadow-sm hover:shadow-md transition-all duration-300"
+            />
+            <!-- Decorative element -->
+            <div class="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </div>
+          </div>
+          
+          <button
+            type="submit"
+            class="w-full px-4 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-600/30 transition-all duration-300 transform hover:-translate-y-0.5 focus:ring-2 focus:ring-blue-400/50 focus:ring-offset-2"
+          >
+            {{ sections.footer.subscribe.button.text }}
+          </button>
+        </form>
+        
+        <p class="text-gray-500 text-sm mt-4 italic">
+          {{ sections.footer.subscribe.description.text }}
+        </p>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Bottom Footer with fancy divider -->
+    <div class="mt-16 pt-8 relative">
+      <!-- Fancy gradient divider -->
+      <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+      
+      <div class="flex flex-wrap justify-between items-center gap-6">
+        <p class="text-gray-500 text-sm">
+          {{ sections.footer.bottom.copyright }}
+        </p>
+        
+        {% if sections.footer.paymentMethods is defined %}
+        <div class="flex flex-wrap items-center gap-4">
+          {% for payment in sections.footer.paymentMethods %}
+          <div class="group relative">
+            <i
+              class="{{ payment.icon }} text-2xl text-gray-600 group-hover:text-blue-600 transition-colors duration-300"
+              aria-label="{{ payment.name }}"
+            ></i>
+            <!-- Tooltip on hover -->
+            <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+              {{ payment.name }}
+            </span>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      
+      <!-- Additional links -->
+      <div class="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-500">
+        <a href="#" class="hover:text-blue-600 transition-colors duration-300">Privacy Policy</a>
+        <a href="#" class="hover:text-blue-600 transition-colors duration-300">Terms of Service</a>
+        <a href="#" class="hover:text-blue-600 transition-colors duration-300">Cookie Settings</a>
+        <a href="#" class="hover:text-blue-600 transition-colors duration-300">Accessibility</a>
+      </div>
+    </div>
+  </div>
+</footer>

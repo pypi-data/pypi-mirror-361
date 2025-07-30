@@ -1,0 +1,382 @@
+<section id="faq" class="relative py-24 bg-slate-950 overflow-hidden" aria-labelledby="faq-heading">
+  <!-- Decorative background elements -->
+  <div class="absolute inset-0 pointer-events-none">
+    <!-- Gradient background -->
+    <div class="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+      <div class="absolute inset-0 opacity-30">
+        <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div class="absolute top-40 right-0 w-80 h-80 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div class="absolute top-0 left-1/3 w-80 h-80 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+      </div>
+    </div>
+    
+    <!-- Grid pattern -->
+    <div class="absolute inset-0 opacity-10" style="background-size: 40px 40px; background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);"></div>
+  </div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Section header -->
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-slate-800 text-slate-200 border border-slate-700 mb-4">
+        <span class="flex h-2 w-2 rounded-full bg-blue-500 mr-2"></span>
+        <span>Frequently Asked Questions</span>
+      </div>
+      
+      <h2 id="faq-heading" class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-blue-200 mb-6">
+        {{ sections.faq.title }}
+      </h2>
+      
+      <p class="text-xl text-slate-300">
+        {{ sections.faq.description | default('Find answers to common questions about our services and solutions.') }}
+      </p>
+    </div>
+    
+    <!-- FAQ layout with tabs and cards -->
+    <div class="grid lg:grid-cols-12 gap-8">
+      <!-- Category tabs (desktop) -->
+      <div class="hidden lg:block lg:col-span-3">
+        <div class="sticky top-24 space-y-2">
+          {% set categories = sections.faq.categories | default(['General', 'Services', 'Pricing', 'Support']) %}
+          
+          {% for category in categories %}
+          <button 
+            class="w-full text-left px-4 py-3 rounded-lg transition-all duration-300 focus:outline-none group faq-category-btn {% if loop.first %}bg-gradient-to-r from-blue-600/20 to-indigo-600/20 border-l-4 border-blue-500 text-white{% else %}hover:bg-slate-800/50 text-slate-300 hover:text-white{% endif %}"
+            data-category="{{ category | lower }}"
+          >
+            <div class="flex items-center">
+              <span class="w-2 h-2 rounded-full {% if loop.first %}bg-blue-500{% else %}bg-slate-600 group-hover:bg-blue-500{% endif %} mr-3 transition-colors duration-300"></span>
+              <span>{{ category }}</span>
+            </div>
+          </button>
+          {% endfor %}
+        </div>
+      </div>
+      
+      <!-- Category dropdown (mobile) -->
+      <div class="lg:hidden mb-8">
+        <div class="relative">
+          <select id="faq-category-select" class="w-full appearance-none bg-slate-800 border border-slate-700 text-white rounded-lg py-3 px-4 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            {% set categories = sections.faq.categories | default(['General', 'Services', 'Pricing', 'Support']) %}
+            {% for category in categories %}
+            <option value="{{ category | lower }}">{{ category }}</option>
+            {% endfor %}
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </div>
+      </div>
+      
+      <!-- FAQ accordion cards -->
+      <div class="lg:col-span-9">
+        <div class="space-y-6" id="faq-list">
+          {% for item in sections.faq.items %}
+          <div 
+            class="faq-item group"
+            data-category="{{ item.category | default('general') | lower }}"
+            {% if not loop.first and item.category != sections.faq.items[0].category %}style="display: none;"{% endif %}
+          >
+            <div class="bg-slate-900/50 backdrop-blur-sm rounded-xl border border-slate-800 overflow-hidden transition-all duration-300 hover:border-blue-500/30 hover:shadow-lg hover:shadow-blue-500/10">
+              <!-- Question button -->
+              <button
+                class="w-full px-6 py-5 flex justify-between items-center text-left text-white font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+                type="button"
+                aria-expanded="{% if item.expanded %}true{% else %}false{% endif %}"
+                aria-controls="faq-answer-{{ loop.index }}"
+              >
+                <span class="flex items-center">
+                  <span class="mr-4 flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600/20 to-indigo-600/20 text-blue-400 group-hover:from-blue-600/30 group-hover:to-indigo-600/30 transition-all duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </span>
+                  {{ item.question }}
+                </span>
+                <svg
+                  class="h-6 w-6 text-blue-400 transform transition-transform duration-300 ease-out {% if item.expanded %}rotate-180{% endif %}"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+              
+              <!-- Answer panel -->
+              <div
+                id="faq-answer-{{ loop.index }}"
+                class="overflow-hidden transition-all duration-500 ease-out max-h-0 {% if item.expanded %}max-h-[1000px] pb-6{% endif %}"
+              >
+                <div class="px-6 pl-18 text-slate-300 leading-relaxed">
+                  <div class="border-l-2 border-blue-500/30 pl-6 py-2">
+                    {{ item.answer }}
+                    
+                    {% if item.links %}
+                    <div class="mt-4 flex flex-wrap gap-3">
+                      {% for link in item.links %}
+                      <a href="{{ link.url }}" class="inline-flex items-center text-sm text-blue-400 hover:text-blue-300 transition-colors duration-300">
+                        <span>{{ link.label }}</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </a>
+                      {% endfor %}
+                    </div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    
+    <!-- Still have questions CTA -->
+    <div class="mt-20">
+      <div class="relative p-8 md:p-10 rounded-2xl overflow-hidden bg-gradient-to-br from-slate-900 to-slate-800/80 backdrop-blur-sm border border-slate-800/80">
+        <!-- Decorative elements -->
+        <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-blue-500/10 rounded-full filter blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 -mb-10 -ml-10 w-40 h-40 bg-indigo-500/10 rounded-full filter blur-3xl"></div>
+        
+        <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+          <div class="text-center md:text-left">
+            <h3 class="text-2xl font-bold text-white mb-2">Still have questions?</h3>
+            <p class="text-slate-300 max-w-xl">
+              Our team is ready to assist you with any additional questions or concerns you may have.
+            </p>
+          </div>
+          
+          <div class="flex flex-wrap gap-4">
+            <a href="{{ sections.faq.ctaButtons.primary.url | default('#contact') }}" class="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium rounded-lg shadow-lg hover:shadow-blue-500/20 transition-all duration-300 hover:scale-105">
+              {{ sections.faq.ctaButtons.primary.label | default('Contact Support') }}
+            </a>
+            
+            <a href="{{ sections.faq.ctaButtons.secondary.url | default('#documentation') }}" class="inline-flex items-center justify-center px-6 py-3 bg-slate-800 text-white font-medium rounded-lg border border-slate-700 hover:bg-slate-700 transition-all duration-300">
+              {{ sections.faq.ctaButtons.secondary.label | default('Browse Documentation') }}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <style>
+    /* Animation keyframes */
+    @keyframes blob {
+      0% {
+        transform: translate(0px, 0px) scale(1);
+      }
+      33% {
+        transform: translate(30px, -50px) scale(1.1);
+      }
+      66% {
+        transform: translate(-20px, 20px) scale(0.9);
+      }
+      100% {
+        transform: translate(0px, 0px) scale(1);
+      }
+    }
+    
+    .animate-blob {
+      animation: blob 7s infinite;
+    }
+    
+    .animation-delay-2000 {
+      animation-delay: 2s;
+    }
+    
+    .animation-delay-4000 {
+      animation-delay: 4s;
+    }
+    
+    /* Custom spacing for nested content */
+    .pl-18 {
+      padding-left: 4.5rem;
+    }
+  </style>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // FAQ accordion functionality
+      const faqButtons = document.querySelectorAll('#faq-list button');
+      
+      faqButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const expanded = button.getAttribute('aria-expanded') === 'true';
+          const answerId = button.getAttribute('aria-controls');
+          const answerEl = document.getElementById(answerId);
+          
+          // Toggle expanded state
+          button.setAttribute('aria-expanded', !expanded);
+          
+          // Toggle arrow rotation
+          const arrow = button.querySelector('svg');
+          arrow.classList.toggle('rotate-180');
+          
+          // Toggle answer visibility
+          if (expanded) {
+            // Close the panel
+            answerEl.style.maxHeight = '0px';
+            answerEl.classList.remove('max-h-[1000px]', 'pb-6');
+          } else {
+            // Open the panel
+            answerEl.classList.add('max-h-[1000px]', 'pb-6');
+            answerEl.style.maxHeight = answerEl.scrollHeight + 'px';
+          }
+        });
+      });
+      
+      // Category filtering functionality
+      const categoryButtons = document.querySelectorAll('.faq-category-btn');
+      const faqItems = document.querySelectorAll('.faq-item');
+      const categorySelect = document.getElementById('faq-category-select');
+      
+      function filterByCategory(category) {
+        // Update active button state (desktop)
+        categoryButtons.forEach(btn => {
+          const isActive = btn.dataset.category === category;
+          btn.classList.toggle('bg-gradient-to-r', isActive);
+          btn.classList.toggle('from-blue-600/20', isActive);
+          btn.classList.toggle('to-indigo-600/20', isActive);
+          btn.classList.toggle('border-l-4', isActive);
+          btn.classList.toggle('border-blue-500', isActive);
+          btn.classList.toggle('text-white', isActive);
+          btn.classList.toggle('text-slate-300', !isActive);
+          
+          const dot = btn.querySelector('span.rounded-full');
+          dot.classList.toggle('bg-blue-500', isActive);
+          dot.classList.toggle('bg-slate-600', !isActive);
+        });
+        
+        // Update select value (mobile)
+        if (categorySelect) {
+          categorySelect.value = category;
+        }
+        
+        // Show/hide FAQ items
+        faqItems.forEach(item => {
+          const itemCategory = item.dataset.category;
+          if (category === 'all' || itemCategory === category) {
+            item.style.display = '';
+            
+            // Add entrance animation
+            item.classList.add('animate-fade-in');
+            setTimeout(() => {
+              item.classList.remove('animate-fade-in');
+            }, 500);
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      }
+      
+      // Desktop category buttons
+      categoryButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const category = btn.dataset.category;
+          filterByCategory(category);
+        });
+      });
+      
+      // Mobile category select
+      if (categorySelect) {
+        categorySelect.addEventListener('change', () => {
+          const category = categorySelect.value;
+          filterByCategory(category);
+        });
+      }
+      
+      // Search functionality
+      const searchInput = document.getElementById('faq-search');
+      if (searchInput) {
+        searchInput.addEventListener('input', () => {
+          const searchTerm = searchInput.value.toLowerCase().trim();
+          
+          if (searchTerm.length > 1) {
+            faqItems.forEach(item => {
+              const question = item.querySelector('button').textContent.toLowerCase();
+              const answer = item.querySelector('[id^="faq-answer-"]').textContent.toLowerCase();
+              
+              if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+                item.style.display = '';
+                
+                // Highlight search terms
+                // This is a simple implementation - a more robust one would use proper text highlighting
+                const questionEl = item.querySelector('button span:last-child');
+                const answerEl = item.querySelector('[id^="faq-answer-"] div');
+                
+                // Ensure the answer is expanded when it contains the search term
+                if (answer.includes(searchTerm)) {
+                  const button = item.querySelector('button');
+                  const answerId = button.getAttribute('aria-controls');
+                  const answerPanel = document.getElementById(answerId);
+                  
+                  button.setAttribute('aria-expanded', 'true');
+                  button.querySelector('svg').classList.add('rotate-180');
+                  answerPanel.classList.add('max-h-[1000px]', 'pb-6');
+                  answerPanel.style.maxHeight = answerPanel.scrollHeight + 'px';
+                }
+              } else {
+                item.style.display = 'none';
+              }
+            });
+            
+            // Reset category buttons
+            categoryButtons.forEach(btn => {
+              btn.classList.remove('bg-gradient-to-r', 'from-blue-600/20', 'to-indigo-600/20', 'border-l-4', 'border-blue-500', 'text-white');
+              btn.classList.add('text-slate-300');
+              
+              const dot = btn.querySelector('span.rounded-full');
+              dot.classList.remove('bg-blue-500');
+              dot.classList.add('bg-slate-600');
+            });
+          } else if (searchTerm.length === 0) {
+            // Reset to default category view
+            const defaultCategory = categoryButtons[0].dataset.category;
+            filterByCategory(defaultCategory);
+          }
+        });
+      }
+      
+      // Add smooth height animation for FAQ answers
+      window.addEventListener('resize', () => {
+        const expandedAnswers = document.querySelectorAll('[id^="faq-answer-"].max-h-\\[1000px\\]');
+        expandedAnswers.forEach(answer => {
+          answer.style.maxHeight = answer.scrollHeight + 'px';
+        });
+      });
+      
+      // Initialize with first category
+      const defaultCategory = categoryButtons.length > 0 ? categoryButtons[0].dataset.category : 'general';
+      filterByCategory(defaultCategory);
+      
+      // Add hover effect to FAQ items
+      faqItems.forEach(item => {
+        const button = item.querySelector('button');
+        const icon = button.querySelector('.rounded-lg');
+        
+        item.addEventListener('mouseenter', () => {
+          if (button.getAttribute('aria-expanded') !== 'true') {
+            icon.classList.add('from-blue-600/30', 'to-indigo-600/30');
+            icon.classList.remove('from-blue-600/20', 'to-indigo-600/20');
+          }
+        });
+        
+        item.addEventListener('mouseleave', () => {
+          if (button.getAttribute('aria-expanded') !== 'true') {
+            icon.classList.remove('from-blue-600/30', 'to-indigo-600/30');
+            icon.classList.add('from-blue-600/20', 'to-indigo-600/20');
+          }
+        });
+      });
+    });
+  </script>
+</section>

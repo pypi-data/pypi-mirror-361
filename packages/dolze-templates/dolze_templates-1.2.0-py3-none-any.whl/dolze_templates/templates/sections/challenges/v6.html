@@ -1,0 +1,255 @@
+<section id="challenges" class="py-24 bg-gradient-to-br from-amber-50 via-white to-rose-50 relative overflow-hidden">
+  <!-- Background elements -->
+  <div class="absolute inset-0 opacity-20">
+    <!-- Dotted pattern -->
+    <svg class="absolute top-0 left-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="dots-pattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+          <circle cx="2" cy="2" r="1" fill="currentColor" class="text-amber-500/40" />
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#dots-pattern)" />
+    </svg>
+  </div>
+  
+  <!-- Floating elements -->
+  <div class="absolute top-1/4 right-1/4 w-64 h-64 bg-gradient-to-br from-amber-500/10 to-rose-500/10 rounded-full mix-blend-overlay filter blur-3xl animate-float"></div>
+  <div class="absolute bottom-1/3 left-1/4 w-80 h-80 bg-gradient-to-br from-rose-500/10 to-amber-500/10 rounded-full mix-blend-overlay filter blur-3xl animate-float animation-delay-4000"></div>
+
+  <div class="max-w-7xl mx-auto px-6 relative z-10">
+    <!-- Section header -->
+    <div class="text-center mb-16" data-aos="fade-up">
+      <span class="inline-flex items-center px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-sm font-medium mb-4">
+        <span class="w-2 h-2 bg-amber-500 rounded-full mr-2 animate-pulse"></span>
+        Challenges & Solutions
+      </span>
+      <h2 class="text-4xl sm:text-5xl font-bold text-gray-900 mb-4 bg-clip-text text-transparent bg-gradient-to-r from-amber-600 via-rose-500 to-amber-600 animate-gradient" id="challenges-heading">
+        {{ sections.challenges.title }}
+      </h2>
+      <p class="text-xl text-gray-600 mt-4 max-w-2xl mx-auto">
+        {{ sections.challenges.subtitle }}
+      </p>
+      <!-- Decorative line -->
+      <div class="h-1 w-20 bg-gradient-to-r from-amber-400 to-rose-400 mx-auto mt-6 rounded-full"></div>
+    </div>
+
+    <!-- Introduction text -->
+    <div class="max-w-3xl mx-auto mb-16 text-center" data-aos="fade-up" data-aos-delay="100">
+      <p class="text-lg text-gray-700 leading-relaxed">
+        Our innovative approach has helped businesses overcome significant challenges and achieve remarkable results. Here's a glimpse of our impact across various metrics.
+      </p>
+    </div>
+
+    <!-- Challenges grid with masonry layout -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      {% for item in sections.challenges.items %}
+      <div class="group" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 100 }}">
+        <div class="bg-white p-8 rounded-2xl shadow-md hover:shadow-xl transition-all duration-500 border border-gray-100 hover:border-amber-200 relative overflow-hidden transform hover:-translate-y-2">
+          <!-- Card shine effect -->
+          <div class="absolute inset-0 bg-gradient-to-tr from-white/0 via-amber-500/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 transform -translate-x-full group-hover:translate-x-full"></div>
+          
+          <!-- Icon with gradient background -->
+          <div class="relative mb-6">
+            <div class="absolute inset-0 bg-gradient-to-br from-{{ item.color }}-100 to-{{ item.color }}-200 rounded-xl transform rotate-3 group-hover:rotate-6 transition-transform duration-500"></div>
+            <div class="relative flex items-center justify-center w-14 h-14 bg-white rounded-xl shadow-sm z-10">
+              <i class="{{ item.icon }} text-{{ item.color }}-500 text-2xl group-hover:scale-110 transition-transform duration-500"></i>
+            </div>
+          </div>
+          
+          <!-- Content -->
+          <h3 class="text-xl font-semibold text-gray-800 mb-3 group-hover:text-{{ item.color }}-600 transition-colors duration-300">
+            {{ item.label }}
+          </h3>
+          <p class="text-gray-600 group-hover:text-gray-700 transition-colors duration-300">
+            {{ item.value }}
+          </p>
+          
+          <!-- Decorative corner accent -->
+          <div class="absolute bottom-0 right-0 w-16 h-16 bg-gradient-to-tl from-{{ item.color }}-500/20 to-transparent rounded-tl-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    
+    <!-- Testimonial highlight -->
+    <div class="mt-20 mb-16 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-amber-100/50 p-10 relative overflow-hidden" data-aos="fade-up">
+      <!-- Quote marks -->
+      <div class="absolute top-6 left-8 text-amber-200 opacity-50">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M11.9999 9.00001C11.9999 12.5 9.49994 15 5.99994 15V12C7.69994 12 8.99994 10.7 8.99994 9.00001V8.00001C8.99994 6.90001 8.09994 6.00001 6.99994 6.00001H3.99994C2.89994 6.00001 1.99994 6.90001 1.99994 8.00001V12C1.99994 13.1 2.89994 14 3.99994 14H5.99994C5.99994 17.5 8.49994 20 11.9999 20V17C10.2999 17 8.99994 15.7 8.99994 14V13C8.99994 11.9 9.89994 11 10.9999 11H13.9999C15.0999 11 15.9999 11.9 15.9999 13V17C15.9999 18.1 15.0999 19 13.9999 19H11.9999C11.9999 22.5 14.4999 25 17.9999 25V22C16.2999 22 14.9999 20.7 14.9999 19V18C14.9999 16.9 15.8999 16 16.9999 16H19.9999C21.0999 16 21.9999 16.9 21.9999 18V22C21.9999 23.1 21.0999 24 19.9999 24H17.9999" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      
+      <div class="text-center max-w-3xl mx-auto">
+        <p class="text-xl text-gray-700 italic mb-6 leading-relaxed">
+          "Their innovative approach helped us overcome significant challenges and achieve a 45% increase in operational efficiency within just three months."
+        </p>
+        <div class="flex items-center justify-center">
+          <div class="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center mr-4">
+            <span class="text-amber-700 font-bold">JD</span>
+          </div>
+          <div class="text-left">
+            <h4 class="font-semibold text-gray-900">Jane Doe</h4>
+            <p class="text-gray-600 text-sm">CTO, Example Company</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Stats section -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16" data-aos="fade-up" data-aos-delay="200">
+      <!-- Left column: Stats -->
+      <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-amber-100/50 p-8">
+        <h3 class="text-2xl font-bold text-gray-800 mb-6">Our Impact by Numbers</h3>
+        <div class="grid grid-cols-2 gap-6">
+          <div class="text-center">
+            <p class="text-4xl font-bold text-amber-600 mb-2">94%</p>
+            <p class="text-gray-600">Client Satisfaction</p>
+          </div>
+          <div class="text-center">
+            <p class="text-4xl font-bold text-rose-600 mb-2">3.5x</p>
+            <p class="text-gray-600">ROI Average</p>
+          </div>
+          <div class="text-center">
+            <p class="text-4xl font-bold text-amber-600 mb-2">12+</p>
+            <p class="text-gray-600">Years Experience</p>
+          </div>
+          <div class="text-center">
+            <p class="text-4xl font-bold text-rose-600 mb-2">500+</p>
+            <p class="text-gray-600">Projects Completed</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Right column: Process -->
+      <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-amber-100/50 p-8">
+        <h3 class="text-2xl font-bold text-gray-800 mb-6">Our Approach</h3>
+        <ul class="space-y-4">
+          <li class="flex items-start">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center mr-3">
+              <span class="text-amber-600 font-bold">1</span>
+            </div>
+            <div>
+              <h4 class="font-medium text-gray-900">Identify</h4>
+              <p class="text-gray-600">We analyze your unique challenges</p>
+            </div>
+          </li>
+          <li class="flex items-start">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center mr-3">
+              <span class="text-amber-600 font-bold">2</span>
+            </div>
+            <div>
+              <h4 class="font-medium text-gray-900">Strategize</h4>
+              <p class="text-gray-600">We develop tailored solutions</p>
+            </div>
+          </li>
+          <li class="flex items-start">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center mr-3">
+              <span class="text-amber-600 font-bold">3</span>
+            </div>
+            <div>
+              <h4 class="font-medium text-gray-900">Implement</h4>
+              <p class="text-gray-600">We execute with precision</p>
+            </div>
+          </li>
+          <li class="flex items-start">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center mr-3">
+              <span class="text-amber-600 font-bold">4</span>
+            </div>
+            <div>
+              <h4 class="font-medium text-gray-900">Measure</h4>
+              <p class="text-gray-600">We track results and optimize</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+    <!-- Optional CTA section -->
+    <div class="mt-16 text-center" data-aos="fade-up" data-aos-delay="300">
+      <a href="#contact" class="inline-flex items-center px-6 py-3 rounded-full bg-gradient-to-r from-amber-500 to-rose-500 text-white font-medium shadow-lg shadow-amber-500/20 hover:shadow-xl hover:shadow-amber-500/30 transform hover:-translate-y-1 transition-all duration-300">
+        <span>Get in touch</span>
+        <svg class="ml-2 w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </a>
+      <p class="mt-4 text-gray-600">Let's solve your challenges together</p>
+    </div>
+  </div>
+  
+  <style>
+    /* Animations */
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      25% { transform: translate(20px, -20px) scale(1.05); }
+      50% { transform: translate(-20px, 20px) scale(0.95); }
+      75% { transform: translate(20px, 20px) scale(1); }
+    }
+    
+    .animate-float {
+      animation: float 15s ease-in-out infinite;
+    }
+    
+    .animation-delay-4000 {
+      animation-delay: 4s;
+    }
+    
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    .animate-gradient {
+      background-size: 200% auto;
+      animation: gradient 8s ease infinite;
+    }
+  </style>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Typing effect for heading
+      const heading = document.getElementById('challenges-heading');
+      if (heading) {
+        const text = heading.textContent.trim();
+        heading.textContent = '';
+        let i = 0;
+        
+        function typeWriter() {
+          if (i < text.length) {
+            heading.textContent += text.charAt(i);
+            i++;
+            setTimeout(typeWriter, 50);
+          }
+        }
+        
+        // Start typing after a short delay
+        setTimeout(typeWriter, 500);
+      }
+      
+      // Initialize AOS (Animate on Scroll) if available
+      if (typeof AOS !== 'undefined') {
+        AOS.init({
+          duration: 800,
+          easing: 'ease-out',
+          once: true
+        });
+      }
+      
+      // Parallax effect on scroll matching about v5 and testimonial v6
+      window.addEventListener('scroll', function() {
+        const scrollY = window.pageYOffset;
+        const challengesSection = document.getElementById('challenges');
+        if (!challengesSection) return;
+        
+        // Apply parallax to floating elements
+        const floatingElements = document.querySelectorAll('.animate-float');
+        floatingElements.forEach((el, index) => {
+          const speed = 0.05 + (index * 0.02);
+          const yPos = scrollY * speed;
+          el.style.transform = `translate3d(0, ${yPos}px, 0) ${el.style.transform}`;
+        });
+      });
+    });
+  </script>
+</section>

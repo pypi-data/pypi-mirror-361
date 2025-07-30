@@ -1,0 +1,268 @@
+<section id="testimonials" class="py-24 bg-gradient-to-b from-white to-gray-50" data-aos="fade-up">
+  <div class="max-w-6xl mx-auto px-6">
+    <h2 class="text-3xl md:text-4xl font-bold text-center mb-4 animate-fade-in">
+      {{ sections.testimonials.title }}
+    </h2>
+    <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto animate-fade-in-delay">
+      {{ sections.testimonials.subtitle | default("What our customers are saying about us") }}
+    </p>
+    
+    <!-- Testimonial Slider -->
+    <div class="testimonial-slider relative">
+      <div class="overflow-hidden rounded-xl">
+        <div class="testimonial-track flex transition-transform duration-500 ease-out">
+          {% for item in sections.testimonials.items %}
+          <div class="testimonial-slide min-w-full md:min-w-[50%] px-4">
+            <div class="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 h-full flex flex-col hover:border-primary/30 group">
+              <div class="mb-6 flex">
+                {% for i in range(5) %}
+                  <svg class="inline-block w-5 h-5 {% if i < (item.rating | default(5)) %}text-yellow-400{% else %}text-gray-300{% endif %} transform group-hover:scale-110 transition-transform duration-300 ease-in-out" style="transition-delay: {{ i * 50 }}ms;" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                  </svg>
+                {% endfor %}
+              </div>
+              
+              <p class="text-lg italic mb-6 flex-grow group-hover:text-gray-800 transition-colors duration-300">"{{ item.quote }}"</p>
+              
+              <div class="flex items-center gap-4">
+                <div class="relative overflow-hidden rounded-full">
+                  <img
+                    src="{{ item.avatar }}"
+                    alt="{{ item.author }}"
+                    class="w-14 h-14 rounded-full object-cover border-2 border-primary group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div class="absolute -bottom-1 -right-1 bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center group-hover:bg-accent transition-colors duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M18 13V5a2 2 0 00-2-2H4a2 2 0 00-2 2v8a2 2 0 002 2h3l3 3 3-3h3a2 2 0 002-2zM5 7a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1zm1 3a1 1 0 100 2h3a1 1 0 100-2H6z" clip-rule="evenodd" />
+                    </svg>
+                  </div>
+                </div>
+                <div>
+                  <p class="font-semibold text-gray-900 group-hover:text-primary transition-colors duration-300">{{ item.author }}</p>
+                  <p class="text-sm text-gray-600">{{ item.role }}</p>
+                  {% if item.company %}
+                    <p class="text-xs text-primary font-medium mt-1 group-hover:text-accent transition-colors duration-300">{{ item.company }}</p>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      
+      <!-- Navigation Buttons -->
+      <button class="absolute top-1/2 -left-4 -translate-y-1/2 bg-white rounded-full p-2 shadow-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary hidden md:block prev-button transform transition hover:scale-110 hover:-translate-x-1 active:scale-95">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      <button class="absolute top-1/2 -right-4 -translate-y-1/2 bg-white rounded-full p-2 shadow-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary hidden md:block next-button transform transition hover:scale-110 hover:translate-x-1 active:scale-95">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+      
+      <!-- Dots -->
+      <div class="flex justify-center mt-8 dots-container">
+        {% for item in sections.testimonials.items %}
+          <button class="w-3 h-3 mx-1 rounded-full bg-gray-300 hover:bg-primary focus:outline-none transition-all duration-300 dot hover:scale-125 {% if loop.first %}active bg-primary{% endif %}" data-index="{{ loop.index0 }}"></button>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const track = document.querySelector('.testimonial-track');
+      const slides = document.querySelectorAll('.testimonial-slide');
+      const nextButton = document.querySelector('.next-button');
+      const prevButton = document.querySelector('.prev-button');
+      const dots = document.querySelectorAll('.dot');
+      
+      let currentIndex = 0;
+      const slideWidth = 100; // percentage
+      const slidesPerView = window.innerWidth >= 768 ? 2 : 1;
+      const totalSlides = slides.length;
+      
+      // Set initial width
+      slides.forEach(slide => {
+        slide.style.minWidth = `${slideWidth / slidesPerView}%`;
+      });
+      
+      function goToSlide(index) {
+        if (index < 0) index = totalSlides - slidesPerView; // Loop to end
+        if (index > totalSlides - slidesPerView) index = 0; // Loop to beginning
+        
+        // Add transition effect
+        track.style.transition = 'transform 500ms ease-out';
+        
+        currentIndex = index;
+        track.style.transform = `translateX(-${currentIndex * (slideWidth / slidesPerView)}%)`;
+        
+        // Update active dot
+        dots.forEach((dot, i) => {
+          dot.classList.toggle('bg-primary', i === currentIndex);
+          dot.classList.toggle('bg-gray-300', i !== currentIndex);
+          dot.classList.toggle('scale-125', i === currentIndex);
+        });
+      }
+      
+      // Event listeners
+      nextButton.addEventListener('click', () => {
+        goToSlide(currentIndex + 1);
+        clearInterval(interval); // Reset interval on manual navigation
+        startAutoplay();
+      });
+      
+      prevButton.addEventListener('click', () => {
+        goToSlide(currentIndex - 1);
+        clearInterval(interval); // Reset interval on manual navigation
+        startAutoplay();
+      });
+      
+      // Add swipe functionality for mobile
+      let touchStartX = 0;
+      let touchEndX = 0;
+      
+      track.addEventListener('touchstart', e => {
+        touchStartX = e.changedTouches[0].screenX;
+      });
+      
+      track.addEventListener('touchend', e => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+      });
+      
+      function handleSwipe() {
+        const swipeThreshold = 50;
+        if (touchEndX < touchStartX - swipeThreshold) {
+          // Swipe left - go to next slide
+          goToSlide(currentIndex + 1);
+        } else if (touchEndX > touchStartX + swipeThreshold) {
+          // Swipe right - go to previous slide
+          goToSlide(currentIndex - 1);
+        }
+      }
+      
+      dots.forEach((dot, i) => {
+        dot.addEventListener('click', () => {
+          goToSlide(i);
+          clearInterval(interval); // Reset interval on manual navigation
+          startAutoplay();
+        });
+      });
+      
+      // Auto-play with progressive speed
+      let interval;
+      let autoplaySpeed = 5000; // Start with 5 seconds
+      
+      function startAutoplay() {
+        interval = setInterval(() => {
+          goToSlide(currentIndex + 1);
+          // Gradually decrease time between slides (but not below 3 seconds)
+          autoplaySpeed = Math.max(3000, autoplaySpeed - 200);
+        }, autoplaySpeed);
+      }
+      
+      startAutoplay();
+      
+      // Pause on hover
+      const slider = document.querySelector('.testimonial-slider');
+      slider.addEventListener('mouseenter', () => clearInterval(interval));
+      slider.addEventListener('mouseleave', () => {
+        autoplaySpeed = 5000; // Reset speed
+        startAutoplay();
+      });
+      
+      // Handle resize with debounce
+      let resizeTimer;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          const newSlidesPerView = window.innerWidth >= 768 ? 2 : 1;
+          if (newSlidesPerView !== slidesPerView) {
+            // Reload page only if needed
+            location.reload();
+          }
+        }, 250);
+      });
+      
+      // Add keyboard navigation
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') {
+          goToSlide(currentIndex + 1);
+        } else if (e.key === 'ArrowLeft') {
+          goToSlide(currentIndex - 1);
+        }
+      });
+      
+      // Add animation when slides change
+      track.addEventListener('transitionend', () => {
+        slides.forEach((slide, index) => {
+          if (index >= currentIndex && index < currentIndex + slidesPerView) {
+            slide.style.opacity = '1';
+            slide.style.transform = 'scale(1)';
+          } else {
+            slide.style.opacity = '0.7';
+            slide.style.transform = 'scale(0.95)';
+          }
+        });
+      });
+      
+      // Initialize slide appearance
+      slides.forEach((slide, index) => {
+        if (index >= currentIndex && index < currentIndex + slidesPerView) {
+          slide.style.opacity = '1';
+          slide.style.transform = 'scale(1)';
+          slide.style.transition = 'opacity 300ms, transform 300ms';
+        } else {
+          slide.style.opacity = '0.7';
+          slide.style.transform = 'scale(0.95)';
+          slide.style.transition = 'opacity 300ms, transform 300ms';
+        }
+      });
+    });
+  </script>
+  
+  <style>
+    /* Animation keyframes */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes fadeInDelay {
+      0% { opacity: 0; transform: translateY(10px); }
+      50% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    
+    .animate-fade-in {
+      animation: fadeIn 0.8s ease-out forwards;
+    }
+    
+    .animate-fade-in-delay {
+      animation: fadeInDelay 1.2s ease-out forwards;
+    }
+    
+    /* Hover effect for testimonial cards */
+    .testimonial-slide > div {
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+    
+    .testimonial-slide > div:hover {
+      transform: translateY(-5px);
+    }
+    
+    /* Smooth transitions for dot indicators */
+    .dot {
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    
+    /* Improve button accessibility */
+    .prev-button, .next-button {
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+  </style>
+</section>

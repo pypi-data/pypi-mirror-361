@@ -1,0 +1,244 @@
+<section class="py-24 bg-gradient-to-br from-rose-50 via-amber-50 to-yellow-50 overflow-hidden relative" id="features">
+  <!-- Decorative elements -->
+  <div class="absolute inset-0 pointer-events-none">
+    <!-- Diagonal pattern -->
+    <div class="absolute inset-0 opacity-10">
+      <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="diagonalPattern" width="40" height="40" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <rect width="100%" height="2" fill="rgba(245, 158, 11, 0.3)" />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#diagonalPattern)" />
+      </svg>
+    </div>
+    
+    <!-- Floating elements -->
+    <div class="absolute top-1/4 left-10 w-32 h-32 bg-gradient-to-br from-amber-200/40 to-rose-200/40 rounded-full mix-blend-multiply filter blur-xl opacity-60 animate-float"></div>
+    <div class="absolute bottom-1/4 right-10 w-40 h-40 bg-gradient-to-br from-rose-200/40 to-yellow-200/40 rounded-full mix-blend-multiply filter blur-xl opacity-60 animate-float animation-delay-2000"></div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <!-- Section header with animated accent -->
+    <div class="text-center mb-20 relative">
+      <span class="inline-block px-4 py-1 rounded-full text-sm font-medium bg-amber-100 text-amber-700 mb-4 animate-pulse-slow">
+        {{ sections.features.badge | default('Powerful Features') }}
+      </span>
+      <h2 class="text-4xl md:text-5xl font-bold text-slate-700 mb-4 tracking-tight">
+        {{ sections.features.title | default('Why Choose Our Solution') }}
+      </h2>
+      <p class="text-lg text-slate-500 max-w-2xl mx-auto">
+        {{ sections.features.subtitle | default('Discover how our innovative features can transform your workflow') }}
+      </p>
+      <!-- Animated accent line -->
+      <div class="mt-6 mx-auto w-20 h-1 bg-gradient-to-r from-amber-300 to-rose-300 rounded-full"></div>
+    </div>
+    
+    <!-- Interactive 3D feature carousel -->
+    <div class="relative mb-24">
+      <!-- Feature navigation dots -->
+      <div class="flex justify-center gap-3 mb-8" id="feature-dots">
+        {% for feature in sections.features.items %}
+        <button 
+          class="w-3 h-3 rounded-full transition-all duration-300 focus:outline-none {% if loop.first %}bg-amber-500 scale-125{% else %}bg-amber-200 hover:bg-amber-300{% endif %} feature-dot"
+          data-index="{{ loop.index }}"
+          aria-label="View feature {{ feature.title }}"
+        ></button>
+        {% endfor %}
+      </div>
+      
+      <!-- 3D carousel container -->
+      <div class="relative h-[600px] perspective-1000">
+        <div class="feature-carousel transform-style-3d transition-transform duration-700 h-full w-full">
+          {% for feature in sections.features.items %}
+          <div 
+            class="feature-slide absolute inset-0 backface-hidden transition-all duration-500 {% if loop.first %}active{% else %}inactive{% endif %}"
+            data-index="{{ loop.index }}"
+            style="transform: rotateY({{ (loop.index0 * 60) }}deg) translateZ(400px);"
+          >
+            <!-- Feature content -->
+            <div class="h-full flex flex-col md:flex-row gap-8 items-center">
+              <!-- Visual side -->
+              <div class="w-full md:w-1/2 relative">
+                <div class="relative rounded-2xl overflow-hidden shadow-2xl border-8 border-white group">
+                  <!-- Media (image or video) -->
+                  {% if feature.media.type == 'video' %}
+                  <div class="aspect-video bg-slate-100">
+                    <button class="absolute inset-0 w-full h-full flex items-center justify-center group-hover:scale-90 transition-transform duration-300 play-video" data-video-url="{{ feature.media.src }}">
+                      <div class="w-20 h-20 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-lg">
+                        <div class="w-16 h-16 rounded-full bg-gradient-to-r from-amber-400 to-rose-400 flex items-center justify-center pl-1">
+                          <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        </div>
+                      </div>
+                    </button>
+                    <img 
+                      src="{{ feature.media.poster | default(feature.media.src) }}" 
+                      alt="{{ feature.media.alt }}" 
+                      class="w-full h-full object-cover"
+                    >
+                  </div>
+                  {% else %}
+                  <img 
+                    src="{{ feature.media.src }}" 
+                    alt="{{ feature.media.alt }}" 
+                    class="w-full h-auto object-cover transform transition-transform duration-700 group-hover:scale-110"
+                  >
+                  {% endif %}
+                  
+                  <!-- Interactive hotspots -->
+                  {% if feature.hotspots %}
+                  {% for hotspot in feature.hotspots %}
+                  <div class="absolute" style="top: {{ hotspot.position.top }}; left: {{ hotspot.position.left }};">
+                    <button 
+                      class="w-8 h-8 rounded-full bg-white shadow-lg flex items-center justify-center text-amber-500 hover:text-rose-500 transition-colors duration-300 animate-pulse hover:animate-none"
+                      data-tooltip="{{ hotspot.tooltip }}"
+                    >
+                      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </button>
+                    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 -translate-y-2 w-48 bg-white p-3 rounded-lg shadow-lg text-sm text-slate-700 opacity-0 invisible transition-all duration-300 z-20 tooltip">
+                      {{ hotspot.tooltip }}
+                      <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-3 h-3 bg-white"></div>
+                    </div>
+                  </div>
+                  {% endfor %}
+                  {% endif %}
+                </div>
+                
+                <!-- Decorative elements -->
+                <div class="absolute -top-6 -right-6 w-32 h-32 bg-gradient-to-bl from-amber-200 to-rose-200 rounded-full opacity-70 -z-10"></div>
+                <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-gradient-to-tr from-rose-200 to-yellow-200 rounded-full opacity-70 -z-10"></div>
+              </div>
+              
+              <!-- Content side -->
+              <div class="w-full md:w-1/2">
+                <div class="p-8 bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-amber-100">
+                  <div class="flex items-center mb-4">
+                    {% if feature.icon %}
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-r from-amber-100 to-rose-100 flex items-center justify-center mr-4">
+                      <i class="{{ feature.icon }} text-2xl text-amber-600"></i>
+                    </div>
+                    {% endif %}
+                    <h3 class="text-2xl font-bold text-slate-700">{{ feature.title }}</h3>
+                  </div>
+                  
+                  <p class="text-slate-600 mb-6">{{ feature.subtitle }}</p>
+                  
+                  <!-- Feature benefits list -->
+                  {% if feature.benefits %}
+                  <ul class="space-y-3 mb-8">
+                    {% for benefit in feature.benefits %}
+                    <li class="flex items-start">
+                      <div class="flex-shrink-0 w-6 h-6 rounded-full bg-gradient-to-r from-amber-300 to-rose-300 flex items-center justify-center mr-3 mt-0.5">
+                        <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <span class="text-slate-600">{{ benefit }}</span>
+                    </li>
+                    {% endfor %}
+                  </ul>
+                  {% endif %}
+                  
+                  <!-- Interactive demo button -->
+                  <div class="flex flex-wrap gap-4">
+                    {% if feature.cta %}
+                    <a href="{{ feature.cta.url }}" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-amber-400 to-rose-400 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
+                      {{ feature.cta.label }}
+                      <svg class="w-5 h-5 ml-2 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                      </svg>
+                    </a>
+                    {% endif %}
+                    
+                    {% if feature.demo %}
+                    <button class="inline-flex items-center px-6 py-3 bg-white text-amber-600 font-medium rounded-lg border border-amber-200 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 open-demo" data-demo="{{ feature.demo }}">
+                      <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                      Try Demo
+                    </button>
+                    {% endif %}
+                  </div>
+                </div>
+                
+                <!-- Tech specs floating card -->
+                {% if feature.specs %}
+                <div class="absolute mt-4 right-4 bg-white rounded-xl shadow-xl p-4 border border-amber-100 transform rotate-3 hover:rotate-0 transition-transform duration-300">
+                  <h4 class="text-sm font-semibold text-slate-700 mb-2">Tech Specs</h4>
+                  <ul class="space-y-1">
+                    {% for spec in feature.specs %}
+                    <li class="flex items-center text-xs text-slate-600">
+                      <span class="w-2 h-2 rounded-full bg-amber-300 mr-2"></span>
+                      {{ spec }}
+                    </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      
+      <!-- Navigation arrows -->
+      <div class="absolute top-1/2 left-0 right-0 -translate-y-1/2 flex justify-between pointer-events-none">
+        <button class="w-12 h-12 rounded-full bg-white/80 backdrop-blur-sm shadow-lg flex items-center justify-center text-amber-600 hover:text-rose-500 transition-colors duration-300 pointer-events-auto focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2" id="prev-feature">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <button class="w-12 h-12 rounded-full bg-white/80 backdrop-blur-sm shadow-lg flex items-center justify-center text-amber-600 hover:text-rose-500 transition-colors duration-300 pointer-events-auto focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2" id="next-feature">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Feature comparison with interactive filters -->
+    <div class="mt-24">
+      <div class="text-center mb-12">
+        <h3 class="text-2xl font-bold text-slate-700 mb-4">Compare Features</h3>
+        <p class="text-slate-500 mb-8">See how our features stack up against the competition</p>
+        
+        <!-- Filter tabs -->
+        <div class="inline-flex rounded-lg border border-amber-200 bg-white/50 backdrop-blur-sm p-1 mb-8">
+          <button class="px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 bg-gradient-to-r from-amber-400 to-rose-400 text-white shadow-sm comparison-filter active" data-filter="all">All Features</button>
+          <button class="px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 text-slate-600 hover:text-amber-600 comparison-filter" data-filter="essential">Essential</button>
+          <button class="px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 text-slate-600 hover:text-amber-600 comparison-filter" data-filter="advanced">Advanced</button>
+          <button class="px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 text-slate-600 hover:text-amber-600 comparison-filter" data-filter="premium">Premium</button>
+        </div>
+      </div>
+      
+      <!-- Interactive comparison table -->
+      <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-amber-100 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="bg-gradient-to-r from-amber-50 to-rose-50">
+                <th class="px-6 py-4 text-left text-sm font-medium text-slate-700">Feature</th>
+                <th class="px-6 py-4 text-center text-sm font-medium text-slate-700">
+                  <div class="flex flex-col items-center">
+                    <span class="text-xs text-amber-600 uppercase tracking-wider mb-1">Basic</span>
+                    <span class="text-lg font-bold text-slate-700">$9</span>
+                    <span class="text-xs text-slate-500">/month</span>
+                  </div>
+                </th>
+                <th class="px-6 py-4 text-center text-sm font-medium text-slate-700 relative">
+                  <div class="absolute -top-1 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-amber-400 to-rose-400 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">Popular</div>
+                  <div class="flex flex-col items-center pt-6">
+                    <span class="text-xs text-amber-600 uppercase tracking-wider mb-1">Pro</span>
+                    <span class="text-lg font-bold text-slate-700">$29</span>
+                    <span class="text-xs text-slate-500">/month</span>
+                  </div>
+                </th>
+                <th class="px-6 py-4 text-center text-sm font-medium text-slate-700">
+                  <div class="flex flex-col items-center">
+                    <span class="text-xs text-amber-600 uppercase tracking-wider mb-1">Enterprise</span>
+                    <span class="text-lg font

@@ -1,0 +1,64 @@
+[project]
+name = "assetlab"
+version = "0.1.0"
+description = "A powerful Python library for financial calculations, including cash flow analysis, asset valuation, and portfolio metrics."
+authors = [
+    { name = "Maxim", email = "MaximVUstinov@gmail.com" },
+]
+license = "MIT"
+readme = "README.md"
+# Lowered for much better compatibility, as 3.13 is not yet released.
+requires-python = ">=3.9"
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Financial and Insurance Industry",
+
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial :: Investment",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+# Add project dependencies here
+dependencies = [
+    "pandas>=1.5.0",
+    "numpy>=1.23.0",
+    "pydantic>=2.0.0",
+    "scipy>=1.9.0",
+    "matplotlib>=3.7.0",
+    "notebook>=7.4.4",
+
+]
+
+[project.urls]
+Homepage = "https://github.com/your-username/AssetLab"
+Repository = "https://github.com/your-username/AssetLab"
+
+# Defines optional dependencies for testing
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0.0",
+]
+
+dev = [
+    "assetlab[test]", # Включает зависимости из группы test
+    "tox>=4.0.0",
+    "coverage[toml]>=7.0.0", # [toml] позволяет читать конфигурацию из pyproject.toml
+    "sphinx>=7.0.0",
+    "sphinx-rtd-theme>=1.3.0",
+    "sphinx-autodoc-typehints>=1.24.0",
+    "myst-parser>=2.0.0",
+]
+
+[tool.coverage.run]
+source = ["assetlab"] # Указываем, что измерять покрытие нужно только в этой папке
+branch = true # Также измерять покрытие ветвлений (if/else)
+
+[tool.coverage.report]
+show_missing = true # Показывать номера строк, не покрытых тестами

@@ -1,0 +1,129 @@
+Metadata-Version: 2.4
+Name: color-selector
+Version: 0.1.0
+Summary: Streamlit component for color selection with support for solid colors and gradients
+Project-URL: Homepage, https://github.com/seu-usuario/color-selector
+Project-URL: Repository, https://github.com/seu-usuario/color-selector
+Project-URL: Issues, https://github.com/seu-usuario/color-selector/issues
+Author-email: Seu Nome <seu.email@exemplo.com>
+Maintainer-email: Seu Nome <seu.email@exemplo.com>
+License: MIT
+License-File: LICENSE
+Keywords: color,component,gradient,selector,streamlit,visualization
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Scientific/Engineering :: Visualization
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.7
+Requires-Dist: streamlit>=0.63
+Provides-Extra: devel
+Requires-Dist: playwright==1.48.0; extra == 'devel'
+Requires-Dist: pytest-playwright-snapshot==1.0; extra == 'devel'
+Requires-Dist: pytest-rerunfailures==12.0; extra == 'devel'
+Requires-Dist: pytest==7.4.0; extra == 'devel'
+Requires-Dist: requests==2.31.0; extra == 'devel'
+Requires-Dist: wheel; extra == 'devel'
+Description-Content-Type: text/markdown
+
+# Color Selector
+
+Um componente Streamlit para seleção de cores com suporte a cores sólidas e gradientes lineares.
+
+## Instalação
+
+```sh
+pip install color-selector
+```
+
+## Como usar
+
+```python
+import streamlit as st
+from color_selector import color_selector
+
+# Lista de cores disponíveis (cores sólidas e gradientes)
+colors = [
+    {"name": "Vermelho", "color": "#FF0000"},
+    {"name": "Azul", "color": "#0000FF"},
+    {"name": "Verde", "color": "#00FF00"},
+    {"name": "Gradiente Azul-Verde", "color": ["#0000FF", "#00FF00"]},
+    {"name": "Gradiente Vermelho-Amarelo", "color": ["#FF0000", "#FFFF00"]},
+    {"name": "Gradiente Arco-íris", "color": ["#FF0000", "#00FF00", "#0000FF"]}
+]
+
+# Usar o componente
+selected_color = color_selector(colors=colors, key="color_picker")
+st.write(f"Cor selecionada: {selected_color}")
+```
+
+## Funcionalidades
+
+- Seleção visual de cores com bolinhas coloridas
+- Suporte a cores sólidas (hex, rgb, hsl)
+- Suporte a gradientes lineares (lista de cores)
+- Layout responsivo e minimalista
+- Interface limpa sem títulos ou informações extras
+- Integração perfeita com Streamlit
+
+## Formato das Cores
+
+### Cores Sólidas
+```python
+{"name": "Nome da Cor", "color": "#FF0000"}
+```
+
+### Gradientes Lineares
+```python
+{"name": "Nome do Gradiente", "color": ["#FF0000", "#00FF00"]}
+```
+
+## Desenvolvimento
+
+Para executar em modo de desenvolvimento:
+
+```sh
+cd template_copy/color_selector/frontend
+npm install
+npm run start
+```
+
+Em outro terminal:
+```sh
+streamlit run template_copy/example.py
+```
+
+## Exemplo Completo
+
+```python
+import streamlit as st
+from color_selector import color_selector
+
+st.title("Seletor de Cores")
+
+# Exemplos de cores
+colors = [
+    {"name": "Vermelho", "color": "#FF0000"},
+    {"name": "Azul", "color": "#0000FF"},
+    {"name": "Verde", "color": "#00FF00"},
+    {"name": "Amarelo", "color": "#FFFF00"},
+    {"name": "Roxo", "color": "#800080"},
+    {"name": "Laranja", "color": "#FFA500"},
+    {"name": "Gradiente Azul-Verde", "color": ["#0000FF", "#00FF00"]},
+    {"name": "Gradiente Vermelho-Amarelo", "color": ["#FF0000", "#FFFF00"]},
+    {"name": "Gradiente Arco-íris", "color": ["#FF0000", "#00FF00", "#0000FF"]}
+]
+
+# Usar o componente
+selected_color = color_selector(colors=colors, key="color_picker")
+
+if selected_color:
+    st.write(f"**Cor selecionada:** {selected_color['name']}")
+    st.write(f"**Valor:** {selected_color['color']}")
+```

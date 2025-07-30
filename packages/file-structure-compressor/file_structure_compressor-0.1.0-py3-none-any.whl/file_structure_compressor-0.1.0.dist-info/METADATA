@@ -1,0 +1,203 @@
+Metadata-Version: 2.4
+Name: file-structure-compressor
+Version: 0.1.0
+Summary: A tool to compress file structures for LLMs.
+Author-email: Your Name <you@example.com>
+Project-URL: Homepage, https://github.com/pypa/sampleproject
+Project-URL: Bug Tracker, https://github.com/pypa/sampleproject/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
+Dynamic: license-file
+
+# File Structure Compressor
+
+**Dramatically reduce the token count of your project's file structure before sending it to a Large Language Model (LLM).**
+
+## Overview
+
+When working with Large Language Models like GPT-4, Claude, or Gemini, providing the context of a project's file structure is crucial for tasks like code generation, debugging, and architectural analysis. However, sending a simple list of file paths for a large project consumes an enormous number of tokens, quickly exhausting the context window and increasing API costs.
+
+**File Structure Compressor** is a lightweight, zero-dependency Python utility designed to intelligently compress a directory structure into several token-efficient formats, each with its own balance of compactness and LLM readability.
+
+## Key Features
+
+  - **Massive Token Savings:** Reduce the character count of your file structure by up to 70% compared to a plain file list.
+  - **Multiple Compression Formats:** Choose the best representation for your needs:
+      - **ASCII Tree:** The recommended default. Highly readable for both humans and LLMs, offering excellent compression.
+      - **JSON Tree:** A structured, machine-readable format.
+      - **Custom Compact Format:** An ultra-dense format for maximum token savings.
+  - **Flexible Input Sources:**
+      - Scan a project directory from the filesystem.
+      - Build a structure from a pre-existing list of file paths (e.g., from `git ls-files`).
+  - **Intelligent Filtering:** Easily exclude irrelevant files and directories (like `.git`, `__pycache__`, `node_modules`) using `.gitignore`-style patterns.
+  - **Depth Control:** Limit the recursion depth to show only the most relevant parts of a complex project.
+  - **Simple CLI & API:** Use it as a command-line tool or integrate it directly into your Python scripts.
+
+## Why File Structure Compressor?
+
+Sending a raw file list is inefficient:
+
+```
+# Costly and redundant
+D:/project/src/main.py
+D:/project/src/api/routes.py
+D:/project/src/api/models.py
+D:/project/src/utils/helpers.py
+```
+
+This tool transforms it into a clear and concise representation that LLMs can easily understand, without the redundant path prefixes.
+
+```
+# Efficient and readable (ASCII Tree)
+D:/project/
+├── main.py
+├── api/
+│   ├── routes.py
+│   └── models.py
+└── utils/
+    └── helpers.py
+```
+
+## Installation
+
+```bash
+pip install file-structure-compressor
+```
+
+## Usage
+
+### Method 1: From a Project Directory
+
+This is the most common use case. Simply import `FileStructureCompressor`, point it to your project root, and generate the desired format.
+
+```python
+import os
+from pathlib import Path
+from file_structure_compressor import FileStructureCompressor
+
+# --- 1. Set up a dummy project structure for demonstration ---
+project_root = Path("my_temp_project")
+project_root.mkdir(exist_ok=True)
+(project_root / "src").mkdir(exist_ok=True)
+(project_root / "src" / "api").mkdir(exist_ok=True)
+(project_root / ".git").mkdir(exist_ok=True)
+
+(project_root / "README.md").touch()
+(project_root / "src" / "main.py").touch()
+(project_root / "src" / "api" / "routes.py").touch()
+
+# --- 2. Initialize the compressor with filtering rules ---
+compressor = FileStructureCompressor(
+    root_dir=project_root,
+    exclude_dirs=[".git", ".idea", "node_modules"],
+)
+
+# --- 3. Generate the ASCII tree ---
+ascii_tree = compressor.generate_ascii_tree()
+print("--- ASCII Tree Generated from Directory ---")
+print(ascii_tree)
+```
+
+### Method 2: From a List of File Paths
+
+If you already have a list of files (e.g., from a version control or build tool), you can use the `.from_paths()` class method to avoid re-scanning the filesystem.
+
+```python
+from file_structure_compressor import FileStructureCompressor
+
+# --- 1. Assume you have a list of file paths from another command ---
+file_paths = [
+    "/app/src/main.py",
+    "/app/src/utils/parser.py",
+    "/app/config.json",
+    "/app/README.md",
+    "/app/src/api/v1/endpoint.py",
+    "/app/tests/test_main.py"
+]
+
+# --- 2. Initialize the compressor using the .from_paths() class method ---
+# The tool will automatically infer the common root path `/app`
+compressor_from_list = FileStructureCompressor.from_paths(file_paths)
+
+# --- 3. Generate your desired format ---
+ascii_tree_from_list = compressor_from_list.generate_ascii_tree()
+print("--- ASCII Tree Generated from List ---")
+print(ascii_tree_from_list)
+
+# You can generate other formats as well
+# compact_format = compressor_from_list.generate_custom_format()
+# print("\n--- Custom Compact Format from List ---")
+# print(compact_format)
+```
+
+### Expected Output
+
+```
+--- ASCII Tree Generated from Directory ---
+my_temp_project/
+├── README.md
+└── src/
+    ├── main.py
+    └── api/
+        └── routes.py
+
+--- ASCII Tree Generated from List ---
+app/
+├── README.md
+├── config.json
+├── src/
+│   ├── main.py
+│   ├── utils/
+│   │   └── parser.py
+│   └── api/
+│       └── v1/
+│           └── endpoint.py
+└── tests/
+    └── test_main.py
+```
+
+## Format Comparison
+
+Choose the format that best fits your use case.
+
+| Format          | Token Efficiency | LLM Readability                           | Best For                                                              |
+| :-------------- | :--------------: | :---------------------------------------- | :-------------------------------------------------------------------- |
+| **ASCII Tree** |     **High** | **Excellent** | Most use cases; provides clear structure that LLMs understand well.   |
+| **JSON Tree** |      Medium      | Good                                      | Programmatic use or when the LLM task involves JSON manipulation.     |
+| **Custom** |   **Very High** | Low (Requires prompt explanation)         | Extreme cases of context window limitation where every token matters. |
+
+To use the `Custom` format effectively, you should instruct the LLM on how to read it, for example:
+
+> "The following string represents a file structure where directories are followed by parentheses containing their contents: `root(file1,subdir(file2))`."
+
+## Command-Line Interface (CLI)
+
+For quick use in your terminal:
+
+```bash
+# Generate an ASCII tree, excluding common directories, up to a depth of 3
+file-structure-compressor . --format ascii --exclude .git,node_modules,build --depth 3
+
+# Generate a compact representation and copy it to the clipboard
+file-structure-compressor /path/to/your/project --format compact | pbcopy
+```
+
+## Contributing
+
+Contributions are welcome\! If you have ideas for new features, optimizations, or formats, please open an issue or submit a pull request.
+
+1.  Fork the repository.
+2.  Create a new branch (`git checkout -b feature/your-feature`).
+3.  Commit your changes (`git commit -am 'Add some feature'`).
+4.  Push to the branch (`git push origin feature/your-feature`).
+5.  Create a new Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](https://www.google.com/search?q=LICENSE) file for details.

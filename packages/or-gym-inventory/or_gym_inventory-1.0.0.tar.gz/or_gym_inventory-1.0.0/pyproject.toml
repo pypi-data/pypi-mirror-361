@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "or_gym_inventory"
+version = "1.0.0"
+
+# Original authors of OR-Gym
+authors = [
+  # Contributor updating compatibility for Gymnasium
+  { name = "Reza Barati", email = "r2barati@torontomu.ca" }
+]
+
+description = "Gymnasium-compatible implementations of classic inventory management environments (Newsvendor, Multi-Echelon, Network) based on OR-Gym."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.8"
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+
+keywords = ["reinforcement learning", "operations research", "inventory management", "gymnasium", "rl"]
+
+dependencies = [
+    "gymnasium>=0.26.0",
+    "numpy",
+    "scipy",
+    "pandas",
+    "networkx"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/r2barati/or-gym-inventory-pkg"
+"Bug Tracker" = "https://github.com/r2barati/or-gym-inventory-pkg/issues"
+
+[project.optional-dependencies]
+examples = ["matplotlib", "seaborn"]
+sb3 = ["stable-baselines3[extra]>=2.0.0"]
+rllib = ["ray[rllib]>=2.0.0"]
+dev = [
+    "or_gym_inventory[examples, sb3, rllib]",
+    "pytest"
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["or_gym_inventory*"]

@@ -1,0 +1,47 @@
+Metadata-Version: 2.1
+Name: MessagePrint
+Version: 1.0.0
+Summary: Print messages to pygame screen.
+Home-page: https://github.com/TheChainsawBoy/MessagePrint
+Author: Jack Bennett
+Author-email: Jack Bennett <jckbenn07@gmail.com>
+Project-URL: Homepage, https://github.com/TheChainsawBoy/MessagePrint
+Project-URL: Issues, https://github.com/TheChainsawBoy/MessagePrint
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE.txt
+
+#
+Overview
+##
+This library allows for printing messages onto the actual pygame screen itself, rather than into the syntax window.
+
+###
+Key Features
+###
+- Printing messages to screen
+
+####
+Basic Usage
+####
+
+from MsgPrnt import Msg
+import pygame
+
+pygame.init()
+screen = pygame.display.set_mode((640, 480))
+
+#Create animation
+Msg = (""Hello World, (0, 0), size=20, color=(255, 255, 255), font=None, delay=3000)	#font None is default
+
+#Main loop
+running = True
+while running:
+    screen.fill((0, 0, 0))
+    Msg.display(screen)
+    pygame.display.flip()
+
+pygame.quit()

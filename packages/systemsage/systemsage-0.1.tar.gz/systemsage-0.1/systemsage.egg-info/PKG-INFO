@@ -1,0 +1,119 @@
+Metadata-Version: 2.4
+Name: systemsage
+Version: 0.1
+Summary: A cross-platform system management and monitoring tool
+Author-email: Taru Sharma <taru2828sharma@gmail.com>
+License: MIT
+Project-URL: Homepage, https://github.com/Tarusharma1/SystemSage
+Project-URL: Bug Tracker, https://github.com/Tarusharma1/SystemSage/issues
+Project-URL: Repository, https://github.com/Tarusharma1/SystemSage
+Keywords: system,monitoring,management,mcp,cross-platform,psutil
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: System Administrators
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: System :: Systems Administration
+Classifier: Topic :: System :: Monitoring
+Classifier: Topic :: System :: Networking :: Monitoring
+Classifier: Topic :: System :: Installation/Setup
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Typing :: Typed
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: psutil>=5.9.0
+Requires-Dist: fastmcp>=1.0.0
+Requires-Dist: click>=8.1.0
+Provides-Extra: cloud
+Requires-Dist: requests>=2.31.0; extra == "cloud"
+Requires-Dist: docker>=6.1.0; extra == "cloud"
+Requires-Dist: kubernetes>=28.1.0; extra == "cloud"
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: isort>=5.0.0; extra == "dev"
+Requires-Dist: flake8>=6.0.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Dynamic: license-file
+
+# SystemSage
+
+A powerful cross-platform system management and monitoring tool that provides comprehensive system insights and management capabilities.
+
+## Features
+
+- System resource monitoring (CPU, Memory, Disk)
+- Process management
+- Network interface monitoring
+- System alerts and diagnostics
+- Service management
+- Docker container management
+- Kubernetes cluster monitoring
+- Log management
+- Security monitoring
+- Performance analysis
+- System health checks
+
+## Installation
+
+```bash
+pip install systemsage
+```
+
+For additional cloud features (Docker, Kubernetes, HTTP requests):
+```bash
+pip install systemsage[cloud]
+```
+
+## Quick Start
+
+```python
+from SystemSage.server import mcp
+
+# Get system metrics
+print(mcp.get_cpu_usage())
+print(mcp.get_memory_usage())
+print(mcp.get_disk_usage())
+
+# Monitor system resources
+print(mcp.monitor_system_resources(duration=10))
+
+# Get system alerts
+print(mcp.get_system_alerts())
+```
+
+## Command Line Usage
+
+```bash
+# Run the MCP server
+systemsage
+
+# Or run as a module
+python -m SystemSage
+```
+
+## Requirements
+
+- Python 3.10 or higher
+- psutil>=5.9.0
+- fastmcp>=1.0.0
+- click>=8.1.0
+
+### Optional Dependencies
+
+- requests>=2.31.0 (for cloud services)
+- docker>=6.1.0 (for Docker management)
+- kubernetes>=28.1.0 (for Kubernetes monitoring)
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. 

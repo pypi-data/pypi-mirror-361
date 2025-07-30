@@ -1,0 +1,178 @@
+# AttnSeeker
+
+A Python package for attention-seeking functionality.
+
+## Features
+
+- Core attention-seeking functionality
+- Command-line interface
+- Extensible architecture
+- Comprehensive testing
+
+## Installation
+
+You can install the package from PyPI:
+
+```bash
+pip install attnseeker
+```
+
+Or install from source:
+
+```bash
+git clone https://github.com/yourusername/attnseeker.git
+cd attnseeker
+pip install -e .
+```
+
+## Usage
+
+### Basic Usage
+
+```python
+from attnseeker import main_function
+from attnseeker import AttnSeeker
+
+# Use the main function
+result = main_function()
+print(result)  # "Hello from attnseeker!"
+
+# Create an AttnSeeker instance
+seeker = AttnSeeker("World")
+greeting = seeker.greet()
+print(greeting)  # "Hello, World! I'm seeking attention!"
+```
+
+### Command Line Interface
+
+The package also provides a command-line interface:
+
+```bash
+attnseeker --help
+attnseeker --name "Alice"
+attnseeker --verbose
+```
+
+## Development
+
+### Setup Development Environment
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/attnseeker.git
+   cd attnseeker
+   ```
+
+2. Create a virtual environment:
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+   ```
+
+3. Install development dependencies:
+   ```bash
+   pip install -e ".[dev]"
+   ```
+
+4. Install pre-commit hooks:
+   ```bash
+   pre-commit install
+   ```
+
+### Running Tests
+
+```bash
+pytest
+```
+
+### Code Formatting
+
+The project uses Black for code formatting and isort for import sorting:
+
+```bash
+black src/ tests/
+isort src/ tests/
+```
+
+### Type Checking
+
+```bash
+mypy src/
+```
+
+### Linting
+
+```bash
+flake8 src/ tests/
+```
+
+## Building and Publishing
+
+### Build the Package
+
+```bash
+python -m build
+```
+
+### Upload to PyPI
+
+First, install the build tools:
+
+```bash
+pip install build twine
+```
+
+Then build and upload:
+
+```bash
+# Build the package
+python -m build
+
+# Upload to TestPyPI (for testing)
+twine upload --repository testpypi dist/*
+
+# Upload to PyPI (for production)
+twine upload dist/*
+```
+
+### Publishing Strategy
+
+This project uses a multi-package strategy to reserve related names:
+
+1. **`attnseeker`** - Main package with full functionality
+2. **`attentionseeker`** - Placeholder package that redirects to attnseeker
+3. **`attention-seeker`** - Placeholder package that redirects to attnseeker
+
+This ensures that all related package names are reserved and users are directed to the main package.
+
+### Using GitHub Actions
+
+This repository includes GitHub Actions workflows for:
+- Running tests on multiple Python versions
+- Code quality checks
+- Automatic releases to PyPI
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Changelog
+
+### [0.1.0] - 2024-01-01
+- Initial release
+- Basic attention-seeking functionality
+- Command-line interface
+- Placeholder packages for name reservation
+
+## Acknowledgments
+
+- Thanks to all contributors
+- Inspired by attention-seeking behavior patterns 

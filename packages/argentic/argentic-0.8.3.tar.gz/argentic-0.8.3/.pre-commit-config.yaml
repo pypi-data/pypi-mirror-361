@@ -1,0 +1,15 @@
+repos:
+  - repo: local
+    hooks:
+      - id: bump-version
+        name: Bump version based on commit message
+        entry: ./bin/version_bump_commit_msg.sh
+        language: script
+        stages: [commit-msg]
+        pass_filenames: true
+      - id: run-unit-tests
+        name: Run unit tests
+        entry: ./bin/run_unit_tests.sh
+        language: script
+        stages: [pre-push]
+        pass_filenames: false

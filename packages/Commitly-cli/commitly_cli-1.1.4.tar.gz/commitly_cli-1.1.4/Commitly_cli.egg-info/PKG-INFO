@@ -1,0 +1,320 @@
+Metadata-Version: 2.1
+Name: Commitly-cli
+Version: 1.1.4
+Summary: CLI tool to generate structured Git commit messages using AI.
+Home-page: https://github.com/Tostenn/Commitly-CLI
+Author: Kouya Tosten
+Author-email: kouyatosten@gmail.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Version Control
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: rich==13.7.1
+Requires-Dist: commitly>=3.1.3
+
+
+# commitly-cli 🚀🤖
+
+> _Never write "final commit" or "modifs 2" again in your Git history._
+
+**commitly-cli** is a stylish command-line interface powered by `Rich`, built on top of the [commitly](https://github.com/Tostenn/commitly) library. It generates smart, structured, and elegant Git commit messages for you — so you can focus on your code.
+
+---
+
+## 🧠 Why commitly-cli?
+
+You run `git commit -m ""`, then… you freeze.
+
+😩 You’re thinking: “What should I write here?”
+
+With **commitly-cli**, let the AI do it for you.  
+It reads your staged changes (`git diff --cached`), understands what you’ve done, and crafts a clean, contextual message.
+
+> Think of it as your Git copilot ✈️
+
+---
+
+## 🧰 Requirements
+
+- Python 3.7+
+- Git installed
+
+---
+
+## 🧪 Installation
+
+Install via pip:
+
+```bash
+pip install commitly-cli 
+````
+
+Or clone it locally:
+
+```bash
+git clone https://github.com/Tostenn/commitly-cli.git
+cd commitly-cli
+python main.py --help
+```
+
+> Make sure [`commitly`](https://github.com/Tostenn/commitly) is also installed:
+>
+> ```bash
+> pip install commitly
+> ```
+
+---
+
+## ✨ Key Features
+
+* 🧠 AI-powered commit message generation
+* 🔍 Automatic Git diff analysis
+* 🧩 **Intelligent commit splitting**: breaks complex changes into logical commits
+* 💅 Fully customizable format, tone, and content
+* 🏷️ Auto-injects ticket numbers (e.g., `#42`)
+* ✅ Optional confirmation mode with message editing (`commit.txt`)
+* 🔄 Integrated Git flow (`add`, `commit`, `push`)
+* 🎨 Beautiful output with [Rich](https://github.com/Textualize/rich)
+* 🤖 Bonus: a fancy logo just for fun 😎
+
+---
+
+## 🛠️ Basic Usage
+
+```bash
+commitly-cli --add . --confirm
+```
+
+This will:
+
+* Stage all files
+* Generate a commit message using AI
+* Save it in `commit.txt` for manual review
+* Ask for confirmation before committing
+
+### With a ticket
+
+```bash
+commitly-cli --add . --confirm --ticket "#25"
+```
+
+> The ticket number is automatically included in your message.
+
+---
+
+## 🚀 Advanced Example
+
+```bash
+commitly-cli \
+  --add script.py README.md \
+  --style my-style.txt \
+  --format my-format.txt \
+  --recommandation my-hints.txt \
+  --ticket #42 \
+  --push \
+  --confirm
+```
+
+This will:
+
+* Add selected files
+* Use your custom style/format/guidelines
+* Link to a ticket
+* Let you review and edit the message
+* Commit and push it to the remote repo
+
+---
+
+## ✏️ Need to tweak the message?
+
+When using `--confirm`, a `commit.txt` file is created. You can edit it before finalizing.
+
+Then continue with:
+
+```bash
+python main.py --continue
+```
+
+---
+
+## 🧪 Upcoming: `--dry-run` mode *(in the next version)*
+
+Preview the generated message **without** making a real commit:
+
+```bash
+commitly-cli --add . --ticket "#123" --dry-run
+```
+
+> This feature will let you test your message templates safely.
+> *(Currently under development – stay tuned!)*
+
+---
+
+## 🔍 Available Options
+
+| Argument                 | Description                                   |
+| ------------------------ | --------------------------------------------- |
+| `-a`, `--add`            | Files to stage (default: `.`)                 |
+| `-f`, `--format`         | Path to commit message format file            |
+| `-s`, `--style`          | Path to writing style definition              |
+| `-r`, `--recommandation` | Tips or constraints to guide the AI           |
+| `-t`, `--ticket`         | Ticket number to include (e.g. `#42`)         |
+| `-p`, `--push`           | Push after committing                         |
+| `--confirm`              | Enables message review/edit before committing |
+| `-c`, `--continue`       | Commits using the content of `commit.txt`     |
+| `--dry-run`              | *(Coming soon)* Simulates message generation  |
+| `--show-format`          | Display default format                        |
+| `--show-style`           | Display default style                         |
+| `--show-recommandation`  | Display default guidance rules                |
+| `--del-temp`             | Delete `commit.txt` after use                 |
+
+> 💡 Tip: use `--add !` to skip staging entirely.
+
+---
+
+## ✍️ Customization
+
+Fine-tune commit generation with your own:
+
+* `style.txt`: tone (formal, technical, playful...)
+* `format.txt`: structure (type, module, message...)
+* `recommandation.txt`: additional rules or reminders
+
+---
+
+## 🧪 Common Scenarios
+
+### 🧹 Quick fix
+
+```bash
+commitly-cli --add . --ticket "#123" --confirm
+```
+
+> Easy: auto-stage, tag, suggest, review, commit.
+
+---
+
+### 🧱 Large commit with consistency
+
+```bash
+commitly-cli \
+  --add . \
+  --style formal.txt \
+  --format conventional.txt \
+  --recommandation rules.txt \
+  --ticket "#88" \
+  --push \
+  --confirm
+```
+
+> Maintain consistency across big code changes like a pro 💼
+
+---
+
+## 💥 Fun Fact: commitly-cli wrote itself
+
+This very project is the best demo of commitly-cli.
+
+🛠️ The first 2 commits were hand-written.
+
+From the **third commit** onward, commitly-cli took the wheel.
+At first, it wasn't great. Here's the actual result from its first attempt:
+
+````bash
+git commit -m "```"
+````
+
+Yes — triple backticks as the commit message.
+Why? Because the training example used `"commit message here"`… and the AI took that **literally** 😅
+
+Since then, it's grown a lot — smarter, more structured, and reliable.
+
+Want to see the evolution?
+
+> Check out the Git history:
+> [`git log`](https://github.com/Tostenn/commitly-cli/commits/main)
+
+It’s like watching an AI grow from 🐣 to 🧙‍♂️
+
+---
+
+### 📦 Config File (no more long commands!) *(Coming soon)*
+
+You can define your default options once in a config file to avoid repeating them every time.
+
+#### ✅ Supported config file names:
+
+* `.commitly-cli.json`
+* `commitly-cli.json`
+
+Place it in the **root of your Git project** or in your **home directory**.
+
+#### 📄 Example:
+
+```json
+{
+  "add": ".",
+  "confirm": true,
+  "ticket": "#88",
+  "style": "my-style.txt",
+  "format": "my-format.txt",
+  "recommandation": "my-rules.txt",
+  "push": true
+}
+```
+
+Once the file is detected, you can run simply:
+
+```bash
+commitly-cli
+```
+
+> Command-line arguments always override the config file.
+
+---
+
+## 🔮 Next Steps
+
+🧪 In development:
+
+* 💡 `--dry-run`: preview message output (no real commit)
+* 📁 Smarter file selection (relevant diffs only)
+* 🧠 Git hooks (`pre-commit`) integration
+* ✍️ Suggest tags/branches
+* 🎨 Lightweight web UI
+* 🧩 Extension for **Visual Studio Code**
+
+> Want more? Open an issue or contribute!
+
+---
+
+## 🤝 Built on
+
+🧠 [commitly](https://github.com/Tostenn/commitly):
+The engine that turns your Git diff into a smart message.
+commitly-cli is just the steering wheel.
+
+---
+
+## 💬 Final Word
+
+Still using:
+
+```bash
+git commit -m "change"
+git commit -m "test again"
+git commit -m "final final final"
+```
+
+Upgrade your commit game.
+Make your Git history **shine like a pro** 💎
+
+---
+
+## 🐛 Issues? Feedback?
+
+Open an [issue](https://github.com/Tostenn/commitly-cli/issues) — or reach out directly.

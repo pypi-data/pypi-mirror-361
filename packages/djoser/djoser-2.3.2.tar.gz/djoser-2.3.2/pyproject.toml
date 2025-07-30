@@ -1,0 +1,165 @@
+[tool.poetry]
+name = "djoser"
+version = "2.3.2"
+description = "REST implementation of Django authentication system."
+authors = [
+    "Sunscrapers <info@sunscrapers.com>",
+]
+maintainers = [
+    "Tomasz Wojcik <djoser@tomwojcik.com>",
+]
+license = "MIT"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Framework :: Django",
+    "Framework :: Django :: 3.1",
+    "Framework :: Django :: 3.2",
+    "Framework :: Django :: 4.0",
+    "Framework :: Django :: 4.1",
+    "Framework :: Django :: 4.2",
+    "Framework :: Django :: 5.0",
+    "Framework :: Django :: 5.1",
+    "Framework :: Django :: 5.2",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+repository = "https://github.com/sunscrapers/djoser"
+documentation = "https://djoser.readthedocs.io/"
+readme = "README.rst"
+include = ["djoser/locale/**/*.mo"]
+packages = [
+    { include = "djoser" },
+]
+
+[tool.poetry.dependencies]
+python = ">=3.9,<4.0"
+django = "^3.2"
+djangorestframework = "^3.14"
+djangorestframework-simplejwt = "^5.0"
+social-auth-app-django = "^5.0.0"
+djet = { version = "^0.3.0", optional = true }
+webauthn = { version = "<1.0", optional = true }
+
+[tool.poetry.extras]
+# https://python-poetry.org/docs/pyproject/#extras
+djet = ["djet"]
+webauthn = ["webauthn"]
+
+# poetry add <lib name> --group test
+[tool.poetry.group.test.dependencies]
+pytest = "^7.2.2"
+coverage = "^7.2.2"
+pytest-cov = "^4.0.0"
+pytest-django = "^4.5.2"
+tox = "^4.4.8"
+babel = "^2.12.1"
+pytest-mock = "^3.14.0"
+deepdiff = "^8.0.1"
+
+[tool.poetry.group.code-quality.dependencies]
+black = ">=23.1,<26.0"
+ruff = "^0.8.0"
+docformatter = "^1.7.4"
+pyupgrade = "^3.3.1"
+pre-commit-hooks = ">=4.4,<6.0"
+pre-commit = "^4.1.0"
+
+[tool.poetry.group.docs.dependencies]
+sphinx = "^6.1.3"
+toml = "^0.10.2"
+sphinx-rtd-theme = "^1.2.0"
+
+[tool.black]
+line-length = 88
+target-version = ["py39", "py310", "py311", "py312", "py313"]
+include = '\.pyi?$'
+exclude = '''
+(
+  /(
+      \.cache
+    | \.eggs
+    | \.git
+    | \.hg
+    | \.mypy_cache
+    | \.pytest_cache
+    | \.tox
+    | \.venv
+    | __pycache__
+    | _build
+    | buck-out
+    | build
+    | dist
+    | docs
+    | migrations
+  )/
+)
+'''
+
+[tool.ruff]
+select = ["E", "F"]
+fixable = ["A", "B", "C", "D", "E", "F"]
+unfixable = []
+
+exclude = [
+    "conf.py",
+    ".venv",
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+    "migrations"
+]
+line-length = 88
+target-version = "py39"
+
+[tool.docformatter]
+recursive = true
+pre-summary-newline = true
+make-summary-multi-line = true
+wrap-summaries = 88
+wrap-descriptions = 88
+in-place = true
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+DJANGO_SETTINGS_MODULE = "testproject.settings"
+python_paths = "testproject"
+
+[tool.coverage.run]
+source = ["djoser"]
+omit = ["*/tests/*", "*/migrations/*", "*/conftest.py"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "pass",
+    "raise ImportError",
+]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

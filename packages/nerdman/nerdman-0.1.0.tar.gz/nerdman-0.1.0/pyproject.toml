@@ -1,0 +1,103 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nerdman"
+dynamic = ["version"]
+description = "A powerful Python library and CLI tool for working with Nerd Fonts icons"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Alfie McCabe", email = "iamamccabe@gmail.com"}
+]
+maintainers = [
+    {name = "Alfie McCabe", email = "iamamccabe@gmail.com"}
+]
+keywords = [
+    "nerd-fonts", "icons", "fonts", "cli", "terminal", "unicode", 
+    "symbols", "glyphs", "developer-tools", "font-icons"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Environment :: Console",
+    "Natural Language :: English",
+]
+requires-python = ">=3.7"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov",
+    "black",
+    "flake8",
+    "mypy",
+    "twine",
+    "wheel",
+]
+test = [
+    "pytest>=6.0",
+    "pytest-cov",
+]
+
+[project.urls]
+Homepage = "https://github.com/mralfiem591/nerdman"
+Documentation = "https://github.com/mralfiem591/nerdman#readme"
+Repository = "https://github.com/mralfiem591/nerdman.git"
+"Bug Reports" = "https://github.com/mralfiem591/nerdman/issues"
+Changelog = "https://github.com/mralfiem591/nerdman/blob/main/CHANGELOG.md"
+
+[project.scripts]
+nerdman = "nerdman:main"
+
+[tool.setuptools]
+py-modules = ["nerdman"]
+
+[tool.setuptools_scm]
+write_to = "nerdman/_version.py"
+
+[tool.black]
+line-length = 88
+target-version = ['py37']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q --strict-markers"
+testpaths = [
+    "tests",
+]
+pythonpath = [
+    "."
+]
+
+[tool.mypy]
+python_version = "3.7"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true

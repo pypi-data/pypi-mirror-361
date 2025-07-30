@@ -1,0 +1,196 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pyshotter"
+description = "PyShotter: Smart, annotated, and shareable screenshots for Python."
+readme = "README.md"
+requires-python = ">= 3.9"
+authors = [
+  { name = "Abdoullah Ndao", email="abdoullahaljersi@gmail.com" },
+]
+maintainers = [
+  { name = "Abdoullah Ndao", email="abdoullahaljersi@gmail.com" },
+]
+license = { file = "LICENSE.txt" }
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: MacOS X",
+  "Intended Audience :: Developers",
+  "Intended Audience :: End Users/Desktop",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: MacOS",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: Unix",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Multimedia :: Graphics :: Capture :: Screen Capture",
+  "Topic :: Software Development :: Libraries",
+  "Topic :: Scientific/Engineering :: Image Processing",
+  "Topic :: Text Processing :: Linguistic",
+]
+keywords = [
+    "screenshot",
+    "screen capture",
+    "annotation",
+    "sharing",
+    "smart detection",
+    "ocr",
+    "text extraction",
+    "redaction",
+    "panorama",
+    "change detection",
+    "hotkeys",
+    "history",
+    "python",
+    "cross-platform",
+]
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/utachicodes/pyshotter"
+Documentation = "https://pyshotter.readthedocs.io"
+Changelog = "https://github.com/utachicodes/pyshotter/blob/main/CHANGELOG.md"
+Source = "https://github.com/utachicodes/pyshotter"
+Tracker = "https://github.com/utachicodes/pyshotter/issues"
+
+[project.scripts]
+pyshotter = "pyshotter.__main__:main"
+
+[project.optional-dependencies]
+dev = [
+  "build==1.2.2.post1",
+  "mypy==1.15.0",
+  "ruff==0.11.11",
+  "twine==6.1.0",
+]
+docs = [
+  "shibuya==2025.5.30",
+  "sphinx==8.2.3",
+  "sphinx-copybutton==0.5.2",
+  "sphinx-new-tab-link==0.8.0",
+]
+tests = [
+  "numpy==2.2.4 ; sys_platform == 'linux' and python_version == '3.13'",
+  "pillow==11.2.1 ; sys_platform == 'linux' and python_version == '3.13'",
+  "pytest==8.4.0",
+  "pytest-cov==6.2.1",
+  "pytest-rerunfailures==15.1",
+  "pyvirtualdisplay==3.0 ; sys_platform == 'linux'",
+]
+ocr = [
+  "pytesseract>=0.3.10",
+  "opencv-python>=4.8.0",
+]
+annotation = [
+  "opencv-python>=4.8.0",
+  "pillow>=9.0.0",
+]
+sharing = [
+  "pyperclip>=1.8.0",
+  "requests>=2.31.0",
+]
+cloud = [
+  "requests>=2.31.0",
+  "dropbox>=11.36.0",
+]
+
+[tool.hatch.version]
+path = "src/pyshotter/__init__.py"
+
+[tool.hatch.build]
+skip-excluded-dirs = true
+
+[tool.hatch.build.targets.sdist]
+only-include = [
+  "CHANGELOG.md",
+  "CHANGES.md",
+  "CONTRIBUTORS.md",
+  "docs/source",
+  "src",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = [
+  "src/pyshotter",
+]
+
+[tool.mypy]
+# Ensure we know what we do
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_unused_configs = true
+
+# Imports management
+ignore_missing_imports = true
+follow_imports = "skip"
+
+# Ensure full coverage
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_untyped_calls = true
+
+# Restrict dynamic typing (a little)
+# e.g. `x: List[Any]` or x: List`
+# disallow_any_generics = true
+
+strict_equality = true
+
+[tool.pytest.ini_options]
+pythonpath = "src"
+addopts = """
+  --showlocals
+  --strict-markers
+  -r fE
+  -vvv
+  --cov=src/pyshotter
+  --cov-report=term-missing:skip-covered
+"""
+
+[tool.ruff]
+exclude = [
+    ".git",
+    ".mypy_cache",
+    ".pytest_cache",
+    ".ruff_cache",
+    "venv",
+]
+line-length = 120
+indent-width = 4
+target-version = "py39"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.ruff.lint]
+fixable = ["ALL"]
+extend-select = ["ALL"]
+ignore = [
+  "ANN401",   # typing.Any
+  "C90",      # complexity
+  "COM812",   # conflict
+  "D",        # TODO
+  "ISC001",   # conflict
+  "T201",     # `print()`
+]
+
+[tool.ruff.lint.per-file-ignores]
+"docs/source/*" = [
+  "ERA001",   # commented code
+  "INP001",   # file `xxx` is part of an implicit namespace package
+]
+"src/tests/*" = [
+  "FBT001",   # boolean-typed positional argument in function definition
+  "PLR2004",  # magic value used in comparison
+  "S101",     # use of `assert` detected
+  "S602",     # `subprocess` call with `shell=True`
+  "S603",     # `subprocess` call
+  "SLF001",   # private member accessed
+]

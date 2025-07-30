@@ -1,0 +1,173 @@
+Metadata-Version: 2.4
+Name: projnormal
+Version: 0.1
+Summary: A PyTorch implementation of the Projected Normal distribution with fitting capabilities.
+Project-URL: Repository, https://github.com/dherrera1911/projnormal
+Project-URL: Source, https://github.com/dherrera1911/projnormal
+Project-URL: Bug Reports, https://github.com/dherrera1911/projnormal/issues
+Author-email: Daniel Herrera-Esposito <dherrera1911@gmail.com>
+License: MIT License
+License-File: LICENSE
+Keywords: Angular statistics,Geometry,Hypersphere,PyTorch,Sphere,Statistics
+Classifier: Development Status :: 2 - Pre-Alpha
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.9
+Requires-Dist: geotorch
+Requires-Dist: scipy
+Requires-Dist: torch>=2.0
+Requires-Dist: tqdm>=4.29
+Provides-Extra: dev
+Requires-Dist: pytest-cov; extra == 'dev'
+Requires-Dist: pytest-xdist; extra == 'dev'
+Requires-Dist: pytest>=5.1.2; extra == 'dev'
+Provides-Extra: docs
+Requires-Dist: docutils<0.21,>=0.18.1; extra == 'docs'
+Requires-Dist: ipython; extra == 'docs'
+Requires-Dist: myst-nb; extra == 'docs'
+Requires-Dist: nbsphinx; extra == 'docs'
+Requires-Dist: nbsphinx-link; extra == 'docs'
+Requires-Dist: numpydoc; extra == 'docs'
+Requires-Dist: sphinx; extra == 'docs'
+Requires-Dist: sphinx-autodoc-typehints; extra == 'docs'
+Requires-Dist: sphinx-copybutton; extra == 'docs'
+Requires-Dist: sphinx-inline-tabs; extra == 'docs'
+Requires-Dist: sphinx-rtd-theme>=1.3.0rc1; extra == 'docs'
+Requires-Dist: sphinxcontrib-apidoc; extra == 'docs'
+Requires-Dist: sphinxemoji; extra == 'docs'
+Provides-Extra: test
+Requires-Dist: pytest-cov; extra == 'test'
+Requires-Dist: pytest-xdist; extra == 'test'
+Requires-Dist: pytest>=5.1.2; extra == 'test'
+Description-Content-Type: text/markdown
+
+<img src="docs/source/_static/cartoon.svg" alt="projnormal logo" width="500"/>
+
+`projnormal` is a Python package for working with the
+projected normal and related distributions. It uses a
+PyTorch backend to provide efficient computations and
+fitting procedures.
+
+Given an $n$-dimensional variable
+$\mathbf{x} \sim \mathcal{N}(\boldsymbol{\mu}, \Sigma)$,
+the variable obtained by radially projecting
+$\mathbf{x}$ onto the unit sphere,
+$\mathbf{y} = \frac{\mathbf{x}}{||\mathbf{x}||}$,
+follows a projected normal distribution, denoted
+as $\mathbf{y} \sim \mathcal{PN}(\boldsymbol{\mu}, \Sigma)$.
+
+The package was introduced in the preprint
+["Projected Normal Distribution: Moment Approximations and Generalizations"](https://arxiv.org/abs/2506.17461),
+which presents the implemented formulas.
+
+
+## Projected Normal Distribution
+
+`projnormal` implements the following functionalities for
+the projected normal distribution (and related distributions):
+* PDF and log-PDF formulas
+* Maximum-likelihood parameter estimation
+* Distribution sampling
+* Approximations of the first and second moments
+* Moment matching routines
+
+In the example code below, we generate samples from
+$\mathcal{PN}(\boldsymbol{\mu}, \Sigma)$ and compute their
+PDF. The necessary formulas are implemented in the
+submodule `projnormal.formulas.projected_normal`.
+
+```python
+import torch
+import projnormal
+import projnormal.formulas.projected_normal as pn_dist
+
+# Sample distribution parameters
+
+N_DIM = 3  # The package work with any dimension
+mean_x = projnormal.param_sampling.make_mean(N_DIM)
+covariance_x = projnormal.param_sampling.make_spdm(N_DIM)
+
+# Generate distribution samples
+samples = pn_dist.sample(
+  mean_x=mean_x, covariance_x=covariance_x, n_samples=2000
+)
+
+# Compute samples PDF
+pdf_values = pn_dist.pdf(
+  mean_x=mean_x, covariance_x=covariance_x, y=samples
+)
+```
+
+Next, we initialize a `ProjNormal` object and use it
+to fit the distribution parameters to the samples.
+
+```python
+# Initialize a ProjNormal object to fit
+pn_fit = projnormal.classes.ProjNormal(n_dim=N_DIM)
+
+# Fit the parameters of the projected normal distribution
+pn_fit.max_likelihood(y=samples)
+
+# Check the fitted parameters against the original parameters
+print("Fitted mean vector:", pn_fit.mean_x.detach()) 
+print("True mean vector:", mean_x)
+
+print("Fitted covariance matrix: \n", pn_fit.covariance_x.detach())
+print("True covariance matrix: \n", covariance_x)
+```
+    
+## Installation
+
+### Virtual environment
+
+We recommend installing the package in a virtual environment. For this,
+you can first install `miniconda` 
+([install instructions link](https://docs.anaconda.com/miniconda/install/#quick-command-line-install)),
+and then create a virtual environment with Python 3.11 using the following
+shell command:
+
+```bash
+conda create -n my-projnormal python=3.11
+```
+
+You can then activate the virtual environment with the following command:
+
+```bash
+conda activate my-projnormal
+```
+
+You should activate the `my-sqfa` environment to install the package, and every
+time you want to use it.
+
+
+### Install package
+
+To install the package, you can clone the GitHub
+repository and install in editable mode using `pip`:
+
+```bash
+git clone https://github.com/dherrera1911/projnormal.git
+cd projnormal
+pip install -e "."
+```
+
+## Citation
+
+If you use `projnormal` in your research, please cite the
+preprint ["Projected Normal Distribution: Moment Approximations and Generalizations"](https://arxiv.org/abs/2506.17461):
+
+```bibtex
+@misc{herreraesposito2025projected,
+      title={Projected Normal Distribution: Moment Approximations and Generalizations},
+      author={Daniel Herrera-Esposito and Johannes Burge},
+      year={2025},
+      eprint={2506.17461},
+      archivePrefix={arXiv},
+      url={https://arxiv.org/abs/2506.17461}, 
+}
+```
+

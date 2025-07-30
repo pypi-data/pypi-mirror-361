@@ -1,0 +1,82 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "syft-perm"
+version = "0.3.1"
+description = "Minimal utilities for managing SyftBox file permissions"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    { name = "OpenMined", email = "info@openmined.org" },
+]
+keywords = [
+    "syftbox",
+    "permissions",
+    "privacy",
+    "federated-learning",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+syftbox = [
+    "syft-core",
+]
+display = [
+    "tabulate>=0.9.0",
+]
+server = [
+    "fastapi>=0.104.0",
+    "uvicorn>=0.24.0",
+]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov",
+    "black",
+    "isort",
+    "flake8",
+    "mypy",
+]
+
+[project.urls]
+Homepage = "https://github.com/OpenMined/syft-perm"
+Documentation = "https://github.com/OpenMined/syft-perm#readme"
+Repository = "https://github.com/OpenMined/syft-perm"
+Issues = "https://github.com/OpenMined/syft-perm/issues"
+
+# Static versioning - no VCS hooks needed
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.black]
+line-length = 100
+target-version = ['py39']
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"] 

@@ -1,0 +1,268 @@
+Metadata-Version: 2.4
+Name: alchemy-h8
+Version: 0.1.0
+Summary: Advanced SQLAlchemy extension with connection pooling, rate limiting, and security features
+Project-URL: Documentation, https://github.com/Harut8/alchemy_h8#readme
+Project-URL: Issues, https://github.com/Harut8/alchemy_h8/issues
+Project-URL: Source, https://github.com/Harut8/alchemy_h8
+Author-email: Harut <har.avetisyan2002@gmail.com>
+License: MIT
+Keywords: async,connection-pooling,database,postgresql,rate-limiting,sqlalchemy
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Database
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Typing :: Typed
+Requires-Python: >=3.11
+Requires-Dist: asyncpg>=0.30.0
+Requires-Dist: greenlet>=3.2.3
+Requires-Dist: pydantic>=2.11.7
+Requires-Dist: sqlalchemy>=2.0.41
+Requires-Dist: structlog>=25.4.0
+Requires-Dist: tenacity>=9.1.2
+Provides-Extra: dev
+Requires-Dist: black>=24.4.0; extra == 'dev'
+Requires-Dist: flake8>=7.0.0; extra == 'dev'
+Requires-Dist: isort>=5.13.2; extra == 'dev'
+Requires-Dist: mypy>=1.8.0; extra == 'dev'
+Requires-Dist: pytest-asyncio>=0.23.5; extra == 'dev'
+Requires-Dist: pytest-cov>=5.0.0; extra == 'dev'
+Requires-Dist: pytest>=8.4.1; extra == 'dev'
+Requires-Dist: sphinx-rtd-theme>=2.0.0; extra == 'dev'
+Requires-Dist: sphinx>=7.3.7; extra == 'dev'
+Requires-Dist: sqlalchemy-stubs>=0.4; extra == 'dev'
+Provides-Extra: test
+Requires-Dist: pytest-asyncio>=0.23.5; extra == 'test'
+Requires-Dist: pytest-cov>=5.0.0; extra == 'test'
+Requires-Dist: pytest>=8.4.1; extra == 'test'
+Description-Content-Type: text/markdown
+
+# Alchemy-H8: Enhanced Async SQLAlchemy Library
+
+A comprehensive, production-ready async PostgreSQL library built on SQLAlchemy that integrates advanced features:
+
+- ✅ Async SQLAlchemy with strict typing and generics
+- ✅ Intelligent in-memory caching with tag-based invalidation
+- ✅ Query performance analysis and connection pool metrics
+- ✅ Resilient operations with auto-recovery, backoff, and retries
+- ✅ Advanced security features and connection pooling
+- ✅ Transaction integrity with exactly-once execution
+
+## Features
+
+### Core Features
+
+- **Fully Async**: Built on SQLAlchemy's async capabilities
+- **Repository Pattern**: Type-safe repository pattern for models
+- **Unit of Work**: Transaction management with ACID guarantees
+- **Generic Models**: Base models with UUID and integer primary keys
+- **Pagination**: Efficient pagination support
+
+### Advanced Features
+
+- **Intelligent Caching**:
+  - TTL-based in-memory caching
+  - Tag-based cache invalidation
+  - Cache statistics and performance metrics
+  - Automatic cache invalidation on write operations
+
+- **Performance Monitoring**:
+  - Query execution metrics and timing
+  - Slow query detection and logging
+  - Connection pool utilization statistics
+  - Query plan collection (optional)
+
+- **Resilience**:
+  - Retry logic with configurable backoff strategies
+  - Circuit breaker pattern to prevent cascading failures
+  - Rate limiting with token bucket algorithm
+  - Idempotent operations for exactly-once semantics
+
+- **Security**:
+  - SSL/TLS enforcement
+  - Connection timeouts and statement timeouts
+  - Security levels (HIGH/MEDIUM/LOW)
+  - Sensitive data masking in logs
+  - SQL injection prevention
+
+## Quick Start
+
+### Installation
+
+```bash
+pip install alchemy-h8
+```
+
+### Basic Usage
+
+```python
+import asyncio
+import uuid
+from sqlalchemy import Column, String, Integer
+from alchemy_h8.base_model import BaseModel, UUIDMixin
+from alchemy_h8.integration import create_db_manager
+
+# Define your model
+class User(BaseModel, UUIDMixin):
+    __tablename__ = "users"
+    
+    username = Column(String(100), nullable=False, unique=True)
+    email = Column(String(255), nullable=False, unique=True)
+    age = Column(Integer, nullable=True)
+
+async def main():
+    # Connect to database
+    db_manager = await create_db_manager(
+        "postgresql+asyncpg://user:pass@localhost/dbname"
+    )
+    
+    # Get repository for User model
+    user_repo = await db_manager.get_repository(User)
+    
+    # Create a user with transaction
+    user = User(username="john", email="john@example.com", age=30)
+    
+    async with db_manager.transaction() as session:
+        await user_repo.add(session, user)
+    
+    # Retrieve with caching
+    async with db_manager.transaction(read_only=True) as session:
+        retrieved_user = await user_repo.get_by_id(session, user.id)
+        print(f"Retrieved: {retrieved_user.username}")
+    
+    # Update with cache invalidation
+    async with db_manager.transaction(
+        cache_invalidation_tags=[f"users_{user.id}"]
+    ) as session:
+        user.age = 31
+        await user_repo.update(session, user)
+    
+    # Get metrics
+    metrics = db_manager.get_metrics()
+    print(f"Cache hits: {metrics['cache_stats']['hits']}")
+    
+    # Cleanup
+    await db_manager.disconnect()
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+## Advanced Configuration
+
+The library provides extensive configuration options for all features:
+
+```python
+from alchemy_h8.config import DbLibraryConfig
+from alchemy_h8.connection import SecurityLevel
+from alchemy_h8.integration import create_db_manager
+from alchemy_h8.resilience import BackoffStrategy
+
+# Create custom configuration
+config = DbLibraryConfig()
+
+# Connection settings
+config.connection.pool_size = 20
+config.connection.max_overflow = 10
+config.connection.security_level = SecurityLevel.HIGH
+config.connection.ssl_required = True
+config.connection.statement_timeout_sec = 30
+
+# Caching settings
+config.cache.enabled = True
+config.cache.default_ttl = 300  # 5 minutes
+config.cache.max_size = 10000
+
+# Resilience settings
+config.retry.max_attempts = 3
+config.retry.base_delay_ms = 100
+config.retry.strategy = BackoffStrategy.EXPONENTIAL
+config.retry.idempotent_only = True
+
+# Create database manager with custom config
+db_manager = await create_db_manager(
+    "postgresql+asyncpg://user:pass@localhost/dbname",
+    config=config
+)
+```
+
+## Idempotent Transactions
+
+Ensure exactly-once execution even with retries by using operation IDs:
+
+```python
+# Generate unique operation ID
+operation_id = str(uuid.uuid4())
+
+# First attempt - succeeds
+async with db_manager.transaction(operation_id=operation_id) as session:
+    await user_repo.add(session, user)
+
+# Second attempt with same operation_id - no duplicate created
+async with db_manager.transaction(operation_id=operation_id) as session:
+    await user_repo.add(session, user_duplicate)  # Won't execute
+```
+
+## Metrics and Monitoring
+
+Get detailed performance metrics:
+
+```python
+# Get all metrics
+metrics = db_manager.get_metrics()
+
+print("Query Metrics:")
+print(f"- Total queries: {metrics['query_metrics']['total_queries']}")
+print(f"- Average time: {metrics['query_metrics']['average_execution_time_ms']} ms")
+print(f"- Slow queries: {metrics['query_metrics']['slow_query_count']}")
+
+print("Transaction Metrics:")
+print(f"- Total: {metrics['transaction_metrics']['total_transactions']}")
+print(f"- Successful: {metrics['transaction_metrics']['successful_transactions']}")
+print(f"- Failed: {metrics['transaction_metrics']['failed_transactions']}")
+print(f"- Retried: {metrics['transaction_metrics']['retried_transactions']}")
+
+print("Cache Stats:")
+print(f"- Hits: {metrics['cache_stats']['hits']}")
+print(f"- Misses: {metrics['cache_stats']['misses']}")
+print(f"- Hit ratio: {metrics['cache_stats']['hit_ratio']:.2f}")
+
+# Health check
+health = await db_manager.health_check()
+print(f"Status: {health['status']}")
+print(f"Response time: {health['response_time_ms']} ms")
+```
+
+## Circuit Breaker Status
+
+Monitor circuit breaker status to detect service degradation:
+
+```python
+cb_status = db_manager.get_circuit_breaker_status()
+
+for name, status in cb_status.items():
+    print(f"Circuit Breaker '{name}':")
+    print(f"- State: {status['state']}")
+    print(f"- Failures: {status['failure_count']}")
+    print(f"- Last failure: {status['last_failure_time']}")
+```
+
+## Testing
+
+Run the test suite:
+
+```bash
+# Set test database URL
+export TEST_DB_URL="postgresql+asyncpg://postgres:postgres@localhost:5432/test_alchemy_h8"
+
+# Run tests
+pytest tests/
+```
+
+## License
+
+MIT License

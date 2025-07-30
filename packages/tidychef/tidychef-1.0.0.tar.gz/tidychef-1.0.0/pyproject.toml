@@ -1,0 +1,67 @@
+[tool.poetry]
+name = "tidychef"
+version = "1.0.0"
+description = "Python framework for transforming tabulated data with visual relationships into tidy data"
+authors = ["mikeAdamss <mikelovesbooks@gmail.com>"]
+packages = [
+  {include = "tidychef"},
+]
+license = "Apache 2.0"
+readme = "README.md"
+repository = "https://github.com/mikeAdamss/tidychef"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+tabulate = "^0.9.0"
+requests = "^2.31.0"
+validators = "^0.20.0"
+openpyxl = "^3.1.2"
+cachecontrol = "^0.13.1"
+filelock = "^3.12.2"
+xlrd = "^2.0.1"
+jupyter = "^1.0.0"
+ezodf = "^0.3.2"
+lxml = "^4.9.3"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.1.2"
+black = "^22.3.0"
+isort = "^5.10.1"
+pytest-cov = "^3.0.0"
+jupyter-book = "^0.15.1"
+pytest-mock = "^3.11.1"
+tox = "^4.6.4"
+ruff = "^0.12.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "."
+]
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+envlist = py39, py310, py311, py312
+
+[gh-actions]
+python =
+    3.8: py38
+    3.9: py39
+    3.10: py310
+    3.11: py311
+    3.12: py312
+
+[testenv]
+allowlist_externals = pytest, poetry
+commands = 
+    poetry install
+    poetry run pytest --cov-report term-missing --cov=tidychef --cov-fail-under=100 ./tests/
+"""

@@ -1,0 +1,25 @@
+import * from "time"
+import * from "unsafe/batch/constant"
+import * from "unsafe/bash/constant"
+
+declare {
+    readonly var LINE: num
+    readonly var FILE: str
+    readonly var FUNC: str
+    readonly var CALLER: str
+    readonly var TIMESTAMP: DateTime
+}
+
+pub const DIRNAME = comptime {
+    match {
+        $IsBatch => $DIR,
+        $IsBash => ${ "$(dirname {{&args[0]}})/" },
+    }
+}
+
+pub const ENV_SEP = comptime {
+    match {
+        $IsBatch => ";",
+        $IsBash => ":",
+    }
+}

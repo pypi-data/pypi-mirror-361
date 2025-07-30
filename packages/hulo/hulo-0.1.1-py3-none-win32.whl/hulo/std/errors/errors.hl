@@ -1,0 +1,41 @@
+pub comptime enum Error {
+    final code: num
+    final msg: str
+
+    const Error($this.code, $this.msg)
+
+    /// Basic error
+    None(0, "No error occurred"),
+    Unknown(1, "Unknown error"),
+
+    /// Runtime / System error
+    Runtime(2, "Runtime exception"),
+    NotImplemented(3, "Functionality not implemented"),
+    AssertionFailed(4, "Assertion failed"),
+    UnsupportedPlatform(5, "Unsupported platform")
+
+    /// Memory error
+    UninitializedObject(10, "Attempted to use an uninitialized object"),
+    IndexOutOfBounds(11, "Collection index out of bounds"),
+    NullPointer(12, "Null reference encountered"),
+
+    /// Arithmetic error
+    DivisionByZero(20, "Division by zero"),
+    ArithmeticOverflow(21, "Arithmetic overflow"),
+    ArithmeticUnderflow(22, "Arithmetic underflow"),
+    FloatingPointError(23, "Floating-point exception"),
+
+    /// Type error
+    TypeMismatch(40, "Type mismatch"),
+    CastFailed(41, "Type cast failed"),
+    SerializationError(42, "Data serialization failed"),
+    DeserializationError(43, "Data deserialization failed"),
+
+    /// IO / network error
+    IoError(50, "I/O operation failed"),
+    FileNotFound(51, "File not found"),
+    PermissionDenied(52, "Permission denied"),
+    NetworkUnavailable(53, "Network unavailable"),
+    ConnectionTimeout(54, "Connection timed out"),
+    ConnectionReset(55, "Connection reset by peer")
+}

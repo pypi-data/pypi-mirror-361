@@ -1,0 +1,24 @@
+// @hulo-build windows
+
+// Exits the command interpreter or the current batch script.
+@command("exit [FLAGS] exitcode")
+class exit {
+    /**
+     * Exits the current batch script instead of exiting Cmd.exe. 
+     * If executed from outside a batch script, exits Cmd.exe.
+     */
+    @flag(format: "/b")
+    b: bool
+
+    /**
+     * Specifies a numeric number. If /b is specified, 
+     * the ERRORLEVEL environment variable is set to that number. 
+     * If you are quitting the command interpreter, the process exit code is set to that number.
+     */
+    @flag(bind: "exitcode")
+    code: num
+
+    // Displays help at the command prompt.
+    @flag(short: "h", long: "help", format: "/?")
+    help: bool
+}

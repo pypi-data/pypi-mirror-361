@@ -1,0 +1,54 @@
+pub trait File {
+    read() throws -> str
+    read_at(offset: num) throws -> str
+    write(s: str) throws
+    stat() throws -> FileInfo
+    close() throws
+
+    chmod(mode: FileMode) throws
+    chown(uid: num, gid: num) throws
+}
+
+comptime {
+    pub class TempFile {
+        TempFile(filename: str)
+    }
+
+    impl File for TempFile;
+}
+
+declare comptime class DirEntry {
+    name: str
+    path: str
+    metadata: FileInfo
+}
+
+pub type FileMode = num
+
+pub trait FileInfo {
+    readonly name: str
+    readonly size: num
+    readonly is_file: bool
+    readonly is_dir: bool
+    readonly permissions: bool
+    readonly owner: (num, num)
+    readonly created_at: time.Date?
+    readonly modified_at: time.Date
+    readonly accessed_at: time.Date
+    readonly symlink_target: str?
+}
+
+declare comptime fn read_file(path: str) throws -> str
+declare comptime fn write_file(path: str, data: str) throws
+declare comptime fn append_file(path: str, data: str) throws
+
+declare comptime fn read_dir(path: str) throws -> DirEntry[]
+declare comptime fn create_dir(path: str, recursive: bool = false) throws
+declare comptime fn remove_dir(path: str, recursive: bool = false) throws
+
+declare comptime fn exists(path: str) -> bool
+declare comptime fn stat(path: str) throws -> FileInfo
+declare comptime fn rename(old_path: str, new_path: str) throws
+declare comptime fn copy(src: str, dst: str) throws
+declare comptime fn chmod(path: str, mode: FileMode) throws
+declare comptime fn chown(path: str, uid: num, gid: num) throws

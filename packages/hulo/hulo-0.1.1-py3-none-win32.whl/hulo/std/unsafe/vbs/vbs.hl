@@ -1,0 +1,795 @@
+// @hulo-build vbs
+
+fn abs(n: num) => Abs(n)
+
+// Returns the absolute value of a number.
+declare fn Abs(n: num) -> num;
+
+// Returns a Variant containing an array.
+declare fn Array(...args: any[]) -> any[]
+
+// Returns the ANSI character code corresponding to the first letter in a string.
+declare fn Asc(s: string) -> num
+
+// Returns the arctangent of a number.
+declare fn Atn(n: num) -> num;
+
+// Returns an expression that has been converted to a Variant of subtype Boolean.
+declare fn CBool(v: bool) -> bool
+
+// Range: 0 to 255
+type Byte = num
+
+// Range: True or False
+type Boolean = bool
+
+// Range: -32,768 to 32,767
+type Integer = num
+
+// Range: -2,147,483,648 to 2,147,483,647.
+type Long = num
+
+// Range: -3.402823E38 to -1.401298E-45 for negative values; 1.401298E-45 to 3.402823E38 for positive values.
+type Single = num
+
+// Range: -1.79769313486232E308 to -4.94065645841247E-324 for negative values; 4.94065645841247E-324 to 1.79769313486232E308 for positive values.
+type Double = num
+
+// Range: -922,337,203,685,477.5808 to 922,337,203,685,477.5807.
+type Currency = num
+
+// Range: January 1, 100 to December 31, 9999, inclusive.
+type Date = any
+
+// Any Object reference
+type Object = object
+
+// Variable-length strings may range in length from 0 to approximately 2 billion characters.
+type String = str
+
+// Returns an expression that has been converted to a Variant of subtype Byte.
+declare fn CByte(v: Double) -> Byte
+
+// Returns an expression that has been converted to a Variant of subtype Currency.
+declare fn CCur(v: num) -> Currency
+
+// Returns an expression that has been converted to a Variant of subtype Date.
+declare fn CDate(v: String) -> Date
+
+// Returns an expression that has been converted to a Variant of subtype Double.
+declare fn CDbl(v: num) -> Double
+
+// Returns the character associated with the specified ANSI character code.
+declare fn Chr(v: num) -> Byte
+
+// Returns an expression that has been converted to a Variant of subtype Integer.
+declare fn CInt(v: num) -> Integer
+
+// Returns an expression that has been converted to a Variant of subtype Long.
+declare fn CLng(v: num) -> Long
+
+// Returns the cosine of an angle.
+declare fn Cos(v: num) -> Single
+
+// Returns an expression that has been converted to a Variant of subtype String.
+/**
+ *  Value           CStr returns
+ *  Boolean         A String containing True or False.
+ *  Date            A String containing a date in the short-date format of your system.
+ *  Null            A run-time error.
+ *  Empty           A zero-length String ("").
+ *  Error           A String containing the word Error followed by the error number.
+ *  Other numeric   A String containing the number.
+ */ 
+declare fn CStr(v: any) -> String 
+
+// Creates and returns a reference to an Automation object.
+declare fn CreateObject(
+    // The name of the application providing the object.
+    servername: str,
+    // The type or class of the object to create.
+    typename: str,
+    // The name of the network server where the object is to be created. This feature is available in version 5.1 or later.
+    location?: str,
+) -> Object
+
+// Returns the current system date.
+declare fn Date() -> Date
+
+type DateInterval = 'yyyy' // Year
+    | 'q' // Quarter
+    | 'm' // Month
+    | 'y' // Day of year
+    | 'd' // Day
+    | 'w' // Weekday
+    | 'ww' // Week of year
+    | 'h' // Hour
+    | 'n' // Minute
+    | 's' //Second
+    ;
+
+// Returns a date to which a specified time interval has been added.
+declare fn DateAdd(interval: DateInterval, number: num, date: Date) -> Date
+
+// Returns the number of intervals between two dates.
+declare fn DateDiff(interval: DateInterval, date1: Date, date2: Date, firstdayofweek?: FirstDayOfWeek, firstweekofyear?: FirstWeekOfYear) -> Date
+
+type FirstDayOfWeek = num
+
+type FirstWeekOfYear = num
+
+declare {
+    // Use National Language Support (NLS) API setting.
+    const vbUseSystem: FirstDayOfWeek = 0
+
+    // Sunday (default)
+    const vbSunday: FirstDayOfWeek = 1
+
+    // Monday
+    const vbMonday: FirstDayOfWeek = 2
+
+    // Tuesday
+    const vbTuesday: FirstDayOfWeek = 3
+
+    // Wednesday
+    const vbWednesday: FirstDayOfWeek = 4
+
+    // Thursday
+    const vbThursday: FirstDayOfWeek = 5
+
+    // Friday
+    const vbFriday: FirstDayOfWeek = 6
+
+    // Saturday
+    const vbSaturday: FirstDayOfWeek = 7
+}
+
+declare {
+    // Use National Language Support (NLS) API setting.
+    const vbUseSystem: FirstWeekOfYear = 0
+
+    // Start with the week in which January 1 occurs (default).
+    const vbFirstJan1: FirstWeekOfYear = 1
+
+    // Start with the week that has at least four days in the new year.
+    const vbFirstFourDays: FirstWeekOfYear = 2
+
+    // Start with the first full week of the new year.
+    const vbFirstFullWeek: FirstWeekOfYear = 3
+}
+
+// Returns the specified part of a given date.
+declare fn DatePart(interval: DateInterval, date: Date, firstdayofweek?: FirstDayOfWeek, firstweekofyear?: FirstWeekOfYear) -> Date
+
+// Returns a Variant of subtype Date for a specified year, month, and day.
+declare fn DateSerial(year: num, month: num, day: num) -> Date
+
+// Returns a Variant of subtype Date.
+// Examples:
+// ```hulo
+// let d = DateValue("September 11, 1963")
+// assert(d is Date)
+// ```
+declare fn DateValue(v: str) -> Date
+
+// Returns a whole number between 1 and 31, inclusive, representing the day of the month.
+// Examples:
+// ```hulo
+// let d = Day("October 19, 1962")
+// assert_eq(d, 19)
+// ```
+declare fn Day(v: Date) -> num
+
+// Evaluates an expression and returns the result.
+decalre fn Eval(expr: String) -> any
+
+// Returns e (the base of natural logarithms) raised to a power.
+declare fn Exp(v: num) -> num
+
+/**
+ * Returns a zero-based array containing a subset of a string array based on a specified filter criteria.
+ * Examples:
+ * ```hulo
+ * let arr = ["Sunday", "Monday", "Tuesday"]
+ * let res = Filter(arr, "Mon")
+ * assert_eq(arr, ["Monday"])
+ * ```
+ */
+declare fn Filter(
+    // One-dimensional array of strings to be searched.
+    InputStrings: str[], 
+    // String to search for.
+    Value: str,
+    /*
+        Boolean value indicating whether to return substrings that include or exclude Value. If Include is True, Filter returns the subset of the array that contains Value as a substring. If Include is False, Filter returns the subset of the array that does not contain Value as a substring.
+    */
+    Include?: Boolean,
+    Compare?: FilterCompare
+    ) -> str[]
+
+type FilterCompare = num
+
+declare {
+    // Perform a binary comparison.
+    const vbBinaryCompare: FilterCompare = 0
+
+    // Perform a textual comparison.
+    const vbTextCompare: FilterCompare = 1
+}
+
+// Returns the integer portion of a number.
+declare fn Int(v: num) -> num
+
+// Returns the integer portion of a number.
+declare fn Fix(v: num) -> num
+
+// Returns an expression formatted as a currency value using the currency symbol defined in the system control panel.
+declare fn FormatCurrency(
+    // Expression to be formatted.
+    Expression: num,
+    NumDigitsAfterDecimal?: num,
+    IncludeLeadingDigit?: Tristate,
+    UseParensForNegativeNumbers?: Tristate,
+    GroupDigits?: Tristate,
+) -> str
+
+type Tristate = num
+
+declare {
+    // True
+    const TristateTrue: Tristate = -1
+
+    // False
+    const TristateFalse: Tristate = 0
+
+    // Use the setting from the computer's regional settings.
+    const TristateUseDefault: Tristate = -2
+}
+
+// Returns an expression formatted as a date or time.
+declare fn FormatDateTime(Date: Date, NamedFormat: DateFormat = vbGeneralDate) -> Date
+
+type DateFormat = num
+
+declare {
+    // Display a date and/or time. If there is a date part, display it as a short date. 
+    // If there is a time part, display it as a long time. If present, both parts are displayed.
+    const vbGeneralDate: DateFormat = 0
+
+    // Display a date using the long date format specified in your computer's regional settings.
+    const vbLongDate: DateFormat = 1
+
+    // Display a date using the short date format specified in your computer's regional settings.
+    const vbShortDate: DateFormat = 2
+
+    // Display a time using the time format specified in your computer's regional settings.
+    const vbLongTime: DateFormat = 3
+
+    // Display a time using the 24-hour format (hh:mm).
+    const vbShortTime: DateFormat = 4
+}
+
+// Returns an expression formatted as a number.
+declare fn FormatNumber(Expression: num, NumDigitsAfterDecimal: num = -1, IncludeLeadingDigit: Tristate, UseParensForNegativeNumbers: Tristate, GroupDigits: Tristate) -> num
+
+// Returns an expression formatted as a percentage (multiplied by 100) with a trailing % character.
+declare fn FormatPercent(Expression: num, NumDigitsAfterDecimal: num = -1, IncludeLeadingDigit: Tristate, UseParensForNegativeNumbers: Tristate, GroupDigits: Tristate) -> str
+
+// Returns a reference to an Automation object from a file.
+declare fn GetObject(
+    // Full path and name of the file containing the object to retrieve. If pathname is omitted, class is required.
+    pathname?: String, 
+    // Class of the object
+    class?: String) -> Object
+
+type Sub = Function
+
+// Returns a reference to a procedure that can be bound to an event.
+declare fn GetRef(procname: str) -> Function | Sub
+
+/**
+ * Returns a string representing the hexadecimal value of a number.
+ * If number is not already a whole number, it is rounded to the nearest whole number before being evaluated.
+ *
+ * If number is        Hex returns
+ * Null                Null
+ * Empty               0
+ * Any other number    Up to eight hexadecimal characters.
+ *
+ * Examples:
+ * ```hulo
+ * assert_eq(Hex(5), 0x5)
+ * assert_eq(Hex(10), 0xA)
+ * assert_eq(Hex(459), 0x1CB)
+ * ```
+ */
+declare fn Hex(v: num) -> num
+
+/**
+ * Returns a whole number between 0 and 23, inclusive, representing the hour of the day.
+ * If the input is Null, the function returns Null.
+ *
+ * Examples:
+ * ```hulo
+ * let t = Now()
+ * let h = Hour(t)
+ * assert(h >= 0 && h <= 23)
+ * ```
+ */
+declare fn Hour(time: datetime) -> num
+
+/** 
+ * Displays a prompt in a dialog box, waits for the user to input text or click a button, and returns the contents of the text box.
+ *
+ * Examples:
+ * ```hulo
+ * let input = InputBox("Enter your name") 
+ * MsgBox("You entered: " + input)
+ * ```
+ */
+declare fn InputBox(
+    // The maximum length of prompt is approximately 1024 characters, depending on the width of the characters used. If prompt consists of more than one line, you can separate the lines using a carriage return character (Chr(13)), a linefeed character (Chr(10)), or carriage return–linefeed character combination (Chr(13) & Chr(10)) between each line.
+    prompt: str, 
+    // String expression displayed in the title bar of the dialog box. If you omit title, the application name is placed in the title bar.
+    title?: str, 
+    // String expression displayed in the text box as the default response if no other input is provided. If you omit default, the text box is displayed empty.
+    default?: str, 
+    // Numeric expression that specifies, in twips, the horizontal distance of the left edge of the dialog box from the left edge of the screen. If xpos is omitted, the dialog box is horizontally centered.
+    xpos?: num, 
+    // Numeric expression that specifies, in twips, the vertical distance of the upper edge of the dialog box from the top of the screen. If ypos is omitted, the dialog box is vertically positioned approximately one-third of the way down the screen.
+    ypos?: num, 
+    // 	String expression that identifies the Help file to use to provide context-sensitive Help for the dialog box. If helpfile is provided, context must also be provided.
+    helpfile?: str, 
+    // Numeric expression that identifies the Help context number assigned by the Help author to the appropriate Help topic. If context is provided, helpfile must also be provided.
+    context?: num) -> any;
+
+// Returns the position of the first occurrence of one string within another.
+declare fn InStr({
+    start: num,
+    required string1: str,
+    required string2: str,
+    compare: FilterCompare
+})
+
+// Returns a Boolean value indicating whether a variable is an array.
+declare fn IsArray(v: any) -> bool
+
+// Returns a Boolean value indicating whether an expression can be converted to a date.
+declare fn IsDate(v: any) -> bool
+
+// Returns a Boolean value indicating whether a variable has been initialized.
+declare fn IsEmpty(v: any) -> bool
+
+// Returns a Boolean value that indicates whether an expression contains no valid data (Null).
+declare fn IsNull(v: any) -> bool
+
+// Returns a Boolean value indicating whether an expression can be evaluated as a number.
+declare fn IsNumberic(v: any) -> bool
+
+// Returns a Boolean value indicating whether an expression references a valid Automation object.
+declare fn IsObject(v: any) -> bool
+
+// Returns a string created by joining a number of substrings contained in an array.
+declare fn Join(list: list<str>, delimiter?: str) -> str
+
+// Returns the smallest available subscript for the indicated dimension of an array.
+declare fn LBound(arr: list, dimension: num = 1)
+
+// Returns a string that has been converted to lowercase.
+// If string contains Null, Null is returned.
+declare fn LCase(s: str?) -> str?
+
+// Returns a specified number of characters from the left side of a string.
+declare fn Left(s: str, length: num) -> str
+
+// Returns a picture object. Available only on 32-bit platforms.
+declare fn LoadPicture(picturename: str) -> object
+
+// Returns the natural logarithm of a number.
+declare fn Log(x: num) -> num
+
+// Returns a copy of a string without leading spaces.
+declare fn LTrim(s: str) -> str
+
+// Returns a copy of a string without trailing spaces.
+declare fn RTrim(s: str) -> str
+
+// Returns a copy of a string without both leading and trailing spaces.
+declare fn Trim(s: str) -> str
+
+// Returns a specified number of characters from a string.
+declare fn Mid(
+    // String expression from which characters are returned. If string contains Null, Null is returned.
+    string: str, 
+    // Character position in string at which the part to be taken begins. If start is greater than the number of characters in string, Mid returns a zero-length string ("").
+    start: str, 
+    // Number of characters to return. If omitted or if there are fewer than length characters in the text (including the character at start), all characters from the start position to the end of the string are returned.
+    length: num?) -> str
+
+// Returns a whole number between 0 and 59, inclusive, representing the minute of the hour.
+declare fn Minute(date: datetime) -> num
+
+// Returns a whole number between 1 and 12, inclusive, representing the month of the year.
+declare fn Month(date: datetime) -> num
+
+// Returns a string indicating the specified month.
+declare fn MonthName(month: num, abbreviate?: bool)
+
+// Returns the current date and time according to the setting of your computer's system date and time.
+declare fn Now() -> datetime
+
+// Returns a string representing the octal value of a number.
+declare fn Oct(v: num) -> str
+
+// Returns a string in which a specified substring has been replaced with another substring a specified number of times.
+declare fn Replace(expr: str, find: str, replacewith: str, start: num = 1, count: num = -1, compare?: FilterCompare)
+
+// Returns a whole number representing an RGB color value.
+declare fn RGB(red: num, green: num, blue: num) -> num
+
+// Returns a specified number of characters from the right side of a string.
+declare fn Right(string: str, length: num) -> str
+
+// Returns a random number.
+declare fn Rnd(seed: num?) -> num
+
+// Returns a number rounded to a specified number of decimal places.
+declare fn Round(v: num, numdecimalplaces?: num) -> num
+
+// Returns a string representing the scripting language in use.
+declare fn ScriptEngine() -> "VBScript"
+
+// Returns the build version number of the scripting engine in use.
+declare fn ScriptEngineBuildVersion() -> num
+
+// Returns the major version number of the scripting engine in use.
+declare fn ScriptEngineMajorVersion() -> num
+
+// Returns the minor version number of the scripting engine in use.
+declare fn ScriptEngineMinorVersion() -> num
+
+// Returns a whole number between 0 and 59, inclusive, representing the second of the minute.
+declare fn Second(date: datetime) -> num
+
+// Returns an integer indicating the sign of a number.
+declare fn Sgn(x: num) -> -1 | 0 | 1
+
+// Returns the sine of an angle.
+declare fn Sin(x: num) -> num
+
+// Returns a string consisting of the specified number of spaces.
+declare fn Space(x: num) -> str
+
+// Returns a zero-based, one-dimensional array containing a specified number of substrings.
+declare fn Split(s: str, delimiter?: str = " ", count: num = -1, compare: FilterCompare) -> str[]
+
+declare fn Sqr(x: num) -> num
+
+// Returns a value indicating the result of a string comparison.
+declare fn StrComp(s1: str, s2: str, compare?: FilterCompare) -> num
+
+// Returns a repeating character string of the length specified.
+declare fn String(number: num, character: str) -> str
+
+// Returns a string in which the character order of a specified string is reversed.
+declare fn StrReverse(s: str) -> str
+
+// Returns the tangent of an angle.
+declare fn Tan(x: num) -> num
+
+// Returns a Variant of subtype Date indicating the current system time.
+declare fn Time() -> datetime
+
+// Returns the number of seconds that have elapsed since 12:00 AM (midnight).
+declare fn Timer() -> num
+
+// Returns a Variant of subtype Date containing the time for a specific hour, minute, and second.
+declare fn TimeSerial(hour: num, minute: num, second: num) -> datetime
+
+// Returns a Variant of subtype Date containing the time.
+declare fn TimeValue(time: datetime) -> datetime
+
+// Returns a string that provides Variant subtype information about a variable.
+declare fn TypeName(v: any) -> str
+
+// Returns the largest available subscript for the indicated dimension of an array.
+declare fn UBound(arr: list, dimension: num = 1) -> num
+
+// Returns a string that has been converted to uppercase.
+declare fn UCase(s: str) -> str
+
+// Returns a value indicating the subtype of a variable.
+declare fn VarType(v: any) -> num
+// TODO enum
+
+// Returns a whole number representing the day of the week.
+declare fn Weekday(date: datetime, firstdayofweek?: num) -> num
+
+// TODO
+declare fn WeekdayName()
+
+// Returns a whole number representing the year.
+declare fn Year(date: datetime) -> num
+
+/// Color Constants
+declare {
+    // Black
+    const vbBlack = 0x000000;
+
+    // Red
+    const vbRed = 0x0000FF;
+
+    // Green
+    const vbGreen = 0x00FF00;
+
+    // Yellow
+    const vbYellow = 0x00FFFF;
+
+    // Blue
+    const vbBlue = 0xFF0000;
+
+    // Magenta
+    const vbMagenta = 0xFF00FF;
+
+    // Cyan
+    const vbCyan = 0xFFFF00;
+
+    // White
+    const vbWhite = 0xFFFFFF;
+}
+
+/// Comparison Constants
+declare {
+    // Perform a binary comparison.
+    const vbBinaryCompare = 0
+
+    // Perform a textual comparison.
+    const vbTextCompare = 1
+}
+
+/// Date and Time Constants
+declare {
+    // Sunday
+    const vbSunday = 1;
+
+    // Monday
+    const vbMonday = 2;
+
+    // Tuesday
+    const vbTuesday = 3;
+
+    // Wednesday
+    const vbWednesday = 4;
+
+    // Thursday
+    const vbThursday = 5;
+
+    // Friday
+    const vbFriday = 6;
+
+    // Saturday
+    const vbSaturday = 7;
+
+    // Use the day of the week specified in your system settings for the first day of the week.
+    const vbUseSystemDayOfWeek = 0;
+
+    // Use the week in which January 1 occurs (default).
+    const vbFirstJan1 = 1;
+
+    // Use the first week that has at least four days in the new year.
+    const vbFirstFourDays = 2;
+
+    // Use the first full week of the year.
+    const vbFirstFullWeek = 3;
+}
+
+/// Date Format Constants
+declare {
+    // Display a date and/or time. For real numbers, display a date and time.
+    // If there is no fractional part, display only a date.
+    // If there is no integer part, display time only.
+    // Date and time display is determined by your system settings.
+    const vbGeneralDate = 0;
+
+    // Display a date using the long date format specified in your computer's regional settings.
+    const vbLongDate = 1;
+
+    // Display a date using the short date format specified in your computer's regional settings.
+    const vbShortDate = 2;
+
+    // Display a time using the long time format specified in your computer's regional settings.
+    const vbLongTime = 3;
+
+    // Display a time using the short time format specified in your computer's regional settings.
+    const vbShortTime = 4;
+}
+
+/// Miscellaneous Constants
+declare {
+    // User-defined error numbers should be greater than this value, for example,
+    // Err.Raise Number = vbObjectError + 1000
+    const vbObjectError = -2147221504
+}
+
+type vbButton = num
+
+type vbMsgBoxResult = num
+
+/// MsgBox Constants
+declare {
+    // Display OK button only.
+    const vbOKOnly: vbButton = 0
+
+    // Display OK and Cancel buttons.
+    const vbOKCancel: vbButton = 1
+
+    // Display Abort, Retry, and Ignore buttons.
+    const vbAbortRetryIgnore: vbButton = 2
+
+    // Display Yes, No, and Cancel buttons.
+    const vbYesNoCancel: vbButton = 3
+
+    // Display Yes and No buttons.
+    const vbYesNo: vbButton = 4
+
+    // Display Retry and Cancel buttons.
+    const vbRetryCancel: vbButton = 5
+
+    // Display Critical Message icon.
+    const vbCritical: vbButton = 16
+
+    // Display Warning Query icon.
+    const vbQuestion: vbButton = 32
+
+    // Display Warning Message icon.
+    const vbExclamation: vbButton = 48
+
+    // Display Information Message icon.
+    const vbInformation: vbButton = 64
+
+    // First button is default.
+    const vbDefaultButton1: vbButton = 0
+
+    // Second button is default.
+    const vbDefaultButton2: vbButton = 256
+
+    // Third button is default.
+    const vbDefaultButton3: vbButton = 512
+
+    // Fourth button is default.
+    const vbDefaultButton4: vbButton = 768
+
+    // Application modal; the user must respond to the message box before continuing work in the current application.
+    const vbApplicationModal: vbButton = 0
+
+    // System modal; all applications are suspended until the user responds to the message box.
+    const vbSystemModal: vbButton = 4096
+
+    const vbOK: vbMsgBoxResult = 1
+
+    const vbCancel: vbMsgBoxResult = 2
+
+    const vbAbort: vbMsgBoxResult = 3
+
+    const vbRetry: vbMsgBoxResult = 4
+
+    const vbIgnore: vbMsgBoxResult = 5
+
+    const vbYes: vbMsgBoxResult = 6
+
+    const vbNo: vbMsgBoxResult = 7
+}
+
+declare fn MsgBox(prompt: str, buttons?: num, title?: str, helpfile?: str, context?: num) -> vbMsgBoxResult;
+
+/// String Constants
+declare {
+    // Carriage return.
+    const vbCr = "\r"; // Chr(13)
+
+    // Carriage return–linefeed combination.
+    const vbCrLf = "\r\n"; // Chr(13) & Chr(10)
+
+    // Form feed; not useful in Microsoft Windows.
+    const vbFormFeed = "\f"; // Chr(12)
+
+    // Line feed.
+    const vbLf = "\n"; // Chr(10)
+
+    // Platform-specific newline character; usually "\r\n" on Windows or "\n" on Unix.
+    const vbNewLine = "\n"; // Or "\r\n" depending on platform
+
+    // Character having the value 0.
+    const vbNullChar = "\0"; // Chr(0)
+
+    // String having value 0 (not the same as "") — used for calling external procedures.
+    const vbNullString = null;
+
+    // Horizontal tab.
+    const vbTab = "\t"; // Chr(9)
+
+    // Vertical tab; not useful in Microsoft Windows.
+    const vbVerticalTab = "\v"; // Chr(11)
+}
+
+/// Tristate Constants
+declare {
+    // Use default from computer's regional settings.
+    const vbUseDefault = -2;
+
+    // True
+    const vbTrue = -1;
+
+    // False
+    const vbFalse = 0;
+}
+
+/// VarType Constants
+declare {
+    // Uninitialized (default)
+    const vbEmpty = 0;
+
+    // Contains no valid data
+    const vbNull = 1;
+
+    // Integer subtype
+    const vbInteger = 2;
+
+    // Long subtype
+    const vbLong = 3;
+
+    // Single subtype (single-precision float)
+    const vbSingle = 4;
+
+    // Double subtype (double-precision float)
+    const vbDouble = 5;
+
+    // Currency subtype
+    const vbCurrency = 6;
+
+    // Date subtype
+    const vbDate = 7;
+
+    // String subtype
+    const vbString = 8;
+
+    // Object
+    const vbObject = 9;
+
+    // Error subtype
+    const vbError = 10;
+
+    // Boolean subtype
+    const vbBoolean = 11;
+
+    // Variant (used only for arrays of variants)
+    const vbVariant = 12;
+
+    // Data access object
+    const vbDataObject = 13;
+
+    // Decimal subtype
+    const vbDecimal = 14;
+
+    // Byte subtype
+    const vbByte = 17;
+
+    // Array
+    const vbArray = 8192;
+}
+
+
+enum VBScriptError extends Error {
+    // Invalid procedure call or argumen
+    InvalidProcedureCallOrArgument(5),
+    // Overflow
+    Overflow(6),
+    // Out	of	memory
+    OutOfMemory(7),
+}
+
+declare class FileSystemObject {
+    GetDrive(driver: str) -> object
+    GetFolder(dir: str) -> object
+    GetFile(filename: str) -> object
+}

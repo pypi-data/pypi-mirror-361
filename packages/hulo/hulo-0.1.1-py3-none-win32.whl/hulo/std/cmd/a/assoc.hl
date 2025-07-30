@@ -1,0 +1,31 @@
+/**
+ * Displays or modifies file name extension associations.
+ * When used without parameters, shows all current file extension associations.
+ * 
+ * Note: 
+ * - Only supported within cmd.exe
+ * - Not available directly in PowerShell (use cmd /c assoc as workaround)
+ */
+@command("assoc [FLAGS]")
+class assoc {
+    /**
+     * Specifies the file name extension to view or modify.
+     * Format: .<ext> (e.g., ".txt")
+     */
+    @flag(alias: ["ext", "extension"])
+    extension: str
+
+    /**
+     * Specifies the file type to associate with the extension.
+     * Format: <filetype> (e.g., "txtfile")
+     * When omitted with extension, displays current association.
+     */
+    @flag
+    filetype: str
+
+    /**
+     * Displays help information.
+     */
+    @flag(format: "/?")
+    help: bool
+}

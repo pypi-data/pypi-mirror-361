@@ -1,0 +1,40 @@
+// Deletes one or more files. This command performs the same actions as the erase command.
+@command("del [FLAGS] names")
+pub class del {
+    // Prompts for confirmation before deleting the specified file.
+    @flag(short: "p", long: "prompt", format: "/p")
+    prompt: bool
+
+    // Forces deletion of read-only files.
+    @flag(short: ["f", "F"], long: "force", format: "/f")
+    force: bool
+
+    // Deletes specified files from the current directory and all subdirectories. Displays the names of the files as they are being deleted.
+    @flag(short: "s", long: "show", format: "/s")
+    show: bool
+
+    // Specifies quiet mode. You are not prompted for delete confirmation.
+    @flag(short: ["q", "Q"], long: "quiet", format: "/q")
+    quiet: bool
+
+    /**
+     Deletes files based on the following file attributes:
+        r Read-only files
+        h Hidden files
+        i Not content indexed files
+        s System files
+        a Files ready for archiving
+        l Reparse points
+        - Used as a prefix meaning 'not'
+     */
+    @flag(short: "a", long: "attr", format: "/a:{}")
+    attr: 'r' | 'h' | 'i' | 's' | 'a' | 'l' | '-'
+
+    // Specifies a list of one or more files or directories. Wildcards may be used to delete multiple files. If a directory is specified, all files within the directory will be deleted.
+    @option(bind: "names")
+    names: str[]
+
+    // Displays help at the command prompt.
+    @flag(short: "h", long: "help", format: "/?")
+    help: bool
+}

@@ -1,0 +1,138 @@
+import "constant"
+
+pub comptime class Duration {
+    Duration({
+        days: num = 0,
+        hours: num = 0,
+        minutes: num = 0,
+        seconds: num = 0,
+        millis: num = 0,
+        micros: num = 0,
+        nanos: num = 0
+    })
+
+    pub fn in_days(d: Duration) -> num   
+    pub fn in_hours(d: Duration) -> num  
+    pub fn in_minutes(d: Duration) -> num  
+    pub fn in_seconds(d: Duration) -> num
+    pub fn in_millis(d: Duration) -> num 
+    pub fn in_micros(d: Duration) -> num
+    pub fn in_nanos(d: Duration) -> num 
+
+    pub fn parts(d: Duration) -> (days: num, hours: num, mins: num, secs: num, millis: num)
+
+    operator +(other: Duration) -> Duration 
+    operator -(other: Duration) -> Duration
+    operator *(factor: num) -> Duration
+    operator /(factor: num) -> Duration
+
+    operator ==(other: Duration) -> bool
+    operator <(other: Duration) -> bool
+    operator >(other: Duration) -> bool
+}
+
+pub comptime class Instant {
+    readonly unix_ns: num  // 从 Unix 纪元(1970-01-01)开始的纳秒数
+}
+
+pub comptime class DateTime {
+    readonly year: num      // -9999~9999
+    readonly month: num     // 1-12
+    readonly day: num       // 1-31
+    readonly hour: num      // 0-23
+    readonly minute: num    // 0-59
+    readonly second: num    // 0-59
+    readonly millisec: num  // 0-999
+    readonly nanosec: num   // 0-999
+    
+    DateTime(
+        year: num, month: num, day: num,
+        hour?: num = 0, minute?: num = 0, 
+        second?: num = 0, millisec?: num = 0, 
+        nanosec?: num = 0
+    )
+
+    DateTime.now()
+    
+    DateTime.from_unix(seconds: num, nanos?: num = 0)
+    DateTime.from_iso(iso_str: str) throws
+    
+    static fn start_of_day(dt: DateTime) -> DateTime
+    static fn end_of_month(dt: DateTime) -> DateTime
+
+    fn to_instant(tz: TimeZone) -> Instant
+    fn to_unix() -> num
+    fn to_iso() -> str
+    fn to_rfc3339() -> str
+    fn to_str(format: str) -> str  // 支持类似 "YYYY-MM-DD HH:mm:ss" 的格式化
+    
+    fn add(d: Duration) -> DateTime
+    fn add_years(y: num) -> DateTime
+    fn add_months(m: num) -> DateTime
+    fn add_hours(h: num) -> DateTime
+    fn sub(other: DateTime) -> Duration
+    
+    operator ==(other: DateTime) -> bool
+    operator <(other: DateTime) -> bool
+    operator in(interval: (start: DateTime, end: DateTime)) -> bool
+
+    fn weekday() -> Weekday
+    fn is_leap_year() -> bool
+    fn days_in_month() -> num
+}
+
+pub comptime class TimeZone {
+    TimeZone.utc() -> TimeZone
+    TimeZone.local() -> TimeZone
+    TimeZone.named(name: str) throws -> TimeZone
+    
+    readonly name: str
+    readonly offset: Duration  // 当前与UTC的偏移量
+    fn is_dst() -> bool        // 是否处于夏令时
+}
+
+pub comptime class Interval {
+    start: DateTime
+    end: DateTime
+
+    fn contains(dt: DateTime) -> bool
+    fn overlaps(other: Interval) -> bool
+}
+
+pub comptime fn set_timeout(delay: Duration, callback: () -> void)
+pub comptime fn set_interval(period: Duration, callback: () -> void)
+
+pub comptime fn sleep(d: Duration) -> void  // 阻塞当前线程
+pub comptime fn now() -> DateTime           // 获取当前本地时间
+pub comptime fn now_utc() -> DateTime       // 获取当前UTC时间
+pub comptime fn unix_timestamp() -> num     // 秒级时间戳
+pub comptime fn humanize(d: Duration) -> str  // 如 "2 hours ago"
+// 时间段计算 (类似Rust的chrono)
+pub comptime fn duration_between(start: Instant, end: Instant) -> Duration
+
+// ====================== 格式化语法 ======================
+/*
+  支持类似Day.js的格式化标记：
+  - YYYY: 4位年份
+  - MM: 月份(01-12)
+  - DD: 日(01-31)
+  - HH: 24小时制(00-23)
+  - mm: 分钟(00-59)
+  - ss: 秒(00-59)
+  - SSS: 毫秒(000-999)
+  - Z: 时区偏移(如+08:00)
+*/
+
+extension class num {
+    get s: Duration {
+        return Duration(seconds: $this)
+    }
+
+    get ms: Duration {
+        return Duration(millis: $this)
+    }
+
+    get ns: Duration {
+        return Duration(nanos: $this)
+    }
+}

@@ -1,0 +1,11 @@
+declare comptime trait Archiver {
+    add_file(src: str, dst: str) throws
+    extract(dst: str) throws
+    extract(member: str, dst: str) throws
+    list_files() throws -> str[]
+    close() throws
+}
+
+declare comptime fn create(name: str) throws -> Archiver
+
+declare comptime fn open() throws -> Archiver

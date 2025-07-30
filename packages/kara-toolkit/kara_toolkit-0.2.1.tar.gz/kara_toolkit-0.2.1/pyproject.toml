@@ -1,0 +1,106 @@
+[build-system]
+requires = ["setuptools>=77.0.3", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kara-toolkit"
+dynamic = ["version"]
+description = "Knowledge-Aware Re-embedding Algorithm - Efficient RAG knowledge base updates"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "CC-BY License" }
+authors = [{ name = "Mahdi Zakizadeh", email = "mzakizadeh.me@gmail.com" }]
+keywords = [
+    "rag",
+    "embeddings",
+    "knowledge-base",
+    "nlp",
+    "langchain",
+    "llamaindex",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: Other/Proprietary License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = ["numpy>=1.21.0", "typing-extensions>=4.0.0"]
+
+[project.optional-dependencies]
+langchain = [
+    "langchain>=0.1.0",
+    "langchain_community>=0.0.1",
+    "langchain_core>=0.0.1",
+    "langchain_text_splitters>=0.0.1",
+]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+    "pre-commit>=3.0.0",
+]
+all = ["kara-toolkit[langchain,dev]"]
+
+[project.urls]
+Homepage = "https://github.com/mzakizadeh/kara"
+Repository = "https://github.com/mzakizadeh/kara"
+Documentation = "https://kara-toolkit.readthedocs.io"
+"Bug Tracker" = "https://github.com/mzakizadeh/kara-toolkit/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.ruff]
+line-length = 100
+target-version = "py38"
+extend-exclude = ["src/**/_version.py"]
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "UP", # pyupgrade
+]
+ignore = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.ruff.lint.isort]
+known-first-party = ["kara-toolkit"]
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "--cov=kara --cov-report=html --cov-report=term-missing"
+
+[tool.setuptools_scm]
+write_to = "src/kara/_version.py"
+version_scheme = "release-branch-semver"
+local_scheme = "no-local-version"

@@ -1,0 +1,20 @@
+[rtc] $ csclient set.dmservo.type 1
+[py]  print_color("open loop", "cyan")
+[rtc] $ csclient loop.gain 0
+[rtc] $ csclient loop.gain.pb 0
+[ehu] save_aocbs_autoidx(1)
+[py]  print_color("open loop with pbgain", "cyan")
+[rtc] $ csclient loop.gain.pb 0.3
+[ehu] save_aocbs_autoidx(1)
+[py]  print_color("open loop", "cyan")
+[rtc] $ csclient loop.gain.pb 0
+[ehu] save_aocbs_autoidx(1)
+[py]  print_color("closed loop with pbgain", "cyan")
+[rtc] $ csclient loop.gain.pb 0.3
+#[rtc] $ csclient loop.gain 0.1
+[rtc] $ csclient set.dmservo.type 2
+[ehu] save_aocbs_autoidx(1)
+[py]  print_color("finished. opening the loop", "green")
+[rtc] $ csclient loop.gain.pb 0
+[rtc] $ csclient loop.gain 0
+[rtc] $ csclient set.dmservo.type 1

@@ -1,0 +1,119 @@
+Metadata-Version: 2.1
+Name: dnc_crypto
+Version: 1.0.3
+Summary: An innovative, multi-layered dynamic network cipher.
+Author: Mohammadmoein Pisodeh
+Author-email: mmoeinp3@gmail.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Security :: Cryptography
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy
+Requires-Dist: cryptography
+Requires-Dist: networkx
+
+# DNC-Crypto: Industrial-Grade Experimental Cryptography
+
+![PyPI Version](https://img.shields.io/pypi/v/dnc-crypto)
+![Python Support](https://img.shields.io/pypi/pyversions/dnc-crypto)
+![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
+![License](https://img.shields.io/pypi/l/dnc-crypto)
+
+**DNC-Crypto** is a high-assurance, experimental cryptographic library designed for developers who need robust, multi-layered security with a modern, easy-to-use API. It implements a novel block cipher engine, the **Dynamic Network Cipher (DNC)**, wrapped in an industrial-grade secure envelope protocol.
+
+This library is built for performance, security, and operational robustness, making it suitable for a wide range of applications where data integrity and confidentiality are paramount.
+
+## Why Choose DNC-Crypto?
+
+*   **Authenticated Encryption:** Every encrypted payload is protected by a **secure envelope** that uses a strong HMAC-SHA256 signature. This guarantees both **confidentiality** and **authenticity**, preventing any tampering or manipulation of the data.
+*   **Defense-in-Depth Architecture:** Your data is encrypted through an 8-layer cascade, where each layer uses a unique, derived key. This "chained" approach dramatically increases the computational cost of brute-force attacks.
+*   **Quantum-Resistant Key Sizes:** Natively supports **256-bit** and ultra-secure **512-bit** master keys, providing theoretical resistance against future quantum computing threats (via Grover's algorithm).
+*   **Robust and Self-Describing Format:** The secure envelope includes metadata like versioning and key size, preventing common implementation errors, such as decrypting with the wrong key.
+*   **Simple and Pythonic API:** Get started in minutes with a clean interface that handles complex cryptographic operations behind the scenes.
+
+## Installation
+
+Install the library directly from PyPI:
+```bash
+pip install dnc-crypto
+```
+
+## Quick Start Guide
+
+Here’s a simple example of how to protect your data with DNC-Crypto.
+
+```python
+from dnc_crypto import DNCCrypto, DecryptionError
+import os
+
+# Define a path for your key file.
+KEY_FILE = "my-application.key"
+
+# 1. Generate and Load a Secure Key
+# The library manages key creation and loading for you.
+try:
+    # Attempt to load an existing key
+    crypto = DNCCrypto(key_path=KEY_FILE)
+    print(f"✅ Key successfully loaded from '{KEY_FILE}'.")
+except FileNotFoundError:
+    print(f"⚠️ Key file not found. Generating a new 512-bit key...")
+    # Generate a new, high-strength key if one doesn't exist
+    DNCCrypto.generate_key(key_path=KEY_FILE, key_size_bits=512)
+    crypto = DNCCrypto(key_path=KEY_FILE)
+    print(f"✅ New key generated and loaded.")
+
+# 2. Encrypt Your Data
+plaintext = b"This data is now protected by an industrial-grade protocol."
+print(f"\nOriginal data: {plaintext}")
+
+# The encrypt method returns a self-contained, secure payload.
+encrypted_payload = crypto.encrypt(plaintext)
+print(f"Encrypted payload (hex): {encrypted_payload.hex()}")
+print(f"Total payload size: {len(encrypted_payload)} bytes")
+
+# 3. Decrypt and Authenticate
+try:
+    # The decrypt method automatically verifies the integrity and authenticity
+    # of the payload before returning the original data.
+    decrypted_text = crypto.decrypt(encrypted_payload)
+    print(f"\nDecrypted data: {decrypted_text}")
+
+    # Verification
+    assert plaintext == decrypted_text
+    print("\n🎉 Success! Data decrypted and authenticated successfully.")
+
+except DecryptionError as e:
+    # This error will be raised if the key is wrong or the data has been tampered with.
+    print(f"\n❌ Decryption Failed: {e}")
+
+finally:
+    # Clean up the key file for this example.
+    if os.path.exists(KEY_FILE):
+        os.remove(KEY_FILE)
+```
+
+## The DNC-Crypto Protocol
+
+DNC-Crypto does more than just encrypt. It wraps your data in a secure, authenticated envelope.
+
+**Payload Structure:**
+`[ MAGIC_BYTES | VERSION | HEADER_LEN | HEADER_JSON | HMAC_SIGNATURE | CIPHERTEXT ]`
+
+- **Magic Bytes:** Instantly identifies the data as a DNC-Crypto payload.
+- **Versioning:** Allows for future upgrades without breaking backward compatibility.
+- **Authenticated Header:** Contains critical metadata (like key size) protected against tampering by a strong **HMAC-SHA256** signature. This prevents downgrade attacks and misuse.
+- **Ciphertext:** The core encrypted data, protected by the 8-layer DNC chaining protocol.
+
+This robust structure ensures that what you decrypt is exactly what you originally encrypted, and nothing else.
+
+## License
+
+This project is licensed under the MIT License. See the `LICENSE` file for details.
+
+## Contributing
+
+While this is primarily a solo project, feedback, bug reports, and suggestions are always welcome. Please feel free to open an issue on the [GitHub repository](https://github.com/your_username/dnc_crypto).

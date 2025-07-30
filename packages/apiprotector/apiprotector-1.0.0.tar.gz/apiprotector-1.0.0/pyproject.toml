@@ -1,0 +1,216 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "apiprotector"
+version = "1.0.0"
+description = "A comprehensive API protection library for Python with rate limiting, authentication, and security features"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Kodukulla Phani Kumar", email = "phanikumark715@gmail.com"}
+]
+maintainers = [
+    {name = "Kodukulla Phani Kumar", email = "phanikumark715@gmail.com"}
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+    "Topic :: Security",
+    "Topic :: System :: Networking :: Monitoring",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Framework :: Flask",
+    "Framework :: Django",
+    "Framework :: FastAPI",
+    "Framework :: Pyramid",
+]
+keywords = [
+    "api",
+    "protection",
+    "rate limiting",
+    "authentication",
+    "security",
+    "flask",
+    "django",
+    "fastapi",
+    "middleware",
+    "ddos",
+    "validation",
+    "throttling",
+]
+dependencies = []
+requires-python = ">=3.6"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov>=2.0",
+    "black>=21.0",
+    "flake8>=3.8",
+    "mypy>=0.800",
+    "pre-commit>=2.0",
+    "tox>=3.0",
+]
+docs = [
+    "sphinx>=4.0",
+    "sphinx-rtd-theme>=1.0",
+    "myst-parser>=0.15",
+]
+test = [
+    "pytest>=6.0",
+    "pytest-cov>=2.0",
+    "pytest-mock>=3.0",
+    "coverage>=5.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/phanikumar715/apiprotector"
+Documentation = "https://apiprotector.readthedocs.io/"
+Repository = "https://github.com/phanikumar715/apiprotector"
+"Bug Tracker" = "https://github.com/phanikumar715/apiprotector/issues"
+Changelog = "https://github.com/phanikumar715/apiprotector/blob/main/CHANGELOG.md"
+
+[project.scripts]
+apiprotector = "apiprotector.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["apiprotector*"]
+exclude = ["tests*", "docs*", "examples*"]
+
+[tool.setuptools.package-data]
+apiprotector = ["py.typed"]
+
+[tool.black]
+line-length = 88
+target-version = ['py36', 'py37', 'py38', 'py39', 'py310', 'py311']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["apiprotector"]
+
+[tool.mypy]
+python_version = "3.6"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q --strict-markers --strict-config"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+]
+
+[tool.coverage.run]
+source = ["apiprotector"]
+branch = true
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "setup.py",
+    "*/site-packages/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+show_missing = true
+precision = 2
+
+[tool.coverage.html]
+directory = "htmlcov"
+
+[tool.flake8]
+max-line-length = 88
+extend-ignore = ["E203", "W503"]
+exclude = [
+    ".git",
+    "__pycache__",
+    "build",
+    "dist",
+    ".eggs",
+    "*.egg-info",
+    ".tox",
+    ".pytest_cache",
+    ".mypy_cache",
+]
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+envlist = py36,py37,py38,py39,py310,py311,py312,flake8,mypy,coverage
+isolated_build = True
+
+[testenv]
+deps = pytest
+commands = pytest {posargs}
+
+[testenv:flake8]
+deps = flake8
+commands = flake8 apiprotector tests
+
+[testenv:mypy]
+deps = mypy
+commands = mypy apiprotector
+
+[testenv:coverage]
+deps = 
+    pytest
+    pytest-cov
+commands = pytest --cov=apiprotector --cov-report=html --cov-report=term-missing
+"""

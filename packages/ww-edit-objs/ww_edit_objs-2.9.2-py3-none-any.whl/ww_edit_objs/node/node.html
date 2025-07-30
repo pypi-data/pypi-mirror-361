@@ -1,0 +1,1200 @@
+<!-- <CAUTION -->
+<!-- KEEP ALL TAGGED COMMENTS: <\!-- <SOME_TAG --> <!-- SOME_TAG> -->
+<!-- CAUTION> -->
+
+<script type="text/javascript">
+    // <REGISTER_NODE
+    RED.nodes.registerType('ww_edit_objs', {
+    // REGISTER_NODE>
+        // <CATEGORY
+        category: "Wwise",
+        // CATEGORY>
+        // <COLOR
+        color: '#00a8f0',
+        // COLOR>
+        defaults: {
+            name_: {value: ""},
+			// <DEFAULTS_INPUT
+            inputobjlist: {value: ""},
+            allowcustomproperty: {value: false},
+            property: {value: ""},
+            value: {value: ""},
+            conflictresolution: {value: "failAtOnce"},
+            enablerandomizer: {value: false},
+            randomizerminoffset: {value: 0},
+            randomizermaxoffset: {value: 0},
+			// DEFAULTS_INPUT>
+			// <DEFAULTS_INOUT_MAP
+            _passedobjlist: {value: true},
+			// DEFAULTS_INOUT_MAP>
+			// <DEFAULTS_SHARED_INPUT
+            saveconfig: {value: true},
+            cfgfile: {value: ""},
+            dryrun: {value: false},
+            notifyuser: {value: false},
+            appsessionid: {value: ""},
+			// DEFAULTS_SHARED_INPUT>
+        },
+        // <INPUT_COUNT
+        inputs: 1,
+        // INPUT_COUNT>
+        // <OUTPUT_COUNT
+        outputs: 1,
+        // OUTPUT_COUNT>
+        icon: "icon.png",
+        // <LABEL_PORTS_INPUT
+        inputLabels: "[merged] inputObjList",
+        // LABEL_PORTS_INPUT>
+        // <LABEL_PORTS_OUTPUT
+        outputLabels: ['passedObjList'],
+        // LABEL_PORTS_OUTPUT>
+        label: function() {
+            // name shown in flow editor
+            // <LABEL
+            return this.name_ || "ww_edit_objs";
+            // LABEL>
+        },
+        // <EDITOR_EVENTS
+        oneditprepare: function() {
+            const loadListIntoTextarea = (id, listConfig) => {
+                let textList = listConfig.map( (e) => {return e.toString();} );
+                listConfig = textList.join('\n');
+                $(`#${id}`).val(listConfig);
+                return listConfig;
+            };
+            var config = this;
+            // <INIT_TEXTAREA
+            
+            // INIT_TEXTAREA>
+        },
+        oneditsave: function() {
+            const saveTextareaToList = (id) => {
+                var listText = $(`#${id}`).val();
+                var list = listText.split('\n');
+                // remove trailing nulls
+                list = list.filter( elem => elem.trim().length );
+                if ( !list.length ) { return list; }
+                // infer data type and convert to avoid run-time overhead
+                let headStr = list[0];
+                let headInt = Number.parseInt(headStr);
+                let isStr = isNaN(headInt);
+                if (isStr) { return list; }
+                let isFloat = headStr !== headInt.toString();
+                let converter = isFloat ? parseFloat : parseInt;
+                return list.map( (e) => {return converter(e);} );
+            };
+            var config = this;
+            // <UPDATE_TEXTAREA
+            
+            // UPDATE_TEXTAREA>
+        }
+        // EDITOR_EVENTS>
+    });
+
+    // <PLUGIN_HANDLERS
+    // <SELECT_FILES_FOLDERS.LOAD_PRESET
+    function onSelectFilesFoldersLoadPreset_WwEditObjs(target) {
+        function _createTriggerRequest() {
+            let request = {};
+            return request;
+        }
+        function _onResponse(response, status, xhr) {
+            if (response.cfgfile === '') {
+                console.log(`User did not select any preset; Will skip`);
+                return;
+            }
+            boundArg.value = response.cfgfile;
+            // update presets
+            Object.keys(response.config).forEach((argName) => {
+                let arg = document.getElementById(`node-input-${argName}`);
+                if (arg === undefined) {
+                    console.error(`Invalid argument: ${argName}; Will skip`);
+                    return;
+                }
+                arg.value = response.config[argName];
+                if (typeof response.config[argName] == 'boolean') {
+                    arg.checked = response.config[argName];
+                    return;
+                }
+                if (arg instanceof HTMLSelectElement) {
+                    let selected = Array.isArray(response.config[argName]) ? response.config[argName] : [response.config[argName]];
+                    selected = selected.map(opt => opt.toString());
+                    let allOptions = Array.from(arg.options).map(option => option.value);
+                    allOptions.forEach((opt, idx) => {
+                        let foundIdx = selected.indexOf(opt);
+                        arg.options[idx].selected = foundIdx >= 0;
+                    });
+                }
+            });
+        }
+        // CAUTION: DO NOT EDIT THE CODE BELOW
+        let boundArg = document.getElementById(target);
+        // <REST_URL
+        let url = 'ww_edit_objs/select_files_folders/load_preset';
+        // REST_URL>
+        let request = _createTriggerRequest();
+        $.getJSON(url, request, _onResponse);
+    }
+    
+    function onResetConfig_WwEditObjs(target) {
+        function _createTriggerRequest() {
+            let request = {};
+            return request;
+        }
+        function _onResponse(response, status, xhr) {
+            Object.keys(response.config).forEach((argName) => {
+                let arg = document.getElementById(`node-input-${argName}`);
+                if (arg === undefined) {
+                    console.error(`Invalid argument: ${argName}; Will skip`);
+                    return;
+                }
+                arg.value = response.config[argName];
+                if (typeof response.config[argName] == 'boolean') {
+                    arg.checked = response.config[argName];
+                    return;
+                }
+                if (arg instanceof HTMLSelectElement) {
+                    let selected = Array.isArray(response.config[argName]) ? response.config[argName] : [response.config[argName]];
+                    selected = selected.map(opt => opt.toString());
+                    let allOptions = Array.from(arg.options).map(option => option.value);
+                    allOptions.forEach((opt, idx) => {
+                        let foundIdx = selected.indexOf(opt);
+                        arg.options[idx].selected = foundIdx >= 0;
+                    });
+                }
+            });
+        }
+        let url = 'ww_edit_objs/_util/reset_config';
+        let request = _createTriggerRequest();
+        $.getJSON(url, request, _onResponse);
+    }
+    // SELECT_FILES_FOLDERS.LOAD_PRESET>
+    // <OPEN_SESSION_ROOT.INSPECT_SESSION
+    function onOpenSessionRootInspectSession_WwEditObjs(target) {
+        function _createTriggerRequest() {
+            let request = {};
+            return request;
+        }
+        function _onResponse(response, status, xhr) {
+            console.log(`Opened session root: ${response.sessionroot}`);
+        }
+        // CAUTION: DO NOT EDIT THE CODE BELOW
+        let boundArg = document.getElementById(target);
+        // <REST_URL
+        let url = 'ww_edit_objs/open_session_root/inspect_session';
+        // REST_URL>
+        let request = _createTriggerRequest();
+        $.getJSON(url, request, _onResponse);
+    }
+    // OPEN_SESSION_ROOT.INSPECT_SESSION>
+    // <WW_EDIT_OBJS.SELECT_WOBJ_PROPERTIES
+    // WW_EDIT_OBJS.SELECT_WOBJ_PROPERTIES>
+    // PLUGIN_HANDLERS>
+</script>
+
+
+<!-- <SCRIPT_CONFIG -->
+<script type="text/html" data-template-name="ww_edit_objs">
+<!-- SCRIPT_CONFIG> -->
+    <style>
+        /* <DEFAULT_EDITOR_STYLE */
+        div.section {
+            margin-left: 2em;
+        }
+        
+        details {
+            border: 1px solid #aaa;
+            border-radius: 4px;
+            padding: .5em .5em 0;
+            margin-left: 15px;
+            width: 88%;
+        }
+        
+        summary {
+            font-weight: bold;
+            margin: -.5em -.5em 0;
+            padding: .5em;
+        }
+        
+        details[open] {
+            padding: .5em;
+        }
+        
+        details[open] summary {
+            border-bottom: 1px solid #aaa;
+            margin-bottom: .5em;
+        }
+        
+        div.form-title {
+            padding-top: 10px;
+            padding-left: 15px;
+        }
+        
+        div.form-row {
+            padding-top: 0px;
+            padding-bottom: 5px;
+            margin-left: 15px;
+        }
+        
+        div.form-row-continue {
+            padding-left: 15px;
+        }
+        
+        label.form-title {
+            display: flex;
+        }
+        
+        label.form-section {
+            font-weight:bold;
+            font-size:large;
+            display:block;
+            padding-top:10px;
+            padding-bottom:10px;
+        }
+        
+        input[type=checkbox].form-checkbox {
+            display:inline-block;
+            width:22px;
+            vertical-align:baseline;
+        }
+        
+        input[type=text].form-text {
+            width:95%;
+        }
+        
+        input[type=number].form-number {
+            width:30%;
+        }
+        
+        select.form-select {
+            width:70%;
+        }
+        
+        textarea.form-textarea {
+            width:95%;
+            height: 6.5em;
+        }
+        
+        button.form-title {
+            margin-left: auto;
+            margin-right: 22px;
+        }
+        
+        i {
+            /* field title: separating icon from text */
+            padding-right: 5px;
+        }
+        /* DEFAULT_EDITOR_STYLE> */
+        /* <PLUGIN_STYLES */
+        /* <SELECT_FILES_FOLDERS.LOAD_PRESET */
+        /* SELECT_FILES_FOLDERS.LOAD_PRESET> */
+        /* <OPEN_SESSION_ROOT.INSPECT_SESSION */
+        /* OPEN_SESSION_ROOT.INSPECT_SESSION> */
+        /* <WW_EDIT_OBJS.SELECT_WOBJ_PROPERTIES */
+        /* WW_EDIT_OBJS.SELECT_WOBJ_PROPERTIES> */
+        /* PLUGIN_STYLES> */
+    </style>
+    <div class="form-row">
+        <label for="node-input-name_"><i class="fa fa-tag"></i> 名称</label>
+        <input type="text" id="node-input-name_">
+    </div>
+    <div>
+        <label class="form-section">Preset</label>
+    </div>
+    <!-- <SECTION.PRESET -->
+    <!-- <ENTRY.SAVECONFIG -->
+    <div class="form-title" title='保存上一次成功运行的参数配置；默认不用'>
+        <div class="form-row">
+            <input class="form-checkbox" type="checkbox" id="node-input-saveconfig" checked> Save Config After Success
+        </div>
+    </div>
+    <hr/>
+    <!-- ENTRY.SAVECONFIG> -->
+    <!-- <ENTRY.CFGFILE -->
+    <!-- <SELECT_FILES_FOLDERS.LOAD_PRESET -->
+    <div class="form-title" title='除去节点输入参数外的参数配置文件路径；可为绝对路径、相对路径或文件名，若为文件名则不能含扩展名，相对于默认应用数据目录：在 Windows 上为 APPDATA\_miatech\<service_name>\config；在 macOS 上为：~/Library/Application Support/_miatech/config；默认为空，即不读取配置文件'>
+        <label><i class="fa fa-file"></i>Config File:</label>
+    </div>
+    <div class="form-row">
+        <button onclick="onSelectFilesFoldersLoadPreset_WwEditObjs('node-input-cfgfile')"> Browse...</button>
+        <button onclick="onResetConfig_WwEditObjs('node-input-cfgfile')">Reset Config</button>
+    </div>
+    <div class="form-row-continue">
+        <input class="form-text" type="text" id="node-input-cfgfile" readonly/>
+    </div>
+    <hr/>
+    <!-- SELECT_FILES_FOLDERS.LOAD_PRESET> -->
+    <!-- ENTRY.CFGFILE> -->
+    <!-- SECTION.PRESET> -->
+    <div>
+        <label class="form-section">Config</label>
+    </div>
+    <!-- <SECTION.CONFIG -->
+    <!-- <ENTRY.INPUTOBJLIST -->
+    <div class="form-title" title='要设置属性的 Object 表单, 可以是 guid 或 path（详见配置一节中对表单的说明）.'>
+        <label for="node-input-inputobjlist"><i class="fa fa-text-width"></i>Input Object List:</label>
+    </div>
+    <div class="form-row">
+        <input class="form-text" type="text" id="node-input-inputobjlist" placeholder="">
+    </div>
+    <hr/>
+    <!-- ENTRY.INPUTOBJLIST> -->
+    <!-- <ENTRY.ALLOWCUSTOMPROPERTY -->
+    <div class="form-title" title='要设置的属性是否为自定义属性, 若勾选, 则跳过属性类型检查.'>
+        <div class="form-row">
+            <input class="form-checkbox" type="checkbox" id="node-input-allowcustomproperty"> Allow Custom Property
+        </div>
+    </div>
+    <hr/>
+    <!-- ENTRY.ALLOWCUSTOMPROPERTY> -->
+    <!-- <ENTRY.PROPERTY -->
+    <!-- <WW_EDIT_OBJS.SELECT_WOBJ_PROPERTIES -->
+    <div class="form-title" title='要设置属性的名, 不同类型的对象有不同的属性可以设置, 可以参考: https://www.audiokinetic.com/zh/library/?source=SDK&id=wobjects_index.html.'>
+        <label for="node-input-property"><i class="fa fa-text-width"></i>Property:</label>
+    </div>
+    <div class="form-row">
+        <input class="form-text" type="text" id="node-input-property" placeholder="" list="wobj-properties">
+        <datalist id="wobj-properties">
+            <option value="3DPositionSource">
+            <option value="AbsoluteOrRelative">
+            <option value="AbsorptionHigh">
+            <option value="AbsorptionLow">
+            <option value="AbsorptionMidHigh">
+            <option value="AbsorptionMidLow">
+            <option value="AbsorptionOffset">
+            <option value="ActionType">
+            <option value="AllowChannelUpmix">
+            <option value="AnalysisType">
+            <option value="AppendOffset">
+            <option value="ApplyDownstreamVolume">
+            <option value="ApplyOn">
+            <option value="ApplyToDynamicSequence">
+            <option value="ApplyToStateTransition">
+            <option value="AttachableMixerInput">
+            <option value="AttackTime">
+            <option value="Attenuation">
+            <option value="AudioDevice">
+            <option value="AudioInputGain">
+            <option value="AuthoringFilename">
+            <option value="AutoDetectFFTWindowSize">
+            <option value="AutoDetectThresholdHigh">
+            <option value="AutoDetectThresholdLow">
+            <option value="AutoDetectThresholdMedium">
+            <option value="AverageBitrate">
+            <option value="AverageTrackSlewTime">
+            <option value="BaseFrequency">
+            <option value="BeginTrimOffset">
+            <option value="BelowThresholdBehavior">
+            <option value="BindToBuiltInParam">
+            <option value="BitReservoirTime">
+            <option value="BitrateManagmentMode">
+            <option value="BlendBehavior">
+            <option value="BusChannelConfig">
+            <option value="BusVolume">
+            <option value="BypassEffect">
+            <option value="BypassEffect0">
+            <option value="BypassEffect1">
+            <option value="BypassEffect2">
+            <option value="BypassEffect3">
+            <option value="BypassGameParameterInternalTransition">
+            <option value="Center">
+            <option value="CenterLevel">
+            <option value="ChannelConfigOverride">
+            <option value="ChannelLink">
+            <option value="ChannelMask">
+            <option value="Channels">
+            <option value="CommPortDiscoveryBroadcast">
+            <option value="CommPortDiscoveryResponse">
+            <option value="CommSerialPortBase">
+            <option value="ConditionalOperator">
+            <option value="ConeAttenuation">
+            <option value="ConeHighPassFilterValue">
+            <option value="ConeInnerAngle">
+            <option value="ConeLowPassFilterValue">
+            <option value="ConeOuterAngle">
+            <option value="ConeUse">
+            <option value="ContinuePlay">
+            <option value="ControlInput">
+            <option value="Conversion">
+            <option value="ConvertExternalSources">
+            <option value="CrossfadeDuration">
+            <option value="CrossfadeShape">
+            <option value="CueType">
+            <option value="CurveType">
+            <option value="CurveUsage">
+            <option value="CustomCueMatchName">
+            <option value="DCFilterCutFreq">
+            <option value="DVRRecordable">
+            <option value="DataFileName">
+            <option value="DecayTime">
+            <option value="DefaultLanguage">
+            <option value="DefaultSoundVolume">
+            <option value="DefaultSwitchOrState">
+            <option value="DefaultSwitchState">
+            <option value="DefaultTransitionTime">
+            <option value="Delay">
+            <option value="DelayLengthsMode">
+            <option value="DelayTime">
+            <option value="DelayTime1">
+            <option value="DelayTime10">
+            <option value="DelayTime11">
+            <option value="DelayTime12">
+            <option value="DelayTime13">
+            <option value="DelayTime14">
+            <option value="DelayTime15">
+            <option value="DelayTime16">
+            <option value="DelayTime2">
+            <option value="DelayTime3">
+            <option value="DelayTime4">
+            <option value="DelayTime5">
+            <option value="DelayTime6">
+            <option value="DelayTime7">
+            <option value="DelayTime8">
+            <option value="DelayTime9">
+            <option value="Density">
+            <option value="DensityDelayMax">
+            <option value="DensityDelayMin">
+            <option value="DensityDelayRdmPerc">
+            <option value="DestinationContextObject">
+            <option value="DestinationContextType">
+            <option value="DestinationJumpPositionPreset">
+            <option value="Diffusion">
+            <option value="DiffusionDelayMax">
+            <option value="DiffusionDelayRdmPerc">
+            <option value="DiffusionDelayScalePerc">
+            <option value="DistortionDrive">
+            <option value="DistortionTone">
+            <option value="DistortionType">
+            <option value="DivergenceCenter">
+            <option value="DontPlayAgainTime">
+            <option value="DownmixToStereo">
+            <option value="DryLevel">
+            <option value="DurMode">
+            <option value="Duration">
+            <option value="DurationType">
+            <option value="DynamicPositioning">
+            <option value="ERFrontBackDelay">
+            <option value="ERLevel">
+            <option value="ERPattern">
+            <option value="Effect">
+            <option value="Effect0">
+            <option value="Effect1">
+            <option value="Effect2">
+            <option value="Effect3">
+            <option value="EffectClassID">
+            <option value="EnableAdvancedSettings">
+            <option value="EnableCrossFading">
+            <option value="EnableCrossFeed">
+            <option value="EnableDestinationFadeIn">
+            <option value="EnableEarlyReflections">
+            <option value="EnableFeedback">
+            <option value="EnableHighEfficiency">
+            <option value="EnableInsert">
+            <option value="EnableLFO">
+            <option value="EnableLoudnessNormalization">
+            <option value="EnableMaximumBitrate">
+            <option value="EnableMidiNoteTracking">
+            <option value="EnableMinimumBitrate">
+            <option value="EnablePanner">
+            <option value="EnablePositioning">
+            <option value="EnableRemove">
+            <option value="EnableReplace">
+            <option value="EnableSourceFadeOut">
+            <option value="EnableToneControls">
+            <option value="EnableTransitionFadeIn">
+            <option value="EnableTransitionFadeOut">
+            <option value="Enabled">
+            <option value="EncodingMode">
+            <option value="EncodingOptions">
+            <option value="EndPosition">
+            <option value="EndTrimOffset">
+            <option value="EnvelopeAttackCurve">
+            <option value="EnvelopeAttackTime">
+            <option value="EnvelopeAutoRelease">
+            <option value="EnvelopeDecayTime">
+            <option value="EnvelopeReleaseTime">
+            <option value="EnvelopeStopPlayback">
+            <option value="EnvelopeSustainLevel">
+            <option value="EnvelopeSustainTime">
+            <option value="EnvelopeTriggerOn">
+            <option value="EventActionNamePosition">
+            <option value="EventCreationSettingsOverride">
+            <option value="EventNameCaseType">
+            <option value="EventNameModifyCase">
+            <option value="EventsReferencedInOperator">
+            <option value="ExitSourceAt">
+            <option value="ExitSourceCustomCueMatchName">
+            <option value="ExternalSourcesInputPath">
+            <option value="ExternalSourcesOutputPath">
+            <option value="ExternalSourcesOverrideInputPath">
+            <option value="ExternalSourcesOverrideOutputPath">
+            <option value="FadeCurve">
+            <option value="FadeInDuration">
+            <option value="FadeInMode">
+            <option value="FadeInShape">
+            <option value="FadeInTime">
+            <option value="FadeOffset">
+            <option value="FadeOutDuration">
+            <option value="FadeOutMode">
+            <option value="FadeOutShape">
+            <option value="FadeOutTime">
+            <option value="FadeTime">
+            <option value="FadeType">
+            <option value="FeedBackLevel">
+            <option value="FeedForwardLevel">
+            <option value="Feedback">
+            <option value="FeedbackEnabled">
+            <option value="Fill">
+            <option value="Filter1Curve">
+            <option value="Filter1Freq">
+            <option value="Filter1Gain">
+            <option value="Filter1InsertPos">
+            <option value="Filter1Q">
+            <option value="Filter2Curve">
+            <option value="Filter2Freq">
+            <option value="Filter2Gain">
+            <option value="Filter2InsertPos">
+            <option value="Filter2Q">
+            <option value="Filter3Curve">
+            <option value="Filter3Freq">
+            <option value="Filter3Gain">
+            <option value="Filter3InsertPos">
+            <option value="Filter3Q">
+            <option value="FilterFrequency">
+            <option value="FilterGain">
+            <option value="FilterQFactor">
+            <option value="FilterTimeDown">
+            <option value="FilterTimeUp">
+            <option value="FilterType">
+            <option value="FilterTypeBand1">
+            <option value="FilterTypeBand2">
+            <option value="FilterTypeBand3">
+            <option value="FirstOccurenceOnly">
+            <option value="FixDur">
+            <option value="FixLoopMethod">
+            <option value="Flags">
+            <option value="FmAmount">
+            <option value="FollowListenerOrientation">
+            <option value="Format">
+            <option value="FrequencyBand1">
+            <option value="FrequencyBand2">
+            <option value="FrequencyBand3">
+            <option value="FrequencyMode">
+            <option value="FrequencyWeighting">
+            <option value="Front">
+            <option value="FrontLevel">
+            <option value="FrontRearBalance">
+            <option value="FullBandGain">
+            <option value="GainBand1">
+            <option value="GainBand2">
+            <option value="GainBand3">
+            <option value="GameAuxSendHPF">
+            <option value="GameAuxSendLPF">
+            <option value="GameAuxSendVolume">
+            <option value="GameFilename">
+            <option value="GameParameter">
+            <option value="GameParameterValue">
+            <option value="GenerateMainSoundBank">
+            <option value="GenerateMultipleBanks">
+            <option value="GenerateSoundBankJSON">
+            <option value="GenerateSoundBankXML">
+            <option value="GlobalOrPerObject">
+            <option value="GlobalVoiceInstancesLimit">
+            <option value="GridFrequencyPreset">
+            <option value="GridOffsetCustom">
+            <option value="GridOffsetPreset">
+            <option value="GroupType">
+            <option value="HFDamping">
+            <option value="HFRatio">
+            <option value="HardwareControllerKey">
+            <option value="HasEmptyAssignation">
+            <option value="HdrActiveRange">
+            <option value="HdrEnable">
+            <option value="HdrEnableEnvelope">
+            <option value="HdrEnvelope">
+            <option value="HdrEnvelopeSensitivity">
+            <option value="HdrOutputGameParameterMax">
+            <option value="HdrOutputGameParameterMin">
+            <option value="HdrPeakOutputGameParameter">
+            <option value="HdrRatio">
+            <option value="HdrReleaseTime">
+            <option value="HdrReleaseTimeMode">
+            <option value="HdrThreshold">
+            <option value="Highpass">
+            <option value="Hold">
+            <option value="IgnoreParentMaxSoundInstance">
+            <option value="Inclusion">
+            <option value="InitialDelay">
+            <option value="InitialValue">
+            <option value="Input">
+            <option value="InputCenterLevel">
+            <option value="InputLFELevel">
+            <option value="InsertAtPosition">
+            <option value="InsertStartAt">
+            <option value="InsertToInsert">
+            <option value="InsertWhat">
+            <option value="IsChecked">
+            <option value="IsFolder">
+            <option value="IsGlobalLimit">
+            <option value="IsLinked">
+            <option value="IsLoopingEnabled">
+            <option value="IsLoopingInfinite">
+            <option value="IsNonCachable">
+            <option value="IsSourceOfOverride">
+            <option value="IsSpecialSearch">
+            <option value="IsStreamingEnabled">
+            <option value="IsUsed">
+            <option value="IsVoice">
+            <option value="IsZeroLantency">
+            <option value="JumpToCustomCueMatchMode">
+            <option value="JumpToCustomCueMatchName">
+            <option value="LFE">
+            <option value="LFEGain">
+            <option value="LFELevel">
+            <option value="LRMix">
+            <option value="LayerCrossFadeControlInput">
+            <option value="LeftCrossfeed">
+            <option value="LeftDelayTime">
+            <option value="LeftFeedback">
+            <option value="LeftInputType">
+            <option value="LeftValue">
+            <option value="Length">
+            <option value="LengthMax">
+            <option value="LengthMin">
+            <option value="LfoAttack">
+            <option value="LfoDepth">
+            <option value="LfoFrequency">
+            <option value="LfoInitialPhase">
+            <option value="LfoPWM">
+            <option value="LfoSmoothing">
+            <option value="LfoWaveform">
+            <option value="LicenseKey">
+            <option value="LinearTime">
+            <option value="LogicalOperator">
+            <option value="LookAhead">
+            <option value="LookAheadTime">
+            <option value="LoopBegin">
+            <option value="LoopCount">
+            <option value="LoopEnd">
+            <option value="Lowpass">
+            <option value="MakeUpGain">
+            <option value="MasterResume">
+            <option value="Max">
+            <option value="MaxDangerousVirtualVoices">
+            <option value="MaxDuckVolume">
+            <option value="MaxMessagesPerMessageId">
+            <option value="MaxReachedBehavior">
+            <option value="MaxSampleRate">
+            <option value="MaxSoundPerInstance">
+            <option value="Maximum">
+            <option value="MaximumBitrate">
+            <option value="MeterMode">
+            <option value="MeterScope">
+            <option value="MidiBreakOnNoteOff">
+            <option value="MidiChannelFilter">
+            <option value="MidiFileName">
+            <option value="MidiKeyFilterMax">
+            <option value="MidiKeyFilterMin">
+            <option value="MidiPlayOnNoteType">
+            <option value="MidiTarget">
+            <option value="MidiTempoSource">
+            <option value="MidiTrackingRootNote">
+            <option value="MidiTransposition">
+            <option value="MidiVelocityFilterMax">
+            <option value="MidiVelocityFilterMin">
+            <option value="MidiVelocityOffset">
+            <option value="Min">
+            <option value="MinSampleRate">
+            <option value="MinimumBitrate">
+            <option value="Mixer">
+            <option value="ModDepth">
+            <option value="ModFrequency">
+            <option value="ModPWM">
+            <option value="ModPhaseMode">
+            <option value="ModPhaseOffset">
+            <option value="ModPhaseSpread">
+            <option value="ModSmoothing">
+            <option value="ModWaveform">
+            <option value="Mode">
+            <option value="ModulatorScope">
+            <option value="MusicSegment">
+            <option value="MusicTrackType">
+            <option value="NewPathForEachSound">
+            <option value="NoiseLevel">
+            <option value="NoiseShape">
+            <option value="NormalOrShuffle">
+            <option value="NumSegmentAdvance">
+            <option value="NumberOfDelays">
+            <option value="NumericOperator">
+            <option value="ObjectIndexInView">
+            <option value="ObjectReferenced">
+            <option value="ObjectType">
+            <option value="OnOffBand1">
+            <option value="OnOffBand2">
+            <option value="OnOffBand3">
+            <option value="OnSwitchChange">
+            <option value="OperationMode">
+            <option value="Osc1Invert">
+            <option value="Osc1Level">
+            <option value="Osc1Pwm">
+            <option value="Osc1Transpose">
+            <option value="Osc1Waveform">
+            <option value="Osc2Invert">
+            <option value="Osc2Level">
+            <option value="Osc2Pwm">
+            <option value="Osc2Transpose">
+            <option value="Osc2Waveform">
+            <option value="OutputBus">
+            <option value="OutputBusHighpass">
+            <option value="OutputBusLowpass">
+            <option value="OutputBusVolume">
+            <option value="OutputGain">
+            <option value="OutputLevel">
+            <option value="OverLimitBehavior">
+            <option value="OverSampling">
+            <option value="OverrideAnalysis">
+            <option value="OverrideAttachableMixerInput">
+            <option value="OverrideClockSettings">
+            <option value="OverrideConversion">
+            <option value="OverrideEffect">
+            <option value="OverrideGameAuxSends">
+            <option value="OverrideHdrEnvelope">
+            <option value="OverrideMidiEventsBehavior">
+            <option value="OverrideMidiNoteTracking">
+            <option value="OverrideMidiTarget">
+            <option value="OverrideMidiTempo">
+            <option value="OverrideOutput">
+            <option value="OverridePositioning">
+            <option value="OverridePriority">
+            <option value="OverrideUserAuxSends">
+            <option value="OverrideVirtualVoice">
+            <option value="OverrideWavLoop">
+            <option value="PanX">
+            <option value="PanY">
+            <option value="PanZ">
+            <option value="PauseDelayedResumeAction">
+            <option value="Period">
+            <option value="PeriodMultiplier">
+            <option value="Pitch">
+            <option value="Platform">
+            <option value="PlayAt">
+            <option value="PlayDestinationPreEntry">
+            <option value="PlayMechanismInfiniteOrNumberOfLoops">
+            <option value="PlayMechanismLoop">
+            <option value="PlayMechanismLoopCount">
+            <option value="PlayMechanismRandomOrSequence">
+            <option value="PlayMechanismResetPlaylistEachPlay">
+            <option value="PlayMechanismSpecialTransitions">
+            <option value="PlayMechanismSpecialTransitionsType">
+            <option value="PlayMechanismSpecialTransitionsValue">
+            <option value="PlayMechanismStepOrContinuous">
+            <option value="PlayMechanismTransitionTime">
+            <option value="PlayMechanismTransitionUse">
+            <option value="PlayMode">
+            <option value="PlaySegmentAt">
+            <option value="PlaySourcePostExit">
+            <option value="PlayTransitionPostExit">
+            <option value="PlayTransitionPreEntry">
+            <option value="PlaybackSpeed">
+            <option value="PlaylistItemType">
+            <option value="PositioningType">
+            <option value="PostEQBand1Enable">
+            <option value="PostEQBand1FilterType">
+            <option value="PostEQBand1Frequency">
+            <option value="PostEQBand1Gain">
+            <option value="PostEQBand1QFactor">
+            <option value="PostEQBand2Enable">
+            <option value="PostEQBand2FilterType">
+            <option value="PostEQBand2Frequency">
+            <option value="PostEQBand2Gain">
+            <option value="PostEQBand2QFactor">
+            <option value="PostEQBand3Enable">
+            <option value="PostEQBand3FilterType">
+            <option value="PostEQBand3Frequency">
+            <option value="PostEQBand3Gain">
+            <option value="PostEQBand3QFactor">
+            <option value="PostGenerateStepUserOverride">
+            <option value="PreDelay">
+            <option value="PreEQBand1Enable">
+            <option value="PreEQBand1FilterType">
+            <option value="PreEQBand1Frequency">
+            <option value="PreEQBand1Gain">
+            <option value="PreEQBand1QFactor">
+            <option value="PreEQBand2Enable">
+            <option value="PreEQBand2FilterType">
+            <option value="PreEQBand2Frequency">
+            <option value="PreEQBand2Gain">
+            <option value="PreEQBand2QFactor">
+            <option value="PreEQBand3Enable">
+            <option value="PreEQBand3FilterType">
+            <option value="PreEQBand3Frequency">
+            <option value="PreEQBand3Gain">
+            <option value="PreEQBand3QFactor">
+            <option value="PreFetchLength">
+            <option value="PreGenerateStepUserOverride">
+            <option value="Priority">
+            <option value="PriorityDistanceFactor">
+            <option value="PriorityDistanceOffset">
+            <option value="Probability">
+            <option value="ProcessCenter">
+            <option value="ProcessLFE">
+            <option value="PropertyName">
+            <option value="QFactorBand1">
+            <option value="QFactorBand2">
+            <option value="QFactorBand3">
+            <option value="Quality">
+            <option value="QualityFactor">
+            <option value="RTPCOperator">
+            <option value="RTPCRamping">
+            <option value="RadiusMax">
+            <option value="RandomAvoidRepeating">
+            <option value="RandomAvoidRepeatingCount">
+            <option value="RandomOrSequence">
+            <option value="RandomX">
+            <option value="RandomY">
+            <option value="RandomZ">
+            <option value="Ratio">
+            <option value="Rear">
+            <option value="RearLevel">
+            <option value="RecoveryTime">
+            <option value="Rectification">
+            <option value="ReleaseTime">
+            <option value="RemoveAtPosition">
+            <option value="RemoveCount">
+            <option value="RemoveDCOffset">
+            <option value="RemoveFrom">
+            <option value="RenderEffect0">
+            <option value="RenderEffect1">
+            <option value="RenderEffect2">
+            <option value="RenderEffect3">
+            <option value="ReplaceEnableMatchCase">
+            <option value="ReplaceEnableReplaceAllInstances">
+            <option value="ReplaceEnableUseRegularExpression">
+            <option value="ReplaceFindWhat">
+            <option value="ReplaceReplaceWith">
+            <option value="ReservoirBiasFactor">
+            <option value="RestartBeginningOrBackward">
+            <option value="ResumeStateTransition">
+            <option value="ReverbLevel">
+            <option value="ReverbTime">
+            <option value="ReverbUnitInputDelay">
+            <option value="ReverbUnitInputDelayRmdPerc">
+            <option value="RightCrossfeed">
+            <option value="RightDelayTime">
+            <option value="RightFeedback">
+            <option value="RightInputType">
+            <option value="RightValue">
+            <option value="RndSeqContainerType">
+            <option value="RoomShape">
+            <option value="RoomShapeMax">
+            <option value="RoomShapeMin">
+            <option value="RoomSize">
+            <option value="SRConversionQuality">
+            <option value="SampleRate">
+            <option value="SampleRateConversionType">
+            <option value="Scattering">
+            <option value="Scope">
+            <option value="SeekPercent">
+            <option value="SeekTableGranularity">
+            <option value="SeekTime">
+            <option value="SeekToMarker">
+            <option value="SeekType">
+            <option value="SettingsUserOverride">
+            <option value="SimulationValue">
+            <option value="SineDuration">
+            <option value="SineFrequency">
+            <option value="SineGain">
+            <option value="SlewRateDown">
+            <option value="SlewRateUp">
+            <option value="SoundBankAllowExceedingSB">
+            <option value="SoundBankDefinitionFileFormat">
+            <option value="SoundBankGenerateDefinitionFile">
+            <option value="SoundBankGenerateEstimatedDuration">
+            <option value="SoundBankGenerateHeaderFile">
+            <option value="SoundBankGenerateMaxAttenuationInfo">
+            <option value="SoundBankGeneratePrintGUID">
+            <option value="SoundBankHeaderFilePath">
+            <option value="SoundBankIncludeSoundbankNamesStrings">
+            <option value="SoundBankPathUserOverride">
+            <option value="SoundBankPaths">
+            <option value="SoundBankPostGenerateCustomCmdDescription">
+            <option value="SoundBankPostGenerateCustomCmdLines">
+            <option value="SoundBankPreGenerateCustomCmdDescription">
+            <option value="SoundBankPreGenerateCustomCmdLines">
+            <option value="SoundBankUpdateAudioFiles">
+            <option value="SoundType">
+            <option value="SourceAudioFormat">
+            <option value="SourceChannelsLFEOption">
+            <option value="SourceChannelsOthersCount">
+            <option value="SourceChannelsOthersOption">
+            <option value="SourceContextObject">
+            <option value="SourceContextType">
+            <option value="SourceLanguage">
+            <option value="SourceType">
+            <option value="Spatialization">
+            <option value="StartFreq">
+            <option value="StartFreqRandMax">
+            <option value="StartFreqRandMin">
+            <option value="StartFromHereObject">
+            <option value="State">
+            <option value="StateGroup">
+            <option value="StatePropertyUsage">
+            <option value="StereoWidth">
+            <option value="StopFreq">
+            <option value="StopFreqRandMax">
+            <option value="StopFreqRandMin">
+            <option value="Surround">
+            <option value="SustainLevel">
+            <option value="SustainTime">
+            <option value="SweepFreq">
+            <option value="SweepFreqType">
+            <option value="SwitchBehavior">
+            <option value="SwitchGroup">
+            <option value="SwitchGroupOrStateGroup">
+            <option value="SwitchingOperator">
+            <option value="SyncDry">
+            <option value="Target">
+            <option value="TargetClassID">
+            <option value="TargetName">
+            <option value="TargetObject">
+            <option value="TargetType">
+            <option value="Tempo">
+            <option value="Threshold">
+            <option value="TimeMs">
+            <option value="TimeSignatureLower">
+            <option value="TimeSignatureUpper">
+            <option value="TimeStretch">
+            <option value="TimeStretchRandom">
+            <option value="TrackSequenceSwitch">
+            <option value="Trigger">
+            <option value="TrimBegin">
+            <option value="TrimEnd">
+            <option value="UIntValue">
+            <option value="UseActionNameForEvent">
+            <option value="UseDefaultLanguage">
+            <option value="UseDither">
+            <option value="UseFilenameMarker">
+            <option value="UseGameAuxSends">
+            <option value="UseGameParameter">
+            <option value="UseMaxDangerousVirtualVoices">
+            <option value="UseMaxMessagesPerMessageId">
+            <option value="UseMaxSoundPerInstance">
+            <option value="UseTransitionObject">
+            <option value="UsedForBackgroundMusic">
+            <option value="UserAuxSend0">
+            <option value="UserAuxSend1">
+            <option value="UserAuxSend2">
+            <option value="UserAuxSend3">
+            <option value="UserAuxSendHPF0">
+            <option value="UserAuxSendHPF1">
+            <option value="UserAuxSendHPF2">
+            <option value="UserAuxSendHPF3">
+            <option value="UserAuxSendLPF0">
+            <option value="UserAuxSendLPF1">
+            <option value="UserAuxSendLPF2">
+            <option value="UserAuxSendLPF3">
+            <option value="UserAuxSendVolume0">
+            <option value="UserAuxSendVolume1">
+            <option value="UserAuxSendVolume2">
+            <option value="UserAuxSendVolume3">
+            <option value="UserString">
+            <option value="UsingOperator">
+            <option value="VirtualVoiceQueueBehavior">
+            <option value="Voice1Enable">
+            <option value="Voice1FilterFrequency">
+            <option value="Voice1FilterGain">
+            <option value="Voice1FilterQFactor">
+            <option value="Voice1FilterType">
+            <option value="Voice1Gain">
+            <option value="Voice1Pitch">
+            <option value="Voice2Enable">
+            <option value="Voice2FilterFrequency">
+            <option value="Voice2FilterGain">
+            <option value="Voice2FilterQFactor">
+            <option value="Voice2FilterType">
+            <option value="Voice2Gain">
+            <option value="Voice2Pitch">
+            <option value="Volume">
+            <option value="VolumeOffset">
+            <option value="VolumeThreshold">
+            <option value="WaveGain">
+            <option value="WaveType">
+            <option value="Weight">
+            <option value="WetDryMix">
+            <option value="WetLevel">
+            <option value="WindowSize">
+            <option value="WwiseVersionWhenCreated">
+            <option value="insertFrom">
+        </datalist>
+    </div>
+    <hr/>
+    <!-- WW_EDIT_OBJS.SELECT_WOBJ_PROPERTIES> -->
+    <!-- ENTRY.PROPERTY> -->
+    <!-- <ENTRY.VALUE -->
+    <div class="form-title" title='属性目标值, 格式规范受属性数据类型影响, 属性数据类型可以参考: https://www.audiokinetic.com/zh/library/?source=SDK&id=wobjects_index.html.:
+- string, 将 value 作为字符串原样输入
+- number, 将 value 转为 int/float 传入
+- bool, value 可以使用 true/false'>
+        <label for="node-input-value"><i class="fa fa-text-width"></i>Value:</label>
+    </div>
+    <div class="form-row">
+        <input class="form-text" type="text" id="node-input-value" placeholder="">
+    </div>
+    <hr/>
+    <!-- ENTRY.VALUE> -->
+    <!-- <ENTRY.CONFLICTRESOLUTION -->
+    <div class="form-title" title='当要设置的对象的属性与父级冲突时的解决方案：
+- failAtOnce: 如果发现冲突则立即报错。
+- acceptParent: 接受父级的属性, 不设置当前子级对象。
+- overrideParent: 自动启用 Override Parent 并设置属性。'>
+        <label for="node-input-conflictresolution"><i class="fa fa-dot-circle-o"></i>Child Parent Property Conflict Resolution:</label>
+    </div>
+    <div class="form-row">
+        <select class="form-select" type="text" id="node-input-conflictresolution">
+            <option value="failAtOnce" selected>failAtOnce</option>
+            <option value="acceptParent">acceptParent</option>
+            <option value="overrideParent">overrideParent</option>
+        </select>
+    </div>
+    <hr/>
+    <!-- ENTRY.CONFLICTRESOLUTION> -->
+    <details>
+    <summary>Randomizer</summary>
+    <!-- <ENTRY.ENABLERANDOMIZER -->
+    <div class="form-title" title='为设置的属性启用 randomizer (仅 Wwise 2019 及以上).'>
+        <div class="form-row">
+            <input class="form-checkbox" type="checkbox" id="node-input-enablerandomizer"> Enable Randomizer
+        </div>
+    </div>
+    <hr/>
+    <!-- ENTRY.ENABLERANDOMIZER> -->
+    <!-- <ENTRY.RANDOMIZERMINOFFSET -->
+    <div class="form-title" title='Randomizer 的最小偏移值. 仅当勾选 Enable Randomizer 时生效.'>
+        <label for="node-input-randomizerminoffset"><i class="fa fa-calculator"></i>Randomizer Min Offset:</label>
+    </div>
+    <div class="form-row">
+        <input class="form-number" type="number" id="node-input-randomizerminoffset" placeholder="0">
+    </div>
+    <hr/>
+    <!-- ENTRY.RANDOMIZERMINOFFSET> -->
+    <!-- <ENTRY.RANDOMIZERMAXOFFSET -->
+    <div class="form-title" title='Randomizer 的最大偏移值. 仅当勾选 Enable Randomizer 时生效.'>
+        <label for="node-input-randomizermaxoffset"><i class="fa fa-calculator"></i>Randomizer Max Offset:</label>
+    </div>
+    <div class="form-row">
+        <input class="form-number" type="number" id="node-input-randomizermaxoffset" placeholder="0">
+    </div>
+    <hr/>
+    <!-- ENTRY.RANDOMIZERMAXOFFSET> -->
+    </details>
+    <!-- SECTION.CONFIG> -->
+    <div>
+        <label class="form-section">Output</label>
+    </div>
+    <!-- <SECTION.OUTPUT -->
+    <!-- <ENTRY.PASSEDOBJLIST -->
+    <div class="form-title" title='若要触发下游节点但不对其输出，则可弃用此选项；当多个同类上游节点共同输出到下游节点时，可利用此选项挑选某个节点的端口匹配到下游输入；默认启用'>
+        <div class="form-row">
+            <input class="form-checkbox" type="checkbox" id="node-input-_passedobjlist" checked> Passed Obj List
+        </div>
+    </div>
+    <hr/>
+    <!-- ENTRY.PASSEDOBJLIST> -->
+    <!-- SECTION.OUTPUT> -->
+    <div>
+        <label class="form-section">Debug</label>
+    </div>
+    <!-- <SECTION.DEBUG -->
+    <!-- <ENTRY.DRYRUN -->
+    <div class="form-title" title='预览服务内容而不执行具体工作；默认不用'>
+        <div class="form-row">
+            <input class="form-checkbox" type="checkbox" id="node-input-dryrun"> Dry Run To Preview
+        </div>
+    </div>
+    <hr/>
+    <!-- ENTRY.DRYRUN> -->
+    <!-- <ENTRY.NOTIFYUSER -->
+    <div class="form-title" title='启用后执行成功时通知用户；用户需配置全局企业微信群机器人 webhook 地址，未配置则不通知；默认不通知成功结果；但失败结果一律通知'>
+        <div class="form-row">
+            <input class="form-checkbox" type="checkbox" id="node-input-notifyuser"> Notify User
+        </div>
+    </div>
+    <hr/>
+    <!-- ENTRY.NOTIFYUSER> -->
+    <!-- <ENTRY._DIAGNOSIS -->
+    <!-- <OPEN_SESSION_ROOT.INSPECT_SESSION -->
+    <!-- no arg to bind with, so here tooltip is hard-coded -->
+    <div class="form-title" title='用默认浏览器打开服务会话根目录'>
+        <label><i class="fa fa-bug"></i>Diagnosis:</label>
+    </div>
+    <div class="form-row">
+        <!-- no arg to bind with, so here target id is hard-coded -->
+        <button onclick="onOpenSessionRootInspectSession_WwEditObjs('node-input-openlogfolder')">Browse Sessions</button>
+    </div>
+    <hr/>
+    <!-- OPEN_SESSION_ROOT.INSPECT_SESSION> -->
+    <!-- ENTRY._DIAGNOSIS> -->
+    <!-- SECTION.DEBUG> -->
+    <!-- CUSTOM: ADD MORE BELOW BY HAND -->
+</script>
+
+<!-- <SCRIPT_HELP -->
+<script type="text/html" data-help-name="ww_edit_objs">
+<!-- SCRIPT_HELP> -->
+    <style>
+        /* <DEFAULT_HELP_STYLE */
+        dl.message-properties {
+            padding-top:10px;
+            padding-bottom:10px;
+        }
+        ul.help-ul {
+            padding-top:10px;
+            padding-bottom:10px;
+        }
+        /* DEFAULT_HELP_STYLE> */
+    </style>
+	<!-- <HELP_DESC -->
+    <p>为传入的 wwise object 按类型筛选后设置属性值</p>
+    <!-- HELP_DESC> -->
+    <hr/>
+    <h3>输入：</h3>
+	    <dl class="message-properties">
+            <!-- <HELP_INPUT -->
+                <dt>inputObjList
+                    <span class="property-type">str</span>
+                </dt>
+                <dd>要设置属性的 Object 表单, 可以是 guid 或 path（详见配置一节中对表单的说明）.</dd>
+            <!-- HELP_INPUT> -->
+        </dl>
+    <h3>输出：</h3>
+	    <dl class="message-properties">
+            <!-- <HELP_OUTPUT -->
+                <dt>passedObjList
+                    <span class="property-type">str</span>
+                </dt>
+                <dd>将输入 objects 原样输出</dd>
+            <!-- HELP_OUTPUT> -->
+        </dl>
+    <h3>备注：</h3>
+        <ul class="help-ul">
+            <!-- <HELP_REMARKS -->
+            <li>Wwise 属性数据类型:</li>
+            <li>    - null, 无论 value 输入什么都将被认为是 null</li>
+            <li>    - string, 将 value 作为字符串原样输入</li>
+            <li>    - number, 将 value 转为 float 传入</li>
+            <li>    - boolean, value 可以使用 true/false</li>
+            <li>Wwise 对象类型及属性参考: https://www.audiokinetic.com/zh/library/?source=SDK&id=wobjects_index.html.</li>
+            <!-- HELP_REMARKS> -->
+        </ul>
+    <h3>通用：</h3>
+        <ul class="help-ul">
+            <!-- <DEFAULT_HELP_REMARKS -->
+            <li>若要配置节点参数，则双击节点打开节点编辑器</li>
+            <li>在节点编辑器中既可编辑非输入参数，也可编辑输入参数</li>
+            <li>当上游节点输入有效时，将忽略节点编辑器内的输入参数配置</li>
+            <li>当没有输入或输入无效时，将使用编辑器内配置的默认参数</li>
+            <li>表单：用于文件选择的节点将用户选中的多条路径输出到 .list 文本文件，其中每行为一条路径，支持文件批处理的节点接受上述 .list 文件路径为输入，从中读取需要批处理的所有路径；若要处理单个对象，则用户也可输入扩展名不为 .list 的单条文件路径；同理，支持批处理但对象不是文件路径的节点也接受类似的表单文件或者单条输入，只是内容不是路径</li>
+            <!-- DEFAULT_HELP_REMARKS> -->
+        </ul>
+    <!-- CUSTOM: ADD MORE BELOW BY HAND -->
+</script>

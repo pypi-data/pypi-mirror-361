@@ -1,0 +1,466 @@
+[
+    {
+        "id": "227387431b3da7b1",
+        "type": "tab",
+        "label": "批量导入 Wwise 后设置对象属性",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "1895f4fe161e1899",
+        "type": "group",
+        "z": "227387431b3da7b1",
+        "style": {
+            "stroke": "#999999",
+            "stroke-opacity": "1",
+            "fill": "none",
+            "fill-opacity": "1",
+            "label": true,
+            "label-position": "nw",
+            "color": "#a4a4a4"
+        },
+        "nodes": [
+            "7a6b2ac101fb1dcd",
+            "c5568004e301bdb3",
+            "6948ebfa04b47ec8",
+            "141fedee1885c5e1",
+            "b0f866bba7182a53",
+            "f85903fb7896cb87",
+            "b4e74161504f1094",
+            "0c6aa84370f4e671",
+            "db00508ee1a8e87f"
+        ],
+        "x": 174,
+        "y": 399,
+        "w": 892,
+        "h": 262
+    },
+    {
+        "id": "fe4a6a28a04eabb4",
+        "type": "ww_import_audio",
+        "z": "227387431b3da7b1",
+        "name_": "",
+        "inputwavlist": "",
+        "parentstructure": "\\Actor-Mixer Hierarchy\\Default Work Unit",
+        "parentevent": "",
+        "createparentsbyprefix": false,
+        "createparentcontainer": true,
+        "addversiontag": false,
+        "useimportedsource": false,
+        "preserveaudiosourceproperties": false,
+        "enableloopbysuffix": true,
+        "createevent": "Play",
+        "createeventpairforloopsound": true,
+        "addpostseekactionforloopsound": true,
+        "copytooriginalssubfolder": "",
+        "loopsoundpattern": "_LP",
+        "randomsoundpattern": "_R[0-9]+",
+        "sequencesoundpattern": "_S[0-9]+",
+        "blendsoundpattern": "_B[0-9]+",
+        "playeventname": "Play_$basename",
+        "stopeventname": "Stop_$basename",
+        "pauseeventname": "Pause_$basename",
+        "resumeeventname": "Resume_$basename",
+        "seekeventname": "Seek_$basename",
+        "breakeventname": "Break_$basename",
+        "language": "SFX",
+        "conflictsolution": "replaceExisting",
+        "trimorphanactions": false,
+        "port": "8080",
+        "_imported": true,
+        "saveconfig": true,
+        "cfgfile": "",
+        "dryrun": false,
+        "notifyuser": false,
+        "x": 750,
+        "y": 320,
+        "wires": [
+            [
+                "7a6b2ac101fb1dcd"
+            ]
+        ]
+    },
+    {
+        "id": "9d7b472c28989f50",
+        "type": "dropin_files_folders",
+        "z": "227387431b3da7b1",
+        "name_": "",
+        "_pathlist": true,
+        "saveconfig": true,
+        "cfgfile": "",
+        "dryrun": false,
+        "x": 250,
+        "y": 320,
+        "wires": [
+            [
+                "31f3012bac2436d8"
+            ]
+        ]
+    },
+    {
+        "id": "7a6b2ac101fb1dcd",
+        "type": "ww_filter_objs",
+        "z": "227387431b3da7b1",
+        "g": "1895f4fe161e1899",
+        "name_": "筛选启用 loop 的 Sound 对象",
+        "inputobjlist": "",
+        "typefilter": "Sound",
+        "propertyfilter": "IsLoopingEnabled",
+        "propertyfiltervalue": "true",
+        "targetpropertyfilter": "",
+        "targetpropertyfiltervalue": "",
+        "port": 8080,
+        "_acceptedobjlist": true,
+        "_rejectedobjlist": true,
+        "saveconfig": true,
+        "cfgfile": "",
+        "dryrun": false,
+        "x": 320,
+        "y": 560,
+        "wires": [
+            [
+                "c5568004e301bdb3"
+            ],
+            [
+                "6948ebfa04b47ec8",
+                "141fedee1885c5e1"
+            ]
+        ]
+    },
+    {
+        "id": "af2abbeb8f812d1d",
+        "type": "inject",
+        "z": "227387431b3da7b1",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 90,
+        "y": 320,
+        "wires": [
+            [
+                "9d7b472c28989f50"
+            ]
+        ]
+    },
+    {
+        "id": "c5568004e301bdb3",
+        "type": "ww_edit_objs",
+        "z": "227387431b3da7b1",
+        "g": "1895f4fe161e1899",
+        "name_": "设置虚声部行为",
+        "inputobjlist": "",
+        "allowcustomproperty": false,
+        "property": "BelowThresholdBehavior",
+        "value": "2",
+        "conflictresolution": "failAtOnce",
+        "enablerandomizer": false,
+        "randomizerminoffset": 0,
+        "randomizermaxoffset": 0,
+        "port": 8080,
+        "_passedobjlist": true,
+        "saveconfig": true,
+        "cfgfile": "",
+        "dryrun": false,
+        "x": 580,
+        "y": 500,
+        "wires": [
+            [
+                "b0f866bba7182a53"
+            ]
+        ]
+    },
+    {
+        "id": "6948ebfa04b47ec8",
+        "type": "ww_filter_objs",
+        "z": "227387431b3da7b1",
+        "g": "1895f4fe161e1899",
+        "name_": "筛选目标启用了 Loop 的 SeekAction",
+        "inputobjlist": "",
+        "typefilter": "Action",
+        "propertyfilter": "ActionType",
+        "propertyfiltervalue": "36",
+        "targetpropertyfilter": "IsLoopingEnabled",
+        "targetpropertyfiltervalue": "true",
+        "port": 8080,
+        "_acceptedobjlist": true,
+        "_rejectedobjlist": true,
+        "saveconfig": true,
+        "cfgfile": "",
+        "dryrun": false,
+        "x": 650,
+        "y": 620,
+        "wires": [
+            [
+                "f85903fb7896cb87"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "141fedee1885c5e1",
+        "type": "ww_filter_objs",
+        "z": "227387431b3da7b1",
+        "g": "1895f4fe161e1899",
+        "name_": "筛选目标启用了 Loop 的 PlayAction",
+        "inputobjlist": "",
+        "typefilter": "Action",
+        "propertyfilter": "ActionType",
+        "propertyfiltervalue": "1",
+        "targetpropertyfilter": "IsLoopingEnabled",
+        "targetpropertyfiltervalue": "true",
+        "port": 8080,
+        "_acceptedobjlist": true,
+        "_rejectedobjlist": true,
+        "saveconfig": true,
+        "cfgfile": "",
+        "dryrun": false,
+        "x": 640,
+        "y": 560,
+        "wires": [
+            [
+                "b4e74161504f1094"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "b0f866bba7182a53",
+        "type": "ww_edit_objs",
+        "z": "227387431b3da7b1",
+        "g": "1895f4fe161e1899",
+        "name_": "启用 Stream",
+        "inputobjlist": "",
+        "allowcustomproperty": false,
+        "property": "IsStreamingEnabled",
+        "value": "true",
+        "conflictresolution": "failAtOnce",
+        "enablerandomizer": false,
+        "randomizerminoffset": 0,
+        "randomizermaxoffset": 0,
+        "port": 8080,
+        "_passedobjlist": true,
+        "saveconfig": true,
+        "cfgfile": "",
+        "dryrun": false,
+        "x": 770,
+        "y": 500,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f85903fb7896cb87",
+        "type": "ww_edit_objs",
+        "z": "227387431b3da7b1",
+        "g": "1895f4fe161e1899",
+        "name_": "随机 0~100 SeekPercent",
+        "inputobjlist": "",
+        "allowcustomproperty": false,
+        "property": "SeekPercent",
+        "value": "0",
+        "conflictresolution": "failAtOnce",
+        "enablerandomizer": true,
+        "randomizerminoffset": "0",
+        "randomizermaxoffset": "100",
+        "port": 8080,
+        "_passedobjlist": true,
+        "saveconfig": true,
+        "cfgfile": "",
+        "dryrun": false,
+        "x": 930,
+        "y": 620,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b4e74161504f1094",
+        "type": "ww_edit_objs",
+        "z": "227387431b3da7b1",
+        "g": "1895f4fe161e1899",
+        "name_": "FadeTime = 2",
+        "inputobjlist": "",
+        "allowcustomproperty": false,
+        "property": "FadeTime",
+        "value": "2",
+        "conflictresolution": "failAtOnce",
+        "enablerandomizer": false,
+        "randomizerminoffset": "0",
+        "randomizermaxoffset": "0",
+        "port": 8080,
+        "_passedobjlist": true,
+        "saveconfig": true,
+        "cfgfile": "",
+        "dryrun": false,
+        "x": 900,
+        "y": 560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2bdddc6a9395871d",
+        "type": "comment",
+        "z": "227387431b3da7b1",
+        "name": "启动后弹出窗口, 拖拽选择文件",
+        "info": "",
+        "x": 280,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "19ea6a19f566850c",
+        "type": "comment",
+        "z": "227387431b3da7b1",
+        "name": "导入到 Wwise",
+        "info": "",
+        "x": 730,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "c159ad6832e4089c",
+        "type": "comment",
+        "z": "227387431b3da7b1",
+        "name": "按 Preferences 中的 Parttern 匹配属于容器的文件名",
+        "info": "",
+        "x": 850,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "8455d79712bcc563",
+        "type": "comment",
+        "z": "227387431b3da7b1",
+        "name": "按 Preferences 的 Event name 创建 Play Event",
+        "info": "",
+        "x": 840,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "461403569d35570c",
+        "type": "comment",
+        "z": "227387431b3da7b1",
+        "name": "按 Preferences 的 Loop 后缀为 Loop 音效启用 Loop",
+        "info": "",
+        "x": 850,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "4044b83a1cbb7559",
+        "type": "comment",
+        "z": "227387431b3da7b1",
+        "name": "为 Loop 音效创建 Play-Stop 两个 Event",
+        "info": "",
+        "x": 810,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "eb325a8ad7549291",
+        "type": "comment",
+        "z": "227387431b3da7b1",
+        "name": "为 Loop 音效的 Play Event 添加后续的 Seek Action",
+        "info": "",
+        "x": 850,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "0c6aa84370f4e671",
+        "type": "comment",
+        "z": "227387431b3da7b1",
+        "g": "1895f4fe161e1899",
+        "name": "筛选分流, 设置属性",
+        "info": "",
+        "x": 290,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "db00508ee1a8e87f",
+        "type": "comment",
+        "z": "227387431b3da7b1",
+        "g": "1895f4fe161e1899",
+        "name": "Wwise object 的属性可以参考: https://www.audiokinetic.com/zh/library/?source=SDK&id=wobjects_index.html",
+        "info": "https://www.audiokinetic.com/zh/library/?source=SDK&id=wobjects_index.html",
+        "x": 570,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "31f3012bac2436d8",
+        "type": "validate_filenames",
+        "z": "227387431b3da7b1",
+        "name_": "",
+        "inputfilelist": "",
+        "prefix": "",
+        "alphabetornumbersuffix": false,
+        "includes": [],
+        "excludes": [
+            "\\s",
+            "-"
+        ],
+        "useregex": true,
+        "fileextension": "",
+        "_pathlist": true,
+        "saveconfig": true,
+        "cfgfile": "",
+        "dryrun": false,
+        "notifyuser": false,
+        "appsessionid": "",
+        "x": 530,
+        "y": 320,
+        "wires": [
+            [
+                "fe4a6a28a04eabb4"
+            ]
+        ]
+    },
+    {
+        "id": "cba0450796f6ee50",
+        "type": "comment",
+        "z": "227387431b3da7b1",
+        "name": "检查文件名规范",
+        "info": "",
+        "x": 520,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "2774f0da9e7d4aed",
+        "type": "comment",
+        "z": "227387431b3da7b1",
+        "name": "不包含空格",
+        "info": "",
+        "x": 500,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "5e6f4fd8ddbc70f6",
+        "type": "comment",
+        "z": "227387431b3da7b1",
+        "name": "不包含 -",
+        "info": "",
+        "x": 500,
+        "y": 280,
+        "wires": []
+    }
+]

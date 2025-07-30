@@ -1,0 +1,51 @@
+// <CAUTION
+// KEEP ALL TAGGED COMMENTS: // <TAG , // TAG>
+// CAUTION>
+
+syntax = "proto3";
+
+// <PACKAGE
+package wweditobjs;
+// PACKAGE>
+
+import "backend.proto";
+
+// <SERVICE
+service WwEditObjs {
+  rpc WwEditObjs(Request) returns (Reply) {}
+// SERVICE>
+}
+
+// service request to send to backend server
+message Request {
+  // <REQUEST
+  bool saveConfig = 1;
+  string cfgFile = 2;
+  bool dryRun = 3;
+  bool notifyUser = 4;
+  string appSessionID = 5;
+  string inputObjList = 6;
+  bool allowCustomProperty = 7;
+  string property = 8;
+  string value = 9;
+  string conflictResolution = 10;
+  bool enableRandomizer = 11;
+  int32 randomizerMinOffset = 12;
+  int32 randomizerMaxOffset = 13;
+  // REQUEST>
+}
+
+// response from backend server
+message Reply {
+  // execution details
+  backend.Report report = 1;
+  // output as input for next node
+  Output output = 2;
+}
+
+// backend core output
+message Output {
+  // <OUTPUT
+  string passedObjList = 1;
+  // OUTPUT>
+}

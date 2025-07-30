@@ -1,0 +1,57 @@
+{
+  "$id": "http://localhost/execution/ecsfargate/protocol.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "enum": [
+        "opentaskpy.addons.aws.remotehandlers.ecsfargate.FargateTaskExecution"
+      ]
+    },
+    "access_key_id": {
+      "type": "string"
+    },
+    "secret_access_key": {
+      "type": "string"
+    },
+    "token_expiry_seconds": {
+      "type": "integer",
+      "minimum": 900,
+      "maximum": 43200,
+      "default": 900
+    },
+    "assume_role_arn": {
+      "type": "string"
+    },
+    "region_name": {
+      "type": "string"
+    }
+  },
+  "required": ["name"],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "access_key_id": { "type": "string" }
+        },
+        "required": ["access_key_id"]
+      },
+      "then": {
+        "properties": {
+          "secret_access_key": { "type": "string" }
+        },
+        "required": ["secret_access_key"]
+      }
+    },
+    {
+      "if": {
+        "required": ["token_expiry_seconds"]
+      },
+      "then": {
+        "required": ["assume_role_arn"]
+      }
+    }
+  ]
+}

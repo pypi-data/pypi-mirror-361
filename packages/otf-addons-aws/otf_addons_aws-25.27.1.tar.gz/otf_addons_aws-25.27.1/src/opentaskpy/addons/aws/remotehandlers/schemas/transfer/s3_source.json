@@ -1,0 +1,35 @@
+{
+  "$id": "http://localhost/transfer/s3_source.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "bucket": {
+      "type": "string"
+    },
+    "directory": {
+      "type": "string",
+      "default": "",
+      "pattern": "^(?!/)(?!.*/$).*$"
+    },
+    "fileRegex": {
+      "type": "string"
+    },
+    "fileWatch": {
+      "$ref": "s3_source/fileWatch.json"
+    },
+    "error": {
+      "type": "boolean"
+    },
+    "postCopyAction": {
+      "$ref": "s3_source/postCopyAction.json"
+    },
+    "encryption": {
+      "$ref": "http://localhost/transfer/encryption.json"
+    },
+    "protocol": {
+      "$ref": "s3_source/protocol.json"
+    }
+  },
+  "additionalProperties": false,
+  "required": ["bucket", "fileRegex", "protocol"]
+}

@@ -1,0 +1,39 @@
+# Include documentation
+include README.md
+include LICENSE
+include CHANGELOG.md
+include CONTRIBUTING.md
+
+# Include configuration files
+include pyproject.toml
+include pytest.ini
+include requirements*.txt
+
+# Include package data
+recursive-include docforge/config *.yaml *.yml
+recursive-include docforge/web/templates *.html *.css *.js
+
+# Include examples
+recursive-include examples *.py *.pdf *.md
+
+# Include tests
+recursive-include tests *.py *.pdf *.yaml
+
+# Exclude development files
+exclude .gitignore
+exclude .pre-commit-config.yaml
+exclude run_tests.py
+exclude test_fixes.py
+
+# Exclude directories
+prune .github
+prune .idea
+prune .pytest_cache
+prune local
+prune venv
+prune build
+prune dist
+prune *.egg-info
+global-exclude __pycache__
+global-exclude *.py[co]
+global-exclude .DS_Store

@@ -1,0 +1,149 @@
+name: Update Homebrew Formula
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to update to (e.g., 0.1.0)"
+        required: true
+        default: "0.1.0"
+  workflow_run:
+    workflows: ["Publish to PyPI"]
+    types:
+      - completed
+
+permissions:
+  contents: write
+
+jobs:
+  update-formula:
+    runs-on: ubuntu-latest
+    # Only run if the PyPI workflow succeeded (for workflow_run trigger)
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Checkout homebrew-streamlm repository
+        uses: actions/checkout@v4
+        with:
+          repository: jeffmylife/homebrew-streamlm
+          token: ${{ secrets.HOMEBREW_GITHUB_SECRET }}
+          path: homebrew-streamlm
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Extract version from release or workflow_run
+        id: get_version
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          elif [ "${{ github.event_name }}" == "workflow_run" ]; then
+            # Get the version from the release that triggered the PyPI workflow
+            VERSION="${{ github.event.workflow_run.head_branch }}"
+            # If it's a tag, extract version from tag name
+            if [[ "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              VERSION=${VERSION#v}  # Remove 'v' prefix
+            else
+              # Fallback: get latest release
+              VERSION=$(gh release view --json tagName --jq '.tagName' | sed 's/^v//')
+            fi
+          else
+            VERSION="${{ github.event.release.tag_name }}"
+            VERSION=${VERSION#v}  # Remove 'v' prefix if present
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Wait for PyPI availability
+        run: |
+          VERSION="${{ steps.get_version.outputs.version }}"
+          echo "Waiting for streamlm==$VERSION to be available on PyPI..."
+
+          # Wait up to 5 minutes for the package to be available
+          for i in {1..30}; do
+            if pip index versions streamlm | grep -q "$VERSION"; then
+              echo "✅ streamlm==$VERSION is now available on PyPI"
+              break
+            else
+              echo "⏳ Attempt $i/30: streamlm==$VERSION not yet available, waiting 10 seconds..."
+              sleep 10
+            fi
+            
+            if [ $i -eq 30 ]; then
+              echo "❌ Timeout: streamlm==$VERSION still not available on PyPI after 5 minutes"
+              exit 1
+            fi
+          done
+
+      - name: Get PyPI package info and calculate SHA256
+        id: get_package_info
+        run: |
+          VERSION="${{ steps.get_version.outputs.version }}"
+
+          # Get the download URL from PyPI API
+          PYPI_JSON=$(curl -s "https://pypi.org/pypi/streamlm/$VERSION/json")
+          DOWNLOAD_URL=$(echo "$PYPI_JSON" | python3 -c "
+          import json, sys
+          data = json.load(sys.stdin)
+          for file in data['urls']:
+              if file['packagetype'] == 'sdist':
+                  print(file['url'])
+                  break
+          ")
+
+          # Download the package and calculate SHA256
+          echo "Downloading package from: $DOWNLOAD_URL"
+          SHA256=$(curl -sL "$DOWNLOAD_URL" | sha256sum | cut -d' ' -f1)
+
+          echo "url=$DOWNLOAD_URL" >> $GITHUB_OUTPUT
+          echo "sha256=$SHA256" >> $GITHUB_OUTPUT
+          echo "✅ Package URL: $DOWNLOAD_URL"
+          echo "✅ SHA256: $SHA256"
+
+      - name: Update Homebrew formula
+        run: |
+          cd homebrew-streamlm
+          VERSION="${{ steps.get_version.outputs.version }}"
+          URL="${{ steps.get_package_info.outputs.url }}"
+          SHA256="${{ steps.get_package_info.outputs.sha256 }}"
+
+          # Update the formula with new version, URL, and SHA256
+          python3 -c "
+          import re
+
+          # Read the current formula
+          with open('Formula/streamlm.rb', 'r') as f:
+              content = f.read()
+
+          # Update URL and SHA256
+          content = re.sub(
+              r'url \"https://files\.pythonhosted\.org/packages/[^\"]+\"',
+              f'url \"{URL}\"',
+              content
+          )
+          content = re.sub(
+              r'sha256 \"[^\"]+\"',
+              f'sha256 \"{SHA256}\"',
+              content
+          )
+
+          # Write the updated formula
+          with open('Formula/streamlm.rb', 'w') as f:
+              f.write(content)
+
+          print('✅ Updated formula with new version, URL, and SHA256')
+          "
+
+      - name: Display updated formula
+        run: cat homebrew-streamlm/Formula/streamlm.rb
+
+      - name: Commit and push changes
+        run: |
+          cd homebrew-streamlm
+          git config user.name "GitHub Actions"
+          git config user.email "actions@users.noreply.github.com"
+          git add Formula/streamlm.rb
+          git commit -m "Update Homebrew formula to version ${{ steps.get_version.outputs.version }}" || exit 0
+          git push

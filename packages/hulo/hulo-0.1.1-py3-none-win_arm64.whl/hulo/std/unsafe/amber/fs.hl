@@ -1,0 +1,52 @@
+/// Checks if a directory exists.
+pub fn dir_exists(path: str) -> bool
+
+/// Checks if a file exists.
+pub fn file_exists(path: str) -> bool
+
+/// Gets file contents from a path.
+pub fn file_read(path: str) -> str
+
+/// Writes content to a file.
+/// Doesn't check if the file exist
+pub fn file_write(path: str, content: str) -> void
+
+/// Appends content to a file.
+///
+/// Doesn't check if the file exists.
+pub fn file_append(path: str, content: str) -> void
+
+/// Creates a symbolic link.
+///
+/// If the file doesn't exist, it returns a boolean and prints a message.
+pub fn symlink_create(origin: str, destination: str) -> bool
+
+/// Creates a directory with all parent directories as required.
+pub fn dir_create(path: str) -> void
+
+/// Changes the permission bits of a file.
+///
+/// If the file doesn't exist, it returns `false` and prints a message.
+pub fn file_chmod(path: str, mode: str) -> bool
+
+/// Changes the owner of a file.
+///
+/// If the file doesn't exist, it returns `false` and prints a message.
+pub fn file_chown(path: str, user: str) -> bool
+
+/// Escapes all characters in the passed-in glob except "*", "?" and "/",
+/// to prevent injection attacks.
+fn escape_non_glob_chars(path: str) -> str
+
+/// Finds all files or directories matching multiple file globs. When
+/// we have union types, this functionality can be merged into the main
+/// `glob` function.
+pub fn file_glob_all(paths: str[]) -> str[]?
+
+/// Finds all files or directories matching a file glob.
+pub fn file_glob(path: str) -> str[]?
+
+/// Extract the file detecting from the filename the extension
+/// Supports: bz2, gz, xz, bz2, deb, rar, rpm, tar(gz/xz/bz), zip(war/jar), 7z
+/// Note: Not all the commands supports the output folder path
+pub fn file_extract(path: str, target: str) throws -> void

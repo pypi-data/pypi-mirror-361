@@ -1,0 +1,18 @@
+import "archive"
+
+fn test_compress() {
+    comptime {
+        let arc = archive.create("backup.zip")
+        defer $arc.close()
+        $arc.add_file("document.txt", "docs/doc.txt")
+        $arc.add_dir("/home/user/images", "backup/images")
+    }
+}
+
+fn test_uncompress() {
+    comptime {
+        let arc = archive.open("backup.zip")
+        defer $arc.close()
+        $arc.extract("/tmp/restore")
+    }
+}

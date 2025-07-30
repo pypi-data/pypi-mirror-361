@@ -1,0 +1,76 @@
+import * from "type"
+import * from "constant"
+
+/**
+ * Returns the ANSI character code corresponding to the first letter in a string.
+ * 
+ * The string argument is any valid string expression. If the string contains no characters, a run-time error occurs.
+ * 
+ * In the following example, Asc returns the ANSI character code of the first letter of each string:
+ * ```hulo
+ * echo Asc("A") // 65
+ * echo Asc("a") // 97
+ * echo Asc("Apple") // 65
+ * ```
+ */
+declare fn Asc(s: String) -> Byte
+
+// Returns the position of the first occurrence of one string within another.
+declare fn InStr({
+    start: num,
+    required string1: str,
+    required string2: str,
+    compare: FilterCompare
+})
+
+// Returns a string created by joining a number of substrings contained in an array.
+declare fn Join(list: list<str>, delimiter?: str) -> str
+
+// Returns a string that has been converted to lowercase.
+// If string contains Null, Null is returned.
+declare fn LCase(s: str?) -> str?
+
+// Returns a specified number of characters from the left side of a string.
+declare fn Left(s: str, length: num) -> str
+
+// Returns a copy of a string without leading spaces.
+declare fn LTrim(s: str) -> str
+
+// Returns a copy of a string without trailing spaces.
+declare fn RTrim(s: str) -> str
+
+// Returns a copy of a string without both leading and trailing spaces.
+declare fn Trim(s: str) -> str
+
+// Returns a specified number of characters from a string.
+declare fn Mid(
+    // String expression from which characters are returned. If string contains Null, Null is returned.
+    string: str, 
+    // Character position in string at which the part to be taken begins. If start is greater than the number of characters in string, Mid returns a zero-length string ("").
+    start: str, 
+    // Number of characters to return. If omitted or if there are fewer than length characters in the text (including the character at start), all characters from the start position to the end of the string are returned.
+    length: num?) -> str
+
+// Returns a string in which a specified substring has been replaced with another substring a specified number of times.
+declare fn Replace(expr: str, find: str, replacewith: str, start: num = 1, count: num = -1, compare?: FilterCompare)
+
+// Returns a specified number of characters from the right side of a string.
+declare fn Right(string: str, length: num) -> str
+
+// Returns a string consisting of the specified number of spaces.
+declare fn Space(x: num) -> str
+
+// Returns a zero-based, one-dimensional array containing a specified number of substrings.
+declare fn Split(s: str, delimiter?: str = " ", count: num = -1, compare: FilterCompare) -> str[]
+
+// Returns a value indicating the result of a string comparison.
+declare fn StrComp(s1: str, s2: str, compare?: FilterCompare) -> num
+
+// Returns a repeating character string of the length specified.
+declare fn String(number: num, character: str) -> str
+
+// Returns a string in which the character order of a specified string is reversed.
+declare fn StrReverse(s: str) -> str
+
+// Returns a string that has been converted to uppercase.
+declare fn UCase(s: str) -> str

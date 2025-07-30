@@ -1,0 +1,66 @@
+/**
+ * Displays and modifies entries in the Address Resolution Protocol (ARP) cache.
+ * The ARP cache stores IP addresses and their resolved physical (MAC) addresses.
+ * Each network adapter has its own ARP table.
+ * 
+ * When used without parameters, displays help information.
+ */
+@command.windows("arp [/a [<inetaddr>] [/n <ifaceaddr>]] [/g [<inetaddr>] [-n <ifaceaddr>]] [/d <inetaddr> [<ifaceaddr>]] [/s <inetaddr> <etheraddr> [<ifaceaddr>]]")
+class arp {
+    /**
+     * Displays current ARP cache tables:
+     * - Without parameters: Shows all interfaces
+     * - With inetaddr: Shows specific IP entry
+     * - With ifaceaddr: Shows specific interface table
+     * 
+     * Note: /n parameter is case-sensitive
+     */
+    show: {
+        @flag(format: "{}")
+        inetaddr: str
+
+        @flag(format: "/n {}")
+        ifaceaddr: str?
+    }
+
+    /**
+     * Alternative form of /a (identical functionality)
+     */
+    @flag(format: "/g {}")
+    @flag(format: "/n {}")
+    get: {
+        inetaddr?: string
+        ifaceaddr?: string
+    }
+
+    /**
+     * Deletes ARP cache entries:
+     * - With inetaddr: Deletes specific IP entry
+     * - With *: Deletes all entries
+     * - With ifaceaddr: Deletes from specific interface
+     */
+    @flag(format: "/d {}")
+    delete: {
+        inetaddr: string
+        ifaceaddr?: string
+    }
+
+    /**
+     * Adds static ARP cache entry:
+     * - inetaddr: IP address to map
+     * - etheraddr: Physical (MAC) address
+     * - ifaceaddr: Optional interface IP
+     */
+    @flag(format: "/s {} {}")
+    add: {
+        inetaddr: string
+        etheraddr: string
+        ifaceaddr?: string
+    }
+
+    /**
+     * Displays help information.
+     */
+    @flag(format: "/?")
+    help: bool
+}

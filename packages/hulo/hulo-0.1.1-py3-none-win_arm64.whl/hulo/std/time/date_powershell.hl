@@ -1,0 +1,20 @@
+// @hulo-build powershell
+
+pub class DateTime {
+    DateTime(
+        year: num, month: num, day: num,
+        hour?: num = 0, minute?: num = 0, 
+        second?: num = 0, millisec?: num = 0, 
+        nanosec?: num = 0
+    ) {
+        return unsafe { Get-Date "{{$year}}-{{$month}}-{{$day}}" }
+    }
+
+    DateTime.now() {
+        return unsafe { Get-Date };
+    }
+
+    operator -(other: DateTime) {
+        return unsafe { ({{&other}} - {{&this}}).Days };
+    }
+}

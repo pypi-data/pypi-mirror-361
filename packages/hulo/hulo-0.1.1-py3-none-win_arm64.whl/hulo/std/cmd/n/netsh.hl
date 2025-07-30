@@ -1,0 +1,31 @@
+@command("netsh [FLAGS] [{<NetshCommand> | -f <scriptfile>}]")
+pub class netsh {
+    // Specifies that you are returned to the netsh prompt after running Aliasfile and the name of the text file that contains one or more netsh commands.
+    @flag(short: "a")
+    aliasfile: str
+
+    // Specifies that netsh enters the specified netsh context and the netsh context to enter.
+    @flag(short: "c")
+    context: str
+
+    // Specifies the remote computer to configure.
+    // Important: If you use this parameter, you must make sure the Remote Registry service is running on the remote computer. If it isn't running, Windows displays a “Network Path Not Found” error message.
+    @flag(short: "r")
+    remotecomputer: str
+
+    // Specifies the domain and user account name to use while running the netsh command under a user account. If you omit the domain, the local domain is used by default.
+    @flag(short: "u")
+    user: str
+
+    // Specifies the password for the user account specified by the -u <username> parameter.
+    @flag(short: "p")
+    password: str
+
+    // Specifies the netsh command to run.
+    @option(bind: "NetshCommand")
+    netshCommand: Command
+
+    // Exits the netsh command after running the specified script file.
+    @flag(short: "f", long: "scriptfile")
+    scriptfile: str
+}

@@ -1,0 +1,36 @@
+/**
+ * Assigns a drive letter or mount point to the volume with focus. 
+ * Can also change the drive letter associated with a removable drive.
+ * 
+ * Note: 
+ * - A volume must be selected first using 'select volume' command
+ * - Cannot assign drive letters to:
+ *   - System volumes
+ *   - Boot volumes
+ *   - Volumes containing paging files
+ *   - OEM partitions
+ *   - GPT partitions (except basic data partitions)
+ */
+@command("assign [{ --letter <d> | --mount <path> }] [noerr]")
+class assign {
+    /**
+     * Specifies the drive letter to assign to the volume.
+     * Format: letter=<d> (where <d> is a single letter a-z)
+     */
+    @flag(bind: "d", format: "letter={}", validate: "^[a-z]$")
+    drive-letter: str
+
+    /**
+     * Specifies the mount point path to assign to the volume.
+     * Format: mount=<path>
+     */
+    @flag(bind: "path", format: "mount={}")
+    mount-point: str
+
+    /**
+     * For scripting only - continues processing commands on error.
+     * Without this parameter, errors cause immediate exit with error code.
+     */
+    @option(bind: "noerr", format: "noerr")
+    continue-on-error: bool
+}

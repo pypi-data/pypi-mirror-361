@@ -1,0 +1,19 @@
+fn test_list() {
+    let arr = [1, 2, 3]
+
+    assert($arr.reserve(), [3, 2, 1])
+    assert($arr.first(), 1)
+    assert($arr.last(), 3)
+
+    $arr..add(4)..add([5, 6])
+    assert_eq(#arr, 6)
+
+    assert_eq($arr.pop(), 6)
+    assert_eq(#arr, 5)
+
+    $arr.clear()
+    assert($arr.is_empty())
+
+    $arr.insert(0, 1)
+    assert($arr, [1])
+}

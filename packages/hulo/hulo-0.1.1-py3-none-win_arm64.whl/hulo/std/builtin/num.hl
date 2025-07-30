@@ -1,0 +1,69 @@
+type Number = num
+
+pub comptime class Number {
+    // ========== 基础常量 ==========
+    static const MAX: num = 1.7976931348623157e+308
+    static const MIN: num = -1.7976931348623157e+308
+    static const INFINITY: num = 1.0 / 0.0
+    static const NEG_INFINITY: num = -1.0 / 0.0
+    static const PI: num = 3.141592653589793
+    static const E: num = 2.718281828459045
+
+    // ========== 构造方法 ==========
+    /// 从字符串解析（支持十进制、十六进制、科学计数法）
+    static fn parse(s: str) throws -> num
+
+    // ========== 类型转换 ==========
+    fn to_str(base: num = 10) -> str           // 转为字符串（默认十进制）
+    fn to_hex() -> str                         // 转为十六进制字符串
+    fn to_exponential(digits: num) -> str      // 科学计数法表示
+
+    // ========== 算术运算 ==========
+    fn add(other: num) -> num                  // 加法（+）    
+    fn sub(other: num) -> num                  // 减法（-）
+    fn mul(other: num) -> num                  // 乘法（*）
+    fn div(other: num) throws -> num           // 除法（/，可能除零）
+    fn rem(other: num) throws -> num           // 取余（%，可能除零）
+    fn pow(other: num) -> num                  // 幂运算（**）
+    fn neg() -> num                            // 取负（-x）
+    fn abs() -> num                            // 绝对值
+
+    operator +(other: num) -> num
+    operator -(other: num) -> num
+    operator *(other: num) -> num
+    operator /(other: num) -> num
+    operator %(other: num) -> num
+    operator **(other: num) -> num
+
+    // ========== 比较运算 ==========
+    fn eq(other: num) -> bool                  // 等于（==）
+    fn neq(other: num) -> bool                 // 不等于（!=）
+    fn lt(other: num) -> bool                  // 小于（<）
+    fn gt(other: num) -> bool                  // 大于（>）
+    fn lte(other: num) -> bool                 // 小于等于（<=）
+    fn gte(other: num) -> bool                 // 大于等于（>=）
+
+    operator ==(other: num) -> num
+    operator !=(other: num) -> num
+    operator <(other: num) -> num
+    operator >(other: num) -> num
+    operator >=(other: num) -> num
+    operator <=(other: num) -> num
+
+    // ========== 数学函数 ==========
+    fn sqrt() throws -> num                    // 平方根（可能负数错误）
+    fn log(base: num = 10) throws -> num       // 对数（默认以10为底）
+    fn sin() -> num                            // 正弦
+    fn cos() -> num                            // 余弦
+    fn tan() -> num                            // 正切
+    fn round() -> num                          // 四舍五入
+    fn floor() -> num                          // 向下取整
+    fn ceil() -> num                           // 向上取整
+    fn trunc() -> num                          // 截断小数
+
+    // ========== 实用方法 ==========
+    fn is_finite() -> bool                     // 是否为有限数
+    fn is_integer() -> bool                    // 是否为整数
+    fn sign() -> num                           // 符号（-1, 0, 1）
+    fn clamp(min: num, max: num) -> num        // 限制在[min, max]范围
+}

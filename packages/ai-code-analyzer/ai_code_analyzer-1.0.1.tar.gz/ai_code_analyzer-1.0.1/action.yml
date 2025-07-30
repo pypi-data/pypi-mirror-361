@@ -1,0 +1,224 @@
+name: 'AI Code Analyzer'
+description: 'AI-powered code analysis for CI/CD pipelines with risk assessment and automated testing'
+author: 'AI Code Analysis Team'
+
+branding:
+  icon: 'shield'
+  color: 'blue'
+
+inputs:
+  github-token:
+    description: 'GitHub token for API access'
+    required: true
+    default: ${{ github.token }}
+  
+  openai-api-key:
+    description: 'OpenAI API key for AI analysis'
+    required: false
+  
+  anthropic-api-key:
+    description: 'Anthropic API key for AI analysis'
+    required: false
+  
+  commit-hash:
+    description: 'Specific commit hash to analyze'
+    required: false
+  
+  pr-number:
+    description: 'Pull request number to analyze'
+    required: false
+  
+  config-file:
+    description: 'Path to configuration file'
+    required: false
+    default: '.ai-code-analyzer.yml'
+  
+  load-testing:
+    description: 'Enable load testing'
+    required: false
+    default: 'false'
+  
+  load-testing-host:
+    description: 'Host for load testing'
+    required: false
+    default: 'http://localhost:8000'
+  
+  fail-on-high-risk:
+    description: 'Fail the action on high or critical risk'
+    required: false
+    default: 'true'
+  
+  output-file:
+    description: 'Output file for analysis results'
+    required: false
+    default: 'analysis-results.json'
+
+outputs:
+  risk-level:
+    description: 'Overall risk level (low, medium, high, critical)'
+  
+  risk-score:
+    description: 'Risk score (0-100)'
+  
+  code-quality-score:
+    description: 'Code quality score (0-100)'
+  
+  test-coverage:
+    description: 'Test coverage percentage'
+  
+  security-issues:
+    description: 'Number of security issues found'
+  
+  performance-issues:
+    description: 'Number of performance issues found'
+  
+  analysis-results:
+    description: 'Path to detailed analysis results file'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install AI Code Analyzer
+      shell: bash
+      run: |
+        pip install ai-code-analyzer
+    
+    - name: Create configuration file
+      shell: bash
+      run: |
+        cat > ${{ inputs.config-file }} << EOF
+        repository:
+          path: "."
+        
+        github:
+          token: "${{ inputs.github-token }}"
+          owner: "${{ github.repository_owner }}"
+          repo: "${{ github.event.repository.name }}"
+        
+        ai:
+          openai_api_key: "${{ inputs.openai-api-key }}"
+          anthropic_api_key: "${{ inputs.anthropic-api-key }}"
+        
+        load_testing:
+          enabled: ${{ inputs.load-testing }}
+          host: "${{ inputs.load-testing-host }}"
+        
+        risk_assessment:
+          thresholds:
+            low: 0
+            medium: 40
+            high: 60
+            critical: 80
+        EOF
+    
+    - name: Run Analysis (Commit)
+      if: inputs.commit-hash != ''
+      shell: bash
+      run: |
+        ai-code-analyzer analyze \
+          --config ${{ inputs.config-file }} \
+          --commit ${{ inputs.commit-hash }} \
+          --output ${{ inputs.output-file }}
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        OPENAI_API_KEY: ${{ inputs.openai-api-key }}
+        ANTHROPIC_API_KEY: ${{ inputs.anthropic-api-key }}
+    
+    - name: Run Analysis (PR)
+      if: inputs.pr-number != ''
+      shell: bash
+      run: |
+        ai-code-analyzer analyze \
+          --config ${{ inputs.config-file }} \
+          --pr ${{ inputs.pr-number }} \
+          --output ${{ inputs.output-file }}
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        OPENAI_API_KEY: ${{ inputs.openai-api-key }}
+        ANTHROPIC_API_KEY: ${{ inputs.anthropic-api-key }}
+    
+    - name: Run Analysis (Auto-detect)
+      if: inputs.commit-hash == '' && inputs.pr-number == ''
+      shell: bash
+      run: |
+        if [ "${{ github.event_name }}" = "pull_request" ]; then
+          ai-code-analyzer analyze \
+            --config ${{ inputs.config-file }} \
+            --pr ${{ github.event.pull_request.number }} \
+            --output ${{ inputs.output-file }}
+        else
+          ai-code-analyzer analyze \
+            --config ${{ inputs.config-file }} \
+            --commit ${{ github.sha }} \
+            --output ${{ inputs.output-file }}
+        fi
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        OPENAI_API_KEY: ${{ inputs.openai-api-key }}
+        ANTHROPIC_API_KEY: ${{ inputs.anthropic-api-key }}
+    
+    - name: Extract outputs
+      shell: bash
+      run: |
+        if [ -f "${{ inputs.output-file }}" ]; then
+          # Extract values from JSON
+          RISK_LEVEL=$(jq -r '.risk_assessment.risk_level // "unknown"' ${{ inputs.output-file }})
+          RISK_SCORE=$(jq -r '.risk_assessment.risk_score // 0' ${{ inputs.output-file }})
+          CODE_QUALITY=$(jq -r '.analysis.quality_score // 0' ${{ inputs.output-file }})
+          TEST_COVERAGE=$(jq -r '.tests.summary.coverage_percentage // 0' ${{ inputs.output-file }})
+          SECURITY_ISSUES=$(jq -r '.analysis.security_issues | length' ${{ inputs.output-file }})
+          PERFORMANCE_ISSUES=$(jq -r '.analysis.performance_issues | length' ${{ inputs.output-file }})
+          
+          # Set outputs
+          echo "risk-level=$RISK_LEVEL" >> $GITHUB_OUTPUT
+          echo "risk-score=$RISK_SCORE" >> $GITHUB_OUTPUT
+          echo "code-quality-score=$CODE_QUALITY" >> $GITHUB_OUTPUT
+          echo "test-coverage=$TEST_COVERAGE" >> $GITHUB_OUTPUT
+          echo "security-issues=$SECURITY_ISSUES" >> $GITHUB_OUTPUT
+          echo "performance-issues=$PERFORMANCE_ISSUES" >> $GITHUB_OUTPUT
+          echo "analysis-results=${{ inputs.output-file }}" >> $GITHUB_OUTPUT
+          
+          # Create summary
+          echo "## 🤖 AI Code Analysis Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Risk Level:** $RISK_LEVEL" >> $GITHUB_STEP_SUMMARY
+          echo "**Risk Score:** $RISK_SCORE/100" >> $GITHUB_STEP_SUMMARY
+          echo "**Code Quality:** $CODE_QUALITY/100" >> $GITHUB_STEP_SUMMARY
+          echo "**Test Coverage:** $TEST_COVERAGE%" >> $GITHUB_STEP_SUMMARY
+          echo "**Security Issues:** $SECURITY_ISSUES" >> $GITHUB_STEP_SUMMARY
+          echo "**Performance Issues:** $PERFORMANCE_ISSUES" >> $GITHUB_STEP_SUMMARY
+        fi
+    
+    - name: Upload analysis results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: ai-code-analysis-results
+        path: |
+          ${{ inputs.output-file }}
+          *.html
+          *.csv
+        retention-days: 30
+    
+    - name: Check risk level and fail if needed
+      if: inputs.fail-on-high-risk == 'true'
+      shell: bash
+      run: |
+        if [ -f "${{ inputs.output-file }}" ]; then
+          RISK_LEVEL=$(jq -r '.risk_assessment.risk_level // "unknown"' ${{ inputs.output-file }})
+          
+          if [ "$RISK_LEVEL" = "critical" ]; then
+            echo "❌ Critical risk detected - failing action"
+            exit 1
+          elif [ "$RISK_LEVEL" = "high" ]; then
+            echo "🚨 High risk detected - failing action"
+            exit 1
+          else
+            echo "✅ Risk level acceptable: $RISK_LEVEL"
+          fi
+        fi

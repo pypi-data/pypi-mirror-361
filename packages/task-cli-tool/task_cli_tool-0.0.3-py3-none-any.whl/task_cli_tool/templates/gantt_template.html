@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ project_name }} Gantt Chart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gantt-chart {
+            grid-template-columns: 250px 1fr;
+        }
+        .gantt-tasks {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans">
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <div class="flex justify-between items-center mb-4">
+                <h1 class="text-2xl font-bold text-gray-900">{{ project_name }} Gantt Chart</h1>
+                <div class="flex space-x-2">
+                    <button id="day-view" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Day</button>
+                    <button id="week-view" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">Week</button>
+                    <button id="month-view" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">Month</button>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <div class="gantt-chart grid">
+                    <div class="gantt-tasks border-r border-gray-200">
+                        <!-- Task names will be injected here -->
+                    </div>
+                    <div class="gantt-timeline relative">
+                        <div class="gantt-header grid border-b-2 border-gray-300">
+                            <!-- Timeline headers will be injected here -->
+                        </div>
+                        <div class="gantt-rows relative">
+                            <!-- Task bars will be injected here -->
+                        </div>
+                        <svg class="dependency-lines absolute top-0 left-0 w-full h-full pointer-events-none z-10">
+                            <defs>
+                                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+                                    <polygon points="0 0, 10 3.5, 0 7" class="fill-gray-500" />
+                                </marker>
+                                <marker id="arrowhead-highlight" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+                                    <polygon points="0 0, 10 3.5, 0 7" class="fill-pink-500" />
+                                </marker>
+                            </defs>
+                            <!-- Dependency lines will be injected here -->
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="tooltip" class="fixed hidden bg-gray-800 text-white p-3 rounded-md text-sm shadow-lg z-50"></div>
+
+    <script>
+        const tasks = {{ tasks_json }};
+        const minDate = new Date('{{ min_date }}');
+        const maxDate = new Date('{{ max_date }}');
+
+        const ganttTasks = document.querySelector('.gantt-tasks');
+        const ganttHeader = document.querySelector('.gantt-header');
+        const ganttRows = document.querySelector('.gantt-rows');
+        const dependencyLines = document.querySelector('.dependency-lines');
+        const tooltip = document.getElementById('tooltip');
+
+        let currentView = 'day';
+
+        function renderGantt() {
+            ganttTasks.innerHTML = '';
+            ganttHeader.innerHTML = '';
+            ganttRows.innerHTML = '';
+            dependencyLines.querySelectorAll('path').forEach(p => p.remove());
+
+            const timeScale = getTimeScale(currentView);
+            ganttHeader.style.gridTemplateColumns = `repeat(${timeScale.units.length}, 1fr)`;
+
+            timeScale.units.forEach(unit => {
+                const headerEl = document.createElement('div');
+                headerEl.className = 'text-center text-xs text-gray-600 py-2 border-r border-gray-200';
+                headerEl.textContent = unit;
+                ganttHeader.appendChild(headerEl);
+            });
+
+            tasks.forEach(task => {
+                const taskEl = document.createElement('div');
+                taskEl.className = 'p-3 font-medium whitespace-nowrap overflow-hidden text-ellipsis border-b border-gray-200 h-14 flex items-center';
+                taskEl.textContent = task.title;
+                taskEl.id = `task-name-${task.id}`;
+                ganttTasks.appendChild(taskEl);
+
+                const rowEl = document.createElement('div');
+                rowEl.className = 'relative h-14 border-b border-gray-200';
+                rowEl.id = `task-row-${task.id}`;
+                ganttRows.appendChild(rowEl);
+
+                const start = new Date(task.start);
+                const end = new Date(task.end);
+                const startOffset = getOffset(start, timeScale.startDate, timeScale.unitDuration);
+                const duration = getOffset(end, start, timeScale.unitDuration) + 1;
+
+                const barEl = document.createElement('div');
+                const statusClasses = {
+                    done: 'bg-green-500',
+                    in_progress: 'bg-yellow-500',
+                    blocked: 'bg-red-500',
+                    todo: 'bg-blue-500'
+                };
+                                barEl.className = `gantt-bar absolute top-2 h-10 ${statusClasses[task.status] || 'bg-blue-500'} rounded-md z-20 transition-all duration-200`;
+                barEl.style.left = `${(startOffset / timeScale.units.length) * 100}%`;
+                barEl.style.width = `${(duration / timeScale.units.length) * 100}%`;
+                barEl.id = `task-bar-${task.id}`;
+                barEl.dataset.taskId = task.id;
+                rowEl.appendChild(barEl);
+            });
+
+            drawDependencies();
+            addHoverEffects();
+            updateViewButtons();
+        }
+
+        function getTimeScale(view) {
+            let units = [];
+            let startDate = new Date(minDate);
+            let unitDuration;
+
+            if (view === 'day') {
+                unitDuration = 1000 * 60 * 60 * 24;
+                let currentDate = new Date(minDate);
+                while(currentDate <= maxDate) {
+                    units.push(`${currentDate.getMonth() + 1}/${currentDate.getDate()}`);
+                    currentDate.setDate(currentDate.getDate() + 1);
+                }
+            } else if (view === 'week') {
+                unitDuration = 1000 * 60 * 60 * 24 * 7;
+                startDate.setDate(startDate.getDate() - startDate.getDay());
+                let currentDate = new Date(startDate);
+                while(currentDate <= maxDate) {
+                    units.push(`Wk ${currentDate.getMonth() + 1}/${currentDate.getDate()}`);
+                    currentDate.setDate(currentDate.getDate() + 7);
+                }
+            } else { // month
+                unitDuration = 1000 * 60 * 60 * 24 * 30.44;
+                startDate.setDate(1);
+                let currentDate = new Date(startDate);
+                while(currentDate.getFullYear() < maxDate.getFullYear() || currentDate.getMonth() <= maxDate.getMonth()) {
+                    units.push(currentDate.toLocaleString('default', { month: 'short', year: 'numeric' }));
+                    currentDate.setMonth(currentDate.getMonth() + 1);
+                }
+            }
+            return { units, startDate, unitDuration };
+        }
+
+        function getOffset(date1, date2, unitDuration) {
+            return Math.floor((date1 - date2) / unitDuration);
+        }
+
+        function drawDependencies() {
+            // Use rAF to ensure layout is stable before reading dimensions.
+            requestAnimationFrame(() => {
+                dependencyLines.innerHTML = ''; // Clear existing lines
+                const rowsContainer = document.querySelector('.gantt-rows');
+                // The top offset of the rows container relative to the timeline container is the height of the header.
+                const rowsTopOffset = rowsContainer.offsetTop;
+
+                tasks.forEach(task => {
+                    if (task.dependencies && task.dependencies.length > 0) {
+                        task.dependencies.forEach(depId => {
+                            const fromBar = document.getElementById(`task-bar-${depId}`);
+                            const toBar = document.getElementById(`task-bar-${task.id}`);
+
+                            if (fromBar && toBar) {
+                                const fromRow = fromBar.parentElement; // This is the .task-row div
+                                const toRow = toBar.parentElement;
+
+                                // X-coordinate is the horizontal offset within the timeline.
+                                const startX = fromBar.offsetLeft + fromBar.offsetWidth;
+                                const endX = toBar.offsetLeft;
+
+                                // Y-coordinate is calculated by chaining offsets from the timeline container down to the bar.
+                                // This is robust and independent of the page's scroll position.
+                                const startY = rowsTopOffset + fromRow.offsetTop + fromBar.offsetTop + (fromBar.offsetHeight / 2);
+                                const endY = rowsTopOffset + toRow.offsetTop + toBar.offsetTop + (toBar.offsetHeight / 2);
+
+                                const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                                const arrowOffset = 10;
+                                const pathData = `M ${startX} ${startY} C ${startX + 40} ${startY}, ${endX - 40 - arrowOffset} ${endY}, ${endX - arrowOffset} ${endY}`;
+
+                                line.setAttribute('d', pathData);
+                                line.setAttribute('stroke', 'rgb(107 114 128)');
+                                line.setAttribute('stroke-width', '1.5');
+                                line.setAttribute('fill', 'none');
+                                line.setAttribute('marker-end', 'url(#arrowhead)');
+                                line.classList.add('dependency-line', 'transition-all', 'duration-200');
+                                line.dataset.fromTask = depId;
+                                line.dataset.toTask = task.id;
+                                dependencyLines.appendChild(line);
+                            }
+                        });
+                    }
+                });
+            });
+        }
+
+        function addHoverEffects() {
+            document.querySelectorAll('.gantt-bar').forEach(bar => {
+                bar.addEventListener('mouseover', (e) => {
+                    const taskId = e.target.dataset.taskId;
+                    const task = tasks.find(t => t.id === taskId);
+
+                                        tooltip.classList.remove('hidden');
+                    tooltip.innerHTML = `<h3 class="font-bold text-lg mb-1">${task.title}</h3><p class="text-gray-300">${task.description}</p><p class="mt-2"><b>Difficulty:</b> ${task.difficulty} | <b>Hours:</b> ${task.estimated_hours}</p>`;
+
+                    document.querySelectorAll('.gantt-bar').forEach(b => b.classList.add('opacity-50'));
+                    document.querySelectorAll('.dependency-line').forEach(l => l.classList.add('opacity-20'));
+
+                    const relatedIds = new Set([taskId]);
+                    tasks.forEach(t => {
+                        if (t.dependencies.includes(taskId)) relatedIds.add(t.id);
+                        if (t.id === taskId) t.dependencies.forEach(d => relatedIds.add(d));
+                    });
+
+                    relatedIds.forEach(id => {
+                        const el = document.getElementById(`task-bar-${id}`);
+                        if (el) {
+                            el.classList.remove('opacity-50');
+                            el.classList.add('scale-105');
+                        }
+                    });
+
+                    document.querySelectorAll(`.dependency-line[data-from-task="${taskId}"], .dependency-line[data-to-task="${taskId}"]`).forEach(l => {
+                        l.classList.remove('opacity-20');
+                        l.setAttribute('stroke', 'rgb(236 72 153)');
+                        l.setAttribute('stroke-width', '2.5');
+                        l.setAttribute('marker-end', 'url(#arrowhead-highlight)');
+                    });
+                });
+
+                bar.addEventListener('mouseout', () => {
+                                        tooltip.classList.add('hidden');
+                    document.querySelectorAll('.gantt-bar').forEach(b => {
+                        b.classList.remove('opacity-50', 'scale-105');
+                    });
+                    document.querySelectorAll('.dependency-line').forEach(l => {
+                        l.classList.remove('opacity-20');
+                        l.setAttribute('stroke', 'rgb(107 114 128)');
+                        l.setAttribute('stroke-width', '1.5');
+                        l.setAttribute('marker-end', 'url(#arrowhead)');
+                    });
+                });
+
+                bar.addEventListener('mousemove', (e) => {
+                    tooltip.style.left = `${e.clientX + 15}px`;
+                    tooltip.style.top = `${e.clientY + 15}px`;
+                });
+            });
+        }
+
+        function updateViewButtons() {
+            document.querySelectorAll('.view-switcher button').forEach(button => {
+                if (button.id === `${currentView}-view`) {
+                    button.classList.remove('bg-gray-200', 'text-gray-700');
+                    button.classList.add('bg-blue-600', 'text-white');
+                } else {
+                    button.classList.remove('bg-blue-600', 'text-white');
+                    button.classList.add('bg-gray-200', 'text-gray-700');
+                }
+            });
+        }
+
+        document.getElementById('day-view').addEventListener('click', () => { currentView = 'day'; renderGantt(); });
+        document.getElementById('week-view').addEventListener('click', () => { currentView = 'week'; renderGantt(); });
+        document.getElementById('month-view').addEventListener('click', () => { currentView = 'month'; renderGantt(); });
+
+        // Redraw dependency lines on window resize to ensure they stay aligned.
+        window.addEventListener('resize', drawDependencies);
+
+        renderGantt();
+    </script>
+</body>
+</html>

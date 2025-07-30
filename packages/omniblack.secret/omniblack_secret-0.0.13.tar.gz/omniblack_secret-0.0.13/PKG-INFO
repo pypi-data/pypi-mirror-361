@@ -1,0 +1,40 @@
+Metadata-Version: 2.4
+Name: omniblack.secret
+Version: 0.0.13
+Summary: Classes for safely handling secrets
+Project-URL: Homepage, https://gitlab.com/terryp/secret
+Project-URL: Repository, https://gitlab.com/terryp/secret.git
+Author-email: Terry Patterson <terryp@wegrok.net>
+License: MIT License
+License-File: LICENSE
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Topic :: Security
+Classifier: Topic :: Software Development
+Classifier: Typing :: Typed
+Requires-Python: >3.12
+Provides-Extra: test
+Requires-Dist: pytest; extra == 'test'
+Description-Content-Type: text/markdown
+
+# Omniblack Secret
+
+Classes for safer handling of secrets.
+We use libsodium to store secrets in memory
+that is protected by guard pages, a canary, and is set to
+readonly when the library is not reading from it.
+These protections should help mitigate exploits in other parts
+of the program allow for arbitrary reads of memory, and should
+reduce the risk of buffer overflows and similar memory writing
+bugs from corrupting the secret.
+
+Further more `Secret` instance's repr will not reveal the secret
+so if a secret object is accidentally logged the secret value
+will not be exposed, and the value is stored in a C slot not
+in a python dict or slot so introspection tools like `rich.inspect`
+will not reveal the secret.

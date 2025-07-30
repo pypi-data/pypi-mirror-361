@@ -1,0 +1,62 @@
+Metadata-Version: 2.4
+Name: cluster-validity-csai
+Version: 0.1.0
+Summary: CSAIEvaluator: A Cluster Stability Assesment Index for clustering validation
+Home-page: https://github.com/adanent/cluster-validity-csai
+Author: Adane Nega Tarekegn
+Author-email: nega2002@email.com
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: scikit-learn
+Requires-Dist: matplotlib
+Requires-Dist: umap-learn
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: home-page
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# CSAIEvaluator: Cluster Structure Alignment Index
+
+CSAIEvaluator is a Python library for evaluating the robustness of clustering across train/test splits using UMAP projections and distribution alignment.
+
+## Installation
+
+```bash
+pip install git+https://github.com/yourusername/cluster-validity-csai.git
+```
+
+## Example
+
+```python
+from csai import CSAIEvaluator
+from sklearn.cluster import KMeans
+from sklearn.model_selection import train_test_split
+
+csai = CSAIEvaluator()
+X_train, X_test = train_test_split(df, test_size=0.3)
+
+def kmeans_label_func(embeddings):
+    model = KMeans(n_clusters=7)
+    labels = model.fit_predict(embeddings)
+    return labels, model
+
+csai_score = csai.run_csai_evaluation(
+    X_train, X_test,
+    key_col="key_umap",
+    label_func=kmeans_label_func,
+    n_splits=5
+)
+```
+
+## License
+
+MIT

@@ -1,0 +1,217 @@
+Metadata-Version: 2.4
+Name: notspam
+Version: 1.0.0
+Summary: Ultra-lightweight log wrapper that prevents duplicate logs within a specified time window
+Home-page: https://github.com/tikipiya/notspam
+Author: tikipiya
+Author-email: s2501082@sendai-nct.jp
+Project-URL: Bug Reports, https://github.com/tikipiya/notspam/issues
+Project-URL: Source, https://github.com/tikipiya/notspam
+Keywords: logging,spam,duplicate,suppression,wrapper,lightweight
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: System :: Logging
+Classifier: Topic :: Utilities
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license-file
+Dynamic: project-url
+Dynamic: requires-python
+Dynamic: summary
+
+# notspam
+
+一定時間内に同一ログを出さない超軽量ログラッパー
+
+## 概要
+
+`notspam`は、スパムログ防止・モニタリング用の超軽量ログラッパーです。同じログメッセージが一定時間内に繰り返し出力されることを防ぎ、ログの可読性を向上させます。
+
+## 特徴
+
+- **超軽量**: 標準ライブラリのみ使用、外部依存なし
+- **ワンライナー設置**: 簡単な設定で即座に使用可能
+- **全ログレベル対応**: DEBUG, INFO, WARNING, ERROR, CRITICAL全てに対応
+- **スレッドセーフ**: マルチスレッド環境でも安全に使用可能
+- **メモリ効率**: 自動的に古いログ履歴をクリーンアップ
+- **カスタマイズ可能**: 抑制時間やロガー名を自由に設定
+
+## インストール
+
+```bash
+pip install notspam
+```
+
+## 使用方法
+
+### 基本的な使用法
+
+```python
+import notspam
+
+# デフォルト設定（60秒間抑制）
+logger = notspam.get_logger()
+
+# 最初のログは出力される
+logger.info("This is a test message")
+
+# 60秒以内の同じメッセージは抑制される
+logger.info("This is a test message")  # 抑制される
+
+# 異なるメッセージは出力される
+logger.info("This is a different message")  # 出力される
+```
+
+### カスタム設定
+
+```python
+import notspam
+
+# 30秒間抑制、カスタムロガー名
+logger = notspam.get_logger(suppress_seconds=30, name="my_app")
+
+logger.warning("Warning message")
+logger.error("Error message")
+```
+
+### 複数のロガーを使用
+
+```python
+import notspam
+
+# 異なる設定の複数のロガー
+api_logger = notspam.create_logger(suppress_seconds=120, name="api")
+db_logger = notspam.create_logger(suppress_seconds=60, name="database")
+
+api_logger.info("API request received")
+db_logger.error("Database connection failed")
+```
+
+### 全てのログレベルを使用
+
+```python
+import notspam
+import logging
+
+logger = notspam.get_logger(level=logging.DEBUG)
+
+logger.debug("Debug message")
+logger.info("Info message")
+logger.warning("Warning message")
+logger.error("Error message")
+logger.critical("Critical message")
+```
+
+## API リファレンス
+
+### `get_logger(suppress_seconds=60, name=None, level=logging.INFO)`
+
+グローバルロガーインスタンスを取得します。
+
+**パラメータ:**
+- `suppress_seconds` (int): 同じログを抑制する秒数（デフォルト: 60）
+- `name` (str): ロガー名（デフォルト: "notspam"）
+- `level` (int): ログレベル（デフォルト: logging.INFO）
+
+**戻り値:**
+- `NotSpamLogger`: ロガーインスタンス
+
+### `create_logger(suppress_seconds=60, name=None, level=logging.INFO)`
+
+新しいロガーインスタンスを作成します。
+
+**パラメータ:**
+- `suppress_seconds` (int): 同じログを抑制する秒数（デフォルト: 60）
+- `name` (str): ロガー名（デフォルト: "notspam"）
+- `level` (int): ログレベル（デフォルト: logging.INFO）
+
+**戻り値:**
+- `NotSpamLogger`: 新しいロガーインスタンス
+
+### NotSpamLogger クラス
+
+#### メソッド
+
+- `debug(message, *args, **kwargs)`: DEBUGレベルのログ
+- `info(message, *args, **kwargs)`: INFOレベルのログ
+- `warning(message, *args, **kwargs)`: WARNINGレベルのログ
+- `error(message, *args, **kwargs)`: ERRORレベルのログ
+- `critical(message, *args, **kwargs)`: CRITICALレベルのログ
+- `set_level(level)`: ログレベルを設定
+- `get_suppressed_count()`: 現在抑制中のメッセージ数を取得
+- `clear_history()`: ログ履歴をクリア
+
+## 使用例
+
+### Webアプリケーションでの使用
+
+```python
+import notspam
+from flask import Flask
+
+app = Flask(__name__)
+logger = notspam.get_logger(suppress_seconds=300, name="webapp")
+
+@app.route("/api/data")
+def get_data():
+    try:
+        # データベースアクセス
+        data = fetch_data()
+        logger.info("Data fetched successfully")
+        return data
+    except Exception as e:
+        # エラーログの重複を防ぐ
+        logger.error(f"Failed to fetch data: {e}")
+        return {"error": "Internal server error"}, 500
+```
+
+### 定期実行スクリプトでの使用
+
+```python
+import notspam
+import schedule
+import time
+
+logger = notspam.get_logger(suppress_seconds=60, name="scheduler")
+
+def job():
+    try:
+        # 何らかの処理
+        result = process_data()
+        logger.info("Job completed successfully")
+    except Exception as e:
+        # 1分間同じエラーログを抑制
+        logger.error(f"Job failed: {e}")
+
+schedule.every(10).seconds.do(job)
+
+while True:
+    schedule.run_pending()
+    time.sleep(1)
+```
+
+## ライセンス
+
+MIT License
+
+## 作者
+
+tikipiya

@@ -1,0 +1,181 @@
+Metadata-Version: 2.1
+Name: ambient-event-bus-client
+Version: 2.2.0
+Summary: A library to interact with the Ambient Labs Event Bus.
+Home-page: https://github.com/ambientlabscomputing/ambient-event-bus-client
+Author: Jose Catarino
+Author-email: jose@ambientlabscomputing.com
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+
+# Ambient Event Bus Client
+
+A Python client library for interacting with the Ambient Labs Event Bus.
+
+## Installation
+
+```bash
+pip install ambient-event-bus-client
+```
+
+## Quick Start
+
+```python
+from ambient_event_bus_client import Client, ClientOptions, MessageCreate
+
+options = ClientOptions(
+    event_api_url="http://localhost:8000",
+    connection_service_url="http://localhost:8001",
+    api_token="your_api_token"
+)
+client = Client(options)
+await client.init_client()  # ensure you are in an async context
+
+# Basic subscription
+await client.add_subscription(topic="notifications")
+
+# Subscribe and listen for messages
+async for message in client.subscribe():
+    print(f"Received: {message}")
+
+# Publish a basic message
+message = MessageCreate(topic="notifications", message="Hello, World!")
+await client.publish(message)
+```
+
+## Advanced Features
+
+### Aggregate Filtering
+
+Filter messages by resource type and ID:
+
+```python
+# Subscribe to all messages for a specific resource type
+await client.add_subscription(
+    topic="resource_updates",
+    aggregate_type="node"
+)
+
+# Subscribe to messages for a specific resource instance  
+await client.add_subscription(
+    topic="resource_updates",
+    aggregate_type="node", 
+    aggregate_id=123
+)
+
+# Publish messages with aggregate information
+message = MessageCreate(
+    topic="node_update",
+    message="Node status changed",
+    aggregate_type="node",
+    aggregate_id=123
+)
+await client.publish(message)
+```
+
+### Regex Topic Matching
+
+Use regular expressions for flexible topic matching:
+
+```python
+# Match multiple related topics
+await client.add_subscription(
+    topic="user\\.(login|logout|signup)",
+    is_regex=True
+)
+
+# Match all user events
+await client.add_subscription(
+    topic="user\\..*",
+    is_regex=True  
+)
+```
+
+## API Reference
+
+### Client Methods
+
+#### `add_subscription(topic, aggregate_type=None, aggregate_id=None, is_regex=False)`
+
+Create a new subscription.
+
+**Parameters:**
+- `topic` (str): The topic to subscribe to
+- `aggregate_type` (str, optional): Filter by resource type
+- `aggregate_id` (int, optional): Filter by specific resource ID (requires aggregate_type)
+- `is_regex` (bool): Whether to treat topic as a regex pattern (default: False)
+
+**Returns:** `Subscription` object
+
+#### `publish(message)`
+
+Publish a message to the event bus.
+
+**Parameters:**
+- `message` (MessageCreate): The message to publish
+
+### Models
+
+#### `MessageCreate`
+
+```python
+MessageCreate(
+    topic: str,
+    message: str,
+    aggregate_type: Optional[str] = None,
+    aggregate_id: Optional[int] = None
+)
+```
+
+## Development
+
+### Running Tests
+
+```bash
+# Install development dependencies
+make install-dev
+
+# Run all tests
+make test
+
+# Run unit tests only
+make test-unit
+
+# Run end-to-end tests
+make test-e2e
+
+# Run tests with coverage
+make test-cov
+```
+
+### Code Quality
+
+```bash
+# Run linting
+make lint
+
+# Format code
+make format
+```
+
+## Migration from v1.x
+
+See [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md) for detailed migration instructions.
+
+### Key Breaking Changes in v2.0.0
+
+- **ID fields changed from `int` to `str` (UUID format)**
+- **Topic matching no longer supports glob patterns** - use regex with `is_regex=True`
+- New aggregate filtering capabilities
+- Enhanced validation for aggregate fields
+
+## License
+
+MIT License
+
+

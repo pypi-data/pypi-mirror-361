@@ -1,0 +1,92 @@
+Metadata-Version: 2.4
+Name: hero-core
+Version: 0.1.2
+Summary: Add your description here
+Home-page: https://github.com/baidu/hero-core
+Author: Baidu
+Author-email: lanyu@baidu.com
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENCE
+Requires-Dist: setuptools>=80.9.0
+Requires-Dist: twine>=6.1.0
+Requires-Dist: aiohttp>=3.11.16
+Requires-Dist: beautifulsoup4>=4.13.4
+Requires-Dist: chardet>=5.2.0
+Requires-Dist: colorama>=0.4.6
+Requires-Dist: mypy>=1.15.0
+Requires-Dist: numpy>=2.2.6
+Requires-Dist: openai>=1.70.0
+Requires-Dist: pandas>=2.2.3
+Requires-Dist: playwright>=1.52.0
+Requires-Dist: pypdf2>=3.0.1
+Requires-Dist: pytest>=8.3.5
+Requires-Dist: pytest-asyncio>=0.26.0
+Requires-Dist: python-docx>=1.1.2
+Requires-Dist: python-pptx>=1.0.2
+Requires-Dist: python-ulid[pydantic]>=3.0.0
+Requires-Dist: requests>=2.32.3
+Requires-Dist: tqdm>=4.67.1
+Dynamic: author
+Dynamic: author-email
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-python
+
+[English](README.md) | [中文](README.zh-CN.md)
+
+## Installation
+
+1. Install package:
+
+```sh
+
+pip install hero-core hero-tools 
+
+```
+
+2. Quickly Start
+
+```python
+from hero import Hero, Model, Tool
+from hero_tools import crewl_web, download_file
+
+
+default_model = Model(
+    model_name="deepseek",
+    model_url="https://api.example.com/v1",
+    model_api_key="api-key",
+)
+
+hero = Hero(
+    name="hero",
+    model=default_model,
+)
+
+tool = Tool()
+
+@hero.tool("add")
+def add_func(a, b):
+    """
+    <desc>Addition calculator</desc>
+    <params>
+        <a type="number">addend a</a>
+        <b type="number">addend b</b>
+    </params>
+    <example>
+        {
+            "tool": "add",
+            "params": {
+                "a": 1, 
+                "b": 2
+            }
+        }
+    </example>
+    """
+    return a + b
+
+hero.add_tool(crewl_web, download_file, add_func)
+
+hero.run(question="some question")
+
+```

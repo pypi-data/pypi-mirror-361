@@ -1,0 +1,189 @@
+# lsqfitgp/pyproject.toml
+#
+# Copyright (c) 2023, 2024, 2025, Giacomo Petrillo
+#
+# This file is part of lsqfitgp.
+#
+# lsqfitgp is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# lsqfitgp is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with lsqfitgp.  If not, see <http://www.gnu.org/licenses/>.
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lsqfitgp"
+authors = [
+  { name="Giacomo Petrillo", email="info@giacomopetrillo.com" },
+]
+description = "A general purpose Gaussian process regression module"
+readme = "README.md"
+requires-python = ">=3.10" # oldest supported by jax 0.4.35
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Development Status :: 3 - Alpha",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux",
+]
+dependencies = [
+    'numpy>=1.24', # oldest supported by jax 0.4.35
+    'scipy>=1.10', # oldest supported by jax 0.4.35
+    'jax>=0.4.35', # first with `vmap_method` argument in `pure_callback`
+    'jaxlib>=0.4.35',
+    'gvar>=12.0', # first with custom formatting
+]
+dynamic = ["version"]
+
+[tool.setuptools.dynamic]
+version = {attr = "lsqfitgp.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+namespaces = false
+
+[project.urls]
+"Homepage" = "https://github.com/Gattocrucco/lsqfitgp"
+"Bug Tracker" = "https://github.com/Gattocrucco/lsqfitgp/issues"
+
+[project.optional-dependencies]
+
+dev = [ # to work locally on lsqfitgp
+    "numpy",
+    "scipy",
+    "matplotlib",
+    "gvar",
+    "lsqfit",
+    "jax",
+    "jaxlib",
+    "sphinx",
+    "myst-parser",
+    "numpydoc",
+    "pytest",
+    "coverage[toml]",
+    "twine",
+    "ipython",
+    "mpmath",
+    "pandas",
+    "polars[pyarrow]",
+    "build",
+    "statsmodels",
+    "tqdm",
+    "tabulate",
+    "appnope",
+]
+
+tests = [ # to run the unit tests on CI
+    "numpy",
+    "scipy",
+    "gvar",
+    "jax",
+    "jaxlib",
+    "pytest",
+    "coverage[toml]",
+    "mpmath",
+    "pandas",
+    "polars[pyarrow]",
+    "statsmodels",
+]
+
+tests-old = [ # to run the unit tests on CI, with minimum supported dependencies
+    "numpy==1.24",
+    "scipy==1.10",
+    "gvar==12.0",
+    "jax==0.4.35",
+    "jaxlib==0.4.35",
+    "pytest",
+    "coverage[toml]",
+    "mpmath",
+    "pandas<1.5",
+    "polars==1.0.0",
+    "pyarrow==10.0.1",
+    "statsmodels",
+]
+# TODO can I restrict tests-old to the pins, and use [tests,tests-old]?
+
+docs = [ # to run examples, documentation code, and build documentation on CI
+    "numpy",
+    "scipy",
+    "matplotlib",
+    "gvar",
+    "lsqfit",
+    "jax",
+    "jaxlib",
+    "sphinx",
+    "myst-parser",
+    "numpydoc",
+    "coverage[toml]",
+    "polars",
+    "pandas",
+    "statsmodels",
+    "pyarrow",
+    "tqdm",
+    "tabulate",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = [
+    'ignore:JAX on Mac ARM machines',
+    'ignore:the imp module is deprecated',
+    'ignore:k >= N for N \* N square matrix',
+    'ignore:Passing None has been deprecated',
+    'ignore:minimization failed. Desired error not necessarily achieved due to precision loss\.',
+    'ignore:in the future the `\.dtype` attribute of a given datatype object must be a valid dtype instance\. `data_type\.dtype` may need to be coerced using `np\.dtype\(data_type\.dtype\)`\. \(Deprecated NumPy 1\.20\)',
+    'ignore:The problem size .+? minus the constraints size .+? is too small',
+]
+addopts = [
+    "-r xXfE",
+    "--pdbcls=IPython.terminal.debugger:TerminalPdb",
+    "--durations=3",
+]
+
+# I wanted to use `--import-mode=importlib`, but it breaks importing submodules,
+# in particular `from . import util`.
+
+[tool.coverage.run]
+branch = true
+source = ["lsqfitgp"]
+
+[tool.coverage.report]
+show_missing = true
+
+[tool.coverage.html]
+show_contexts = true
+
+[tool.coverage.paths]
+# the first path in each list must be the source directory in the machine that's
+# generating the coverage report
+
+github = [
+    '/home/runner/work/lsqfitgp/lsqfitgp/src/lsqfitgp/',
+    '/Users/runner/work/lsqfitgp/lsqfitgp/src/lsqfitgp/',
+    'D:\a\lsqfitgp\lsqfitgp\src\lsqfitgp\',
+    '/Library/Frameworks/Python.framework/Versions/*/lib/python*/site-packages/lsqfitgp/',
+    '/Users/runner/hostedtoolcache/Python/*/*/lib/python*/site-packages/lsqfitgp/',
+    '/opt/hostedtoolcache/Python/*/*/lib/python*/site-packages/lsqfitgp/',
+    'C:\hostedtoolcache\windows\Python\*\*\Lib\site-packages\lsqfitgp\',
+]
+
+local = [
+    'src/lsqfitgp/',
+    '/home/runner/work/lsqfitgp/lsqfitgp/src/lsqfitgp/',
+    '/Users/runner/work/lsqfitgp/lsqfitgp/src/lsqfitgp/',
+    'D:\a\lsqfitgp\lsqfitgp\src\lsqfitgp\',
+    '/Library/Frameworks/Python.framework/Versions/*/lib/python*/site-packages/lsqfitgp/',
+    '/Users/runner/hostedtoolcache/Python/*/*/lib/python*/site-packages/lsqfitgp/',
+    '/opt/hostedtoolcache/Python/*/*/lib/python*/site-packages/lsqfitgp/',
+    'C:\hostedtoolcache\windows\Python\*\*\Lib\site-packages\lsqfitgp\',
+]

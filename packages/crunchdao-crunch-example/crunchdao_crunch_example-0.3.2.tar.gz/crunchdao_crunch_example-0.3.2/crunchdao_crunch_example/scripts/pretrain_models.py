@@ -1,0 +1,75 @@
+#!/usr/bin/env python3
+"""
+Pretrain all models using the training data from iris/output/train_data.csv
+"""
+
+import pandas as pd
+import sys
+import os
+import importlib.util
+
+def import_model_from_path(model_path):
+    """Import a model module from a file path"""
+    spec = importlib.util.spec_from_file_location("model", model_path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+def main():
+    # Get the directory where this script is located (scripts/)
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    # Go up to the package root (crunchdao_crunch_example/)
+    package_root = os.path.dirname(script_dir)
+    
+    # Load training data - assume it's in the coordinator's output directory
+    # Go up to examples root and look for coordinator output
+    examples_root = os.path.dirname(os.path.dirname(os.path.dirname(package_root)))
+    train_data_path = os.path.join(examples_root, "iris", "coordinator", "output", "train_data.csv")
+    print(f"Loading training data from: {train_data_path}")
+    
+    try:
+        df = pd.read_csv(train_data_path)
+        print(f"Training data loaded successfully with {len(df)} rows")
+    except Exception as e:
+        print(f"Error loading training data: {e}")
+        print("You may need to run the iris coordinator first to generate training data.")
+        return
+    
+    # Separate features and target
+    X_train = df.drop(['target'], axis=1)
+    y_train = df[['target']]
+    
+    print(f"Features shape: {X_train.shape}")
+    print(f"Target shape: {y_train.shape}")
+    
+    # Define models to train
+    models = ['neural_network', 'random_forest', 'svm']
+    
+    for model_name in models:
+        print(f"\n=== Training {model_name} model ===")
+        
+        # Import the model from new location
+        model_path = os.path.join(package_root, "models", model_name, "submissions", "main.py")
+        
+        if not os.path.exists(model_path):
+            print(f"Model file not found: {model_path}")
+            continue
+            
+        try:
+            model_module = import_model_from_path(model_path)
+            
+            # Set the model directory path to the resources directory
+            model_directory_path = os.path.join(package_root, "models", model_name, "resources")
+            
+            # Train the model
+            model_module.train(X_train, y_train, model_directory_path)
+            print(f"✓ {model_name} model trained successfully")
+            
+        except Exception as e:
+            print(f"✗ Error training {model_name} model: {e}")
+            continue
+    
+    print("\n=== Pretraining completed ===")
+
+if __name__ == "__main__":
+    main()

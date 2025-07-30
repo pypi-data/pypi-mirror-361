@@ -1,0 +1,73 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "crunchdao-crunch-example"
+version = "0.3.2"
+description = "CrunchDAO example packages for machine learning competitions"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {file = "LICENSE"}
+authors = [
+    {name = "CrunchDAO", email = "boris.nieuwenhuis@crunchdao.com"},
+]
+keywords = ["machine learning", "competition", "crunchdao", "iris", "classification"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "pandas>=2.0.0",
+    "scikit-learn>=1.0.0",
+    "numpy>=1.21.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/crunchdao/coordinator-setup"
+Documentation = "https://docs.crunchdao.com"
+Repository = "https://github.com/crunchdao/coordinator-setup"
+Issues = "https://github.com/crunchdao/coordinator-setup/issues"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "black>=23.0",
+    "isort>=5.0",
+    "mypy>=1.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["crunchdao_crunch_example", "src/crunchdao"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/crunchdao_crunch_example",
+    "/src",
+    "/README.md",
+    "/LICENSE",
+    "/MANIFEST.in",
+]
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true

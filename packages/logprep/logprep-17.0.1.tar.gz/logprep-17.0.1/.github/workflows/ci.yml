@@ -1,0 +1,42 @@
+name: CI
+# only run tests for pull requests cause no file has to be changed without review
+# open -> open the pull request
+# synchronize -> push to branch of pull request
+on:
+  pull_request:
+    types: [opened, synchronize]
+jobs:
+  test:
+    uses: ./.github/workflows/testing.yml
+  build-docs:
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        python-version: ["3.11"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+      - name: Install dependencies
+        run: |
+          sudo apt-get update && sudo apt-get -y install pandoc
+          pip install --upgrade pip wheel
+          pip install .[doc]
+      - name: build docs
+        run: |
+          cd doc
+          sphinx-apidoc -fT -o source/module_reference ../logprep
+          make clean html
+  code-quality:
+    uses: ./.github/workflows/code-quality.yml
+    with:
+      path: "logprep/**/*.py"
+  containerbuild:
+    uses: ./.github/workflows/container-build.yml
+    secrets: inherit
+    with:
+      build-version: dev
+      tags: "${{ github.head_ref }}"

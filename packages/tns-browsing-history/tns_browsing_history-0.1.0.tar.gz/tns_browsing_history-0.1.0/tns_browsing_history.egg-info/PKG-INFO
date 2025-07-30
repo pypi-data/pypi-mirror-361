@@ -1,0 +1,42 @@
+Metadata-Version: 2.4
+Name: tns-browsing-history
+Version: 0.1.0
+Summary: Reusable Python module to store user browsing history via function call
+Author: Naveenkumar Koppala
+Author-email: naveenkumar.k@tnsservices.com.com
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: sqlalchemy>=1.4
+Requires-Dist: pydantic>=1.10
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: license
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# browsing_history
+
+Reusable Python module to store browsing history using SQLAlchemy and Pydantic.
+
+## Usage
+
+```python
+from browsing_history import store_browsing_history, BrowsingHistoryInput
+
+store_browsing_history(db, BrowsingHistoryInput(
+    user_id=123,
+    page_url="/profile",
+    page_title="Profile Page",
+    ip_address="192.168.1.1",
+    device_info="Chrome on Windows"
+))

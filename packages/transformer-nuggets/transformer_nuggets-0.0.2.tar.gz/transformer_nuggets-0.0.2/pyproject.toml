@@ -1,0 +1,93 @@
+# pyproject.toml
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "transformer_nuggets"
+dynamic = ["version"]
+authors = [{ name = "Driss Guessous", email = "drisspguessous@gmail.com" }]
+description = "A place to store reusable transformer components found around the interwebs"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "torch",
+    "scipy >= 1.9.1",
+    "tqdm >= 4.66",
+    "tabulate >= 0.8",
+    "rich==13.7.1",
+    "matplotlib",
+    "pandas"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pre-commit==3.6.0",
+    "bumpver",
+    "pip-tools",
+    "pytest",
+    "ruff",
+    "jsonargparse",
+    "docstring-parser"
+]
+
+qlora = ['bitsandbytes']
+flash = ['triton']
+
+llama = [
+    "sentencepiece==0.1.99",
+    "datasets==2.15.0",
+    "fire==0.5.0",
+    "float8_experimental",
+]
+
+# ---------- TOOL CONFIGURATIONS ------------
+[tool.hatch.version]
+source = "vcs"
+
+# ---------- RUFF ------------
+[tool.ruff]
+target-version = "py310"
+line-length = 99
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+]
+
+[tool.ruff.lint]
+ignore = ['E231', 'E731']
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401", "F403"]

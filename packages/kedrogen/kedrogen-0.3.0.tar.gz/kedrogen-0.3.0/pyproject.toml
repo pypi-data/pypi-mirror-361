@@ -1,0 +1,77 @@
+[project]
+name = "kedrogen"
+version = "0.3.0"
+description = "A simple CLI command that generate a Kedro project from a cookiecutter template in the current directory"
+authors = [
+    {name = "Shafayet Khan Shafee", email = "sshafee@isrt.ac.bd"}
+]
+readme = "README.md"
+license = { text = "MIT" }
+keywords = [ "cli", "kedro", "cookiecutter" ]
+dynamic = [ "classifiers" ]
+requires-python = ">=3.9"
+dependencies = [
+    "typer (>=0.16.0,<0.17.0)",
+    "kedro (>=0.19.14,<0.20.0)"
+]
+
+[project.urls]
+repository = "https://github.com/shafayetShafee/kedrogen"
+documentation = "https://github.com/shafayetShafee/kedrogen/blob/main/README.md"
+"Bug Tracker" = "https://github.com/shafayetShafee/kedrogen/issues"
+
+[project.scripts]
+kedrogen = 'kedrogen.main:app'
+
+[tool.poetry]
+packages = [{include = "kedrogen", from = "src"}]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Framework :: Kedro"
+]
+
+[tool.poetry.dependencies]
+python = ">=3.9,<4.0"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.12.3"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+target-version = "py39"
+
+[tool.ruff.lint]
+extend-select = [
+    "F",   # Pyflakes
+    "W",   # pycodestyle
+    "E",   # pycodestyle
+    "I",   # isort
+    "UP",  # pyupgrade
+    "PL",  # Pylint
+    "C",   # flake8-comprehensions
+    "B",   # flake8-bugbear
+]
+ignore = [
+    "E501",    # line too long
+    "C901",    # too complex
+    "PLR0913", # too many function args
+]
+
+[tool.ruff.lint.isort]
+order-by-type = true
+relative-imports-order = "closest-to-furthest"
+extra-standard-library = ["typing"]
+section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
+known-first-party = []

@@ -1,0 +1,37 @@
+[build-system]
+requires = ["uv_build>=0.7.20,<0.8.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "par"
+module-root = ""
+
+[project]
+name = "par-cli"
+version = "0.1.0"
+description = "Parallel repo sessions manager"
+authors = [ { name="Victor", email="vimota@gmail.com" } ]
+requires-python = ">=3.12"
+dependencies = [
+    "typer",
+    "pyyaml",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "ruff",
+    "pre-commit",
+    "build",
+]
+
+[tool.uv]
+package = true
+dev-dependencies = [
+    "pytest",
+    "ruff",
+    "pre-commit",
+]
+
+[project.scripts]
+par = "par.cli:app"

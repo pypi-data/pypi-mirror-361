@@ -1,0 +1,29 @@
+name: Build BLIS, Linux
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  linux2:
+    name: Build BLIS on Linux
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Build
+        shell: bash
+        run: |
+          ROOT_DIR=`pwd`
+          git submodule update --init --recursive
+          SRC_DIR=$ROOT_DIR/vendor/blis
+          echo $SRC_DIR
+          IMAGE="quay.io/pypa/manylinux_2_28_x86_64"
+          chmod +x $ROOT_DIR/tools/build_blis_manylinux.sh
+          docker container run --volume=/:/host $IMAGE /host$ROOT_DIR/tools/build_blis_manylinux.sh $SRC_DIR
+      - name: Upload compiled library
+        uses: actions/upload-artifact@v4
+        with:
+          name: blis-linux-static
+          path: /opt/blis

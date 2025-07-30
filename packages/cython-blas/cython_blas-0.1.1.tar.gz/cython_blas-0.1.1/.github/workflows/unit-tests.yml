@@ -1,0 +1,138 @@
+name: Run unit tests, lint code, and build documentation
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  tests:
+    name: Unit tests
+    continue-on-error: false
+    strategy:
+      matrix:
+        os:
+          - "ubuntu-latest"
+          - "windows-2022"
+        python-version:
+          - "3.11"
+          - "3.12"
+          - "3.13"
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install LLVM and Clang on Windows
+        if: ${{ runner.os == 'Windows' }}
+        uses: KyleMayes/install-llvm-action@v2
+        with:
+          version: "20.1"
+      - name: Install pkg-config on Windows
+        if: ${{ runner.os == 'Windows' }}
+        run: |
+          choco install pkgconfiglite
+      - name: Install Poetry, Windows
+        if: ${{ runner.os == 'Windows' }}
+        shell: bash
+        run: |
+          export POETRY_HOME=`mktemp -d`
+          python -m venv $POETRY_HOME --upgrade-deps
+          $POETRY_HOME/Scripts/pip install -q poetry
+          ln $POETRY_HOME/Scripts/poetry /usr/bin/poetry
+          poetry --version
+          poetry config virtualenvs.in-project true
+      - name: Install Poetry, not Windows
+        if: ${{ runner.os != 'Windows' }}
+        shell: bash
+        run: |
+          export POETRY_HOME=`mktemp -d`
+          python -m venv $POETRY_HOME --upgrade-deps
+          $POETRY_HOME/bin/pip install -q poetry
+          ln $POETRY_HOME/bin/poetry /usr/local/bin/poetry
+          poetry --version
+          poetry config virtualenvs.in-project true
+      - name: Install Python dependencies and build package
+        shell: bash
+        run: |
+          poetry install --extras=dev
+          poetry run spin setup-in-place
+          poetry run spin in-place
+      - name: Test with pytest
+        shell: bash
+        run: |
+          poetry run python -m pytest cython_blas
+
+  lint:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install Poetry, not Windows
+        if: ${{ runner.os != 'Windows' }}
+        run: |
+          export POETRY_HOME=`mktemp -d`
+          python -m venv $POETRY_HOME --upgrade-deps
+          $POETRY_HOME/bin/pip install -q poetry
+          ln $POETRY_HOME/bin/poetry /usr/local/bin/poetry
+          poetry --version
+          poetry config virtualenvs.in-project true
+      - name: Install Python dependencies
+        run: |
+          poetry install --extras=lint
+      - name: Ruff check auto-fixable
+        run: |
+          poetry run ruff check --config=pyproject.toml --diff --unsafe-fixes .
+      - name: Ruff check not auto-fixable
+        run: |
+          poetry run ruff check --config=pyproject.toml .
+      - name: Ruff format
+        run: |
+          poetry run ruff format --config=pyproject.toml --diff .
+      - name: Deptry
+        run: |
+          poetry run deptry .
+      - name: cython-lint
+        run: |
+          poetry run cython-lint .
+      - name: isort Cython
+        run: |
+          poetry run isort --diff .
+          poetry run isort -c .
+
+  docs:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install Poetry, not Windows
+        if: ${{ runner.os != 'Windows' }}
+        run: |
+          export POETRY_HOME=`mktemp -d`
+          python -m venv $POETRY_HOME --upgrade-deps
+          $POETRY_HOME/bin/pip install -q poetry
+          ln $POETRY_HOME/bin/poetry /usr/local/bin/poetry
+          poetry --version
+          poetry config virtualenvs.in-project true
+      - name: Install Python dependencies and build package
+        run: |
+          poetry install --extras=dev
+          poetry run spin setup-in-place
+          poetry run spin in-place
+      - name: Build documentation
+        run: |
+          poetry run spin docs

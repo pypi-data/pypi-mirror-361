@@ -1,0 +1,47 @@
+{
+    "editor.formatOnSave": true,
+    "editor.minimap.enabled": false,
+    "editor.rulers": [
+        120
+    ],
+    "files.trimTrailingWhitespace": true,
+    //
+    // Custom file associations
+    "files.associations": {
+        "*.pyx": "cython",
+        "*.pxd": "cython",
+        "meson.build": "meson",
+        "meson.options": "meson",
+    },
+    //
+    // Python
+    "[python]": {
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.fixAll": "explicit",
+            "source.organizeImports": "explicit",
+        },
+    },
+    "python.analysis.autoImportCompletions": false,
+    // Linting
+    "ruff.importStrategy": "fromEnvironment",
+    "ruff.configuration": "pyproject.toml",
+    //
+    // Cython
+    "runOnSave.commands": [
+        {
+            "languages": [
+                "cython"
+            ],
+            "command": "${workspaceFolder}/.venv/Scripts/isort ${fileRelative}",
+            "runIn": "backend",
+        }
+    ],
+    //
+    // Meson extension
+    "mesonbuild.formatting.enabled": true,
+    "mesonbuild.linting.enabled": true,
+    "mesonbuild.downloadLanguageServer": true,
+    "mesonbuild.configureOnOpen": false,
+}

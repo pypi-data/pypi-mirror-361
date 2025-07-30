@@ -1,0 +1,82 @@
+name: Build wheels and sdist
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build_wheels:
+    name: "Build wheels: ${{ matrix.os }}"
+    continue-on-error: true
+    strategy:
+      matrix:
+        os:
+          - "ubuntu-latest"
+          - "windows-2022"
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install LLVM and Clang on Windows
+        if: ${{ runner.os == 'Windows' }}
+        uses: KyleMayes/install-llvm-action@v2
+        with:
+          version: "20.1"
+      - name: Install pkg-config on Windows
+        if: ${{ runner.os == 'Windows' }}
+        run: |
+          choco install pkgconfiglite
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v3.0.1
+      - name: Upload wheels
+        uses: actions/upload-artifact@v4
+        with:
+          name: cibw-wheels-${{ matrix.os }}-${{ strategy.job-index }}
+          path: wheelhouse/*.whl
+
+  build_sdist:
+    name: Build source dist and upload all
+    runs-on: "ubuntu-latest"
+    needs: [build_wheels]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install Poetry, not Windows
+        shell: bash
+        run: |
+          export POETRY_HOME=`mktemp -d`
+          python -m venv $POETRY_HOME --upgrade-deps
+          $POETRY_HOME/bin/pip install -q poetry
+          ln $POETRY_HOME/bin/poetry /usr/local/bin/poetry
+          poetry --version
+          poetry config virtualenvs.in-project true
+      - name: Install Python dependencies
+        shell: bash
+        run: |
+          poetry install --extras=dev
+      - name: Build sdist
+        run: |
+          poetry run spin build
+      - name: Download wheels
+        uses: actions/download-artifact@v4
+        with:
+          pattern: cibw-wheels-*
+          merge-multiple: true
+          path: dist/
+      - name: Upload wheels and sdist
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-and-sdist
+          path: dist/

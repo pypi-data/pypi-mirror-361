@@ -1,0 +1,824 @@
+import json
+import logging
+import os
+import shutil
+from abc import ABC, abstractmethod
+from pathlib import Path
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    List,
+    Optional,
+    SupportsIndex,
+    Type,
+    TypeVar,
+    Union,
+)
+
+import datasets
+from pytorch_ie.core import WithDocumentTypeMixin
+from pytorch_ie.core.document import Document
+from pytorch_ie.utils.hydra import resolve_target, serialize_document_type
+
+from .dataset import (
+    Dataset,
+    IterableDataset,
+    concatenate_datasets,
+    get_pie_dataset_type,
+)
+
+logger = logging.getLogger(__name__)
+
+METADATA_FILE_NAME = "metadata.json"
+
+
+D = TypeVar("D", bound=Document)
+
+
+class EnterDatasetMixin(ABC):
+    """Mixin for processors that enter a dataset context."""
+
+    @abstractmethod
+    def enter_dataset(
+        self, dataset: Union[Dataset, IterableDataset], name: Optional[str] = None
+    ) -> None:
+        """Enter dataset context."""
+
+
+class ExitDatasetMixin(ABC):
+    """Mixin for processors that exit a dataset context."""
+
+    @abstractmethod
+    def exit_dataset(
+        self, dataset: Union[Dataset, IterableDataset], name: Optional[str] = None
+    ) -> None:
+        """Exit dataset context."""
+
+
+class EnterDatasetDictMixin(ABC):
+    """Mixin for processors that enter a dataset dict context."""
+
+    @abstractmethod
+    def enter_dataset_dict(self, dataset_dict) -> None:
+        """Enter dataset dict context."""
+
+
+class ExitDatasetDictMixin(ABC):
+    """Mixin for processors that exit a dataset dict context."""
+
+    @abstractmethod
+    def exit_dataset_dict(self, dataset_dict) -> None:
+        """Exit dataset dict context."""
+
+
+class DatasetDict(datasets.DatasetDict):
+    def __getitem__(self, k) -> Union[Dataset, IterableDataset]:  # type: ignore
+        """Returns an individual dataset split."""
+
+        dataset = super().__getitem__(k)
+        if isinstance(dataset, (Dataset, IterableDataset)):
+            return dataset
+        else:
+            raise TypeError(f"dataset must be of type Dataset, but is {type(dataset)}")
+
+    @classmethod
+    def load_dataset(cls, *args, split=None, **kwargs) -> "DatasetDict":
+        dataset_or_dataset_dict = datasets.load_dataset(*args, split=split, **kwargs)
+        if isinstance(dataset_or_dataset_dict, (Dataset, IterableDataset)):
+            if split is None:
+                raise ValueError(
+                    f"split must be provided if the loaded dataset is not a (Iterable)DatasetDict, "
+                    f"but is {type(dataset_or_dataset_dict)}"
+                )
+            return cls({split: dataset_or_dataset_dict})
+        elif isinstance(
+            dataset_or_dataset_dict, (datasets.DatasetDict, datasets.IterableDatasetDict)
+        ):
+            for dataset in dataset_or_dataset_dict.values():
+                if not isinstance(dataset, (Dataset, IterableDataset)):
+                    raise TypeError(
+                        f"expected pie_datasets.Dataset or pie_datasets.IterableDataset, but got {type(dataset)}"
+                    )
+            return cls(dataset_or_dataset_dict)
+        else:
+            raise TypeError(
+                f"expected pie_datasets.DatasetDict, pie_datasets.IterableDatasetDict, pie_datasets.Dataset, "
+                f"or pie_datasets.IterableDataset, but got {type(dataset_or_dataset_dict)}"
+            )
+
+    @classmethod
+    def from_hf(
+        cls,
+        hf_dataset: Union[
+            datasets.DatasetDict,
+            datasets.IterableDatasetDict,
+            Dict[str, datasets.Dataset],
+            Dict[str, datasets.IterableDataset],
+        ],
+        document_type: Union[str, Type[Document]],
+    ) -> "DatasetDict":
+        """Creates a PIE DatasetDict from a HuggingFace DatasetDict, or IterableDatasetDict. If the
+        input is a Dataset or IterableDataset, we create a DatasetDict with one split named
+        "train".
+
+        Args:
+            hf_dataset: HuggingFace (Iterable)Dataset(Dict)
+            document_type: document type of the dataset. Can be a subclass of Document or string that can be
+                resolved to such a type.
+        """
+
+        doc_type = resolve_target(document_type)
+        if not isinstance(doc_type, type) or not issubclass(doc_type, Document):
+            raise TypeError(f"document_type must be a subclass of Document, but is {doc_type}")
+
+        res = cls(
+            {
+                k: get_pie_dataset_type(v).from_hf_dataset(v, document_type=doc_type)
+                for k, v in hf_dataset.items()
+            }
+        )
+        return res
+
+    @classmethod
+    def from_json(  # type: ignore
+        cls,
+        document_type: Optional[Union[Type[Document], str]] = None,
+        metadata_path: Optional[Union[str, Path]] = None,
+        data_dir: Optional[str] = None,
+        split: Optional[str] = None,
+        **kwargs,
+    ) -> "DatasetDict":
+        """Creates a PIE DatasetDict from JSONLINE files. Uses `datasets.load_dataset("json")`
+        under the hood. Requires a document type to be provided. If the document type is not
+        provided, we try to load it from the metadata file.
+
+        Args:
+            document_type: document type of the dataset
+            data_dir: Defining the `data_dir` of the dataset configuration. See datasets.load_dataset() for more
+                information.
+            metadata_path: path to the metadata file. Should point to a directory containing the metadata file
+                `metadata.json`. Defaults to the value of the `data_dir` parameter.
+            split: if provided, only the specified split is loaded. see `datasets.load_dataset()` for more information.
+            **kwargs: additional keyword arguments for `datasets.load_dataset()`
+        """
+
+        # try to load metadata
+        if metadata_path is None:
+            metadata_path = data_dir
+        if metadata_path is not None:
+            metadata_file_name = Path(metadata_path) / METADATA_FILE_NAME
+            if os.path.exists(metadata_file_name):
+                with open(metadata_file_name) as f:
+                    metadata = json.load(f)
+                document_type = document_type or metadata.get("document_type", None)
+
+        if document_type is None:
+            raise ValueError(
+                "document_type must be provided if it cannot be loaded from the metadata file"
+            )
+
+        hf_dataset = datasets.load_dataset("json", data_dir=data_dir, split=split, **kwargs)
+        if isinstance(hf_dataset, (datasets.Dataset, datasets.IterableDataset)):
+            if split is None:
+                raise ValueError(
+                    f"split must be provided if the loaded dataset is not a (Iterable)DatasetDict, "
+                    f"but is {type(hf_dataset)}"
+                )
+            hf_dataset = {split: hf_dataset}
+        return cls.from_hf(hf_dataset, document_type=document_type)
+
+    def to_json(self, path: Union[str, Path], mode: str = "a", **kwargs) -> None:
+        """Serializes the DatasetDict. We convert all documents with `.asdict()` and dump them with
+        `json.dump()` to one JSONLINE file per split. If there is already serialized data in the
+        output directory, we append the new data to the existing files.
+
+        Args:
+            path: path to the output directory
+            mode: mode for writing the data. Can be either "a" (append) or "w" (overwrite). Default is "a".
+            **kwargs: additional keyword arguments for `json.dump()`
+        """
+
+        path = Path(path)
+
+        # save the metadata
+        metadata = {"document_type": serialize_document_type(self.document_type)}
+
+        if mode == "a":
+            os.makedirs(path, exist_ok=True)
+            if os.path.exists(path / METADATA_FILE_NAME):
+                # load previous metadata
+                with open(path / METADATA_FILE_NAME) as f:
+                    previous_metadata = json.load(f)
+                if previous_metadata != metadata:
+                    raise ValueError(
+                        f"The metadata file {path / METADATA_FILE_NAME} already exists, "
+                        "but the content does not match the current metadata. Can not append "
+                        "the current dataset to already serialized data."
+                        f"\nprevious metadata: {previous_metadata}"
+                        f"\ncurrent metadata: {metadata}"
+                    )
+            else:
+                with open(path / METADATA_FILE_NAME, "w") as f:
+                    json.dump(metadata, f, indent=2)
+        elif mode == "w":
+            # clear the output directory if it exists (via shutils)
+            if os.path.exists(path):
+                logger.warning(
+                    f'Dataset serialization directory "{path}" already exists, removing it to overwrite existing files.'
+                )
+                shutil.rmtree(path)
+            os.makedirs(path, exist_ok=True)
+
+            with open(path / METADATA_FILE_NAME, "w") as f:
+                json.dump(metadata, f, indent=2)
+        else:
+            raise ValueError(f'mode must be "a" (append) or "w" (overwrite), but is "{mode}".')
+
+        # save the splits
+        for split, dataset in self.items():
+            split_path = path / split
+            logger.info(f'serialize documents to "{split_path}" ...')
+            os.makedirs(split_path, exist_ok=True)
+            file_name = split_path / "documents.jsonl"
+            write_mode = "a" if os.path.exists(file_name) else "w"
+            with open(file_name, write_mode) as f:
+                for doc in dataset:
+                    f.write(json.dumps(doc.asdict(), **kwargs) + "\n")
+
+    @property
+    def document_type(self) -> Type[Document]:
+        """Returns the document type of the dataset splits.
+
+        Raises an error if there are no splits in the dataset or if the dataset splits have
+        different document types.
+        """
+
+        if len(self) == 0:
+            raise ValueError("dataset does not contain any splits, cannot determine document type")
+        document_types = {ds.document_type for ds in self.values()}
+        if len(document_types) > 1:
+            raise ValueError(
+                f"dataset contains splits with different document types: {document_types}"
+            )
+        return next(iter(document_types))
+
+    @property
+    def dataset_type(self) -> Union[Type[Dataset], Type[IterableDataset]]:
+        """Returns the dataset type of the dataset splits, i.e. either `Dataset` or
+        `IterableDataset`.
+
+        Raises an error if there are no splits in the dataset or if the dataset splits have
+        different dataset types.
+        """
+
+        if len(self) == 0:
+            raise ValueError(
+                "dataset does not contain any splits, cannot determine the dataset type"
+            )
+        dataset_types = {type(ds) for ds in self.values()}
+        if len(dataset_types) > 1:
+            raise ValueError(
+                f"dataset contains splits with different dataset types: {dataset_types}"
+            )
+        return next(iter(dataset_types))
+
+    def register_document_converter(
+        self,
+        converter: Union[Callable[..., D], Dict[str, str], str],
+        document_type: Optional[Union[Type[D], str]] = None,
+    ) -> "DatasetDict":
+        """Register a converter function or field mapping for a target document type.
+
+        Args:
+            document_type: The target document type for which the converter should be registered. Can be a subclass
+                of Document or string that can be resolved to such a type. If `None`, the document type is tried to be
+                inferred from the converter function signature.
+            converter: Either a function that converts a document of the document type of this dataset to a document
+                of the target document_type, a string that can be resolved to such a function, or a field mapping
+                (dict[str, str]) that maps fields of the document type of this dataset to fields of the target
+                document_type.
+        """
+        resolved_document_type: Optional[Union[Type[D], Callable]] = None
+        if document_type is not None:
+            if isinstance(document_type, str):
+                resolved_document_type = resolve_target(document_type)
+            else:
+                resolved_document_type = document_type
+            if not (
+                isinstance(resolved_document_type, type)
+                and issubclass(resolved_document_type, Document)
+            ):
+                raise TypeError(
+                    f"document_type must be or resolve to a subclass of Document, but is '{document_type}'"
+                )
+
+        resolved_converter: Union[Callable[..., Any], dict[str, str]]
+        if isinstance(converter, str):
+            resolved_converter = resolve_target(converter)
+        else:
+            resolved_converter = converter
+        if not (callable(resolved_converter) or isinstance(resolved_converter, dict)):
+            raise TypeError(
+                f"converter must be a callable or a dict, but is {type(resolved_converter)}"
+            )
+
+        for ds in self.values():
+            ds.register_document_converter(
+                document_type=resolved_document_type, converter=resolved_converter
+            )
+        return self
+
+    def to_document_type(
+        self,
+        document_type: Union[Type[Document], str, WithDocumentTypeMixin],
+        downcast: bool = True,
+        **kwargs,
+    ) -> "DatasetDict":
+        """Converts all documents in the dataset to a new document type using the best registered
+        document converter.
+
+        Args:
+            document_type: document type to convert the documents to. Can be a subclass of Document
+                or string that can be resolved to such a type, or a class that implements the
+                `WithDocumentTypeMixin` interface.
+            downcast: if `True` (default), the dataset is converted to the new document type even
+                if it already has a document type that is a superclass of the new document type.
+                If `False`, no conversion is done in this case.
+        """
+
+        if isinstance(document_type, WithDocumentTypeMixin):
+            name = type(document_type).__name__
+            if document_type.document_type is None:
+                logger.warning(
+                    f"{name} does not specify a document type. The dataset can "
+                    f"not be automatically converted to a document type."
+                )
+                return self
+            logger.info(
+                f"convert the dataset to the document type that is specified by {name}: "
+                f"{document_type.document_type}"
+            )
+            resolved_document_type = document_type.document_type
+        elif isinstance(document_type, str):
+            resolved_document_type = resolve_target(document_type)
+        else:
+            resolved_document_type = document_type
+        if not (
+            isinstance(resolved_document_type, type)
+            and issubclass(resolved_document_type, Document)
+        ):
+            raise TypeError(
+                f"document_type must be a document type or a string that can be resolved to such a type, "
+                f"but got {document_type}."
+            )
+
+        if downcast:
+            if resolved_document_type == self.document_type:
+                logger.info(
+                    f"The dataset has already the requested document type {document_type}."
+                )
+                return self
+        else:
+            if issubclass(resolved_document_type, self.document_type):
+                logger.info(
+                    f"The dataset has already the requested document type {document_type}."
+                )
+                return self
+
+        result = type(self)(
+            {
+                name: ds.to_document_type(document_type=resolved_document_type, **kwargs)
+                for name, ds in self.items()
+            }
+        )
+        return result
+
+    def map(  # type: ignore
+        self,
+        function: Optional[Union[Callable, str]] = None,
+        result_document_type: Optional[Union[str, Type[Document]]] = None,
+        set_batch_size_to_split_size: bool = False,
+        **kwargs,
+    ) -> "DatasetDict":
+        """Applies a function to all documents in the dataset.
+
+        If the function is an object and is derived from the following mixins, the respective logic
+        is applied:
+        - EnterDatasetMixin: `enter_dataset(dataset_split, split_name)` is called before the function is
+            applied to a dataset split
+        - ExitDatasetMixin: `exit_dataset(processed_dataset_split, split_name)` is called after the function
+            is applied to a dataset split
+        - EnterDatasetDictMixin: `enter_dataset_dict(dataset_dict)` is called before any dataset split is
+            processed (and before any `enter_dataset()` is called)
+        - ExitDatasetDictMixin: `exit_dataset_dict(processed_dataset_dict)` is called after all dataset splits
+            are processed (and after all `exit_dataset()` are called)
+
+        Args:
+            function: function to apply to the documents. If `None`, the identity function is used. If `str`,
+                the function is resolved from the global namespace.
+            result_document_type: optional document type of the resulting dataset. Can be a subclass of Document or
+                string that can be resolved to such a type. If not provided, it is tried to infer it from the
+                function signature. If this is not possible, the document type of the input dataset
+                is used.
+            set_batch_size_to_split_size: If enabled, set the batch_size to the size of the respective split
+                when calling map() on it. This is useful to transform whole splits when using it in
+                combination with batched=True.
+            **kwargs: additional keyword arguments for `datasets.Dataset.map()`
+        """
+
+        if function is not None:
+            func = resolve_target(function)
+            if not callable(func):
+                raise TypeError(f"function must be callable, but is of type {type(func)}")
+        else:
+
+            def identity(x):
+                # exclude from coverage because its usage happens in the map which is not collected
+                return x  # pragma: no cover
+
+            func = identity
+        map_kwargs = dict(function=func, **kwargs)
+        if result_document_type is not None:
+            map_kwargs["result_document_type"] = resolve_target(result_document_type)
+
+        if isinstance(func, EnterDatasetDictMixin):
+            func.enter_dataset_dict(self)
+
+        result_dict = {}
+        for split, dataset in self.items():
+            if isinstance(func, EnterDatasetMixin):
+                func.enter_dataset(dataset=dataset, name=split)
+            if set_batch_size_to_split_size:
+                map_kwargs["batch_size"] = len(dataset)
+            result_dict[split] = dataset.map(**map_kwargs)
+            if isinstance(func, ExitDatasetMixin):
+                func.exit_dataset(dataset=result_dict[split], name=split)
+
+        result = type(self)(result_dict)
+
+        if isinstance(func, ExitDatasetDictMixin):
+            func.exit_dataset_dict(result)
+
+        return result
+
+    def select(
+        self,
+        split: str,
+        start: Optional[SupportsIndex] = None,
+        stop: Optional[SupportsIndex] = None,
+        step: Optional[SupportsIndex] = None,
+        **kwargs,
+    ) -> "DatasetDict":
+        """Reduce a certain dataset split to a selection of its documents. This is similar to the
+        Huggingface `select()`, but adds optional parameters `start`, `stop`, `step` that will be
+        used to create indices, if available.
+
+        Args:
+            split: name of the dataset split to modify
+            start: optional start index of the selection
+            stop: optional stop index of the selection
+            step: optional step size of the selection
+            **kwargs: additional keyword arguments for `datasets.Dataset.select()`
+        """
+
+        if stop is not None:
+            range_args = [stop]
+            if start is not None:
+                range_args = [start] + range_args
+            if step is not None:
+                range_args = range_args + [step]
+            kwargs["indices"] = range(*range_args)
+
+        if "indices" in kwargs:
+            result = type(self)(self)
+            pie_split = result[split]
+            if not isinstance(pie_split, Dataset):
+                raise TypeError(
+                    f"can only select from a Dataset, but the split '{split}' is of type {type(pie_split)}"
+                )
+            result[split] = Dataset.from_hf_dataset(
+                dataset=pie_split.select(**kwargs),
+                document_type=pie_split.document_type,
+                document_converters=pie_split.document_converters,
+            )
+            return result
+        else:
+            if len(kwargs) > 0:
+                logger.warning(
+                    f"arguments for dataset.select() available, but they do not contain 'indices' which is required, "
+                    f"so we do not call select. provided arguments: \n{json.dumps(kwargs, indent=2)}"
+                )
+            return self
+
+    def rename_splits(
+        self,
+        mapping: Optional[Dict[str, str]] = None,
+        keep_other_splits: bool = True,
+    ) -> "DatasetDict":
+        """Renames the dataset splits.
+
+        Args:
+            mapping: mapping from old split names to new split names.
+            keep_other_splits: if `True` (default), splits not contained in `mapping` are kept in the dataset
+        """
+
+        if mapping is None:
+            mapping = {}
+        result = type(self)(
+            {
+                mapping.get(name, name): data
+                for name, data in self.items()
+                if name in mapping or keep_other_splits
+            }
+        )
+        return result
+
+    def add_test_split(
+        self,
+        source_split: str = "train",
+        target_split: str = "test",
+        **kwargs,
+    ) -> "DatasetDict":
+        """Adds a test split to the dataset by splitting the source split.
+
+        Uses the Huggingface `train_test_split()` method.
+        """
+
+        pie_split = self[source_split]
+        if not isinstance(pie_split, Dataset):
+            raise TypeError(
+                f"can only create a train-test-split from a Dataset, but the source split '{source_split}' is of type "
+                f"{type(pie_split)}"
+            )
+        split_result_hf = pie_split.train_test_split(**kwargs)
+        split_result = type(self)(
+            {
+                name: Dataset.from_hf_dataset(
+                    ds,
+                    document_type=pie_split.document_type,
+                    document_converters=pie_split.document_converters,
+                )
+                for name, ds in split_result_hf.items()
+            }
+        )
+        res = type(self)(self)
+        res[source_split] = split_result["train"]
+        res[target_split] = split_result["test"]
+        split_sizes = {k: len(v) for k, v in res.items()}
+        logger.info(f"dataset size after adding the split: {split_sizes}")
+        return res
+
+    def drop_splits(self, split_names: List[str]) -> "DatasetDict":
+        """Drops splits from the dataset.
+
+        Args:
+            split_names: names of the splits to drop
+        """
+
+        result = type(self)({name: ds for name, ds in self.items() if name not in split_names})
+        return result
+
+    def concat_splits(self, splits: List[str], target: str) -> "DatasetDict":
+        """Concatenates selected splits into a new split.
+
+        Args:
+            splits: names of the splits to concatenate
+            target: name of the new split
+        """
+
+        if any(split not in self for split in splits):
+            raise ValueError(
+                f"not all splits to concatenate are present in the dataset: {splits}, {self.keys()}"
+            )
+        if len(splits) == 0:
+            raise ValueError("please provide at least one split to concatenate")
+        result = type(self)({name: ds for name, ds in self.items() if name not in splits})
+        if not issubclass(self.dataset_type, Dataset):
+            raise TypeError(
+                f"can only concatenate splits if the dataset type is a Dataset, but it is {self.dataset_type}"
+            )
+        splits_to_concat: List[Dataset] = [self[name] for name in splits]  # type: ignore
+        if any(self.dataset_type != type(ds) for ds in splits_to_concat):
+            raise ValueError(
+                f"not all splits to concatenate have the same dataset type: "
+                f"{({name: type(self[name]) for name in splits})}"
+            )
+        document_converters = None
+        for ds in splits_to_concat:
+            if ds.document_converters is not None:
+                if document_converters is None:
+                    document_converters = {}
+                document_converters.update(ds.document_converters)
+        # TODO: why do we need to ignore the typing here?
+        concatenated = datasets.concatenate_datasets(splits_to_concat)  # type: ignore
+        if not issubclass(self.dataset_type, type(concatenated)):
+            raise ValueError(
+                f"concatenated dataset is not of the same type as the original dataset: "
+                f"{self.dataset_type}, {type(concatenated)}"
+            )
+        result[target] = self.dataset_type.from_hf_dataset(
+            concatenated, document_type=self.document_type, document_converters=document_converters
+        )
+        split_sizes = {k: len(v) for k, v in result.items()}
+        logger.info(f"dataset size after concatenating splits: {split_sizes}")
+        return result
+
+    def filter(  # type: ignore
+        self,
+        split: str,
+        function: Optional[Union[Callable[[Dict], bool], str]] = None,
+        result_split_name: Optional[str] = None,
+        **kwargs,
+    ) -> "DatasetDict":
+        """Filters a dataset split using a filter function.
+
+        Note: In contrast to `map`, the filter function gets the example dict instead of a document as input
+        because the PIE variant of `Dataset.filter()` is not yet implemented and, thus, the Huggingface
+        variant is internally used instead.
+
+        Args:
+            split: name of the split to filter
+            function: filter function that is called on each example dict. Can be provided as a callable or as a
+                string that is resolved to a callable using `resolve_target()`.
+            result_split_name: name of the split to store the filtered examples in. If `None`, the filtered examples
+                are stored in the same split as the original examples.
+        """
+
+        if function is not None:
+            # create a shallow copy to not modify the input
+            result = type(self)(self)
+            function = resolve_target(function)
+            pie_split = result[split]
+            # TODO: Implement pytorch_ie.Dataset.filter() in a similar way such as map() to make use of the
+            #  document type. For now, the filter function is called directly on the HF dataset and thus needs to
+            #  accept a dict as input.
+            # we need to convert the dataset back to HF because the filter function internally uses map() which will
+            # break if the PIE variant is used
+            hf_split: Union[datasets.Dataset, datasets.IterableDataset]
+            if isinstance(pie_split, Dataset):
+                hf_split = datasets.Dataset(**Dataset.get_base_kwargs(pie_split))
+            elif isinstance(pie_split, IterableDataset):
+                hf_split = datasets.IterableDataset(**IterableDataset.get_base_kwargs(pie_split))
+            else:
+                raise ValueError(f"dataset split has unknown type: {type(pie_split)}")
+            hf_split_filtered = hf_split.filter(function=function, **kwargs)
+            target_split_name = result_split_name or split
+            target_split = type(pie_split).from_hf_dataset(
+                dataset=hf_split_filtered,  # type: ignore
+                document_type=pie_split.document_type,
+                document_converters=pie_split.document_converters,
+            )
+            # iterable datasets do not have a length
+            if not isinstance(target_split, IterableDataset):
+                logger.info(
+                    f"filtered split [{target_split_name}] has {len(target_split)} entries"
+                )
+            result[target_split_name] = target_split
+            return result
+        else:
+            return self
+
+    def move_to_new_split(
+        self,
+        ids: Optional[List[str]] = None,
+        filter_function: Optional[Union[Callable[[Dict[str, Any]], bool], str]] = None,
+        source_split: str = "train",
+        target_split: str = "test",
+    ) -> "DatasetDict":
+        """Moves examples from one split to another split. ids or a filter function can be provided
+        to select the examples to move.
+
+        Args:
+            ids: list of ids of the examples to move
+            filter_function: filter function that is called on each example dict. Can be provided as a callable or as a
+                string that can be resolved to such a callable.
+            source_split: name of the split to move the examples from
+            target_split: name of the split to move the examples to
+        """
+
+        if filter_function is not None:
+            filter_func = resolve_target(filter_function)
+        else:
+            if ids is None:
+                raise ValueError("please provide either a list of ids or a filter function")
+
+            ids_set = set(ids)
+
+            def filter_with_ids(ex: Dict[str, Any]):
+                # exclude from coverage because its usage happens in the map which is not collected
+                return ex["id"] in ids_set  # pragma: no cover
+
+            filter_func = filter_with_ids
+
+        dataset_with_only_ids = self.filter(
+            split=source_split,
+            function=filter_func,
+        )
+        dataset_without_ids = self.filter(
+            split=source_split,
+            function=lambda ex: not filter_func(ex),
+        )
+        dataset_without_ids[target_split] = dataset_with_only_ids[source_split]
+
+        split_sizes = {k: len(v) for k, v in dataset_without_ids.items()}
+        logger.info(f"dataset size after moving to new split: {split_sizes}")
+        return dataset_without_ids
+
+    def move_shard_to_new_split(
+        self,
+        source_split: str = "train",
+        target_split: str = "test",
+        **shard_kwargs,
+    ) -> "DatasetDict":
+        """Shards the source split and moves one shard to the target split.
+
+        Args:
+            source_split: name of the split to move the shard from
+            target_split: name of the new split to move the shard to
+            shard_kwargs: additional keyword arguments for `datasets.Dataset.shard()`
+        """
+        pie_split = self[source_split]
+        shard_result_hf = pie_split.shard(**shard_kwargs)
+        shard_ids = [doc.id for doc in shard_result_hf]
+
+        return self.move_to_new_split(
+            ids=shard_ids, source_split=source_split, target_split=target_split
+        )
+
+    def cast_document_type(
+        self, new_document_type: Union[Type[Document], str], **kwargs
+    ) -> "DatasetDict":
+        """Casts the document type of all splits to a new document type."""
+
+        new_type = resolve_target(new_document_type)
+
+        result = type(self)(
+            {
+                name: ds.cast_document_type(new_document_type=new_type, **kwargs)
+                for name, ds in self.items()
+            }
+        )
+        return result
+
+
+def load_dataset(*args, **kwargs) -> Union[DatasetDict, Dataset, IterableDataset]:
+    dataset_or_dataset_dict = datasets.load_dataset(*args, **kwargs)
+    if isinstance(dataset_or_dataset_dict, (Dataset, IterableDataset)):
+        return dataset_or_dataset_dict
+    elif isinstance(dataset_or_dataset_dict, (datasets.DatasetDict, datasets.IterableDatasetDict)):
+        for name, dataset in dataset_or_dataset_dict.items():
+            if not isinstance(dataset, (Dataset, IterableDataset)):
+                raise TypeError(
+                    f'expected all splits to be {Dataset} or {IterableDataset}, but split "{name}" is of type '
+                    f"{type(dataset)}"
+                )
+        return DatasetDict(dataset_or_dataset_dict)
+    else:
+        raise TypeError(
+            f"expected datasets.load_dataset to return {datasets.DatasetDict}, {datasets.IterableDatasetDict}, "
+            f"{Dataset}, or {IterableDataset}, but got {type(dataset_or_dataset_dict)}"
+        )
+
+
+def concatenate_dataset_dicts(
+    inputs: Dict[str, DatasetDict],
+    split_mappings: Dict[str, Dict[str, Union[str, List[str]]]],
+    clear_metadata: bool,
+):
+    """Concatenate the splits of multiple dataset dicts into a single one. Dataset name will be
+    saved in Metadata.
+
+    Args:
+        inputs: A mapping from dataset names to dataset dicts that contain the splits to concatenate.
+        split_mappings: A mapping from target split name to mappings from input dataset name to
+            source split name or list of names.
+        clear_metadata: Whether to clear the metadata before concatenating.
+
+    Returns: A dataset dict with keys in split_names as splits and content from the merged input
+        dataset dicts.
+    """
+
+    input_splits: Dict[str, Dict[str, Union[Dataset, IterableDataset]]] = {}
+    for target_split_name, mapping in split_mappings.items():
+        input_splits[target_split_name] = {}
+        for ds_name, source_split_name in mapping.items():
+            if isinstance(source_split_name, str):
+                input_splits[target_split_name][ds_name] = inputs[ds_name][source_split_name]
+            elif isinstance(source_split_name, list):
+                input_splits[target_split_name][ds_name] = concatenate_datasets(
+                    [
+                        inputs[ds_name][_source_split_name]
+                        for _source_split_name in source_split_name
+                    ],
+                    clear_metadata=clear_metadata,
+                )
+
+    result = DatasetDict(
+        {
+            target_split_name: concatenate_datasets(dsets, clear_metadata=clear_metadata)
+            for target_split_name, dsets in input_splits.items()
+        }
+    )
+
+    return result

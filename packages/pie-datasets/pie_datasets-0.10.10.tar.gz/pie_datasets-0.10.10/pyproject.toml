@@ -1,0 +1,89 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "pie-datasets"
+version = "0.10.10"
+description = "Building scripts for PyTorch-IE Datasets"
+authors = ["Arne Binder <arne.binder@dfki.de>"]
+readme = "README.md"
+homepage = "https://github.com/arnebinder/pie-datasets"
+repository = "https://github.com/arnebinder/pie-datasets"
+packages = [
+    { include = "pie_datasets", from = "src" },
+]
+classifiers = [
+    "Framework :: Pytest",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3 :: Only",
+]
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/arnebinder/pie-datasets/issues"
+"Changelog" = "https://github.com/arnebinder/pie-datasets/releases"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+pytorch-ie = ">=0.30.3,<0.32.0"
+# <2.16.0 because of https://github.com/ArneBinder/pie-datasets/issues/93
+datasets = ">=2.14.0,<2.16.0"
+# should not be necessary, but see https://github.com/ArneBinder/pie-datasets/issues/164
+huggingface-hub = ">=0.24.0"
+# <2.0.0 because otherwise datasets breaks
+numpy = "<2.0.0"
+# this was manually added because we get a conflict with pyarrow otherwise
+pyarrow = "^13"
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+pie-modules = ">=0.15.4,<0.16.0"
+torch = [
+    # default
+    {version = "^2.1.0+cpu", source = "pytorch", markers = "sys_platform != 'darwin' or (platform_machine != 'arm64' and platform_machine != 'x86_64')"},
+    # torch >= 2.3.0 is not available for macOS on intel
+    {version = ">=2.1.0,<2.3.0", source = "pypi", markers = "sys_platform == 'darwin' and platform_machine == 'x86_64'"},
+    # macOS with M-series
+    {version = "^2.1.0", source = "pypi", markers = "sys_platform == 'darwin' and platform_machine == 'arm64'"},
+]
+pytest = "^7.4.2"
+pytest-cov = "^4.1.0"
+pre-commit = "^3.4.0"
+
+[[tool.poetry.source]]
+name = "pytorch"
+url = "https://download.pytorch.org/whl/cpu"
+priority = "explicit"
+
+[[tool.poetry.source]]
+name = "pre-release"
+url = "https://test.pypi.org/simple/"
+priority = "explicit"
+
+
+[tool.pytest.ini_options]
+addopts = [
+  "--color=yes",
+  "--durations=0",
+  "--strict-markers",
+  "--doctest-modules",
+]
+filterwarnings = [
+  "ignore::DeprecationWarning",
+  "ignore::UserWarning",
+]
+log_cli = "True"
+markers = [
+  "slow: slow tests",
+]
+minversion = "6.0"
+testpaths = "tests/"
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: nocover",
+    "raise NotImplementedError",
+    "raise NotImplementedError()",
+    "if __name__ == .__main__.:",
+]

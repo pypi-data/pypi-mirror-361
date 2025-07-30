@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AEmail Server</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            background: white;
+            border-bottom: 3px solid #667eea;
+            color: #667eea;
+        }
+
+        .tab:hover {
+            background: #e9ecef;
+        }
+
+        .tab-content {
+            padding: 30px;
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .search-form {
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #5a6fd8;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            margin-left: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .results {
+            margin-top: 30px;
+        }
+
+        .email-item {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: transform 0.2s ease;
+        }
+
+        .email-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .email-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .email-from {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .email-to {
+            color: #6c757d;
+            margin-left: 10px;
+        }
+
+        .email-time {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+
+        .email-subject {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .email-content {
+            color: #666;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            background: white;
+            padding: 15px;
+            border-radius: 3px;
+            border: 1px solid #e9ecef;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .endpoint {
+            background: #e7f3ff;
+            border: 1px solid #b8daff;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .endpoint-method {
+            font-weight: 600;
+            color: #0056b3;
+        }
+
+        .endpoint-url {
+            font-family: 'Courier New', monospace;
+            background: #f8f9fa;
+            padding: 5px 8px;
+            border-radius: 3px;
+            margin: 5px 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab-content {
+                padding: 20px;
+            }
+
+            .email-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .email-time {
+                margin-top: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 AEmail Server</h1>
+            <p>A simple SMTP server for receiving emails with REST API access</p>
+        </div>
+
+        <div class="main-content">
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('search')">📧 Search Emails</button>
+                <button class="tab" onclick="showTab('all')">📋 All Emails</button>
+                <button class="tab" onclick="showTab('api')">🔧 API Documentation</button>
+            </div>
+
+            <div id="search-tab" class="tab-content active">
+                <h2>Search Emails</h2>
+                <div class="search-form">
+                    <div class="form-group">
+                        <label for="search-type">Search Type:</label>
+                        <select id="search-type">
+                            <option value="to">To (Recipient)</option>
+                            <option value="from">From (Sender)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="email-address">Email Address:</label>
+                        <input type="email" id="email-address" placeholder="Enter email address..." />
+                    </div>
+                    <button class="btn" onclick="searchEmails()">🔍 Search</button>
+                    <button class="btn btn-secondary" onclick="clearResults()">🗑️ Clear</button>
+                </div>
+                <div id="search-results" class="results"></div>
+            </div>
+
+            <div id="all-tab" class="tab-content">
+                <h2>All Emails</h2>
+                <p>Click the button below to load all recent emails (last 100):</p>
+                <button class="btn" onclick="loadAllEmails()">📥 Load All Emails</button>
+                <div id="all-results" class="results"></div>
+            </div>
+
+            <div id="api-tab" class="tab-content">
+                <h2>API Documentation</h2>
+                <p>The following REST API endpoints are available:</p>
+
+                <div class="endpoint">
+                    <div class="endpoint-method">GET /all</div>
+                    <div class="endpoint-url">/all</div>
+                    <p>Get all stored messages (last 100)</p>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-method">GET /from/&lt;email&gt;</div>
+                    <div class="endpoint-url">/from/test@example.com</div>
+                    <p>Get messages from a specific sender</p>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-method">GET /to/&lt;email&gt;</div>
+                    <div class="endpoint-url">/to/user@example.com</div>
+                    <p>Get messages to a specific recipient</p>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-method">GET /health</div>
+                    <div class="endpoint-url">/health</div>
+                    <p>Health check endpoint</p>
+                </div>
+
+                <h3>Usage Example</h3>
+                <p>Send an email to any address ending with your domain, then query:</p>
+                <div class="endpoint-url">curl http://localhost:14000/to/test@yourdomain.com</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Show selected tab content
+            document.getElementById(tabName + '-tab').classList.add('active');
+
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        function searchEmails() {
+            const searchType = document.getElementById('search-type').value;
+            const emailAddress = document.getElementById('email-address').value.trim();
+
+            if (!emailAddress) {
+                alert('Please enter an email address');
+                return;
+            }
+
+            const resultsDiv = document.getElementById('search-results');
+            resultsDiv.innerHTML = '<div class="loading">🔄 Searching...</div>';
+
+            const url = `/${searchType}/${encodeURIComponent(emailAddress)}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => displayResults(data, resultsDiv))
+                .catch(error => {
+                    resultsDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+                });
+        }
+
+        function loadAllEmails() {
+            const resultsDiv = document.getElementById('all-results');
+            resultsDiv.innerHTML = '<div class="loading">🔄 Loading...</div>';
+
+            fetch('/all')
+                .then(response => response.json())
+                .then(data => displayResults(data, resultsDiv))
+                .catch(error => {
+                    resultsDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+                });
+        }
+
+        function displayResults(emails, container) {
+            if (!emails || emails.length === 0) {
+                container.innerHTML = '<div class="loading">📭 No emails found</div>';
+                return;
+            }
+
+            const emailsHtml = emails.map(email => `
+                <div class="email-item">
+                    <div class="email-header">
+                        <div>
+                            <span class="email-from">📤 From: ${escapeHtml(email.from || 'Unknown')}</span>
+                            <span class="email-to">📥 To: ${escapeHtml((email.to || []).join(', '))}</span>
+                        </div>
+                        <span class="email-time">🕒 ${formatDate(email.time)}</span>
+                    </div>
+                    <div class="email-subject">📋 ${escapeHtml(email.subject || 'No Subject')}</div>
+                    <div class="email-content">${escapeHtml(email.content || 'No content')}</div>
+                </div>
+            `).join('');
+
+            container.innerHTML = emailsHtml;
+        }
+
+        function clearResults() {
+            document.getElementById('search-results').innerHTML = '';
+            document.getElementById('email-address').value = '';
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'Unknown';
+            const date = new Date(dateString);
+            return date.toLocaleString();
+        }
+
+        // Allow Enter key to trigger search
+        document.getElementById('email-address').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchEmails();
+            }
+        });
+    </script>
+</body>
+</html>

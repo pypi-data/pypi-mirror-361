@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+<meta charset="UTF-8">
+<title>登陆</title>
+<script type="text/javascript" src="static/auth/js/jquery.js"></script>
+<script type="text/javascript" src="static/auth/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="static/auth/js/md5.js"></script>
+<script type="text/javascript" src="static/auth/js/md5-jquery.js"></script>
+<style>
+body{
+    font-family:"Microsoft Yahei";
+    padding: 50px;
+    color:#fff;
+    background-color:#616161;
+}
+
+div{
+    padding: 0.5em;
+}
+input{
+    padding: 4px 10px;
+    height: 20px;
+    line-height: 20px;
+    position: relative;
+    color: #888;
+    background: #fafafa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+    display: inline-block;
+    margin-left:0.5em;
+}
+button{
+    width: 140px;
+    line-height: 38px;
+    text-align: center;
+    font-weight: bold;
+    color: #fff;
+    text-shadow:1px 1px 1px #333;
+    border-radius: 5px;
+    position: relative;
+    overflow: hidden;
+    cursor:pointer;
+    border:1px solid #1d4f7d;
+    box-shadow: 0 1px 2px #6593b1 inset,0 -1px 0 #2c415b inset,0 -2px 3px #628db2 inset;
+    background: -webkit-linear-gradient(top,#307aa4,#206084);
+    background: -moz-linear-gradient(top,#307aa4,#206084);
+    background: linear-gradient(top, #307aa4, #206084);
+    margin-left: 4em;
+}
+label{
+    width:4em;
+}
+.title{
+    text-align:center;
+    font-size:20px
+}
+.box {
+    background-color:#232323;
+    text-align: center;
+    border-radius:50px;
+    -moz-border-radius:50px;
+    -webkit-border-radius:50px;
+    box-shadow:inset 0 5px 10px -5px #191919,0 1px 0 0 #444;
+    -moz-box-shadow:inset 0 5px 10px -5px #191919,0 1px 0 0 #444;
+    padding: 2em;
+    -webkit-box-shadow:inset 0 5px 10px -5px #191919,0 1px 0 0 #444
+}
+.main{
+/*        display:none */
+}
+.row{
+  padding-left: 4em;
+  text-align: left;
+  height:2em;
+  padding-bottom: 1px
+}
+.msg{
+  color:red;
+  font-style:italic;
+  text-align: left;
+  padding-top: 2px;
+  padding-left: 4em;
+}
+.bottom{
+  text-align: center;
+  bottom:40px;
+  position: absolute;
+  width:30em
+}
+input[type=checkbox]{
+  width: 1.2em;
+}
+.info{
+  color: greenyellow;
+  font-weight:normal;
+  font-size: 14px;
+}
+#autologin{
+  position: relative;
+  top: 5px;
+}
+
+</style>
+<link rel="stylesheet" href="static/auth/css/login.css" type="text/css" />
+<script type="text/javascript">
+    $(function(){
+		$(document).keypress(function(e) {  
+			// 回车键事件  
+			if(e.which == 13) {  
+					jQuery("#btnok").click();  
+			}  
+		}); 
+        $("#btnok").click(function(){
+{#            var is_checked = $("#autologin").is(':checked');#}
+            var is_checked = $("#autologin:checked").length;
+            var data = {
+                "username":$("input[name='username']").val(),
+                "password": $.md5($("input[name='password']").val()),
+                "remember_me": is_checked
+            };
+            $.ajax({
+                url:"login",
+                type:'post',
+                data: data,
+                dataType:'json',
+                success: function(data){
+                    if(data.success){
+                        window.location = "{{ url|safe }}";
+                        return false;
+                    }
+                    alert(data.msg);
+                }
+            });
+
+        });
+
+    });
+
+
+</script>
+</head>
+ <body>
+      <div class="main">
+      <div >
+        <div class="title">用户登录</div>
+                <div style="width:30em;margin: auto;text-align: center;">
+                    <div class="box">
+                        <div>
+                            <div class="row"><label>用户:</label><input name="username" id="username" type="text"/></div>
+                            <div class="row" style="padding-bottom: 1px"><label>密码:</label><input name="password" id="password" type="password"/></div>
+                            <input type="hidden" name="passwordmd5" value="111">
+                            <div class="row" style="padding-bottom: 1px"><input type="checkbox" id="autologin"><span>自动登录</span></div>
+                            <div class="row"><span id="msg" class="info">公共场所不建议自动登录，以防账号丢失</span></div>
+                            <div class="row"  style=""><button id="btnok" style="line-height: 30px;">登入</button></div>
+                        </div>
+                    </div>
+                </div>
+      </div>
+    </div>
+ </body>
+</html>

@@ -1,0 +1,87 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: main
+    tags:
+    - 'v*'
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+        - '3.9'
+        - '3.13'
+    name: Check Python ${{ matrix.python-version }}
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install package
+      run: pip install .[test]
+
+    - name: Test regular package
+      run: pytest
+
+    - name: Uninstall package
+      run: pip uninstall -y scikit-hep-testdata
+
+    - name: Install package
+      run: pip install -e .[test]
+
+    - name: Requirements list
+      run: python -m pip list
+
+    - name: Test package
+      run: python -m pytest ./tests --cov=src/skhep_testdata --cov-report=xml
+
+    - name: Test coverage with Codecov
+      uses: codecov/codecov-action@v5
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  dist:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Build wheel and SDist
+      run: pipx run build
+
+    - name: Show sizes
+      run: ls -lh dist
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: DistPackage
+        path: dist
+
+    - uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        user: __token__
+        password: ${{ secrets.pypi_password }}
+      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+
+  pass:
+    if: always()
+    needs: [checks, dist]
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Decide whether the needed jobs succeeded or failed
+        uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}

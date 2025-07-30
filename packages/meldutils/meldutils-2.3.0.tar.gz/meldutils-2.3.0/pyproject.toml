@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "meldutils"
+description = "Graphical recursive file diffing (Meld, VS Code), good for managing templates across lots of repos / projects"
+keywords = ["meld", "merge", "git", "diff"]
+classifiers = ["Development Status :: 5 - Production/Stable",
+ "Environment :: Console",
+ "Intended Audience :: Developers",
+ "Operating System :: OS Independent",
+ "Programming Language :: Python :: 3",
+  "Topic :: Software Development :: Version Control",
+  "Topic :: Text Processing",
+  "Topic :: Utilities"
+]
+requires-python = ">=3.9"
+dynamic = ["version", "readme"]
+
+[tool.setuptools.dynamic]
+readme = {file = ["README.md"], content-type = "text/markdown"}
+version = {attr = "meldutils.__version__"}
+
+[project.optional-dependencies]
+tests = ["pytest"]
+lint = ["flake8", "flake8-bugbear", "flake8-builtins", "flake8-blind-except", "mypy"]
+
+[tool.black]
+line-length = 100
+
+[tool.mypy]
+files = ["src/"]

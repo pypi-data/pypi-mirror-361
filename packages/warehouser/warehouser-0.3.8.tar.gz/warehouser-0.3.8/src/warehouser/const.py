@@ -1,0 +1,1 @@
+LAST_UPDATE_COLUMN_NAME = 'last_updated'

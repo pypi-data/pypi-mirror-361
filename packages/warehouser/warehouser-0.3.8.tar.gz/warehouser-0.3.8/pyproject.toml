@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "warehouser"
+version = "0.3.8"
+authors = [
+  { name="Vasyl Tsiura" },
+]
+description = "Medical Procurement of Ukraine DataLakeHouse project."
+readme = "README.md"
+requires-python = ">=3.10.12"
+classifiers = [
+    "Programming Language :: Python :: 3"
+]
+
+
+
+dependencies = [
+    'pandas >= 2.2.3',
+    'funcy >= 2.0',
+    'pytz',
+    'SQLAlchemy >= 2.0.35',
+    'psycopg2-binary >= 2.9.9',
+    'PyMySQL>=1.1.1',
+    'cryptography>=43.0.1',
+    'doris-alchemy >= 0.2.3',
+    'trent>=0.2.7'
+]
+
+
+
+[tool.pyright]
+exclude = [
+        "**/target",
+        "**/zipapps_cache",
+        "**/__pycache__",
+        "target/zipapps_cache",
+        "zipapps_cache",
+        ".venv",
+        "resources",
+        "build_venv",
+        "test_venv"
+    ]
+typeCheckingMode = "standard"
+stubPath = ""

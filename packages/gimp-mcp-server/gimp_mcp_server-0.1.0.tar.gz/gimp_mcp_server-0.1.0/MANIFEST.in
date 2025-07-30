@@ -1,0 +1,84 @@
+# MANIFEST.in - Package Distribution Manifest
+# This file specifies which files to include in the source distribution
+
+# Core project files
+include README.md
+include LICENSE
+include CHANGELOG.md
+include CONTRIBUTING.md
+include CODE_OF_CONDUCT.md
+include SECURITY.md
+include pyproject.toml
+include requirements.txt
+include pytest.ini
+
+# Documentation
+recursive-include docs *
+include docs/README.md
+
+# Tests
+recursive-include tests *
+include tests/requirements.txt
+
+# Demos and examples
+recursive-include demos *
+include demos/README.md
+include demos/requirements.txt
+
+# GitHub configuration
+recursive-include .github *
+
+# Source code
+recursive-include src *
+
+# Exclude development and build artifacts
+exclude .gitignore
+exclude .pre-commit-config.yaml
+exclude tox.ini
+exclude Makefile
+exclude *.egg-info
+exclude .coverage
+exclude coverage.xml
+exclude htmlcov
+
+# Exclude compiled Python files
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude *.pyd
+global-exclude __pycache__
+global-exclude .pytest_cache
+global-exclude .mypy_cache
+global-exclude .tox
+
+# Exclude IDE files
+global-exclude .vscode
+global-exclude .idea
+global-exclude *.swp
+global-exclude *.swo
+global-exclude *~
+
+# Exclude OS files
+global-exclude .DS_Store
+global-exclude Thumbs.db
+global-exclude desktop.ini
+
+# Exclude build artifacts
+global-exclude build
+global-exclude dist
+global-exclude *.egg-info
+
+# Exclude temporary files
+global-exclude tmp
+global-exclude temp
+global-exclude *.tmp
+global-exclude *.temp
+
+# Exclude log files
+global-exclude *.log
+global-exclude logs
+
+# Include specific file types in source
+recursive-include src *.py
+recursive-include tests *.py
+recursive-include demos *.py
+recursive-include docs *.md *.rst *.txt

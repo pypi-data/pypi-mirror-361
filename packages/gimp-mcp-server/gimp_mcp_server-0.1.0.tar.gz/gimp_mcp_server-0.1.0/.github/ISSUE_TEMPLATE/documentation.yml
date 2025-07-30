@@ -1,0 +1,133 @@
+name: Documentation Issue
+description: Report documentation issues or suggest improvements
+title: "[DOCS] "
+labels: ["documentation", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve our documentation! Please provide details about the documentation issue or improvement.
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Documentation Type
+      description: What type of documentation issue is this?
+      options:
+        - Missing Documentation
+        - Incorrect Information
+        - Outdated Content
+        - Unclear Instructions
+        - Broken Links
+        - API Reference Issue
+        - Tutorial/Guide Issue
+        - Installation Guide Issue
+        - Typo/Grammar Fix
+        - Translation Issue
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: location
+    attributes:
+      label: Documentation Location
+      description: Where is the documentation issue located?
+      placeholder: e.g., README.md, docs/user-guide/installation.md, API reference for create_document
+    validations:
+      required: true
+
+  - type: textarea
+    id: issue-description
+    attributes:
+      label: Issue Description
+      description: Describe the documentation issue in detail
+      placeholder: |
+        The current documentation states...
+        But it should say...
+        This is confusing because...
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggested-fix
+    attributes:
+      label: Suggested Fix
+      description: How would you fix or improve this documentation?
+      placeholder: |
+        I suggest changing...
+        Adding a section about...
+        Including an example of...
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What were you trying to accomplish when you found this issue?
+      placeholder: |
+        I was trying to...
+        I expected to find information about...
+        This would help users who...
+
+  - type: dropdown
+    id: audience
+    attributes:
+      label: Target Audience
+      description: Who would benefit from this documentation improvement?
+      options:
+        - New Users
+        - Experienced Users
+        - Developers
+        - System Administrators
+        - All Users
+        - Specific Use Case
+    validations:
+      required: true
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: Examples or References
+      description: Are there any examples, code snippets, or external references that would help?
+      placeholder: |
+        Code examples:
+        ```python
+        # Example code here
+        ```
+        
+        External references:
+        - Link to similar documentation
+        - Reference materials
+      render: markdown
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this documentation fix?
+      options:
+        - Low - Minor improvement
+        - Medium - Helpful for users
+        - High - Important for usability
+        - Critical - Blocking user success
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: Please confirm the following
+      options:
+        - label: I have searched existing issues for similar documentation problems
+          required: true
+        - label: I have provided a clear description of the issue
+          required: true
+        - label: I have suggested a specific improvement
+          required: true
+        - label: I am willing to help write or review the documentation fix
+          required: false

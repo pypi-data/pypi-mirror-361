@@ -1,0 +1,50 @@
+[project]
+    name                  = "kenzo"
+    version               = "0.1.0-alpha"
+    description           = "A Minimal-YAML and Directory tagging system."
+    readme                = "README.md"
+    requires-python       = ">=3.12"
+    authors               = [{name = "oeykmiih", email = "joao@kyeo.xyz"}]
+    keywords              = ["YAML"]
+    classifiers           = ["License :: OSI Approved :: MIT License"]
+    scripts               = {}
+    dependencies          = ["pydantic"]
+    optional-dependencies = {dev = ["vendorize", "ruff", "mypy"]}
+
+[build-system]
+    requires      = ["setuptools"]
+    build-backend = "setuptools.build_meta"
+
+[tool.mypy]
+    exclude               = ["source/ken/_vendor"]
+    strict                = true
+    disallow_untyped_defs = true
+    strict_equality       = true
+    local_partial_types   = true
+
+[tool.pyright]
+    exclude    = ["source/**/_vendor"]
+    extraPaths = ["source/ken/_vendor"]
+
+[tool.pytest.ini_options]
+    minversion = "6.0"
+    testpaths  = ["source/tests", "source/*/tests"]
+    addopts    = ["-ra", "-q"]
+
+[tool.ruff]
+    line-length = 120
+
+[tool.setuptools.packages.find]
+    where   = ["source"]
+    include = ["ken"]
+
+[tool.vendorize]
+    target = "source/ken/_vendor"
+    packages = [
+        "apischema",
+        "mergedeep",
+        "../py_myaml/..",
+        "typed_argument_parser", # DEPENDS: [docstring_parser,typing_inspect]
+        "docstring_parser",
+        "typing_inspect",
+    ]

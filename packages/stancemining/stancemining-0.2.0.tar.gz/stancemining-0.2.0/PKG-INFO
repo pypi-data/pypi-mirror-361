@@ -1,0 +1,106 @@
+Metadata-Version: 2.4
+Name: stancemining
+Version: 0.2.0
+Summary: A library for stance detection and target extraction in text data.
+License-Expression: MIT
+License-File: LICENSE
+Requires-Python: >=3.10
+Requires-Dist: accelerate>=1.7.0
+Requires-Dist: adjusttext>=1.3.0
+Requires-Dist: bert-score>=0.3.13
+Requires-Dist: cuml-cu12
+Requires-Dist: datasets>=3.6.0
+Requires-Dist: evaluate>=0.4.3
+Requires-Dist: gpytorch>=1.14
+Requires-Dist: matplotlib>=3.10.3
+Requires-Dist: ninja>=1.11.1.4
+Requires-Dist: nltk>=3.9.1
+Requires-Dist: numpy
+Requires-Dist: packaging>=25.0
+Requires-Dist: pandas
+Requires-Dist: peft>=0.15.2
+Requires-Dist: polars>=1.30.0
+Requires-Dist: pyro-ppl>=1.9.1
+Requires-Dist: pytest>=8.4.0
+Requires-Dist: sacrebleu>=2.5.1
+Requires-Dist: scikit-learn>=1.7.0
+Requires-Dist: scipy>=1.15.3
+Requires-Dist: sentence-transformers>=4.1.0
+Requires-Dist: toponymy
+Requires-Dist: torch
+Requires-Dist: torchvision
+Requires-Dist: tqdm>=4.67.1
+Requires-Dist: vllm>=0.7.0
+Requires-Dist: wandb>=0.20.1
+Description-Content-Type: text/markdown
+
+# Stance Target Mining
+
+A tool for mining stance targets from a corpus of documents.
+
+## Installation
+
+```bash
+pip install stancemining
+```
+
+## Documentation
+Documentation is available at [stancemining.readthedocs.io](https://stancemining.readthedocs.io)
+
+## Usage
+
+### To get stance targets and stance from a corpus of documents
+```
+import stancemining
+
+model = stancemining.StanceMining()
+
+document_df = model.fit_transform(docs)
+target_info_df = model.get_target_info()
+```
+
+### To get stance target, stance, and stance trends from a corpus of documents
+```
+import stancemining
+
+model = stancemining.StanceMining()
+document_df = model.fit_transform(docs)
+trend_df = stancemining.get_trends_for_all_targets(document_df)
+```
+
+## StanceMining App
+
+This library comes with a web app to explore the results of the output.
+
+Here is a video demo of the app: [StanceMining App Demo](https://www.youtube.com/watch?v=4tvqq8GTUHU)
+
+### To deploy stancemining app
+
+The <your-data-path> should be either an absolute path, or a path relative to the `app` directory where the compose.yaml file is located.
+It should contain a `doc_stance` directory with the output of the fit_transform method saved as `.parquet.zstd` files, and a `target_trends` directory with the outputs from the `infer_stance_trends_for_all_targets` or `infer_stance_trends_for_target` method saved as `.parquet.zstd` files. There can be multiple files in each directory, and the app will automatically load all of them and concatenate them.
+
+If you need authentication for the app, you can set the environment variable `STANCE_AUTH_URL_PATH` to the URL of your authentication service (e.g., `myauth.com/login`). That path must accept a POST request with a JSON body containing `username` and `password` fields, and return a JSON response with a `token` field.
+If you do not need authentication, you can leave the environment variable unset.
+```
+export STANCE_DATA_PATH=<your-data-path>
+export STANCE_AUTH_URL_PATH=<your-auth-url/login>
+docker compose -f ./app/compose.yaml up
+```
+
+## To reproduce experimental results
+Rename `./config/config_default.yaml` to `./config/config.yaml` and set the parameters in the file.
+Run:
+```
+python ./experiments/scripts/main.py
+```
+
+You may need to setup a WanDB project.
+Run 
+```
+python ./experiments/scripts/get_results.py
+```
+To have the metrics written to a latex table saved as a tex file.
+
+
+
+

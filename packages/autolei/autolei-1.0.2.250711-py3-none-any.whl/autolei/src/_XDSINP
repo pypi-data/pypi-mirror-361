@@ -1,0 +1,227 @@
+! XDS.INP file for Rotation Electron Diffraction - Yinlin and Lei, version June 2025
+!
+! For definitions of input parameters, see:
+! http://xds.mpimf-heidelberg.mpg.de/html_doc/xds_parameters.html
+!
+! NOTE: Please convert the tiff files into SMV format using RED before processing
+! Images are expected to be already corrected for spatial distortions.
+!
+!
+! ********** Job control **********
+!
+! JOB= XYCORR INIT COLSPOT IDXREF
+! JOB= DEFPIX XPLAN INTEGRATE CORRECT
+! JOB= CORRECT
+!
+ MAXIMUM_NUMBER_OF_JOBS= {$1}
+ MAXIMUM_NUMBER_OF_PROCESSORS= {$2}
+! SECONDS=
+! NUMBER_OF_IMAGES_IN_CACHE=
+! TEST=  !1 : default. Generates the control image FRAME.cbf
+!        !2 : additional diagnostics like overloaded pixels are provided
+!
+!
+! ********** Data images **********
+!
+ NAME_TEMPLATE_OF_DATA_FRAMES= /00???.img   SMV
+!
+ DATA_RANGE=
+ SPOT_RANGE=
+ BACKGROUND_RANGE=
+! EXCLUDE_DATA_RANGE=  24 24
+!
+! ********** Crystal **********
+!
+! SPACE_GROUP_NUMBER=
+! UNIT_CELL_CONSTANTS=
+! REIDX=  !Optional reindexing transformation to apply on reflection indices
+ FRIEDEL'S_LAW=TRUE
+ STARTING_ANGLE= 0
+ STARTING_FRAME= 1
+ TEST_RESOLUTION_RANGE= 10  2   !for calculation of Rmeas when analysing the intensity data for space group symmetry in the CORRECT step.
+! MIN_RFL_Rmeas=    !50 is default - used in the CORRECT step for identification of possible space groups.
+! MAX_FAC_Rmeas=    !2.0 is default - used in the CORRECT step for identification of possible space groups.
+!
+! REFERENCE_DATA_SET=
+! FIT_B-FACTOR_TO_REFERENCE_DATA_SET=
+!
+! MAX_CELL_AXIS_ERROR=         !0.03 is default
+! MAX_CELL_ANGLE_ERROR=        !2.0  is default
+! UNIT_CELL_A-AXIS=
+! UNIT_CELL_B-AXIS=
+! UNIT_CELL_C-AXIS=
+!
+!
+! ************************************************
+! ********** Detector & Beam parameters **********
+!
+! ********** Detector hardware **********
+!
+ NX=   NY=   !Number of pixel
+ QX=   QY=   !Size (mm) of pixel
+!
+ OVERLOAD=           !default value dependent on the detector used
+! MINIMUM_VALID_PIXEL_VALUE=   !default value dependent on the detector used, 0 in most cases
+!
+ TRUSTED_REGION= 0   1.35  !default "0.0 1.05". Corners for square detector max "0.0 1.4142"
+! UNTRUSTED_RECTANGLE=
+! UNTRUSTED_ELLIPSE=
+! UNTRUSTED_QUADRILATERAL=
+!
+! Mark cross as untrusted region (Removing the Cross)
+! UNTRUSTED_RECTANGLE= 255 262 0 517 ! Setting for LaB6_SU
+! UNTRUSTED_RECTANGLE= 0 517 255 262
+!
+!
+! ********** Detector distortions **********
+!
+ DETECTOR= PILATUS
+ X-GEO_CORR=
+ Y-GEO_CORR=
+!
+! ********** Detector noise **********
+!
+! DARK_CURRENT_IMAGE=
+! OFFSET=
+!
+! ********** Trusted detector region **********
+!
+VALUE_RANGE_FOR_TRUSTED_DETECTOR_PIXELS= 200 60000   ! 6000 30000 is default, for excluding shaded parts of the detector.
+! MINIMUM_ZETA=   !0.05 is default
+! UNTRUSTED_RECTANGLE= 255 262 0 517
+! UNTRUSTED_RECTANGLE= 0 517 255 262
+!
+ INCLUDE_RESOLUTION_RANGE=
+!
+! Ice Ring exclusion, important for data collected using cryo holders
+! EXCLUDE_RESOLUTION_RANGE=
+! EXCLUDE_RESOLUTION_RANGE= 3.93 3.87 !ice-ring at 3.897 Angstrom
+! EXCLUDE_RESOLUTION_RANGE= 3.70 3.64 !ice-ring at 3.669 Angstrom
+! EXCLUDE_RESOLUTION_RANGE= 3.47 3.41 !ice-ring at 3.441 Angstrom
+! EXCLUDE_RESOLUTION_RANGE= 2.70 2.64 !ice-ring at 2.671 Angstrom (Main)
+! EXCLUDE_RESOLUTION_RANGE= 2.28 2.22 !ice-ring at 2.249 Angstrom (Main)
+! EXCLUDE_RESOLUTION_RANGE= 2.102 2.042 !ice-ring at 2.072 Angstrom - strong
+! EXCLUDE_RESOLUTION_RANGE= 1.978 1.918 !ice-ring at 1.948 Angstrom - weak
+! EXCLUDE_RESOLUTION_RANGE= 1.948 1.888 !ice-ring at 1.918 Angstrom - strong
+! EXCLUDE_RESOLUTION_RANGE= 1.913 1.853 !ice-ring at 1.883 Angstrom - weak
+! EXCLUDE_RESOLUTION_RANGE= 1.751 1.691 !ice-ring at 1.721 Angstrom - weak
+!
+!
+! ********** Detector geometry & Rotation axis **********
+! see http://xds.mpimf-heidelberg.mpg.de/html_doc/coordinate_systems.html
+!
+ DIRECTION_OF_DETECTOR_X-AXIS= 1 0 0
+ DIRECTION_OF_DETECTOR_Y-AXIS= 0 1 0
+!
+!   Detector origin (pixels). Often close to the image center, i.e. ORGX=NX/2; ORGY=NY/2
+ ORGX=  ORGY=
+!
+!   Can be negative. Positive because the detector normal points away from the crystal.
+ DETECTOR_DISTANCE=
+!
+ OSCILLATION_RANGE=
+!
+!   XDS assumes a right handed rotation of the crystal about the rotation axis when proceeding to the next data image.
+ ROTATION_AXIS=   !cos(155.3) cos(65.3)  !in XDS.INP emailed: 0.078605 0.996888 -0.005940
+!   Note on Rotation Axis: Direction cosines of the rotation axis with respect to the laboratory system.
+!   The length of this vector will be normalized by XDS.
+!   The direction of the axis is chosen to describe a right-handed rotation.
+!   Example:ROTATION_AXIS= 0.0 1.0 0.0
+!   The rotation axis points along the laboratory y-axis. When looking along the axis,
+!   the crystal would rotate clockwise when proceeding to the next data image.
+!
+!
+! ********** Incident beam **********
+!
+ X-RAY_WAVELENGTH=       !used by IDXREF
+ INCIDENT_BEAM_DIRECTION= 0 0 1  !used by IDXREF & CORRECT (REC. ANGSTROM)  !The vector points from the source towards the crystal
+!
+!
+! ********** Background and peak pixels **********
+!
+! NBX=     NBY=                         !3 is default
+! BACKGROUND_PIXEL= 3                   !3.0 is default
+! SIGNAL_PIXEL= 5.0                     !3.0 is default
+! MAXIMUM_NUMBER_OF_STRONG_PIXELS=      !1500000 is default
+! MINIMUM_NUMBER_OF_PIXELS_IN_A_SPOT=3  !6 is default
+! SPOT_MAXIMUM-CENTROID=                !2.0 is default
+!
+!
+! ********************************
+! ********** Refinement **********
+!
+ REFINE(IDXREF)= AXIS ORIENTATION CELL  BEAM   !POSITION BEAM AXIS       !ORIENTATION CELL !SEGMENT!
+ REFINE(INTEGRATE)= !POSITION BEAM AXIS        !ORIENTATION CELL
+ REFINE(CORRECT)= ORIENTATION CELL AXIS  BEAM  !POSITION BEAM AXIS ORIENTATION CELL        !SEGMENT
+!   Parameter Keywords:
+!   POSITION - refine the position of the origin of the detector system (including camera length)
+!   BEAM - refine direct beam direction
+!   AXIS - refine rotation axis
+!   ORIENTATION - refine unit cell orientation
+!   CELL - refine unit cell constants
+!   SEGMENT - refine internal segment assembly of the detector
+!
+! DEFAULT_REFINE_SEGMENT=
+! MINIMUM_NUMBER_OF_REFLECTIONS/SEGMENT=
+!
+!
+! *********************************************
+! ********** Processing Optimization **********
+!
+! ********** Indexing **********
+!
+! INDEX_ORIGIN=      !0 0 0 is default. Used by IDXREF to add an index offset
+! INDEX_ERROR=       !0.05 is default
+! INDEX_MAGNITUDE=   !8 is default
+! INDEX_QUALITY=     !0.8 is default
+!
+! SEPMIN= 7            !6.0 is default, hardly needs to be changed
+! CLUSTER_RADIUS= 3.5    !3 is default, hardly needs to be changed.
+!
+! MAXIMUM_ERROR_OF_SPOT_POSITION=       !3.0 is default, hardly needs to be changed.
+! MAXIMUM_ERROR_OF_SPINDLE_POSITION=    !2.0 is default, hardly needs to be changed.
+!
+ MINIMUM_FRACTION_OF_INDEXED_SPOTS= 0.25    !0.50 is default.
+!
+!
+! ********** Peak profiles and Integration **********
+!
+! REFLECTING_RANGE=
+! REFLECTING_RANGE_E.S.D.= 0.466
+! BEAM_DIVERGENCE=
+! BEAM_DIVERGENCE_E.S.D.=0.004
+!
+ NUMBER_OF_PROFILE_GRID_POINTS_ALONG_ALPHA/BETA= 13    !9 is default
+! NUMBER_OF_PROFILE_GRID_POINTS_ALONG_GAMMA=         !9 is default
+!   Each reflection when mapped to the surface of the Ewald sphere is sampled by 13 x 13 raster points in the plane tangential to the sphere
+!   and by 9 points along the shortest rotation route through the sphere.
+!
+! CUT=        !2.0 is default. Grid points in the reflection profile less than 2% of the maximum are not used for integration.
+!   used by INTEGRATE
+! DELPHI=     !5.0 is default = 5 degrees of spindle rotation.
+!   If there are too few strong spots which could be used for learning spot profiles, it may be useful to specify a larger value.
+!   used by INTEGRATE
+!
+! MINPK=   !75.0 is default, hardly needs to be changed.
+!   Defines the minimum required percentage of observed reflection intensity.
+!
+! WFAC1=   !1.0 is default, hardly needs to be changed.
+!   used for recognizing MISFITS. A larger value, like 1.5, would reduce the number of MISFITS (and increase the R-factors).
+!
+! PROFILE_FITTING=    !TRUE is default
+!
+!
+! ********** Correction factors **********
+!
+! STRICT_ABSORPTION_CORRECTION=    !FALSE is default
+! PATCH_SHUTTER_PROBLEM=           !FALSE is default
+! CORRECTIONS=                     !DECAY MODULATION ABSORPTION  !ALL is default
+! MINIMUM_I/SIGMA=                 !3.0 is default. For determination of correction factors.
+! NBATCH=                          !XDS will determine a reasonable value
+! REFLECTIONS/CORRECTION_FACTOR=
+! REJECT_ALIEN=                    !20.0 is default
+! DATA_RANGE_FIXED_SCALE_FACTOR=
+!
+!
+
+

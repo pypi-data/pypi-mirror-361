@@ -1,0 +1,140 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["setuptools >= 61.0"]
+
+[project]
+name = "pyosis"
+description = "Unofficial Python client for parsing OSIS (Open Scriptural Information Standard) files"
+dynamic = ["version"]
+dependencies = [
+    "pydantic>2.0.0,<=2.10.4",
+    "pydantic_extra_types[pycountry]==2.10.4",
+    "xsdata-pydantic==24.5",
+    "xsdata==25.7",
+]
+requires-python = ">=3.9"
+authors = [{name = "Andrew P. Sansom", email = "andrew@euleriancircuit.com"}]
+readme = "README.md"
+license = {file = "LICENSE"}
+keywords = [
+    "bible study",
+    "bible tools",
+    "bible",
+    "data parsing",
+    "digital humanities",
+    "digital scripture",
+    "open scripture",
+    "osis parser",
+    "osis",
+    "parser",
+    "pypi",
+    "python",
+    "religious texts",
+    "scripture analysis",
+    "scripture parser",
+    "scripture",
+    "text analytics",
+    "text processing",
+    "xml parsing",
+    "xml",
+]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Religion",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python",
+    "Topic :: Religion",
+]
+
+[project.optional-dependencies]
+dev = [
+    "hypothesis==6.123.14",
+    "mypy==1.14.1",
+    "pyright==1.1.391",
+    "pytest-cov==6.0.0",
+    "pytest-github-actions-annotate-failures",
+    "pytest==8.3.4",
+    "ruff==0.8.6",
+    "toml-sort==0.24.2",
+]
+docs = [
+    "mkdocs-autolinks-plugin==0.7.1",
+    "mkdocs-exclude==1.0.2",
+    "mkdocs-material==9.5.49",
+    "mkdocs-snippets==1.3.0",
+    "mkdocs==1.6.1",
+    "mkdocstrings[python]==0.27.0",
+]
+
+[project.urls]
+Documentation = "https://pyosis.readthedocs.io/en/stable/"
+Homepage = "https://github.com/open-canon/pyosis"
+Issues = "https://github.com/open-canon/pyosis/issues"
+Repository = "https://github.com/open-canon/pyosis.git"
+
+[tool.mypy]
+exclude = ["generated"]
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = ["annotated_types"]
+
+[tool.pyright]
+exclude = ["**/generated"]
+include = ["pyosis"]
+
+[tool.ruff]
+exclude = ["generated"]
+line-length = 120
+preview = true
+
+[tool.ruff.lint]
+ignore = ["D205", "F401", "PT009", "S101"]
+select = ["ANN", "D", "E", "F", "FURB", "I", "N", "PERF", "PTH", "RUF", "UP", "W", "YTT"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.semantic_release]
+allow_zero_version = true
+build_command = "python -m pip install build && python -m build"
+major_on_zero = false
+version_variables = [
+    "pyosis/__init__.py:__version__",
+]
+
+[tool.semantic_release.commit_parser_options]
+allowed_tags = [
+    "build",
+    "chore",
+    "ci",
+    "docs",
+    "feat",
+    "fix",
+    "perf",
+    "refactor",
+    "style",
+    "test",
+]
+minor_tags = ["feat"]
+patch_tags = ["build", "fix", "perf"]
+
+[tool.setuptools.dynamic]
+version = {attr = "pyosis.__version__"}
+
+[tool.tomlsort]
+in_place = true
+sort_inline_arrays = true
+sort_table_keys = true
+spaces_before_inline_comment = 2
+spaces_indent_inline_array = 4
+trailing_comma_inline_array = true
+
+[tool.tomlsort.overrides]
+"project".table_keys = false

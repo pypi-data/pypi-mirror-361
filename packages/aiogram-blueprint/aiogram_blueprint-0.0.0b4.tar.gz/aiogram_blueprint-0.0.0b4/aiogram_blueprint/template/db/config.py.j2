@@ -1,0 +1,45 @@
+from __future__ import annotations
+
+from dataclasses import dataclass
+from urllib.parse import urlparse
+
+from ..constants import ENV
+
+@dataclass(frozen=True)
+class DBConfig:
+    URL: str
+    ADAPTER: str
+    {% if db_type == "PostgreSQL" or db_type == "MySQL" %}
+    HOST: str
+    PORT: int
+    USER: str
+    PASSWORD: str
+    NAME: str
+    {% elif db_type == "SQLite" %}
+    PATH: str
+    {% endif %}
+
+    @classmethod
+    def load(cls) -> "DBConfig":
+        url = ENV.str("DB_URL")
+        parsed = urlparse(url)
+        adapter = parsed.scheme
+        {% if db_type == "PostgreSQL" or db_type == "MySQL" %}
+        return cls(
+            URL=url,
+            ADAPTER=adapter,
+            HOST=parsed.hostname,
+            PORT=parsed.port,
+            USER=parsed.username,
+            PASSWORD=parsed.password,
+            NAME=parsed.path.lstrip("/"),
+        )
+        {% elif db_type == "SQLite" %}
+        return cls(
+            URL=url,
+            ADAPTER=adapter,
+            PATH=parsed.path.lstrip("/"),
+        )
+        {% endif %}
+
+db_config = DBConfig.load() 

@@ -1,0 +1,1099 @@
+<div align="center">
+
+# 🚀 ESP-Linker
+### Professional Wireless GPIO Control for ESP8266
+
+[![PyPI version](https://img.shields.io/pypi/v/esp-linker?style=for-the-badge&logo=pypi&logoColor=white&color=blue)](https://pypi.org/project/esp-linker)
+[![Python versions](https://img.shields.io/pypi/pyversions/esp-linker?style=for-the-badge&logo=python&logoColor=white&color=green)](https://pypi.org/project/esp-linker/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+[![Downloads](https://img.shields.io/pypi/dm/esp-linker?style=for-the-badge&logo=download&logoColor=white&color=orange)](https://pepy.tech/project/esp-linker)
+
+[![GitHub stars](https://img.shields.io/github/stars/skr-electronics-lab/esp-linker?style=social)](https://github.com/skr-electronics-lab/esp-linker)
+[![YouTube](https://img.shields.io/badge/YouTube-Subscribe-red?style=social&logo=youtube)](https://www.youtube.com/@skr_electronics_lab)
+[![Instagram](https://img.shields.io/badge/Instagram-Follow-purple?style=social&logo=instagram)](https://www.instagram.com/skr_electronics_lab)
+
+**🎯 Transform your ESP8266 into a powerful wireless GPIO controller**
+
+*Complete IoT development platform with PyFirmata-inspired interface*
+
+[📚 Documentation](https://www.skrelectronicslab.com/esp-linker) • [🚀 Quick Start](#-quick-start-guide) • [💡 Examples](#-advanced-usage) • [🎥 Video Tutorials](https://www.youtube.com/@skr_electronics_lab)
+
+</div>
+
+---
+
+## 🌟 **What is ESP-Linker?**
+
+**ESP-Linker** is a comprehensive IoT development platform created by **SKR Electronics Lab** that revolutionizes ESP8266 development. It provides professional wireless GPIO control with a familiar PyFirmata-inspired interface, making IoT development accessible to everyone from beginners to professionals.
+
+### 🎯 **Why Choose ESP-Linker?**
+
+| Traditional ESP8266 Development | ESP-Linker Advantage |
+|--------------------------------|----------------------|
+| Complex WiFi setup code | Interactive WiFi wizard |
+| Manual device discovery | Automatic mDNS discovery |
+| Basic GPIO control | Professional API with error handling |
+| No device management | Multi-device management system |
+| Command-line only | CLI tools + Web dashboard |
+| Separate firmware needed | Built-in firmware (365KB) |
+
+## ✨ **Complete Feature Overview**
+
+<details>
+<summary><h3>📡 <strong>Wireless GPIO Control System</strong></h3></summary>
+
+Transform your ESP8266 into a powerful wireless GPIO controller with professional-grade features:
+
+#### 🔌 **Digital I/O Operations**
+- **Digital Write**: Control LEDs, relays, motors with `board.write(pin, value)`
+- **Digital Read**: Read button states, sensor outputs with `board.read(pin)`
+- **Pull-up Support**: Built-in pull-up resistor configuration for reliable readings
+- **Pin State Caching**: Optimized performance with intelligent state management
+
+#### ⚡ **PWM (Pulse Width Modulation)**
+- **8 PWM Channels**: Simultaneous control of multiple PWM outputs
+- **0-1023 Resolution**: Fine-grained control for precise applications
+- **LED Brightness Control**: Smooth dimming and color mixing
+- **Motor Speed Control**: Variable speed control for DC motors
+- **Servo Positioning**: Precise servo angle control (0-180°)
+
+#### 📊 **Analog Input System**
+- **10-bit ADC**: High-resolution analog readings (0-1024)
+- **A0 Pin Support**: Read sensors, potentiometers, voltage dividers
+- **Real-time Sampling**: Continuous data collection for monitoring
+- **Calibration Support**: Built-in calibration for accurate measurements
+
+#### � **Batch Operations**
+- **Multiple Pin Control**: Efficient bulk GPIO operations
+- **Atomic Transactions**: Ensure synchronized pin state changes
+- **Performance Optimization**: Reduced network overhead for complex operations
+
+</details>
+
+<details>
+<summary><h3>🔍 <strong>Intelligent Auto-Discovery & Device Management</strong></h3></summary>
+
+Professional device management system for seamless multi-device operations:
+
+#### 🌐 **mDNS Auto-Discovery**
+- **Zero-Configuration**: Automatic device detection without IP addresses
+- **Network Scanning**: Intelligent network topology discovery
+- **Service Broadcasting**: ESP8266 devices announce themselves automatically
+- **Cross-Platform Support**: Works on Windows, Linux, macOS networks
+
+#### 📱 **Multi-Device Management**
+- **Device Registration**: Persistent device database with automatic updates
+- **Centralized Control**: Manage multiple ESP8266 boards from single interface
+- **Device Grouping**: Organize devices by location, function, or project
+- **Status Monitoring**: Real-time health checks and connectivity status
+
+#### 🔄 **Connection Health Monitoring**
+- **Auto-Retry Logic**: Intelligent reconnection with exponential backoff
+- **Heartbeat System**: Continuous connectivity verification
+- **Failover Support**: Automatic switching between available devices
+- **Network Resilience**: Handles WiFi disconnections and network changes
+
+#### 💾 **Persistent Configuration**
+- **Device Profiles**: Save device settings, pin configurations, and preferences
+- **Configuration Backup**: Export/import device configurations
+- **Version Control**: Track configuration changes and rollback support
+
+</details>
+
+<details>
+<summary><h3>⚡ <strong>Professional CLI Tools Suite</strong></h3></summary>
+
+Comprehensive command-line interface for professional development workflows:
+
+#### 🔧 **Firmware Management**
+- **Built-in Firmware**: 365KB complete ESP8266 firmware included
+- **Visual Progress Bars**: Real-time flashing progress with tqdm integration
+- **Auto-Port Detection**: Intelligent ESP8266 board detection
+- **Multiple Baud Rates**: Support for 115200, 460800, 921600 baud rates
+- **Chip Verification**: Automatic chip ID and flash size detection
+
+#### 📶 **WiFi Configuration Wizard**
+- **Interactive Setup**: Step-by-step WiFi configuration process
+- **Network Scanning**: Discover available WiFi networks with signal strength
+- **Security Support**: WPA/WPA2 encryption with password validation
+- **Connection Testing**: Verify connectivity before saving configuration
+- **Multiple Methods**: Serial, wireless, and AP-mode configuration options
+
+#### 🔍 **Device Discovery & Testing**
+- **Network Discovery**: Find ESP-Linker devices on local network
+- **Port Detection**: Automatically detect connected ESP8266 boards
+- **Functionality Testing**: Comprehensive device testing with LED, PWM, servo tests
+- **Performance Benchmarks**: Measure response times and throughput
+- **Diagnostic Tools**: Network connectivity and device health checks
+
+#### 📊 **Device Management Commands**
+```bash
+esp-linker devices list          # List all managed devices
+esp-linker devices discover      # Find and add new devices
+esp-linker devices stats         # Show device statistics
+esp-linker devices remove        # Remove devices from management
+esp-linker devices monitor       # Real-time device monitoring
+```
+
+</details>
+
+<details>
+<summary><h3>🌐 <strong>Professional Web Dashboard</strong></h3></summary>
+
+Modern, responsive web interface for device control and monitoring:
+
+#### 🎨 **Modern UI/UX Design**
+- **Responsive Layout**: Perfect on desktop, tablet, and mobile devices
+- **Dark/Light Themes**: Professional themes with smooth transitions
+- **Real-time Updates**: Live device status and GPIO state updates
+- **Interactive Controls**: Touch-friendly sliders, buttons, and switches
+
+#### � **Device Monitoring**
+- **Live GPIO States**: Real-time pin status visualization
+- **Analog Data Plots**: Interactive charts for sensor data
+- **Device Statistics**: Uptime, memory usage, WiFi signal strength
+- **Historical Data**: Data logging and trend analysis
+
+#### 🎛️ **Control Interface**
+- **GPIO Control Panel**: Visual pin control with instant feedback
+- **PWM Sliders**: Smooth PWM control with real-time preview
+- **Servo Control**: Angle control with visual servo position
+- **Batch Operations**: Control multiple pins simultaneously
+
+#### 🔧 **Advanced Features**
+- **Device Configuration**: Change device settings through web interface
+- **Firmware Updates**: OTA firmware updates through browser
+- **Export/Import**: Configuration backup and restore
+- **API Documentation**: Built-in API reference and testing tools
+
+</details>
+
+<details>
+<summary><h3>🔧 <strong>Enhanced Development Experience</strong></h3></summary>
+
+Professional development tools and features for efficient IoT development:
+
+#### 🛡️ **Robust Error Handling**
+- **Auto-Retry Logic**: Intelligent retry with exponential backoff
+- **Connection Recovery**: Automatic reconnection on network failures
+- **Timeout Management**: Configurable timeouts for different operations
+- **Error Reporting**: Detailed error messages with troubleshooting hints
+
+#### 📝 **Professional Logging**
+- **Structured Logging**: JSON-formatted logs for easy parsing
+- **Log Levels**: Debug, info, warning, error levels with filtering
+- **File Logging**: Persistent logs with rotation and compression
+- **Real-time Monitoring**: Live log streaming for debugging
+
+#### 🔒 **Security Features**
+- **Secure Communication**: HTTPS support for encrypted communication
+- **Authentication**: Device authentication and access control
+- **CORS Support**: Cross-origin resource sharing for web applications
+- **Network Isolation**: Support for isolated network environments
+
+#### 🚀 **Performance Optimization**
+- **Connection Pooling**: Efficient connection management
+- **Caching System**: Intelligent caching for improved performance
+- **Batch Processing**: Optimized bulk operations
+- **Memory Management**: Efficient memory usage and garbage collection
+
+</details>
+
+## 📦 **Professional Installation Guide**
+
+<div align="center">
+
+### 🚀 **One-Command Installation**
+
+</div>
+
+#### 🎯 **Standard Installation** (Recommended)
+```bash
+pip install esp-linker
+```
+*Includes: Core library, CLI tools, firmware, auto-discovery*
+
+#### 🌐 **Full Installation** (With Web Dashboard)
+```bash
+pip install esp-linker[dashboard]
+```
+*Includes: Everything + Flask web dashboard*
+
+#### 🔧 **Developer Installation** (Complete Package)
+```bash
+pip install esp-linker[all]
+```
+*Includes: All features + development tools*
+
+#### 📋 **System Requirements**
+- **Python**: 3.7+ (3.8+ recommended)
+- **Operating System**: Windows 10+, Linux, macOS 10.14+
+- **Hardware**: ESP8266 board (NodeMCU, Wemos D1, etc.)
+- **Network**: WiFi connection for ESP8266 and development machine
+
+#### ✅ **Verify Installation**
+```bash
+esp-linker --version          # Check CLI installation
+python -c "import esp_linker; print('ESP-Linker ready!')"
+```
+
+## 🚀 **Complete Quick Start Guide**
+
+<div align="center">
+
+### ⚡ **From Zero to IoT in 5 Minutes**
+
+</div>
+
+<details>
+<summary><h3>🔥 <strong>Step 1: Flash ESP8266 Firmware</strong></h3></summary>
+
+Transform your ESP8266 into an ESP-Linker device with our built-in firmware:
+
+#### 🎯 **Automatic Flashing** (Recommended)
+```bash
+esp-linker flash
+```
+*Auto-detects ESP8266 board and flashes firmware with progress bars*
+
+#### 🔧 **Manual Port Selection**
+```bash
+esp-linker flash --port COM3        # Windows
+esp-linker flash --port /dev/ttyUSB0 # Linux
+esp-linker flash --port /dev/cu.usbserial # macOS
+```
+
+#### ⚙️ **Advanced Options**
+```bash
+esp-linker flash --baud 921600       # High-speed flashing
+esp-linker flash --no-erase         # Skip chip erase
+esp-linker flash --firmware-info    # Show firmware details
+```
+
+#### 📊 **What Gets Flashed**
+- **ESP-Linker Firmware**: Complete 365KB firmware
+- **WiFi Stack**: Professional WiFi management
+- **GPIO API**: RESTful GPIO control interface
+- **mDNS Service**: Auto-discovery capability
+- **Web Server**: Built-in HTTP server for control
+
+</details>
+
+<details>
+<summary><h3>📶 <strong>Step 2: Configure WiFi Connection</strong></h3></summary>
+
+Set up WiFi connectivity with our interactive wizard:
+
+#### 🧙‍♂️ **Interactive WiFi Wizard**
+```bash
+esp-linker setup-wifi --port COM3
+```
+
+**What the wizard does:**
+1. **Scans Networks**: Discovers available WiFi networks
+2. **Shows Signal Strength**: Displays RSSI for optimal selection
+3. **Security Detection**: Identifies WPA/WPA2 encryption
+4. **Credential Input**: Secure password entry
+5. **Connection Testing**: Verifies connectivity before saving
+
+#### 🔧 **Manual WiFi Configuration**
+```bash
+esp-linker configure-wifi --ssid "YourNetwork" --password "YourPassword"
+```
+
+#### 📡 **WiFi Status Check**
+```bash
+esp-linker wifi-status --port COM3
+```
+
+</details>
+
+<details>
+<summary><h3>🔍 <strong>Step 3: Discover Your Device</strong></h3></summary>
+
+Find your ESP-Linker device on the network:
+
+#### 🌐 **Auto-Discovery**
+```bash
+esp-linker discover
+```
+*Uses mDNS to find ESP-Linker devices automatically*
+
+#### 🎯 **Advanced Discovery**
+```bash
+esp-linker discover --timeout 60    # Extended search
+esp-linker discover --json          # JSON output
+esp-linker devices discover         # Add to device manager
+```
+
+#### 📱 **Device Management**
+```bash
+esp-linker devices list             # Show managed devices
+esp-linker devices stats            # Device statistics
+```
+
+</details>
+
+<details>
+<summary><h3>🐍 <strong>Step 4: Python Programming</strong></h3></summary>
+
+Start controlling your ESP8266 with Python:
+
+#### 🚀 **Basic GPIO Control**
+```python
+from esp_linker import connect_auto
+
+# Auto-discover and connect
+board = connect_auto()
+
+# Digital I/O
+board.write(2, 1)           # Turn on LED (pin 2)
+button_state = board.read(4) # Read button (pin 4)
+
+# Analog input
+sensor_value = board.analog_read()  # Read A0 pin
+
+# PWM control (0-1023)
+board.pwm(5, 512)           # 50% brightness
+
+# Servo control (0-180°)
+board.servo(14, 90)         # Center position
+
+# Device info
+info = board.get_device_info()
+print(f"Device: {info['firmware_name']} v{info['firmware_version']}")
+print(f"Uptime: {info['uptime']} seconds")
+print(f"Free Memory: {info['free_heap']} bytes")
+
+board.close()
+```
+
+#### 🔧 **Advanced Control**
+```python
+from esp_linker import ESPBoard
+
+# Manual connection
+board = ESPBoard("192.168.1.100")
+
+# Batch operations
+pins_states = {2: 1, 4: 0, 5: 1}
+board.write_multiple(pins_states)
+
+# PWM with custom frequency
+board.pwm_freq(1000)  # Set PWM frequency to 1kHz
+board.pwm(5, 256)     # 25% duty cycle
+
+# Servo with speed control
+board.servo_speed(14, 90, speed=50)  # Slow movement
+
+# Connection monitoring
+if board.ping():
+    print("Device is responsive")
+else:
+    print("Device not responding")
+```
+
+#### 🌐 **Web Dashboard Access**
+```python
+# Launch web dashboard
+from esp_linker.dashboard import run_dashboard
+run_dashboard(port=8080)
+```
+
+</details>
+
+<details>
+<summary><h3>🎛️ <strong>Step 5: Web Dashboard Control</strong></h3></summary>
+
+Access the professional web interface:
+
+#### 🌐 **Launch Dashboard**
+```bash
+esp-linker dashboard
+```
+*Opens at http://localhost:5000*
+
+#### ⚙️ **Custom Configuration**
+```bash
+esp-linker dashboard --host 0.0.0.0 --port 8080 --debug
+```
+
+#### 📱 **Dashboard Features**
+- **Real-time GPIO Control**: Interactive pin control
+- **Live Monitoring**: Device status and sensor data
+- **Device Management**: Add, remove, configure devices
+- **Data Visualization**: Charts and graphs for sensor data
+- **Mobile Responsive**: Perfect on phones and tablets
+
+</details>
+
+## 🛠️ Advanced Usage
+
+### Manual Connection
+```python
+from esp_linker import ESPBoard
+
+# Connect to specific IP address
+board = ESPBoard("192.168.1.100")
+
+# Or connect via URL
+board = ESPBoard("http://192.168.1.100")
+```
+
+### Device Management
+```python
+from esp_linker import get_device_manager
+
+# Get device manager instance
+manager = get_device_manager()
+
+# Discover and add new devices
+new_devices = manager.discover_and_add_devices(timeout=10)
+
+# List all managed devices
+devices = manager.list_devices()
+for device in devices:
+    print(f"Device: {device.name} at {device.ip}")
+
+# Get device statistics
+stats = manager.get_device_stats()
+print(f"Total devices: {stats['total_devices']}")
+```
+
+### CLI Commands Reference
+```bash
+# Device discovery and management
+esp-linker discover --timeout 30        # Network discovery
+esp-linker devices list                  # List managed devices
+esp-linker devices discover             # Add new devices
+esp-linker devices stats                # Device statistics
+
+# Firmware and hardware
+esp-linker flash --firmware-info        # Show firmware details
+esp-linker detect --json               # Detect ESP8266 boards
+esp-linker test --device 192.168.1.100 # Test device functionality
+
+# Web interface
+esp-linker dashboard --port 8080        # Launch web dashboard
+```
+
+## 🌐 Web Dashboard
+
+Launch the professional web dashboard:
+```bash
+esp-linker dashboard
+```
+
+Features:
+- Real-time device monitoring
+- Interactive GPIO control
+- Device status and statistics
+- Responsive design for mobile/desktop
+- Multi-device management
+
+## 📋 System Requirements
+
+- **Python**: 3.7 or higher
+- **Operating System**: Windows, Linux, macOS
+- **Hardware**: ESP8266 board (NodeMCU, Wemos D1, etc.)
+- **Network**: WiFi connection for ESP8266 and development machine
+
+## 🔧 **Hardware Compatibility Matrix**
+
+<div align="center">
+
+### 🎯 **Tested & Verified ESP8266 Boards**
+
+</div>
+
+| Board | Status | Flash Size | GPIO Pins | Special Features |
+|-------|--------|------------|-----------|------------------|
+| **NodeMCU v1.0** | ✅ Fully Supported | 4MB | 11 usable | Built-in USB, LED on pin 2 |
+| **NodeMCU v0.9** | ✅ Fully Supported | 4MB | 11 usable | Older version, fully compatible |
+| **Wemos D1 Mini** | ✅ Fully Supported | 4MB | 11 usable | Compact size, perfect for projects |
+| **Wemos D1 R2** | ✅ Fully Supported | 4MB | 11 usable | Arduino Uno form factor |
+| **ESP8266-01** | ⚠️ Limited Support | 1MB | 2 usable | Minimal pins, requires adapter |
+| **ESP8266-12E** | ✅ Fully Supported | 4MB | 16 usable | Raw module, requires breakout |
+| **ESP8266-12F** | ✅ Fully Supported | 4MB | 16 usable | Improved antenna design |
+| **Adafruit Feather HUZZAH** | ✅ Fully Supported | 4MB | 9 usable | Battery connector, compact |
+| **SparkFun ESP8266 Thing** | ✅ Fully Supported | 4MB | 11 usable | LiPo charging circuit |
+| **Generic ESP8266** | ✅ Usually Supported | Varies | Varies | Most ESP8266 boards work |
+
+### 🔌 **Pin Configuration Reference**
+
+#### **NodeMCU Pin Mapping**
+```
+NodeMCU Pin | ESP8266 GPIO | Function | ESP-Linker Support
+------------|--------------|----------|-------------------
+D0          | GPIO16       | Digital  | ✅ Digital I/O only
+D1          | GPIO5        | Digital  | ✅ Digital + PWM + Servo
+D2          | GPIO4        | Digital  | ✅ Digital + PWM + Servo
+D3          | GPIO0        | Digital  | ✅ Digital I/O (Boot pin)
+D4          | GPIO2        | Digital  | ✅ Digital + PWM + LED
+D5          | GPIO14       | Digital  | ✅ Digital + PWM + Servo
+D6          | GPIO12       | Digital  | ✅ Digital + PWM + Servo
+D7          | GPIO13       | Digital  | ✅ Digital + PWM + Servo
+D8          | GPIO15       | Digital  | ✅ Digital + PWM + Servo
+A0          | ADC0         | Analog   | ✅ 10-bit ADC input
+```
+
+#### **Wemos D1 Mini Pin Mapping**
+```
+D1 Mini Pin | ESP8266 GPIO | Function | ESP-Linker Support
+------------|--------------|----------|-------------------
+D0          | GPIO16       | Digital  | ✅ Digital I/O only
+D1          | GPIO5        | Digital  | ✅ Digital + PWM + Servo + I2C SCL
+D2          | GPIO4        | Digital  | ✅ Digital + PWM + Servo + I2C SDA
+D3          | GPIO0        | Digital  | ✅ Digital I/O (Flash button)
+D4          | GPIO2        | Digital  | ✅ Digital + PWM + Built-in LED
+D5          | GPIO14       | Digital  | ✅ Digital + PWM + Servo + SPI CLK
+D6          | GPIO12       | Digital  | ✅ Digital + PWM + Servo + SPI MISO
+D7          | GPIO13       | Digital  | ✅ Digital + PWM + Servo + SPI MOSI
+D8          | GPIO15       | Digital  | ✅ Digital + PWM + Servo + SPI CS
+A0          | ADC0         | Analog   | ✅ 10-bit ADC (0-1024)
+```
+
+### ⚡ **Power Requirements**
+- **Operating Voltage**: 3.3V (regulated on most boards)
+- **Input Voltage**: 5V via USB or 7-12V via Vin pin
+- **Current Consumption**:
+  - Active: ~80mA
+  - Deep Sleep: ~20µA
+  - WiFi Transmit: ~170mA peak
+
+### 🔧 **Connection Requirements**
+- **USB Cable**: Micro-USB (NodeMCU) or USB-C (newer boards)
+- **WiFi Network**: 2.4GHz (ESP8266 doesn't support 5GHz)
+- **Computer**: Windows/Linux/macOS with Python 3.7+
+
+## 📚 API Reference
+
+### ESPBoard Class
+```python
+class ESPBoard:
+    def __init__(self, ip_or_url: str, timeout: float = 10.0)
+    def write(self, pin: int, value: int) -> bool
+    def read(self, pin: int) -> int
+    def analog_read(self) -> int
+    def pwm(self, pin: int, value: int) -> bool
+    def servo(self, pin: int, angle: int) -> bool
+    def get_device_info(self) -> dict
+    def ping(self) -> bool
+    def close(self) -> None
+```
+
+### Utility Functions
+```python
+def connect_auto(timeout: float = 10.0) -> ESPBoard
+def discover_devices(timeout: float = 30.0) -> List[dict]
+def flash_esp8266(port: str = None, baud: int = 115200) -> bool
+def detect_esp8266() -> List[str]
+```
+
+## 🎯 **Real-World Use Cases & Project Examples**
+
+<div align="center">
+
+### 🌟 **Transform Ideas into Reality**
+
+</div>
+
+<details>
+<summary><h3>🏠 <strong>Smart Home Automation</strong></h3></summary>
+
+Create intelligent home automation systems with ESP-Linker:
+
+#### 💡 **Smart Lighting Control**
+```python
+from esp_linker import connect_auto
+import time
+
+board = connect_auto()
+
+# Smart dimming based on time of day
+def auto_dimming():
+    current_hour = time.localtime().tm_hour
+    if 6 <= current_hour <= 8:      # Morning
+        board.pwm(2, 300)           # 30% brightness
+    elif 18 <= current_hour <= 22:  # Evening
+        board.pwm(2, 700)           # 70% brightness
+    else:                           # Night
+        board.pwm(2, 100)           # 10% brightness
+
+auto_dimming()
+```
+
+#### 🌡️ **Climate Control System**
+```python
+# Temperature-based fan control
+temp_sensor = board.analog_read()  # Temperature sensor on A0
+temp_celsius = (temp_sensor * 3.3 / 1024 - 0.5) * 100
+
+if temp_celsius > 25:
+    board.pwm(5, 1023)  # Full speed fan
+elif temp_celsius > 22:
+    board.pwm(5, 512)   # Half speed fan
+else:
+    board.pwm(5, 0)     # Fan off
+```
+
+#### 🚪 **Smart Door Lock**
+```python
+# RFID-controlled door lock
+def check_access_card():
+    card_detected = board.read(4)  # RFID reader signal
+    if card_detected:
+        board.servo(14, 90)        # Unlock (servo to 90°)
+        time.sleep(5)
+        board.servo(14, 0)         # Lock (servo to 0°)
+```
+
+</details>
+
+<details>
+<summary><h3>🤖 <strong>Robotics & Automation</strong></h3></summary>
+
+Build sophisticated robotic systems:
+
+#### 🚗 **Remote-Controlled Robot**
+```python
+from esp_linker import ESPBoard
+
+robot = ESPBoard("192.168.1.100")
+
+class RobotController:
+    def __init__(self, board):
+        self.board = board
+        self.left_motor = 5   # PWM pin for left motor
+        self.right_motor = 6  # PWM pin for right motor
+
+    def move_forward(self, speed=512):
+        self.board.pwm(self.left_motor, speed)
+        self.board.pwm(self.right_motor, speed)
+
+    def turn_left(self, speed=300):
+        self.board.pwm(self.left_motor, 0)
+        self.board.pwm(self.right_motor, speed)
+
+    def stop(self):
+        self.board.pwm(self.left_motor, 0)
+        self.board.pwm(self.right_motor, 0)
+
+robot_ctrl = RobotController(robot)
+robot_ctrl.move_forward(400)  # Move at 40% speed
+```
+
+#### 🦾 **Robotic Arm Control**
+```python
+# Multi-servo robotic arm
+class RoboticArm:
+    def __init__(self, board):
+        self.board = board
+        self.base = 12      # Base rotation servo
+        self.shoulder = 13  # Shoulder servo
+        self.elbow = 14     # Elbow servo
+        self.gripper = 15   # Gripper servo
+
+    def move_to_position(self, base_angle, shoulder_angle, elbow_angle):
+        self.board.servo(self.base, base_angle)
+        time.sleep(0.5)
+        self.board.servo(self.shoulder, shoulder_angle)
+        time.sleep(0.5)
+        self.board.servo(self.elbow, elbow_angle)
+
+    def grab_object(self):
+        self.board.servo(self.gripper, 180)  # Close gripper
+
+    def release_object(self):
+        self.board.servo(self.gripper, 0)    # Open gripper
+
+arm = RoboticArm(robot)
+arm.move_to_position(90, 45, 135)  # Position arm
+arm.grab_object()                   # Grab object
+```
+
+</details>
+
+<details>
+<summary><h3>🏭 <strong>Industrial IoT & Monitoring</strong></h3></summary>
+
+Implement professional industrial monitoring systems:
+
+#### 📊 **Multi-Sensor Data Logger**
+```python
+import json
+import time
+from datetime import datetime
+
+class IndustrialMonitor:
+    def __init__(self, board):
+        self.board = board
+        self.data_log = []
+
+    def read_sensors(self):
+        return {
+            'timestamp': datetime.now().isoformat(),
+            'temperature': self.read_temperature(),
+            'pressure': self.read_pressure(),
+            'vibration': self.read_vibration(),
+            'motor_status': self.board.read(2)
+        }
+
+    def read_temperature(self):
+        # Convert analog reading to temperature
+        raw = self.board.analog_read()
+        return (raw * 3.3 / 1024 - 0.5) * 100
+
+    def continuous_monitoring(self, interval=60):
+        while True:
+            data = self.read_sensors()
+            self.data_log.append(data)
+
+            # Alert if temperature too high
+            if data['temperature'] > 80:
+                self.board.write(4, 1)  # Turn on alarm LED
+
+            time.sleep(interval)
+
+monitor = IndustrialMonitor(board)
+monitor.continuous_monitoring(30)  # Log every 30 seconds
+```
+
+#### ⚙️ **Equipment Control System**
+```python
+# Industrial equipment controller
+class EquipmentController:
+    def __init__(self, board):
+        self.board = board
+        self.conveyor_motor = 5
+        self.sorting_servo = 14
+        self.alarm_led = 2
+
+    def start_production(self):
+        self.board.pwm(self.conveyor_motor, 800)  # Start conveyor
+        self.board.write(self.alarm_led, 0)       # Clear alarms
+
+    def emergency_stop(self):
+        self.board.pwm(self.conveyor_motor, 0)    # Stop conveyor
+        self.board.write(self.alarm_led, 1)       # Activate alarm
+        self.board.servo(self.sorting_servo, 0)   # Reset sorting arm
+```
+
+</details>
+
+<details>
+<summary><h3>🎓 <strong>Educational & Research Projects</strong></h3></summary>
+
+Perfect for learning and research applications:
+
+#### 🔬 **Science Experiment Controller**
+```python
+# Automated plant growth experiment
+class PlantGrowthExperiment:
+    def __init__(self, board):
+        self.board = board
+        self.grow_light = 2      # LED grow light
+        self.water_pump = 5      # Water pump
+        self.fan = 6             # Ventilation fan
+
+    def daily_cycle(self):
+        # 12-hour light cycle
+        self.board.write(self.grow_light, 1)
+        time.sleep(12 * 3600)  # 12 hours
+        self.board.write(self.grow_light, 0)
+
+        # Water plants twice daily
+        for _ in range(2):
+            self.board.write(self.water_pump, 1)
+            time.sleep(30)  # Water for 30 seconds
+            self.board.write(self.water_pump, 0)
+            time.sleep(6 * 3600)  # Wait 6 hours
+
+    def monitor_conditions(self):
+        light_level = self.board.analog_read()
+        if light_level < 200:  # Too dark
+            self.board.write(self.grow_light, 1)
+
+        # Ventilation control
+        self.board.pwm(self.fan, 300)  # Gentle air circulation
+
+experiment = PlantGrowthExperiment(board)
+```
+
+#### 📡 **IoT Weather Station**
+```python
+# Complete weather monitoring system
+class WeatherStation:
+    def __init__(self, board):
+        self.board = board
+        self.wind_direction_servo = 14
+        self.data_led = 2
+
+    def read_weather_data(self):
+        # Read multiple sensors
+        temperature = self.read_temperature()
+        humidity = self.read_humidity()
+        wind_speed = self.read_wind_speed()
+
+        return {
+            'temperature': temperature,
+            'humidity': humidity,
+            'wind_speed': wind_speed,
+            'timestamp': time.time()
+        }
+
+    def upload_to_cloud(self, data):
+        # Blink LED to indicate data transmission
+        for _ in range(3):
+            self.board.write(self.data_led, 1)
+            time.sleep(0.2)
+            self.board.write(self.data_led, 0)
+            time.sleep(0.2)
+
+        # Upload data to cloud service
+        # (Implementation depends on cloud provider)
+        pass
+
+weather = WeatherStation(board)
+```
+
+</details>
+
+<details>
+<summary><h3>🎮 <strong>Interactive & Entertainment Projects</strong></h3></summary>
+
+Create engaging interactive projects:
+
+#### 🎵 **Musical Light Show**
+```python
+# Synchronized music and lights
+class MusicLightShow:
+    def __init__(self, board):
+        self.board = board
+        self.lights = [2, 4, 5, 12, 13, 14, 15]  # Multiple LED pins
+
+    def beat_pattern(self, intensity):
+        # Create light patterns based on music intensity
+        for i, pin in enumerate(self.lights):
+            brightness = int(intensity * (i + 1) / len(self.lights) * 1023)
+            self.board.pwm(pin, brightness)
+
+    def rainbow_effect(self):
+        # Smooth rainbow color transition
+        for step in range(256):
+            for i, pin in enumerate(self.lights):
+                phase = (step + i * 36) % 256
+                brightness = int((math.sin(phase * math.pi / 128) + 1) * 512)
+                self.board.pwm(pin, brightness)
+            time.sleep(0.05)
+
+light_show = MusicLightShow(board)
+light_show.rainbow_effect()
+```
+
+#### 🎯 **Interactive Game Controller**
+```python
+# Motion-controlled game
+class MotionGameController:
+    def __init__(self, board):
+        self.board = board
+        self.tilt_sensor_x = 4   # Tilt sensor X-axis
+        self.tilt_sensor_y = 5   # Tilt sensor Y-axis
+        self.button = 12         # Action button
+        self.score_display = 2   # Score LED
+
+    def read_motion(self):
+        x_tilt = self.board.read(self.tilt_sensor_x)
+        y_tilt = self.board.read(self.tilt_sensor_y)
+        button_pressed = self.board.read(self.button)
+
+        return {
+            'x': x_tilt,
+            'y': y_tilt,
+            'action': button_pressed
+        }
+
+    def update_score_display(self, score):
+        # Blink LED based on score
+        blinks = min(score, 10)
+        for _ in range(blinks):
+            self.board.write(self.score_display, 1)
+            time.sleep(0.1)
+            self.board.write(self.score_display, 0)
+            time.sleep(0.1)
+
+game = MotionGameController(board)
+```
+
+</details>
+
+## 🔒 Security Features
+
+- Secure WiFi configuration
+- Connection encryption support
+- Device authentication
+- Network isolation compatibility
+- Firewall-friendly communication
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**Device not found:**
+```bash
+# Check network connectivity
+esp-linker discover --timeout 60
+
+# Verify device is on same network
+ping 192.168.1.100
+```
+
+**Firmware flashing issues:**
+```bash
+# Auto-detect correct port
+esp-linker detect
+
+# Try different baud rate
+esp-linker flash --baud 115200
+```
+
+**Connection timeouts:**
+```python
+# Increase timeout for slow networks
+board = ESPBoard("192.168.1.100", timeout=30)
+```
+
+## 📖 Documentation & Support
+
+- **Complete Documentation**: [www.skrelectronicslab.com/esp-linker](https://www.skrelectronicslab.com/esp-linker)
+- **Video Tutorials**: [YouTube Channel](https://www.youtube.com/@skr_electronics_lab)
+- **Community Support**: [Instagram](https://www.instagram.com/skr_electronics_lab)
+- **Professional Support**: [skrelectronicslab@gmail.com](mailto:skrelectronicslab@gmail.com)
+
+## 💖 Support the Project
+
+If ESP-Linker helps your projects, consider supporting development:
+- ⭐ Star the project on GitHub
+- 📢 Share with the maker community
+- ☕ [Buy me a coffee](https://buymeacoffee.com/skrelectronics)
+- 📺 Subscribe to [SKR Electronics Lab YouTube](https://www.youtube.com/@skr_electronics_lab)
+
+## 👨‍💻 **About the Developer**
+
+<div align="center">
+
+### 🌟 **Meet SK Raihan - Founder of SKR Electronics Lab**
+
+</div>
+
+**SK Raihan** is a passionate electronics engineer and IoT specialist who founded **SKR Electronics Lab** with a mission to democratize electronics and IoT development. With extensive experience in embedded systems, wireless communication, and educational technology, SK Raihan has dedicated his career to creating professional-grade tools that make complex technology accessible to everyone.
+
+#### 🎯 **Vision & Mission**
+- **Vision**: Making IoT development accessible to everyone, from students to professionals
+- **Mission**: Creating professional-grade, easy-to-use tools for the global maker community
+- **Values**: Open-source collaboration, educational excellence, and innovation
+
+#### 🏆 **Achievements**
+- **10,000+** developers using SKR Electronics Lab tools
+- **100+** educational videos on YouTube
+- **Professional IoT Solutions** for educational institutions
+- **Open-Source Contributions** to the maker community
+
+#### 🔬 **Expertise Areas**
+- **Embedded Systems**: ESP8266, ESP32, Arduino, Raspberry Pi
+- **IoT Development**: Wireless protocols, cloud integration, edge computing
+- **Educational Technology**: Creating learning resources and tools
+- **Professional Software**: Python libraries, CLI tools, web applications
+
+<div align="center">
+
+### 🌐 **Connect with SKR Electronics Lab**
+
+[![Website](https://img.shields.io/badge/Website-www.skrelectronicslab.com-blue?style=for-the-badge&logo=google-chrome)](https://www.skrelectronicslab.com)
+[![Email](https://img.shields.io/badge/Email-skrelectronicslab@gmail.com-red?style=for-the-badge&logo=gmail)](mailto:skrelectronicslab@gmail.com)
+[![YouTube](https://img.shields.io/badge/YouTube-@skr_electronics_lab-red?style=for-the-badge&logo=youtube)](https://www.youtube.com/@skr_electronics_lab)
+[![Instagram](https://img.shields.io/badge/Instagram-@skr_electronics_lab-purple?style=for-the-badge&logo=instagram)](https://www.instagram.com/skr_electronics_lab)
+[![GitHub](https://img.shields.io/badge/GitHub-skr--electronics--lab-black?style=for-the-badge&logo=github)](https://github.com/skr-electronics-lab)
+
+</div>
+
+## 💖 **Support the Project**
+
+<div align="center">
+
+### � **Help ESP-Linker Grow**
+
+</div>
+
+If ESP-Linker has helped your projects, consider supporting its development:
+
+#### ⭐ **Free Ways to Support**
+- **Star the Project**: Give us a star on GitHub
+- **Share with Community**: Tell other makers about ESP-Linker
+- **Write Reviews**: Share your experience on social media
+- **Contribute**: Submit bug reports, feature requests, or code contributions
+
+#### ☕ **Financial Support**
+- **Buy Me a Coffee**: [buymeacoffee.com/skrelectronics](https://buymeacoffee.com/skrelectronics)
+- **Sponsor Development**: Contact us for sponsorship opportunities
+- **Educational Licenses**: Special pricing for schools and universities
+
+#### 📺 **Follow Our Content**
+- **Subscribe**: [SKR Electronics Lab YouTube](https://www.youtube.com/@skr_electronics_lab)
+- **Follow**: [@skr_electronics_lab on Instagram](https://www.instagram.com/skr_electronics_lab)
+- **Newsletter**: Get updates on new projects and tutorials
+
+## � **Professional Support & Services**
+
+<div align="center">
+
+### 🎯 **Enterprise & Educational Solutions**
+
+</div>
+
+#### 🏢 **Enterprise Services**
+- **Custom IoT Solutions**: Tailored ESP-Linker implementations
+- **Training Programs**: Professional IoT development training
+- **Consulting Services**: Expert guidance for IoT projects
+- **Technical Support**: Priority support for commercial users
+
+#### 🎓 **Educational Programs**
+- **Curriculum Development**: IoT courses using ESP-Linker
+- **Workshop Materials**: Ready-to-use educational content
+- **Student Licenses**: Special pricing for educational institutions
+- **Teacher Training**: Professional development for educators
+
+#### 📧 **Contact Information**
+- **General Inquiries**: [skrelectronicslab@gmail.com](mailto:skrelectronicslab@gmail.com)
+- **Business Partnerships**: [skrelectronicslab@gmail.com](mailto:skrelectronicslab@gmail.com)
+- **Technical Support**: [skrelectronicslab@gmail.com](mailto:skrelectronicslab@gmail.com)
+- **Media Inquiries**: [skrelectronicslab@gmail.com](mailto:skrelectronicslab@gmail.com)
+
+## 📄 **License & Legal**
+
+ESP-Linker is released under the **MIT License**, ensuring maximum freedom for both personal and commercial use.
+
+#### 📋 **What This Means**
+- ✅ **Commercial Use**: Use ESP-Linker in commercial products
+- ✅ **Modification**: Modify the code for your needs
+- ✅ **Distribution**: Distribute your modified versions
+- ✅ **Private Use**: Use privately without restrictions
+- ⚠️ **Attribution**: Include original copyright notice
+
+See [LICENSE](LICENSE) file for complete details.
+
+---
+
+<div align="center">
+
+## 🚀 **ESP-Linker: Professional IoT Development Made Simple**
+
+*Developed with ❤️ by [SK Raihan](https://www.skrelectronicslab.com) & [SKR Electronics Lab](https://www.skrelectronicslab.com)*
+
+**Transform your ESP8266 projects today!**
+
+[![Get Started](https://img.shields.io/badge/Get_Started-pip_install_esp--linker-blue?style=for-the-badge)](https://pypi.org/project/esp-linker/)
+[![Documentation](https://img.shields.io/badge/Documentation-Read_Docs-green?style=for-the-badge)](https://www.skrelectronicslab.com/esp-linker)
+[![YouTube](https://img.shields.io/badge/Tutorials-Watch_Now-red?style=for-the-badge)](https://www.youtube.com/@skr_electronics_lab)
+
+</div>

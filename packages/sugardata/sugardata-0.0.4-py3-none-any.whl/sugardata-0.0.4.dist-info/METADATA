@@ -1,0 +1,82 @@
+Metadata-Version: 2.1
+Name: sugardata
+Version: 0.0.4
+Summary: Generates synthetic datasets tailored for transformer-based models
+Home-page: https://github.com/okanyenigun/sugardata
+Author: Okan Yenigün
+Author-email: okanyenigun@gmail.com
+License: MIT
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: Education
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Software Development :: Documentation
+Classifier: Topic :: Scientific/Engineering :: Information Analysis
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: ipywidgets==8.1.5
+Requires-Dist: deep-translator==1.11.4
+Requires-Dist: langchain==0.3.18
+Requires-Dist: langchain-openai==0.3.5
+Requires-Dist: langdetect==1.0.9
+Requires-Dist: pandas==2.3.1
+Requires-Dist: datasets==4.0.0
+
+# sugardata
+
+`sugardata` is a Python package that helps you **generate synthetic datasets for NLP tasks**, enabling experimentation, prototyping, and training when labeled data is limited or unavailable.
+
+# Installation
+
+You can install **sugardata** via pip:
+
+```bash
+pip install sugardata
+```
+
+# Quick Start
+
+`sugardata` supports multiple NLP tasks out of the box.
+
+## Task 1: Sentiment Analysis
+
+```python
+
+import sugardata as su
+
+# generate synchronously
+results = su.generate_sentiment_data(concept="online shopping")
+
+# generate asynchronously
+results = await su.generate_sentiment_data_async(concept="online shopping")
+
+# generate concurrently with multiple vendor
+results = await su.generate_sentiment_multi_vendor_async(concept="online shopping")
+
+# augment synchronously
+examples = [
+    # some text
+    ...
+]
+
+results = su.augment_sentiment_data(examples=examples)
+
+# augment asynchronously
+results = await su.augment_sentiment_data_async(examples=examples)
+
+# augment concurrently with multiple vendor
+results = await su.augment_sentiment_multi_vendor_async(examples=examples)
+
+```
+
+To learn more about configuration options, advanced parameters, and integration tips, please visit tutorials.

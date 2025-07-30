@@ -1,0 +1,131 @@
+prog = "vcfstats"
+description = "vcfstats v{version}: Plotting statistics from VCF files"
+
+[[arguments]]
+flags = ["--vcf", "-v"]
+required = true
+help = "The VCF file."
+type = "path"
+
+[[arguments]]
+flags = ["--loglevel"]
+default = "info"
+help = "The logging level."
+choices = ["debug", "info", "warning", "error", "critical"]
+
+[[arguments]]
+flags = ["--outdir", "-o"]
+required = true
+help = "The output directory."
+
+[[arguments]]
+flags = ["--figtype"]
+default = []
+help = "Your preferences for type of plot for each formula."
+nargs = "+"
+action = "extend"
+
+[[arguments]]
+flags = ["--figfmt"]
+default = []
+help = "Your preferences for format of figure for each formula, Any file format supported by matplotlib. Default is png."
+nargs = "+"
+action = "extend"
+
+[[arguments]]
+flags = ["--region", "-r"]
+default = []
+help = "Regions in format of `CHR` or `CHR:START-END`"
+nargs = "+"
+action = "extend"
+
+[[arguments]]
+flags = ["--Region"]
+metavar = "BED"
+default = []
+help = "Regions in a BED file. If both --region/--Region are provided, regions will be merged together."
+nargs = "+"
+action = "extend"
+
+[[arguments]]
+flags = ["--passed", "-p"]
+default = false
+dest = "passed"
+help = "Only analyze variants that pass all filters. This does not work if FILTER entry is in the analysis."
+action = "store_true"
+
+[[arguments]]
+flags = ["--list", "-l"]
+default = false
+help = "List all available macros."
+action = "store_true"
+
+[[arguments]]
+flags = ["--save", "-s"]
+default = false
+dest = "savedata"
+help = "Whether save the plotting data for further exploration."
+action = "store_true"
+
+[[arguments]]
+flags = ["--formula", "-f"]
+default = []
+help = "The formulas for plotting in format of `Y ~ X`, where `Y` and `X` should be either an entry or an aggregation. Optional when --config is given."
+nargs = "+"
+required = true
+action = "extend"
+
+[[arguments]]
+flags = ["--macro"]
+type = "path"
+help = "A user-defined macro file."
+
+[[arguments]]
+flags = ["--title", "-t"]
+default = []
+help = "The title of each figure, will be used to name the output files as well. Optional when --config is given."
+nargs = "+"
+required = true
+action = "extend"
+
+[[arguments]]
+flags = ["--ggs", "-g"]
+metavar = "EXPR"
+default = []
+help = "Extra ggplot2 expressions for each plot."
+nargs = "+"
+action = "extend"
+
+[[namespaces]]
+name = "devpars"
+description = "The device parameters for plots. To specify devpars for each plot, use a configuration file."
+order = 1
+
+[[arguments]]
+flags = ["--devpars.width"]
+default = []
+help = "The width of the plot."
+type = "int"
+nargs = "+"
+action = "extend"
+
+[[arguments]]
+flags = ["--devpars.height"]
+default = []
+help = "The height of the plot."
+type = "int"
+nargs = "+"
+action = "extend"
+
+[[arguments]]
+flags = ["--devpars.res"]
+default = []
+help = "The resolution of the plot."
+type = "int"
+nargs = "+"
+action = "extend"
+
+[[arguments]]
+flags = ["--config"]
+type = "path"
+help = "A configuration file defining how to plot in TOML format. If this is provided, CLI arguments will be overwritten if defined in this file."

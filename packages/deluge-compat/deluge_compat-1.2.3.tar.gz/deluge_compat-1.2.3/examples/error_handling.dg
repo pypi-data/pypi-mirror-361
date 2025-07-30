@@ -1,0 +1,232 @@
+// Error Handling Patterns
+// Demonstrates robust error handling and validation patterns
+
+// Initialize result container
+result = Map();
+errors = List();
+warnings = List();
+
+// Function to safely get user data
+function safeGetUser(userId) {
+    try {
+        if(userId == null || userId.trim().isEmpty()) {
+            return Map({"error": "User ID is required"});
+        }
+
+        // Simulate user lookup (would be API call in real scenario)
+        if(userId == "123") {
+            return Map({
+                "id": userId,
+                "name": "John Doe",
+                "email": "john@example.com",
+                "status": "active"
+            });
+        } else if(userId == "456") {
+            return Map({
+                "id": userId,
+                "name": "Jane Smith",
+                "email": "jane@example.com",
+                "status": "inactive"
+            });
+        } else {
+            return Map({"error": "User not found"});
+        }
+    } catch(e) {
+        return Map({"error": "Failed to lookup user: " + e});
+    }
+}
+
+// Function to validate email format
+function validateEmail(email) {
+    if(email == null || email.trim().isEmpty()) {
+        return Map({"valid": false, "error": "Email is required"});
+    }
+
+    email = email.trim().toLowerCase();
+
+    if(!email.contains("@")) {
+        return Map({"valid": false, "error": "Email must contain @"});
+    }
+
+    if(!email.contains(".")) {
+        return Map({"valid": false, "error": "Email must contain domain"});
+    }
+
+    if(email.startsWith("@") || email.endsWith("@")) {
+        return Map({"valid": false, "error": "Invalid @ placement"});
+    }
+
+    return Map({"valid": true, "email": email});
+}
+
+// Test different scenarios
+testCases = List(["123", "456", "999", "", null]);
+
+processedUsers = List();
+
+for each userId in testCases {
+    userResult = safeGetUser(userId);
+
+    if(userResult.containsKey("error")) {
+        // Handle user lookup error
+        errorInfo = Map();
+        errorInfo.put("user_id", userId);
+        errorInfo.put("error", userResult.get("error"));
+        errorInfo.put("step", "user_lookup");
+        errors.add(errorInfo);
+    } else {
+        // User found, validate email
+        email = userResult.get("email");
+        emailValidation = validateEmail(email);
+
+        if(!emailValidation.get("valid")) {
+            // Invalid email
+            warningInfo = Map();
+            warningInfo.put("user_id", userId);
+            warningInfo.put("warning", "Invalid email: " + emailValidation.get("error"));
+            warningInfo.put("step", "email_validation");
+            warnings.add(warningInfo);
+        }
+
+        // Add processing metadata
+        userResult.put("processed_at", "2024-01-01T12:00:00Z");
+        userResult.put("email_valid", emailValidation.get("valid"));
+
+        if(userResult.get("status") == "inactive") {
+            warningInfo = Map();
+            warningInfo.put("user_id", userId);
+            warningInfo.put("warning", "User account is inactive");
+            warningInfo.put("step", "status_check");
+            warnings.add(warningInfo);
+        }
+
+        processedUsers.add(userResult);
+    }
+}
+
+// Safe mathematical operations
+function safeDivide(a, b) {
+    if(b == 0) {
+        return Map({"error": "Division by zero"});
+    }
+    return Map({"result": a / b});
+}
+
+// Test mathematical operations
+mathTests = List();
+testOperations = List([
+    Map({"a": 10, "b": 2}),
+    Map({"a": 15, "b": 0}),
+    Map({"a": 7, "b": 3})
+]);
+
+for each operation in testOperations {
+    a = operation.get("a");
+    b = operation.get("b");
+
+    divisionResult = safeDivide(a, b);
+
+    testResult = Map();
+    testResult.put("operation", a + " / " + b);
+
+    if(divisionResult.containsKey("error")) {
+        testResult.put("success", false);
+        testResult.put("error", divisionResult.get("error"));
+
+        errorInfo = Map();
+        errorInfo.put("operation", a + " / " + b);
+        errorInfo.put("error", divisionResult.get("error"));
+        errorInfo.put("step", "mathematical_operation");
+        errors.add(errorInfo);
+    } else {
+        testResult.put("success", true);
+        testResult.put("result", divisionResult.get("result"));
+    }
+
+    mathTests.add(testResult);
+}
+
+// Safe API simulation
+function safeApiCall(endpoint) {
+    try {
+        if(endpoint == null || endpoint.trim().isEmpty()) {
+            return Map({"error": "Endpoint is required"});
+        }
+
+        // Simulate different API responses
+        if(endpoint.contains("users")) {
+            return Map({"success": true, "data": List(["user1", "user2"])});
+        } else if(endpoint.contains("error")) {
+            return Map({"error": "API returned error 500"});
+        } else {
+            return Map({"success": true, "data": "Generic response"});
+        }
+    } catch(e) {
+        return Map({"error": "Network error: " + e});
+    }
+}
+
+// Test API calls
+apiEndpoints = List(["/api/users", "/api/error", "/api/data", ""]);
+apiResults = List();
+
+for each endpoint in apiEndpoints {
+    apiResponse = safeApiCall(endpoint);
+
+    apiResult = Map();
+    apiResult.put("endpoint", endpoint);
+
+    if(apiResponse.containsKey("error")) {
+        apiResult.put("success", false);
+        apiResult.put("error", apiResponse.get("error"));
+
+        errorInfo = Map();
+        errorInfo.put("endpoint", endpoint);
+        errorInfo.put("error", apiResponse.get("error"));
+        errorInfo.put("step", "api_call");
+        errors.add(errorInfo);
+    } else {
+        apiResult.put("success", true);
+        apiResult.put("data", apiResponse.get("data"));
+    }
+
+    apiResults.add(apiResult);
+}
+
+// Summary statistics
+summary = Map();
+summary.put("total_errors", errors.size());
+summary.put("total_warnings", warnings.size());
+summary.put("processed_users", processedUsers.size());
+summary.put("math_operations", mathTests.size());
+summary.put("api_calls", apiResults.size());
+
+// Determine overall status
+if(errors.size() == 0) {
+    if(warnings.size() == 0) {
+        summary.put("overall_status", "success");
+    } else {
+        summary.put("overall_status", "success_with_warnings");
+    }
+} else {
+    summary.put("overall_status", "partial_failure");
+}
+
+// Build final result
+result.put("processed_users", processedUsers);
+result.put("math_tests", mathTests);
+result.put("api_results", apiResults);
+result.put("errors", errors);
+result.put("warnings", warnings);
+result.put("summary", summary);
+
+// Log completion
+info("Error handling demo completed with status:", summary.get("overall_status"));
+if(errors.size() > 0) {
+    info("Total errors encountered:", errors.size());
+}
+if(warnings.size() > 0) {
+    info("Total warnings:", warnings.size());
+}
+
+return result;

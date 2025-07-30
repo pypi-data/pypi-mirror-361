@@ -1,0 +1,116 @@
+// Data Processing Patterns
+// Common data transformation and validation patterns
+
+// Input data simulation
+rawData = List();
+rawData.add(Map({"name": "John", "age": "25", "email": "john@test.com", "score": "85.5"}));
+rawData.add(Map({"name": "Jane", "age": "30", "email": "jane@test.com", "score": "92.0"}));
+rawData.add(Map({"name": "Bob", "age": "invalid", "email": "bob@test.com", "score": "78.5"}));
+rawData.add(Map({"name": "", "age": "35", "email": "missing-name@test.com", "score": "88.0"}));
+
+// Processing results
+validRecords = List();
+invalidRecords = List();
+totalScore = 0;
+validCount = 0;
+
+// Process each record
+for each record in rawData {
+    name = record.get("name");
+    age = record.get("age");
+    email = record.get("email");
+    score = record.get("score");
+
+    // Validation
+    isValid = true;
+    errors = List();
+
+    // Check name
+    if(name == null || name.trim().isEmpty()) {
+        isValid = false;
+        errors.add("Name is required");
+    }
+
+    // Check age (must be numeric and reasonable)
+    ageNum = 0;
+    try {
+        ageNum = age.toInt();
+        if(ageNum < 0 || ageNum > 120) {
+            isValid = false;
+            errors.add("Age must be between 0 and 120");
+        }
+    } catch(e) {
+        isValid = false;
+        errors.add("Age must be a valid number");
+    }
+
+    // Check email format
+    if(email == null || !email.contains("@") || !email.contains(".")) {
+        isValid = false;
+        errors.add("Invalid email format");
+    }
+
+    // Process valid records
+    if(isValid) {
+        processedRecord = Map();
+        processedRecord.put("name", name.trim());
+        processedRecord.put("age", ageNum);
+        processedRecord.put("email", email.toLowerCase());
+        processedRecord.put("score", score.toDecimal());
+        processedRecord.put("email_domain", email.substring(email.indexOf("@") + 1));
+        processedRecord.put("age_group", ageNum < 25 ? "young" : (ageNum < 60 ? "adult" : "senior"));
+
+        validRecords.add(processedRecord);
+        totalScore = totalScore + score.toDecimal();
+        validCount = validCount + 1;
+    } else {
+        errorRecord = Map();
+        errorRecord.put("original_data", record);
+        errorRecord.put("errors", errors);
+        invalidRecords.add(errorRecord);
+    }
+}
+
+// Calculate statistics
+statistics = Map();
+if(validCount > 0) {
+    statistics.put("average_score", totalScore / validCount);
+    statistics.put("valid_count", validCount);
+    statistics.put("invalid_count", invalidRecords.size());
+    statistics.put("success_rate", (validCount * 100.0) / rawData.size());
+} else {
+    statistics.put("average_score", 0);
+    statistics.put("valid_count", 0);
+    statistics.put("invalid_count", rawData.size());
+    statistics.put("success_rate", 0);
+}
+
+// Group valid records by age group
+ageGroups = Map();
+for each record in validRecords {
+    ageGroup = record.get("age_group");
+
+    if(!ageGroups.containsKey(ageGroup)) {
+        ageGroups.put(ageGroup, List());
+    }
+
+    groupList = ageGroups.get(ageGroup);
+    groupList.add(record);
+}
+
+// Build final result
+result = Map();
+result.put("valid_records", validRecords);
+result.put("invalid_records", invalidRecords);
+result.put("statistics", statistics);
+result.put("age_groups", ageGroups);
+result.put("processing_summary", Map({
+    "total_processed": rawData.size(),
+    "valid": validCount,
+    "invalid": invalidRecords.size(),
+    "completion_status": "success"
+}));
+
+info("Data processing completed:", validCount, "valid records out of", rawData.size());
+
+return result;

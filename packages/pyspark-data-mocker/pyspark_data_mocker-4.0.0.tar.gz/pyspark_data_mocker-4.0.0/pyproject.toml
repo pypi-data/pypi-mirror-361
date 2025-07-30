@@ -1,0 +1,61 @@
+[tool.poetry]
+name = "pyspark-data-mocker"
+version = "4.0.0"
+description = "Mock a datalake easily to be able to test your pyspark data application"
+authors = ["Federico Gomez <fedemgp@gmail.com>"]
+license = "GPL-3.0"
+readme = "README.md"
+packages = [{include = "pyspark_data_mocker"}]
+homepage = "https://fedemgp.github.io"
+repository = "https://github.com/fedemgp/pyspark_data_mocker/"
+keywords = ["pyspark", "tests", "data", "mocker"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+schema = "0.7.5"
+dacite = "^1.8.1"
+pyyaml = "^6.0.1"
+pyspark = "^3.2.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+pytest-mock = "^3.11.1"
+pre-commit = "^3.3.3"
+black = "==22.3.0"
+flake8 = "==5.0.4"
+mypy = "1.5.0"
+isort = "5.12.0"
+chispa = "^0.9.2"
+
+
+[tool.poetry.group.doc.dependencies]
+byexample = "^10.5.6"
+mkdocs = "^1.5.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 120
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.mypy_cache
+  | .venv
+  | build
+  | dist
+  | documentation
+)/
+'''
+
+[tool.mypy]
+ignore_missing_imports = true
+install_types = true
+non_interactive = true
+exclude = [".venv", ".git", "build", "dist", "documentation"]
+
+[tool.isort]
+profile = "black"
+line_length = 120

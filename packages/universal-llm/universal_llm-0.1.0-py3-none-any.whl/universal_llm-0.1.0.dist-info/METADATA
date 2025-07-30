@@ -1,0 +1,56 @@
+Metadata-Version: 2.4
+Name: universal-llm
+Version: 0.1.0
+Summary: Minimal universal LLM client - swap providers with one env var
+Author-email: Ian McLaughlin <ian.mclaughlin@prizeout.com>
+Requires-Python: >=3.9
+Requires-Dist: httpx>=0.24.0
+Requires-Dist: pydantic-settings>=2.0.0
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: python-dotenv>=1.0.0
+Requires-Dist: rich>=13.0.0
+Requires-Dist: typer>=0.9.0
+Provides-Extra: all
+Provides-Extra: dev
+Requires-Dist: pytest-asyncio>=0.21.0; extra == 'dev'
+Requires-Dist: pytest>=7.0.0; extra == 'dev'
+Requires-Dist: vcrpy>=5.0.0; extra == 'dev'
+Description-Content-Type: text/markdown
+
+# Universal LLM Client
+
+Swap LLM providers with one env var. No code changes.
+
+```python
+from universal_llm import Settings, get_client
+
+settings = Settings(provider="anthropic", model="claude-3-haiku")
+client = get_client(settings)
+
+resp = client.chat_sync([
+    {"role": "user", "content": "Explain the CAP theorem in 2 sentences."}
+])
+print(resp)
+```
+
+## Installation
+
+```bash
+pip install universal-llm[all]
+```
+
+Or install only what you need:
+- `pip install universal-llm[openai]`
+- `pip install universal-llm[anthropic]`
+- `pip install universal-llm[google]`
+- `pip install universal-llm[ollama]`
+
+## Configuration
+
+Set via environment variables:
+- `LLM_PROVIDER` - openai, anthropic, google, or ollama
+- `LLM_MODEL` - model name
+- `LLM_API_KEY` - API key (not required for Ollama)
+- `LLM_BASE_URL` - base URL (Ollama defaults to http://localhost:11434/v1)
+- `LLM_TEMPERATURE` - temperature (default: 0.2)
+- `LLM_TIMEOUT` - timeout in seconds (default: 60)

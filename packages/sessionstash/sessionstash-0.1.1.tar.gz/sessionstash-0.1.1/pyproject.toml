@@ -1,0 +1,27 @@
+# pyproject.toml
+[build-system]
+requires = ["setuptools<69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sessionstash"
+version = "0.1.1"
+description = "Save & restore Python interpreter sessions — an R-style snapshotter powered by dill."
+authors = [{ name = "Jiwoong Kim", email = "jiwoongbio@gmail.com" }]
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+dependencies = ["dill>=0.3.8"]
+
+[project.urls]
+Homepage = "https://github.com/jiwoongbio/sessionstash"
+Issues   = "https://github.com/jiwoongbio/sessionstash/issues"
+
+[project.optional-dependencies]
+dev = ["pytest", "ruff"]
+
+[tool.setuptools]
+packages = ["sessionstash"]
+
+[project.entry-points."console_scripts"]
+sessionstash = "sessionstash.main:cli_entry"

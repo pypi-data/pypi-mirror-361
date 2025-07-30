@@ -1,0 +1,74 @@
+[build-system]
+requires = ["xmake-python >= 0.1.7"]
+build-backend = "xmake_python"
+
+[project]
+name = 'git-wheel'
+version = '2.50.1'
+description = "fast, scalable, distributed revision control system"
+readme = 'README.md'
+keywords = ["git"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Topic :: Software Development :: Build Tools",
+  "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX",
+  "Operating System :: Unix",
+  "Operating System :: MacOS",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+
+[project.license]
+text = "GPL v3"
+
+[project.urls]
+Homepage = "https://git-scm.com/"
+Download = "https://github.com/xmake-io/git-wheel/releases"
+"Bug Report" = "https://github.com/xmake-io/git-wheel/issues"
+Source = "https://github.com/xmake-io/git-wheel"
+
+
+[tool.cibuildwheel]
+archs = ["all"]
+build = "*312-*"
+# manylinux_2_28 doesn't have 2_28
+skip = "*-macosx_x86_64 *_universal2 *-manylinux_i686"
+build-frontend = "build[uv]"
+# glibc miss sys/random.h
+manylinux-x86_64-image = "manylinux_2_28"
+manylinux-aarch64-image = "manylinux_2_28"
+manylinux-ppc64le-image = "manylinux_2_28"
+manylinux-s390x-image = "manylinux_2_28"
+
+[tool.cibuildwheel.environment]
+MACOSX_DEPLOYMENT_TARGET = "14.0"
+
+[[tool.cibuildwheel.overrides]]
+select = ["*-macosx_*"]
+# AssertionError: uv not found
+before-all = "brew install uv"
+
+# https://github.com/astral-sh/uv/issues/10260
+[[tool.cibuildwheel.overrides]]
+select = ["*-musllinux_s390x", "*-musllinux_ppc64*"]
+build-frontend = "build"
+
+[[tool.cibuildwheel.overrides]]
+select = ["*-manylinux_*"]
+before-all = "yum -y install curl-devel openssl-devel"
+
+[[tool.cibuildwheel.overrides]]
+select = ["*-manylinux_armv7l"]
+before-all = "apt-get -y update && apt-get -y install -y libcurl4-openssl-dev libssl-dev"
+
+[[tool.cibuildwheel.overrides]]
+select = ["*-musllinux_*"]
+before-all = "apk add gzip curl-dev openssl-dev"

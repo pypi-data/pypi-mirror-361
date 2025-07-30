@@ -1,0 +1,797 @@
+
+Crackerjacking[33m...[0m
+
+PDM installed: ✅
+
+[?25l[36m⠋[0m [33m0:00:00[0m [1mResolving dependencies[0m  [2K[36m⠋[0m [33m0:00:00[0m [1mResolve for environment (>=3.13)[0m None[2K[36m⠋[0m [33m0:00:00[0m [1mResolve for environment (>=3.13)[0m None
+[?25h[34mINFO:[0m [2mUsing uv is experimental and might break due to uv updates.[0m
+[37m⠋[0m [2mResolving dependencies...                                                                                                                                            [0m[2K[37m⠙[0m [2mResolving dependencies...                                                                                                                                            [0m[2K[37m⠋[0m [2mResolving dependencies...                                                                                                                                            [0m[2K[37m⠙[0m [2mResolving dependencies...                                                                                                                                            [0m[2K[37m⠋[0m [2mResolving dependencies...                                                                                                                                            [0m[2K[37m⠙[0m [2mResolving dependencies...                                                                                                                                            [0m[2K[37m⠙[0m [2mjinja2-async-environment==0.11.8                                                                                                                                     [0m[2K[37m⠙[0m [2mjinja2-async-environment==0.11.8                                                                                                                                     [0m[2K[37m⠙[0m [2manyio==4.9.0                                                                                                                                                         [0m[2K[37m⠙[0m [2mjinja2==3.1.6                                                                                                                                                        [0m[2K[37m⠙[0m [2mredis==6.2.0                                                                                                                                                         [0m[2K[37m⠙[0m [2mcrackerjack==0.20.20                                                                                                                                                 [0m[2K[37m⠙[0m [2midna==3.10                                                                                                                                                           [0m[2K[37m⠙[0m [2msniffio==1.3.1                                                                                                                                                       [0m[2K[37m⠙[0m [2mmarkupsafe==3.0.2                                                                                                                                                    [0m[2K[37m⠙[0m [2mautotyping==24.9.0                                                                                                                                                   [0m[2K[37m⠙[0m [2mkeyring==25.6.0                                                                                                                                                      [0m[2K[37m⠙[0m [2mpdm==2.25.2                                                                                                                                                          [0m[2K[37m⠙[0m [2mpdm-bump==0.9.12                                                                                                                                                     [0m[2K[37m⠙[0m [2mpre-commit==4.2.0                                                                                                                                                    [0m[2K[37m⠙[0m [2mpydantic==2.11.7                                                                                                                                                     [0m[2K[37m⠙[0m [2mpydantic-core==2.33.2                                                                                                                                                [0m[2K[37m⠙[0m [2mpytest==8.4.1                                                                                                                                                        [0m[2K[37m⠙[0m [2mpytest-asyncio==1.0.0                                                                                                                                                [0m[2K[37m⠙[0m [2mpytest-benchmark==5.1.0                                                                                                                                              [0m[2K[37m⠙[0m [2mcolorama==0.4.6                                                                                                                                                      [0m[2K[2mResolved [1m84 packages[0m [2min 135ms[0m[0m
+[?25l[2K[36m⠼[0m [33m0:00:00[0m [1mResolve for environment (>=3.13)[0m None[2K[36m⠧[0m [33m0:00:00[0m [1mResolve for environment (>=3.13)[0m None[2K  [33m0:00:00[0m [1m🔒 Lock successful.[0m  [2K  [33m0:00:00[0m [1m🔒 Lock successful.[0m  [2KChanges are written to [32mpdm.lock[0m.
+  [33m0:00:00[0m [1m🔒 Lock successful.[0m  [2K  [33m0:00:00[0m [1m🔒 Lock successful.[0m  
+[?25hLock file updated: ✅
+
+
+Running pre-commit hooks[33m...[0m
+
+trailing-whitespace......................................................[41mFailed[m
+[2m- hook id: trailing-whitespace[m
+[2m- exit code: 1[m
+[2m- files were modified by this hook[m
+
+Fixing jinja2_async_environment/compiler.py
+Fixing jinja2_async_environment/environment.py
+
+end-of-file-fixer........................................................[41mFailed[m
+[2m- hook id: end-of-file-fixer[m
+[2m- exit code: 1[m
+[2m- files were modified by this hook[m
+
+Fixing tests/test_escape_filter.py
+Fixing CHANGELOG.md
+
+check-yaml...............................................................[42mPassed[m
+check-toml...............................................................[42mPassed[m
+check-added-large-files..................................................[42mPassed[m
+Validate pyproject.toml..................................................[42mPassed[m
+pyproject-fmt............................................................[41mFailed[m
+[2m- hook id: pyproject-fmt[m
+[2m- exit code: 1[m
+[2m- files were modified by this hook[m
+
+[31m--- pyproject.toml
+[0m
+[32m+++ pyproject.toml
+[0m
+@@ -9,6 +9,7 @@
+
+ version = "0.11.8"
+ description = ""
+ readme = "README.md"
+[32m+license.text = "BSD-3-Clause"[0m
+ authors = [
+     { name = "lesleslie", email = "les@wedgwoodwebworks.com" },
+ ]
+@@ -31,11 +32,7 @@
+
+     "redis>=6.2",
+ ]
+ 
+[31m-[project.license][0m
+[31m-text = "BSD-3-Clause"[0m
+[31m-[0m
+[31m-[project.optional-dependencies][0m
+[31m-dev = [[0m
+[32m+optional-dependencies.dev = [[0m
+     "crackerjack>=0.20.20",
+ ]
+ 
+@@ -52,18 +49,15 @@
+
+ show-fixes = true
+ output-format = "full"
+ 
+[31m-[tool.ruff.format][0m
+[31m-docstring-code-format = true[0m
+[31m-[0m
+[31m-[tool.ruff.lint][0m
+[31m-extend-select = [[0m
+[32m+format.docstring-code-format = true[0m
+[32m+lint.extend-select = [[0m
+     "C901",
+     "D",
+     "F",
+     "I",
+     "UP",
+ ]
+[31m-ignore = [[0m
+[32m+lint.ignore = [[0m
+     "D100",
+     "D101",
+     "D102",
+@@ -75,21 +69,15 @@
+
+     "F821",
+     "UP040",
+ ]
+[31m-fixable = [[0m
+[32m+lint.fixable = [[0m
+     "ALL",
+ ]
+[31m-unfixable = [][0m
+[31m-[0m
+[31m-[tool.ruff.lint.isort][0m
+[31m-no-lines-before = [[0m
+[32m+lint.unfixable = [  ][0m
+[32m+lint.isort.no-lines-before = [[0m
+     "first-party",
+ ]
+[31m-[0m
+[31m-[tool.ruff.lint.mccabe][0m
+[31m-max-complexity = 13[0m
+[31m-[0m
+[31m-[tool.ruff.lint.pydocstyle][0m
+[31m-convention = "google"[0m
+[32m+lint.mccabe.max-complexity = 13[0m
+[32m+lint.pydocstyle.convention = "google"[0m
+ 
+ [tool.codespell]
+ skip = "*/data/*"
+
+pdm-lock-check...........................................................[42mPassed[m
+uv-lock..................................................................[42mPassed[m
+Detect secrets...........................................................[42mPassed[m
+codespell................................................................[42mPassed[m
+ruff check...............................................................[41mFailed[m
+[2m- hook id: ruff-check[m
+[2m- exit code: 1[m
+[2m- files were modified by this hook[m
+
+[1mjinja2_async_environment/environment.py[0m[36m:[0m208[36m:[0m15[36m:[0m [1;31mC901[0m `_get_template_async` is too complex (17 > 13)
+    [1m[94m|[0m
+[1m[94m206 |[0m         raise TemplatesNotFound(names_list)
+[1m[94m207 |[0m
+[1m[94m208 |[0m     async def _get_template_async(
+    [1m[94m|[0m               [1m[91m^^^^^^^^^^^^^^^^^^^[0m [1m[91mC901[0m
+[1m[94m209 |[0m         self, name: str, globals: t.MutableMapping[str, t.Any] | None
+[1m[94m210 |[0m     ) -> Template:
+    [1m[94m|[0m
+
+
+[1;32mFixed 2 errors:[0m
+[36m-[0m [1mjinja2_async_environment/compiler.py[0m[36m:[0m
+    1 × [1;31mF811[0m (redefined-while-unused)
+[36m-[0m [1mtests/test_escape_filter.py[0m[36m:[0m
+    1 × [1;31mI001[0m (unsorted-imports)
+
+Found 3 errors (2 fixed, 1 remaining).
+
+ruff format..............................................................[41mFailed[m
+[2m- hook id: ruff-format[m
+[2m- files were modified by this hook[m
+
+3 files reformatted, 23 files left unchanged
+
+vulture..................................................................[42mPassed[m
+creosote.................................................................[42mPassed[m
+refurb...................................................................[41mFailed[m
+[2m- hook id: refurb[m
+[2m- exit code: 1[m
+
+Traceback (most recent call last):
+  File [35m"/Users/les/.cache/pre-commit/repo48mb3bu5/py_env-python3.13/bin/refurb"[0m, line [35m8[0m, in [35m<module>[0m
+    sys.exit([31mmain[0m[1;31m()[0m)
+             [31m~~~~[0m[1;31m^^[0m
+  File [35m"/Users/les/.cache/pre-commit/repo48mb3bu5/py_env-python3.13/lib/python3.13/site-packages/refurb/__main__.py"[0m, line [35m7[0m, in [35mmain[0m
+    sys.exit([31m_main[0m[1;31m(sys.argv[1:])[0m)
+             [31m~~~~~[0m[1;31m^^^^^^^^^^^^^^[0m
+  File [35m"/Users/les/.cache/pre-commit/repo48mb3bu5/py_env-python3.13/lib/python3.13/site-packages/refurb/main.py"[0m, line [35m394[0m, in [35mmain[0m
+    errors = run_refurb(settings)
+  File [35m"/Users/les/.cache/pre-commit/repo48mb3bu5/py_env-python3.13/lib/python3.13/site-packages/refurb/main.py"[0m, line [35m208[0m, in [35mrun_refurb[0m
+    [31mvisitor.accept[0m[1;31m(tree)[0m
+    [31m~~~~~~~~~~~~~~[0m[1;31m^^^^^^[0m
+  File [35m"/Users/les/.cache/pre-commit/repo48mb3bu5/py_env-python3.13/lib/python3.13/site-packages/refurb/visitor/traverser.py"[0m, line [35m138[0m, in [35maccept[0m
+    return accept(o, self)
+  File [35m"/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/functools.py"[0m, line [35m934[0m, in [35mwrapper[0m
+    return [31mdispatch(args[0].__class__)[0m[1;31m(*args, **kw)[0m
+           [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^^^^^^^^^^^^[0m
+  File [35m"/Users/les/.cache/pre-commit/repo48mb3bu5/py_env-python3.13/lib/python3.13/site-packages/refurb/visitor/traverser.py"[0m, line [35m526[0m, in [35m_[0m
+    return [31mvisitor.visit_mypy_file[0m[1;31m(node)[0m
+           [31m~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^^^^^[0m
+  File [35m"/Users/les/.cache/pre-commit/repo48mb3bu5/py_env-python3.13/lib/python3.13/site-packages/refurb/visitor/visitor.py"[0m, line [35m19[0m, in [35minner[0m
+    [31mself.run_check[0m[1;31m(o, check)[0m
+    [31m~~~~~~~~~~~~~~[0m[1;31m^^^^^^^^^^[0m
+  File [35m"/Users/les/.cache/pre-commit/repo48mb3bu5/py_env-python3.13/lib/python3.13/site-packages/refurb/visitor/visitor.py"[0m, line [35m65[0m, in [35mrun_check[0m
+    [31mcheck[0m[1;31m(node, self.errors)[0m  # type: ignore
+    [31m~~~~~[0m[1;31m^^^^^^^^^^^^^^^^^^^[0m
+  File [35m"/Users/les/.cache/pre-commit/repo48mb3bu5/py_env-python3.13/lib/python3.13/site-packages/refurb/checks/builtin/no_slice_copy.py"[0m, line [35m67[0m, in [35mcheck[0m
+    [31mSliceExprVisitor(errors).accept[0m[1;31m(node)[0m
+    [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^^^^^[0m
+  File [35m"/Users/les/.cache/pre-commit/repo48mb3bu5/py_env-python3.13/lib/python3.13/site-packages/refurb/visitor/traverser.py"[0m, line [35m138[0m, in [35maccept[0m
+    return accept(o, self)
+  File [35m"/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/functools.py"[0m, line [35m934[0m, in [35mwrapper[0m
+    return [31mdispatch(args[0].__class__)[0m[1;31m(*args, **kw)[0m
+           [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^^^^^^^^^^^^[0m
+  File [35m"/Users/les/.cache/pre-commit/repo48mb3bu5/py_env-python3.13/lib/python3.13/site-packages/refurb/visitor/traverser.py"[0m, line [35m526[0m, in [35m_[0m
+    return [31mvisitor.visit_mypy_file[0m[1;31m(node)[0m
+           [31m~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^^^^^[0m
+  File [35m"/Users/les/.cache/pre-commit/repo48mb3bu5/py_env-python3.13/lib/python3.13/site-packages/refurb/visitor/traverser.py"[0m, line [35m152[0m, in [35mvisit_mypy_file[0m
+    [31maccept[0m[1;31m(d, self)[0m
+    [31m~~~~~~[0m[1;31m^^^^^^^^^[0m
+  File [35m"/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/functools.py"[0m, line [35m934[0m, in [35mwrapper[0m
+    return [31mdispatch(args[0].__class__)[0m[1;31m(*args, **kw)[0m
+           [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^^^^^^^^^^^^[0m
+  File [35m"/Users/les/.cache/pre-commit/repo48mb3bu5/py_env-python3.13/lib/python3.13/site-packages/refurb/visitor/traverser.py"[0m, line [35m521[0m, in [35maccept[0m
+    raise NotImplementedError(f"No `visit_*` overload available for `{type(node).__qualname__}`")
+[1;35mNotImplementedError[0m: [35mNo `visit_*` overload available for `TypeAliasStmt`[0m
+
+autotyping...............................................................[42mPassed[m
+bandit...................................................................[41mFailed[m
+[2m- hook id: bandit[m
+[2m- exit code: 1[m
+
+[main]	INFO	profile include tests: None
+[main]	INFO	profile exclude tests: B404,B311,B403,B602,B301,B704,B607,B101,B603
+[main]	INFO	cli include tests: None
+[main]	INFO	cli exclude tests: None
+[main]	INFO	using config: pyproject.toml
+[main]	INFO	running on Python 3.13.5
+[95mRun started:2025-06-18 11:27:50.423156[0m
+[95m
+Test results:[0m
+[91m>> Issue: [B324:hashlib] Use of weak MD5 hash for security. Consider usedforsecurity=False
+   Severity: High   Confidence: High
+   CWE: CWE-327 (https://cwe.mitre.org/data/definitions/327.html)
+   More Info: https://bandit.readthedocs.io/en/0.0.0/plugins/b324_hashlib.html
+   Location: ./jinja2_async_environment/bccache.py:39:15[0m
+38	
+39	        return hashlib.md5(source.encode("utf-8")).hexdigest()
+40	
+
+--------------------------------------------------
+[91m>> Issue: [B701:jinja2_autoescape_false] By default, jinja2 sets autoescape to False. Consider using autoescape=True or use the select_autoescape function to mitigate XSS vulnerabilities.
+   Severity: High   Confidence: High
+   CWE: CWE-94 (https://cwe.mitre.org/data/definitions/94.html)
+   More Info: https://bandit.readthedocs.io/en/0.0.0/plugins/b701_jinja2_autoescape_false.html
+   Location: ./jinja2_async_environment/compiler.py:26:35[0m
+25	
+26	            eval_ctx = EvalContext(Environment(), "template")
+27	        super().__init__(eval_ctx)
+
+--------------------------------------------------
+[95m
+Code scanned:[0m
+	Total lines of code: 4623
+	Total lines skipped (#nosec): 0
+[95m
+Run metrics:[0m
+	Total issues (by severity):
+		Undefined: 0
+		Low: 0
+		Medium: 0
+		High: 2
+	Total issues (by confidence):
+		Undefined: 0
+		Low: 0
+		Medium: 0
+		High: 2
+[95mFiles skipped (0):[0m
+
+pyright..................................................................[41mFailed[m
+[2m- hook id: pyright[m
+[2m- exit code: 1[m
+
+/Users/les/Projects/jinja2-async-environment/jinja2_async_environment/bccache.py
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/bccache.py:[33m75[39m:[33m9[39m - [31merror[39m: Method "get_cache_key" overrides class "AsyncBytecodeCache" in an incompatible manner
+    Positional parameter count mismatch; base method has 4, but override has 3
+    Parameter 4 mismatch: base parameter "env" is keyword parameter, override parameter is position-only[90m (reportIncompatibleMethodOverride)[39m
+/Users/les/Projects/jinja2-async-environment/jinja2_async_environment/compiler.py
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/compiler.py:[33m28[39m:[33m14[39m - [31merror[39m: "buffer" overrides symbol of same name in class "Frame"
+    Variable is mutable so its type is invariant
+      Override type "list[str]" is not the same as base type "str | None"[90m (reportIncompatibleVariableOverride)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/compiler.py:[33m43[39m:[33m22[39m - [31merror[39m: Cannot assign to attribute "analyzed" for class "Symbols"
+    Attribute "analyzed" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/compiler.py:[33m44[39m:[33m22[39m - [31merror[39m: Cannot assign to attribute "names" for class "Symbols"
+    Attribute "names" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/compiler.py:[33m45[39m:[33m22[39m - [31merror[39m: Cannot assign to attribute "declared" for class "Symbols"
+    Attribute "declared" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/compiler.py:[33m46[39m:[33m22[39m - [31merror[39m: Cannot assign to attribute "used" for class "Symbols"
+    Attribute "used" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/compiler.py:[33m66[39m:[33m16[39m - [31merror[39m: Unnecessary "cast" call; type is already "Self@AsyncFrame"[90m (reportUnnecessaryCast)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/compiler.py:[33m96[39m:[33m18[39m - [31merror[39m: Expected type arguments for generic class "dict"[90m (reportMissingTypeArgument)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/compiler.py:[33m97[39m:[33m21[39m - [31merror[39m: Expected type arguments for generic class "dict"[90m (reportMissingTypeArgument)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/compiler.py:[33m98[39m:[33m13[39m - [31merror[39m: Expected type arguments for generic class "dict"[90m (reportMissingTypeArgument)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/compiler.py:[33m100[39m:[33m22[39m - [31merror[39m: Expected type arguments for generic class "set"[90m (reportMissingTypeArgument)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/compiler.py:[33m146[39m:[33m9[39m - [31merror[39m: Method "return_buffer_contents" overrides class "CodeGenerator" in an incompatible manner
+    Positional parameter count mismatch; base method has 3, but override has 2
+    Parameter 3 mismatch: base parameter "force_unescaped" is keyword parameter, override parameter is position-only[90m (reportIncompatibleMethodOverride)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/compiler.py:[33m159[39m:[33m18[39m - [31merror[39m: Unnecessary "cast" call; type is already "Any"[90m (reportUnnecessaryCast)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/compiler.py:[33m222[39m:[33m29[39m - [31merror[39m: Cannot assign to attribute "buffer" for class "AsyncFrame"
+    "str" is not assignable to "list[str]"[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/compiler.py:[33m334[39m:[33m24[39m - [31merror[39m: Cannot assign to attribute "buffer" for class "AsyncFrame"
+    "None" is not assignable to "list[str]"[90m (reportAttributeAccessIssue)[39m
+/Users/les/Projects/jinja2-async-environment/jinja2_async_environment/environment.py
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/environment.py:[33m116[39m:[33m20[39m - [31merror[39m: Type "Template | str" is not assignable to return type "Template"
+    Type "Template | str" is not assignable to type "Template"
+      "str" is not assignable to "Template"[90m (reportReturnType)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/environment.py:[33m148[39m:[33m24[39m - [31merror[39m: Type "Template | str" is not assignable to return type "Template"
+    Type "Template | str" is not assignable to type "Template"
+      "str" is not assignable to "Template"[90m (reportReturnType)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/environment.py:[33m180[39m:[33m20[39m - [31merror[39m: Type "Template | Sequence[str | Template]" is not assignable to return type "Template"
+    Type "Template | Sequence[str | Template]" is not assignable to type "Template"
+      "Sequence[str | Template]" is not assignable to "Template"[90m (reportReturnType)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/environment.py:[33m191[39m:[33m20[39m - [31merror[39m: Type "Template | str | Iterable[str | Template]" is not assignable to return type "Template"
+    Type "Template | str | Iterable[str | Template]" is not assignable to type "Template"
+      "Iterable[str | Template]" is not assignable to "Template"[90m (reportReturnType)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/environment.py:[33m201[39m:[33m24[39m - [31merror[39m: Type "Template | str" is not assignable to return type "Template"
+    Type "Template | str" is not assignable to type "Template"
+      "str" is not assignable to "Template"[90m (reportReturnType)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/environment.py:[33m220[39m:[33m43[39m - [31merror[39m: Argument of type "tuple[int, str]" cannot be assigned to parameter "key" of type "Tuple[ref, str]" in function "get"
+    "tuple[int, str]" is not assignable to "Tuple[ref, str]"
+      Tuple entry 1 is incorrect type
+        "int" is not assignable to "ReferenceType[Any]"[90m (reportArgumentType)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/environment.py:[33m245[39m:[33m45[39m - [31merror[39m: Object of type "bool" is not callable
+    Attribute "__call__" is unknown[90m (reportCallIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/environment.py:[33m270[39m:[33m13[39m - [31merror[39m: Argument of type "tuple[int, str]" cannot be assigned to parameter "key" of type "Tuple[ref, str]" in function "__setitem__"
+    "tuple[int, str]" is not assignable to "Tuple[ref, str]"
+      Tuple entry 1 is incorrect type
+        "int" is not assignable to "ReferenceType[Any]"[90m (reportArgumentType)[39m
+/Users/les/Projects/jinja2-async-environment/jinja2_async_environment/loaders.py
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/loaders.py:[33m559[39m:[33m9[39m - [36mwarning[39m: Type of parameter "loaders" is partially unknown
+    Parameter type is "Sequence[AsyncBaseLoader | ((...) -> Unknown)]"[90m (reportUnknownParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/loaders.py:[33m559[39m:[33m47[39m - [31merror[39m: Expected type arguments for generic class "Callable"[90m (reportMissingTypeArgument)[39m
+/Users/les/Projects/jinja2-async-environment/tests/test_async_environment.py
+  /Users/les/Projects/jinja2-async-environment/tests/test_async_environment.py:[33m100[39m:[33m26[39m - [36mwarning[39m: Type of parameter "src" is unknown[90m (reportUnknownParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_async_environment.py:[33m100[39m:[33m26[39m - [31merror[39m: Type annotation is missing for parameter "src"[90m (reportMissingParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_async_environment.py:[33m100[39m:[33m31[39m - [36mwarning[39m: Type of parameter "filename" is unknown[90m (reportUnknownParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_async_environment.py:[33m100[39m:[33m31[39m - [31merror[39m: Type annotation is missing for parameter "filename"[90m (reportMissingParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_async_environment.py:[33m100[39m:[33m41[39m - [36mwarning[39m: Type of parameter "mode" is unknown[90m (reportUnknownParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_async_environment.py:[33m100[39m:[33m41[39m - [31merror[39m: Type annotation is missing for parameter "mode"[90m (reportMissingParameterType)[39m
+/Users/les/Projects/jinja2-async-environment/tests/test_compiler.py
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler.py:[33m19[39m:[33m24[39m - [31merror[39m: Cannot assign to attribute "buffer" for class "AsyncFrame"
+    "None" is not assignable to "list[str]"[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler.py:[33m30[39m:[33m24[39m - [31merror[39m: Cannot assign to attribute "buffer" for class "AsyncFrame"
+    "None" is not assignable to "list[str]"[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler.py:[33m69[39m:[33m24[39m - [31merror[39m: Cannot assign to attribute "buffer" for class "AsyncFrame"
+    "None" is not assignable to "list[str]"[90m (reportAttributeAccessIssue)[39m
+/Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m29[39m:[33m26[39m - [31merror[39m: Cannot access attribute "analyzed" for class "Symbols"
+    Attribute "analyzed" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m30[39m:[33m26[39m - [31merror[39m: Cannot access attribute "names" for class "Symbols"
+    Attribute "names" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m31[39m:[33m26[39m - [31merror[39m: Cannot access attribute "declared" for class "Symbols"
+    Attribute "declared" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m32[39m:[33m26[39m - [31merror[39m: Cannot access attribute "used" for class "Symbols"
+    Attribute "used" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m47[39m:[33m19[39m - [31merror[39m: Cannot assign to attribute "analyzed" for class "Symbols"
+    Attribute "analyzed" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m48[39m:[33m19[39m - [31merror[39m: Cannot assign to attribute "names" for class "Symbols"
+    Attribute "names" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m49[39m:[33m19[39m - [31merror[39m: Cannot assign to attribute "declared" for class "Symbols"
+    Attribute "declared" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m50[39m:[33m19[39m - [31merror[39m: Cannot assign to attribute "used" for class "Symbols"
+    Attribute "used" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m63[39m:[33m33[39m - [31merror[39m: Cannot access attribute "analyzed" for class "Symbols"
+    Attribute "analyzed" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m63[39m:[33m59[39m - [31merror[39m: Cannot access attribute "analyzed" for class "Symbols"
+    Attribute "analyzed" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m64[39m:[33m33[39m - [31merror[39m: Cannot access attribute "names" for class "Symbols"
+    Attribute "names" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m64[39m:[33m56[39m - [31merror[39m: Cannot access attribute "names" for class "Symbols"
+    Attribute "names" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m65[39m:[33m33[39m - [31merror[39m: Cannot access attribute "declared" for class "Symbols"
+    Attribute "declared" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m65[39m:[33m59[39m - [31merror[39m: Cannot access attribute "declared" for class "Symbols"
+    Attribute "declared" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m66[39m:[33m33[39m - [31merror[39m: Cannot access attribute "used" for class "Symbols"
+    Attribute "used" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m66[39m:[33m55[39m - [31merror[39m: Cannot access attribute "used" for class "Symbols"
+    Attribute "used" is unknown[90m (reportAttributeAccessIssue)[39m
+/Users/les/Projects/jinja2-async-environment/tests/test_compiler_coverage.py
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_coverage.py:[33m132[39m:[33m5[39m - [31merror[39m: Argument missing for parameter "frame"[90m (reportCallIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_coverage.py:[33m155[39m:[33m46[39m - [31merror[39m: "AsyncWith" is not a known attribute of module "jinja2.nodes"[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_coverage.py:[33m163[39m:[33m26[39m - [31merror[39m: Cannot access attribute "visit_AsyncWith" for class "AsyncCodeGenerator"
+    Attribute "visit_AsyncWith" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_coverage.py:[33m178[39m:[33m48[39m - [31merror[39m: Expected 1 positional argument[90m (reportCallIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_coverage.py:[33m192[39m:[33m5[39m - [31merror[39m: Argument missing for parameter "frame"[90m (reportCallIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_coverage.py:[33m219[39m:[33m9[39m - [31merror[39m: Argument missing for parameter "frame"[90m (reportCallIssue)[39m
+/Users/les/Projects/jinja2-async-environment/tests/test_e2e.py
+  /Users/les/Projects/jinja2-async-environment/tests/test_e2e.py:[33m74[39m:[33m39[39m - [31merror[39m: Argument of type "(template: str) -> CoroutineType[Any, Any, tuple[str, str, () -> bool]]" cannot be assigned to parameter "load_func" of type "(str | Path) -> (Awaitable[SourceType | None] | SourceType | str | int | None)" in function "__init__"
+    Type "(template: str) -> CoroutineType[Any, Any, tuple[str, str, () -> bool]]" is not assignable to type "(str | Path) -> (Awaitable[SourceType | None] | SourceType | str | int | None)"
+      Parameter 1: type "str | Path" is incompatible with type "str"
+        Type "str | Path" is not assignable to type "str"
+          "Path" is not assignable to "str"[90m (reportArgumentType)[39m
+/Users/les/Projects/jinja2-async-environment/tests/test_environment_additional.py
+  /Users/les/Projects/jinja2-async-environment/tests/test_environment_additional.py:[33m64[39m:[33m13[39m - [36mwarning[39m: Return type, "Iterator[Unknown]", is partially unknown[90m (reportUnknownParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_environment_additional.py:[33m64[39m:[33m31[39m - [31merror[39m: Expected type arguments for generic class "Iterator"[90m (reportMissingTypeArgument)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_environment_additional.py:[33m160[39m:[33m50[39m - [31merror[39m: Argument of type "Undefined" cannot be assigned to parameter "template_name_or_list" of type "str | Template | Sequence[str | Template]" in function "get_or_select_template_async"
+    Type "Undefined" is not assignable to type "str | Template | Sequence[str | Template]"
+      "Undefined" is not assignable to "str"
+      "Undefined" is not assignable to "Template"
+      "Undefined" is not assignable to "Sequence[str | Template]"[90m (reportArgumentType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_environment_additional.py:[33m411[39m:[33m11[39m - [31merror[39m: Variable "kwargs" is not accessed[90m (reportUnusedVariable)[39m
+/Users/les/Projects/jinja2-async-environment/tests/test_escape_filter.py
+  /Users/les/Projects/jinja2-async-environment/tests/test_escape_filter.py:[33m32[39m:[33m52[39m - [31merror[39m: "Iterator[str]" is not iterable
+    "__aiter__" method not defined[90m (reportGeneralTypeIssues)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_escape_filter.py:[33m40[39m:[33m52[39m - [31merror[39m: "Iterator[str]" is not iterable
+    "__aiter__" method not defined[90m (reportGeneralTypeIssues)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_escape_filter.py:[33m48[39m:[33m52[39m - [31merror[39m: "Iterator[str]" is not iterable
+    "__aiter__" method not defined[90m (reportGeneralTypeIssues)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_escape_filter.py:[33m58[39m:[33m52[39m - [31merror[39m: "Iterator[str]" is not iterable
+    "__aiter__" method not defined[90m (reportGeneralTypeIssues)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_escape_filter.py:[33m68[39m:[33m52[39m - [31merror[39m: "Iterator[str]" is not iterable
+    "__aiter__" method not defined[90m (reportGeneralTypeIssues)[39m
+/Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m27[39m:[33m39[39m - [36mwarning[39m: Type of parameter "args" is unknown[90m (reportUnknownParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m27[39m:[33m39[39m - [31merror[39m: Type annotation is missing for parameter "args"[90m (reportMissingParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m27[39m:[33m47[39m - [36mwarning[39m: Type of parameter "kwargs" is unknown[90m (reportUnknownParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m27[39m:[33m47[39m - [31merror[39m: Type annotation is missing for parameter "kwargs"[90m (reportMissingParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m49[39m:[33m35[39m - [36mwarning[39m: Type of parameter "environment" is unknown[90m (reportUnknownParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m49[39m:[33m35[39m - [31merror[39m: Type annotation is missing for parameter "environment"[90m (reportMissingParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m49[39m:[33m48[39m - [36mwarning[39m: Type of parameter "template" is unknown[90m (reportUnknownParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m49[39m:[33m48[39m - [31merror[39m: Type annotation is missing for parameter "template"[90m (reportMissingParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m55[39m:[33m35[39m - [31merror[39m: Cannot assign to attribute "get_source_async" for class "AsyncFileSystemLoader"
+    Type "(environment: Unknown, template: Unknown) -> CoroutineType[Any, Any, tuple[Literal['content'], Literal['/path/test.html'], () -> Literal[True]]]" is not assignable to type "(environment_or_template: AsyncEnvironment | str | Path, template: str | Path | None = None) -> CoroutineType[Any, Any, SourceType]"
+      Parameter name mismatch: "environment_or_template" versus "environment"
+      Parameter "template" is missing default argument[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m75[39m:[33m18[39m - [31merror[39m: Variable "path" is not accessed[90m (reportUnusedVariable)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m75[39m:[33m24[39m - [31merror[39m: Variable "uptodate" is not accessed[90m (reportUnusedVariable)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m88[39m:[33m29[39m - [36mwarning[39m: Type of parameter "template" is unknown[90m (reportUnknownParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m88[39m:[33m29[39m - [31merror[39m: Type annotation is missing for parameter "template"[90m (reportMissingParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m112[39m:[33m29[39m - [36mwarning[39m: Type of parameter "template" is unknown[90m (reportUnknownParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m112[39m:[33m29[39m - [31merror[39m: Type annotation is missing for parameter "template"[90m (reportMissingParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m124[39m:[33m19[39m - [31merror[39m: Variable "path1" is not accessed[90m (reportUnusedVariable)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m130[39m:[33m19[39m - [31merror[39m: Variable "path2" is not accessed[90m (reportUnusedVariable)[39m
+/Users/les/Projects/jinja2-async-environment/tests/test_loaders_coverage.py
+  /Users/les/Projects/jinja2-async-environment/tests/test_loaders_coverage.py:[33m51[39m:[33m36[39m - [31merror[39m: Argument of type "Literal['/non_existent_dir']" cannot be assigned to parameter "searchpath" of type "Path | Sequence[Path]" in function "__init__"
+    Type "Literal['/non_existent_dir']" is not assignable to type "Path | Sequence[Path]"
+      "Literal['/non_existent_dir']" is not assignable to "Path"
+      "Literal['/non_existent_dir']" is not assignable to "Sequence[Path]"
+        Type parameter "_T_co@Sequence" is covariant, but "str" is not a subtype of "Path"
+          "str" is not assignable to "Path"[90m (reportArgumentType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loaders_coverage.py:[33m97[39m:[33m34[39m - [31merror[39m: Argument of type "(template: str) -> CoroutineType[Any, Any, Any]" cannot be assigned to parameter "load_func" of type "(str | Path) -> (Awaitable[SourceType | None] | SourceType | str | int | None)" in function "__init__"
+    Type "(template: str) -> CoroutineType[Any, Any, Any]" is not assignable to type "(str | Path) -> (Awaitable[SourceType | None] | SourceType | str | int | None)"
+      Parameter 1: type "str | Path" is incompatible with type "str"
+        Type "str | Path" is not assignable to type "str"
+          "Path" is not assignable to "str"[90m (reportArgumentType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loaders_coverage.py:[33m125[39m:[33m40[39m - [31merror[39m: Argument of type "Literal['/templates']" cannot be assigned to parameter "searchpath" of type "Path | Sequence[Path]" in function "__init__"
+    Type "Literal['/templates']" is not assignable to type "Path | Sequence[Path]"
+      "Literal['/templates']" is not assignable to "Path"
+      "Literal['/templates']" is not assignable to "Sequence[Path]"
+        Type parameter "_T_co@Sequence" is covariant, but "str" is not a subtype of "Path"
+          "str" is not assignable to "Path"[90m (reportArgumentType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loaders_coverage.py:[33m128[39m:[33m17[39m - [31merror[39m: Variable "name" is not accessed[90m (reportUnusedVariable)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loaders_coverage.py:[33m162[39m:[33m25[39m - [31merror[39m: Variable "name" is not accessed[90m (reportUnusedVariable)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loaders_coverage.py:[33m185[39m:[33m39[39m - [31merror[39m: Argument of type "(template: str) -> CoroutineType[Any, Any, Any]" cannot be assigned to parameter "load_func" of type "(str | Path) -> (Awaitable[SourceType | None] | SourceType | str | int | None)" in function "__init__"
+    Type "(template: str) -> CoroutineType[Any, Any, Any]" is not assignable to type "(str | Path) -> (Awaitable[SourceType | None] | SourceType | str | int | None)"
+      Parameter 1: type "str | Path" is incompatible with type "str"
+        Type "str | Path" is not assignable to type "str"
+          "Path" is not assignable to "str"[90m (reportArgumentType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loaders_coverage.py:[33m191[39m:[33m14[39m - [31merror[39m: Variable "name1" is not accessed[90m (reportUnusedVariable)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loaders_coverage.py:[33m196[39m:[33m14[39m - [31merror[39m: Variable "name2" is not accessed[90m (reportUnusedVariable)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loaders_coverage.py:[33m212[39m:[33m34[39m - [31merror[39m: Argument of type "(template: str) -> CoroutineType[Any, Any, Any]" cannot be assigned to parameter "load_func" of type "(str | Path) -> (Awaitable[SourceType | None] | SourceType | str | int | None)" in function "__init__"
+    Type "(template: str) -> CoroutineType[Any, Any, Any]" is not assignable to type "(str | Path) -> (Awaitable[SourceType | None] | SourceType | str | int | None)"
+      Parameter 1: type "str | Path" is incompatible with type "str"
+        Type "str | Path" is not assignable to type "str"
+          "Path" is not assignable to "str"[90m (reportArgumentType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loaders_coverage.py:[33m215[39m:[33m13[39m - [31merror[39m: Variable "name" is not accessed[90m (reportUnusedVariable)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loaders_coverage.py:[33m233[39m:[33m13[39m - [31merror[39m: Variable "name" is not accessed[90m (reportUnusedVariable)[39m
+83 errors, 11 warnings, 0 informations
+
+trailing-whitespace......................................................[42mPassed[m
+end-of-file-fixer........................................................[42mPassed[m
+check-yaml...............................................................[42mPassed[m
+check-toml...............................................................[42mPassed[m
+check-added-large-files..................................................[42mPassed[m
+Validate pyproject.toml..................................................[42mPassed[m
+pyproject-fmt............................................................[42mPassed[m
+pdm-lock-check...........................................................[42mPassed[m
+uv-lock..................................................................[42mPassed[m
+Detect secrets...........................................................[42mPassed[m
+codespell................................................................[42mPassed[m
+ruff check...............................................................[41mFailed[m
+[2m- hook id: ruff-check[m
+[2m- exit code: 1[m
+
+[1mjinja2_async_environment/environment.py[0m[36m:[0m208[36m:[0m15[36m:[0m [1;31mC901[0m `_get_template_async` is too complex (17 > 13)
+    [1m[94m|[0m
+[1m[94m206 |[0m         raise TemplatesNotFound(names_list)
+[1m[94m207 |[0m
+[1m[94m208 |[0m     async def _get_template_async(
+    [1m[94m|[0m               [1m[91m^^^^^^^^^^^^^^^^^^^[0m [1m[91mC901[0m
+[1m[94m209 |[0m         self, name: str, globals: t.MutableMapping[str, t.Any] | None
+[1m[94m210 |[0m     ) -> Template:
+    [1m[94m|[0m
+
+Found 1 error.
+
+ruff format..............................................................[42mPassed[m
+vulture..................................................................[42mPassed[m
+creosote.................................................................[42mPassed[m
+refurb...................................................................[41mFailed[m
+[2m- hook id: refurb[m
+[2m- exit code: 1[m
+
+Traceback (most recent call last):
+  File [35m"/Users/les/.cache/pre-commit/repo48mb3bu5/py_env-python3.13/bin/refurb"[0m, line [35m8[0m, in [35m<module>[0m
+    sys.exit([31mmain[0m[1;31m()[0m)
+             [31m~~~~[0m[1;31m^^[0m
+  File [35m"/Users/les/.cache/pre-commit/repo48mb3bu5/py_env-python3.13/lib/python3.13/site-packages/refurb/__main__.py"[0m, line [35m7[0m, in [35mmain[0m
+    sys.exit([31m_main[0m[1;31m(sys.argv[1:])[0m)
+             [31m~~~~~[0m[1;31m^^^^^^^^^^^^^^[0m
+  File [35m"/Users/les/.cache/pre-commit/repo48mb3bu5/py_env-python3.13/lib/python3.13/site-packages/refurb/main.py"[0m, line [35m394[0m, in [35mmain[0m
+    errors = run_refurb(settings)
+  File [35m"/Users/les/.cache/pre-commit/repo48mb3bu5/py_env-python3.13/lib/python3.13/site-packages/refurb/main.py"[0m, line [35m208[0m, in [35mrun_refurb[0m
+    [31mvisitor.accept[0m[1;31m(tree)[0m
+    [31m~~~~~~~~~~~~~~[0m[1;31m^^^^^^[0m
+  File [35m"/Users/les/.cache/pre-commit/repo48mb3bu5/py_env-python3.13/lib/python3.13/site-packages/refurb/visitor/traverser.py"[0m, line [35m138[0m, in [35maccept[0m
+    return accept(o, self)
+  File [35m"/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/functools.py"[0m, line [35m934[0m, in [35mwrapper[0m
+    return [31mdispatch(args[0].__class__)[0m[1;31m(*args, **kw)[0m
+           [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^^^^^^^^^^^^[0m
+  File [35m"/Users/les/.cache/pre-commit/repo48mb3bu5/py_env-python3.13/lib/python3.13/site-packages/refurb/visitor/traverser.py"[0m, line [35m526[0m, in [35m_[0m
+    return [31mvisitor.visit_mypy_file[0m[1;31m(node)[0m
+           [31m~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^^^^^[0m
+  File [35m"/Users/les/.cache/pre-commit/repo48mb3bu5/py_env-python3.13/lib/python3.13/site-packages/refurb/visitor/visitor.py"[0m, line [35m19[0m, in [35minner[0m
+    [31mself.run_check[0m[1;31m(o, check)[0m
+    [31m~~~~~~~~~~~~~~[0m[1;31m^^^^^^^^^^[0m
+  File [35m"/Users/les/.cache/pre-commit/repo48mb3bu5/py_env-python3.13/lib/python3.13/site-packages/refurb/visitor/visitor.py"[0m, line [35m65[0m, in [35mrun_check[0m
+    [31mcheck[0m[1;31m(node, self.errors)[0m  # type: ignore
+    [31m~~~~~[0m[1;31m^^^^^^^^^^^^^^^^^^^[0m
+  File [35m"/Users/les/.cache/pre-commit/repo48mb3bu5/py_env-python3.13/lib/python3.13/site-packages/refurb/checks/builtin/no_slice_copy.py"[0m, line [35m67[0m, in [35mcheck[0m
+    [31mSliceExprVisitor(errors).accept[0m[1;31m(node)[0m
+    [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^^^^^[0m
+  File [35m"/Users/les/.cache/pre-commit/repo48mb3bu5/py_env-python3.13/lib/python3.13/site-packages/refurb/visitor/traverser.py"[0m, line [35m138[0m, in [35maccept[0m
+    return accept(o, self)
+  File [35m"/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/functools.py"[0m, line [35m934[0m, in [35mwrapper[0m
+    return [31mdispatch(args[0].__class__)[0m[1;31m(*args, **kw)[0m
+           [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^^^^^^^^^^^^[0m
+  File [35m"/Users/les/.cache/pre-commit/repo48mb3bu5/py_env-python3.13/lib/python3.13/site-packages/refurb/visitor/traverser.py"[0m, line [35m526[0m, in [35m_[0m
+    return [31mvisitor.visit_mypy_file[0m[1;31m(node)[0m
+           [31m~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^^^^^[0m
+  File [35m"/Users/les/.cache/pre-commit/repo48mb3bu5/py_env-python3.13/lib/python3.13/site-packages/refurb/visitor/traverser.py"[0m, line [35m152[0m, in [35mvisit_mypy_file[0m
+    [31maccept[0m[1;31m(d, self)[0m
+    [31m~~~~~~[0m[1;31m^^^^^^^^^[0m
+  File [35m"/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/functools.py"[0m, line [35m934[0m, in [35mwrapper[0m
+    return [31mdispatch(args[0].__class__)[0m[1;31m(*args, **kw)[0m
+           [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^^^^^^^^^^^^[0m
+  File [35m"/Users/les/.cache/pre-commit/repo48mb3bu5/py_env-python3.13/lib/python3.13/site-packages/refurb/visitor/traverser.py"[0m, line [35m521[0m, in [35maccept[0m
+    raise NotImplementedError(f"No `visit_*` overload available for `{type(node).__qualname__}`")
+[1;35mNotImplementedError[0m: [35mNo `visit_*` overload available for `TypeAliasStmt`[0m
+
+autotyping...............................................................[42mPassed[m
+bandit...................................................................[41mFailed[m
+[2m- hook id: bandit[m
+[2m- exit code: 1[m
+
+[main]	INFO	profile include tests: None
+[main]	INFO	profile exclude tests: B101,B704,B301,B403,B607,B311,B404,B603,B602
+[main]	INFO	cli include tests: None
+[main]	INFO	cli exclude tests: None
+[main]	INFO	using config: pyproject.toml
+[main]	INFO	running on Python 3.13.5
+[95mRun started:2025-06-18 11:28:18.589212[0m
+[95m
+Test results:[0m
+[91m>> Issue: [B324:hashlib] Use of weak MD5 hash for security. Consider usedforsecurity=False
+   Severity: High   Confidence: High
+   CWE: CWE-327 (https://cwe.mitre.org/data/definitions/327.html)
+   More Info: https://bandit.readthedocs.io/en/0.0.0/plugins/b324_hashlib.html
+   Location: ./jinja2_async_environment/bccache.py:39:15[0m
+38	
+39	        return hashlib.md5(source.encode("utf-8")).hexdigest()
+40	
+
+--------------------------------------------------
+[91m>> Issue: [B701:jinja2_autoescape_false] By default, jinja2 sets autoescape to False. Consider using autoescape=True or use the select_autoescape function to mitigate XSS vulnerabilities.
+   Severity: High   Confidence: High
+   CWE: CWE-94 (https://cwe.mitre.org/data/definitions/94.html)
+   More Info: https://bandit.readthedocs.io/en/0.0.0/plugins/b701_jinja2_autoescape_false.html
+   Location: ./jinja2_async_environment/compiler.py:26:35[0m
+25	
+26	            eval_ctx = EvalContext(Environment(), "template")
+27	        super().__init__(eval_ctx)
+
+--------------------------------------------------
+[95m
+Code scanned:[0m
+	Total lines of code: 4623
+	Total lines skipped (#nosec): 0
+[95m
+Run metrics:[0m
+	Total issues (by severity):
+		Undefined: 0
+		Low: 0
+		Medium: 0
+		High: 2
+	Total issues (by confidence):
+		Undefined: 0
+		Low: 0
+		Medium: 0
+		High: 2
+[95mFiles skipped (0):[0m
+
+pyright..................................................................[41mFailed[m
+[2m- hook id: pyright[m
+[2m- exit code: 1[m
+
+/Users/les/Projects/jinja2-async-environment/jinja2_async_environment/bccache.py
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/bccache.py:[33m75[39m:[33m9[39m - [31merror[39m: Method "get_cache_key" overrides class "AsyncBytecodeCache" in an incompatible manner
+    Positional parameter count mismatch; base method has 4, but override has 3
+    Parameter 4 mismatch: base parameter "env" is keyword parameter, override parameter is position-only[90m (reportIncompatibleMethodOverride)[39m
+/Users/les/Projects/jinja2-async-environment/jinja2_async_environment/compiler.py
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/compiler.py:[33m28[39m:[33m14[39m - [31merror[39m: "buffer" overrides symbol of same name in class "Frame"
+    Variable is mutable so its type is invariant
+      Override type "list[str]" is not the same as base type "str | None"[90m (reportIncompatibleVariableOverride)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/compiler.py:[33m43[39m:[33m22[39m - [31merror[39m: Cannot assign to attribute "analyzed" for class "Symbols"
+    Attribute "analyzed" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/compiler.py:[33m44[39m:[33m22[39m - [31merror[39m: Cannot assign to attribute "names" for class "Symbols"
+    Attribute "names" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/compiler.py:[33m45[39m:[33m22[39m - [31merror[39m: Cannot assign to attribute "declared" for class "Symbols"
+    Attribute "declared" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/compiler.py:[33m46[39m:[33m22[39m - [31merror[39m: Cannot assign to attribute "used" for class "Symbols"
+    Attribute "used" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/compiler.py:[33m66[39m:[33m16[39m - [31merror[39m: Unnecessary "cast" call; type is already "Self@AsyncFrame"[90m (reportUnnecessaryCast)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/compiler.py:[33m96[39m:[33m18[39m - [31merror[39m: Expected type arguments for generic class "dict"[90m (reportMissingTypeArgument)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/compiler.py:[33m97[39m:[33m21[39m - [31merror[39m: Expected type arguments for generic class "dict"[90m (reportMissingTypeArgument)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/compiler.py:[33m98[39m:[33m13[39m - [31merror[39m: Expected type arguments for generic class "dict"[90m (reportMissingTypeArgument)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/compiler.py:[33m100[39m:[33m22[39m - [31merror[39m: Expected type arguments for generic class "set"[90m (reportMissingTypeArgument)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/compiler.py:[33m146[39m:[33m9[39m - [31merror[39m: Method "return_buffer_contents" overrides class "CodeGenerator" in an incompatible manner
+    Positional parameter count mismatch; base method has 3, but override has 2
+    Parameter 3 mismatch: base parameter "force_unescaped" is keyword parameter, override parameter is position-only[90m (reportIncompatibleMethodOverride)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/compiler.py:[33m159[39m:[33m18[39m - [31merror[39m: Unnecessary "cast" call; type is already "Any"[90m (reportUnnecessaryCast)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/compiler.py:[33m222[39m:[33m29[39m - [31merror[39m: Cannot assign to attribute "buffer" for class "AsyncFrame"
+    "str" is not assignable to "list[str]"[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/compiler.py:[33m334[39m:[33m24[39m - [31merror[39m: Cannot assign to attribute "buffer" for class "AsyncFrame"
+    "None" is not assignable to "list[str]"[90m (reportAttributeAccessIssue)[39m
+/Users/les/Projects/jinja2-async-environment/jinja2_async_environment/environment.py
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/environment.py:[33m116[39m:[33m20[39m - [31merror[39m: Type "Template | str" is not assignable to return type "Template"
+    Type "Template | str" is not assignable to type "Template"
+      "str" is not assignable to "Template"[90m (reportReturnType)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/environment.py:[33m148[39m:[33m24[39m - [31merror[39m: Type "Template | str" is not assignable to return type "Template"
+    Type "Template | str" is not assignable to type "Template"
+      "str" is not assignable to "Template"[90m (reportReturnType)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/environment.py:[33m180[39m:[33m20[39m - [31merror[39m: Type "Template | Sequence[str | Template]" is not assignable to return type "Template"
+    Type "Template | Sequence[str | Template]" is not assignable to type "Template"
+      "Sequence[str | Template]" is not assignable to "Template"[90m (reportReturnType)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/environment.py:[33m191[39m:[33m20[39m - [31merror[39m: Type "Template | str | Iterable[str | Template]" is not assignable to return type "Template"
+    Type "Template | str | Iterable[str | Template]" is not assignable to type "Template"
+      "Iterable[str | Template]" is not assignable to "Template"[90m (reportReturnType)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/environment.py:[33m201[39m:[33m24[39m - [31merror[39m: Type "Template | str" is not assignable to return type "Template"
+    Type "Template | str" is not assignable to type "Template"
+      "str" is not assignable to "Template"[90m (reportReturnType)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/environment.py:[33m220[39m:[33m43[39m - [31merror[39m: Argument of type "tuple[int, str]" cannot be assigned to parameter "key" of type "Tuple[ref, str]" in function "get"
+    "tuple[int, str]" is not assignable to "Tuple[ref, str]"
+      Tuple entry 1 is incorrect type
+        "int" is not assignable to "ReferenceType[Any]"[90m (reportArgumentType)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/environment.py:[33m245[39m:[33m45[39m - [31merror[39m: Object of type "bool" is not callable
+    Attribute "__call__" is unknown[90m (reportCallIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/environment.py:[33m270[39m:[33m13[39m - [31merror[39m: Argument of type "tuple[int, str]" cannot be assigned to parameter "key" of type "Tuple[ref, str]" in function "__setitem__"
+    "tuple[int, str]" is not assignable to "Tuple[ref, str]"
+      Tuple entry 1 is incorrect type
+        "int" is not assignable to "ReferenceType[Any]"[90m (reportArgumentType)[39m
+/Users/les/Projects/jinja2-async-environment/jinja2_async_environment/loaders.py
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/loaders.py:[33m559[39m:[33m9[39m - [36mwarning[39m: Type of parameter "loaders" is partially unknown
+    Parameter type is "Sequence[AsyncBaseLoader | ((...) -> Unknown)]"[90m (reportUnknownParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/jinja2_async_environment/loaders.py:[33m559[39m:[33m47[39m - [31merror[39m: Expected type arguments for generic class "Callable"[90m (reportMissingTypeArgument)[39m
+/Users/les/Projects/jinja2-async-environment/tests/test_async_environment.py
+  /Users/les/Projects/jinja2-async-environment/tests/test_async_environment.py:[33m100[39m:[33m26[39m - [36mwarning[39m: Type of parameter "src" is unknown[90m (reportUnknownParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_async_environment.py:[33m100[39m:[33m26[39m - [31merror[39m: Type annotation is missing for parameter "src"[90m (reportMissingParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_async_environment.py:[33m100[39m:[33m31[39m - [36mwarning[39m: Type of parameter "filename" is unknown[90m (reportUnknownParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_async_environment.py:[33m100[39m:[33m31[39m - [31merror[39m: Type annotation is missing for parameter "filename"[90m (reportMissingParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_async_environment.py:[33m100[39m:[33m41[39m - [36mwarning[39m: Type of parameter "mode" is unknown[90m (reportUnknownParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_async_environment.py:[33m100[39m:[33m41[39m - [31merror[39m: Type annotation is missing for parameter "mode"[90m (reportMissingParameterType)[39m
+/Users/les/Projects/jinja2-async-environment/tests/test_compiler.py
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler.py:[33m19[39m:[33m24[39m - [31merror[39m: Cannot assign to attribute "buffer" for class "AsyncFrame"
+    "None" is not assignable to "list[str]"[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler.py:[33m30[39m:[33m24[39m - [31merror[39m: Cannot assign to attribute "buffer" for class "AsyncFrame"
+    "None" is not assignable to "list[str]"[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler.py:[33m69[39m:[33m24[39m - [31merror[39m: Cannot assign to attribute "buffer" for class "AsyncFrame"
+    "None" is not assignable to "list[str]"[90m (reportAttributeAccessIssue)[39m
+/Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m29[39m:[33m26[39m - [31merror[39m: Cannot access attribute "analyzed" for class "Symbols"
+    Attribute "analyzed" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m30[39m:[33m26[39m - [31merror[39m: Cannot access attribute "names" for class "Symbols"
+    Attribute "names" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m31[39m:[33m26[39m - [31merror[39m: Cannot access attribute "declared" for class "Symbols"
+    Attribute "declared" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m32[39m:[33m26[39m - [31merror[39m: Cannot access attribute "used" for class "Symbols"
+    Attribute "used" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m47[39m:[33m19[39m - [31merror[39m: Cannot assign to attribute "analyzed" for class "Symbols"
+    Attribute "analyzed" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m48[39m:[33m19[39m - [31merror[39m: Cannot assign to attribute "names" for class "Symbols"
+    Attribute "names" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m49[39m:[33m19[39m - [31merror[39m: Cannot assign to attribute "declared" for class "Symbols"
+    Attribute "declared" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m50[39m:[33m19[39m - [31merror[39m: Cannot assign to attribute "used" for class "Symbols"
+    Attribute "used" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m63[39m:[33m33[39m - [31merror[39m: Cannot access attribute "analyzed" for class "Symbols"
+    Attribute "analyzed" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m63[39m:[33m59[39m - [31merror[39m: Cannot access attribute "analyzed" for class "Symbols"
+    Attribute "analyzed" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m64[39m:[33m33[39m - [31merror[39m: Cannot access attribute "names" for class "Symbols"
+    Attribute "names" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m64[39m:[33m56[39m - [31merror[39m: Cannot access attribute "names" for class "Symbols"
+    Attribute "names" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m65[39m:[33m33[39m - [31merror[39m: Cannot access attribute "declared" for class "Symbols"
+    Attribute "declared" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m65[39m:[33m59[39m - [31merror[39m: Cannot access attribute "declared" for class "Symbols"
+    Attribute "declared" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m66[39m:[33m33[39m - [31merror[39m: Cannot access attribute "used" for class "Symbols"
+    Attribute "used" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_additional.py:[33m66[39m:[33m55[39m - [31merror[39m: Cannot access attribute "used" for class "Symbols"
+    Attribute "used" is unknown[90m (reportAttributeAccessIssue)[39m
+/Users/les/Projects/jinja2-async-environment/tests/test_compiler_coverage.py
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_coverage.py:[33m132[39m:[33m5[39m - [31merror[39m: Argument missing for parameter "frame"[90m (reportCallIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_coverage.py:[33m155[39m:[33m46[39m - [31merror[39m: "AsyncWith" is not a known attribute of module "jinja2.nodes"[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_coverage.py:[33m163[39m:[33m26[39m - [31merror[39m: Cannot access attribute "visit_AsyncWith" for class "AsyncCodeGenerator"
+    Attribute "visit_AsyncWith" is unknown[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_coverage.py:[33m178[39m:[33m48[39m - [31merror[39m: Expected 1 positional argument[90m (reportCallIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_coverage.py:[33m192[39m:[33m5[39m - [31merror[39m: Argument missing for parameter "frame"[90m (reportCallIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_compiler_coverage.py:[33m219[39m:[33m9[39m - [31merror[39m: Argument missing for parameter "frame"[90m (reportCallIssue)[39m
+/Users/les/Projects/jinja2-async-environment/tests/test_e2e.py
+  /Users/les/Projects/jinja2-async-environment/tests/test_e2e.py:[33m74[39m:[33m39[39m - [31merror[39m: Argument of type "(template: str) -> CoroutineType[Any, Any, tuple[str, str, () -> bool]]" cannot be assigned to parameter "load_func" of type "(str | Path) -> (Awaitable[SourceType | None] | SourceType | str | int | None)" in function "__init__"
+    Type "(template: str) -> CoroutineType[Any, Any, tuple[str, str, () -> bool]]" is not assignable to type "(str | Path) -> (Awaitable[SourceType | None] | SourceType | str | int | None)"
+      Parameter 1: type "str | Path" is incompatible with type "str"
+        Type "str | Path" is not assignable to type "str"
+          "Path" is not assignable to "str"[90m (reportArgumentType)[39m
+/Users/les/Projects/jinja2-async-environment/tests/test_environment_additional.py
+  /Users/les/Projects/jinja2-async-environment/tests/test_environment_additional.py:[33m64[39m:[33m13[39m - [36mwarning[39m: Return type, "Iterator[Unknown]", is partially unknown[90m (reportUnknownParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_environment_additional.py:[33m64[39m:[33m31[39m - [31merror[39m: Expected type arguments for generic class "Iterator"[90m (reportMissingTypeArgument)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_environment_additional.py:[33m160[39m:[33m50[39m - [31merror[39m: Argument of type "Undefined" cannot be assigned to parameter "template_name_or_list" of type "str | Template | Sequence[str | Template]" in function "get_or_select_template_async"
+    Type "Undefined" is not assignable to type "str | Template | Sequence[str | Template]"
+      "Undefined" is not assignable to "str"
+      "Undefined" is not assignable to "Template"
+      "Undefined" is not assignable to "Sequence[str | Template]"[90m (reportArgumentType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_environment_additional.py:[33m411[39m:[33m11[39m - [31merror[39m: Variable "kwargs" is not accessed[90m (reportUnusedVariable)[39m
+/Users/les/Projects/jinja2-async-environment/tests/test_escape_filter.py
+  /Users/les/Projects/jinja2-async-environment/tests/test_escape_filter.py:[33m32[39m:[33m52[39m - [31merror[39m: "Iterator[str]" is not iterable
+    "__aiter__" method not defined[90m (reportGeneralTypeIssues)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_escape_filter.py:[33m40[39m:[33m52[39m - [31merror[39m: "Iterator[str]" is not iterable
+    "__aiter__" method not defined[90m (reportGeneralTypeIssues)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_escape_filter.py:[33m48[39m:[33m52[39m - [31merror[39m: "Iterator[str]" is not iterable
+    "__aiter__" method not defined[90m (reportGeneralTypeIssues)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_escape_filter.py:[33m58[39m:[33m52[39m - [31merror[39m: "Iterator[str]" is not iterable
+    "__aiter__" method not defined[90m (reportGeneralTypeIssues)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_escape_filter.py:[33m68[39m:[33m52[39m - [31merror[39m: "Iterator[str]" is not iterable
+    "__aiter__" method not defined[90m (reportGeneralTypeIssues)[39m
+/Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m27[39m:[33m39[39m - [36mwarning[39m: Type of parameter "args" is unknown[90m (reportUnknownParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m27[39m:[33m39[39m - [31merror[39m: Type annotation is missing for parameter "args"[90m (reportMissingParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m27[39m:[33m47[39m - [36mwarning[39m: Type of parameter "kwargs" is unknown[90m (reportUnknownParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m27[39m:[33m47[39m - [31merror[39m: Type annotation is missing for parameter "kwargs"[90m (reportMissingParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m49[39m:[33m35[39m - [36mwarning[39m: Type of parameter "environment" is unknown[90m (reportUnknownParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m49[39m:[33m35[39m - [31merror[39m: Type annotation is missing for parameter "environment"[90m (reportMissingParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m49[39m:[33m48[39m - [36mwarning[39m: Type of parameter "template" is unknown[90m (reportUnknownParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m49[39m:[33m48[39m - [31merror[39m: Type annotation is missing for parameter "template"[90m (reportMissingParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m55[39m:[33m35[39m - [31merror[39m: Cannot assign to attribute "get_source_async" for class "AsyncFileSystemLoader"
+    Type "(environment: Unknown, template: Unknown) -> CoroutineType[Any, Any, tuple[Literal['content'], Literal['/path/test.html'], () -> Literal[True]]]" is not assignable to type "(environment_or_template: AsyncEnvironment | str | Path, template: str | Path | None = None) -> CoroutineType[Any, Any, SourceType]"
+      Parameter name mismatch: "environment_or_template" versus "environment"
+      Parameter "template" is missing default argument[90m (reportAttributeAccessIssue)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m75[39m:[33m18[39m - [31merror[39m: Variable "path" is not accessed[90m (reportUnusedVariable)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m75[39m:[33m24[39m - [31merror[39m: Variable "uptodate" is not accessed[90m (reportUnusedVariable)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m88[39m:[33m29[39m - [36mwarning[39m: Type of parameter "template" is unknown[90m (reportUnknownParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m88[39m:[33m29[39m - [31merror[39m: Type annotation is missing for parameter "template"[90m (reportMissingParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m112[39m:[33m29[39m - [36mwarning[39m: Type of parameter "template" is unknown[90m (reportUnknownParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m112[39m:[33m29[39m - [31merror[39m: Type annotation is missing for parameter "template"[90m (reportMissingParameterType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m124[39m:[33m19[39m - [31merror[39m: Variable "path1" is not accessed[90m (reportUnusedVariable)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loader_adapter.py:[33m130[39m:[33m19[39m - [31merror[39m: Variable "path2" is not accessed[90m (reportUnusedVariable)[39m
+/Users/les/Projects/jinja2-async-environment/tests/test_loaders_coverage.py
+  /Users/les/Projects/jinja2-async-environment/tests/test_loaders_coverage.py:[33m51[39m:[33m36[39m - [31merror[39m: Argument of type "Literal['/non_existent_dir']" cannot be assigned to parameter "searchpath" of type "Path | Sequence[Path]" in function "__init__"
+    Type "Literal['/non_existent_dir']" is not assignable to type "Path | Sequence[Path]"
+      "Literal['/non_existent_dir']" is not assignable to "Path"
+      "Literal['/non_existent_dir']" is not assignable to "Sequence[Path]"
+        Type parameter "_T_co@Sequence" is covariant, but "str" is not a subtype of "Path"
+          "str" is not assignable to "Path"[90m (reportArgumentType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loaders_coverage.py:[33m97[39m:[33m34[39m - [31merror[39m: Argument of type "(template: str) -> CoroutineType[Any, Any, Any]" cannot be assigned to parameter "load_func" of type "(str | Path) -> (Awaitable[SourceType | None] | SourceType | str | int | None)" in function "__init__"
+    Type "(template: str) -> CoroutineType[Any, Any, Any]" is not assignable to type "(str | Path) -> (Awaitable[SourceType | None] | SourceType | str | int | None)"
+      Parameter 1: type "str | Path" is incompatible with type "str"
+        Type "str | Path" is not assignable to type "str"
+          "Path" is not assignable to "str"[90m (reportArgumentType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loaders_coverage.py:[33m125[39m:[33m40[39m - [31merror[39m: Argument of type "Literal['/templates']" cannot be assigned to parameter "searchpath" of type "Path | Sequence[Path]" in function "__init__"
+    Type "Literal['/templates']" is not assignable to type "Path | Sequence[Path]"
+      "Literal['/templates']" is not assignable to "Path"
+      "Literal['/templates']" is not assignable to "Sequence[Path]"
+        Type parameter "_T_co@Sequence" is covariant, but "str" is not a subtype of "Path"
+          "str" is not assignable to "Path"[90m (reportArgumentType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loaders_coverage.py:[33m128[39m:[33m17[39m - [31merror[39m: Variable "name" is not accessed[90m (reportUnusedVariable)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loaders_coverage.py:[33m162[39m:[33m25[39m - [31merror[39m: Variable "name" is not accessed[90m (reportUnusedVariable)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loaders_coverage.py:[33m185[39m:[33m39[39m - [31merror[39m: Argument of type "(template: str) -> CoroutineType[Any, Any, Any]" cannot be assigned to parameter "load_func" of type "(str | Path) -> (Awaitable[SourceType | None] | SourceType | str | int | None)" in function "__init__"
+    Type "(template: str) -> CoroutineType[Any, Any, Any]" is not assignable to type "(str | Path) -> (Awaitable[SourceType | None] | SourceType | str | int | None)"
+      Parameter 1: type "str | Path" is incompatible with type "str"
+        Type "str | Path" is not assignable to type "str"
+          "Path" is not assignable to "str"[90m (reportArgumentType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loaders_coverage.py:[33m191[39m:[33m14[39m - [31merror[39m: Variable "name1" is not accessed[90m (reportUnusedVariable)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loaders_coverage.py:[33m196[39m:[33m14[39m - [31merror[39m: Variable "name2" is not accessed[90m (reportUnusedVariable)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loaders_coverage.py:[33m212[39m:[33m34[39m - [31merror[39m: Argument of type "(template: str) -> CoroutineType[Any, Any, Any]" cannot be assigned to parameter "load_func" of type "(str | Path) -> (Awaitable[SourceType | None] | SourceType | str | int | None)" in function "__init__"
+    Type "(template: str) -> CoroutineType[Any, Any, Any]" is not assignable to type "(str | Path) -> (Awaitable[SourceType | None] | SourceType | str | int | None)"
+      Parameter 1: type "str | Path" is incompatible with type "str"
+        Type "str | Path" is not assignable to type "str"
+          "Path" is not assignable to "str"[90m (reportArgumentType)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loaders_coverage.py:[33m215[39m:[33m13[39m - [31merror[39m: Variable "name" is not accessed[90m (reportUnusedVariable)[39m
+  /Users/les/Projects/jinja2-async-environment/tests/test_loaders_coverage.py:[33m233[39m:[33m13[39m - [31merror[39m: Variable "name" is not accessed[90m (reportUnusedVariable)[39m
+83 errors, 11 warnings, 0 informations
+
+
+
+Pre-commit failed. Please fix errors.
+

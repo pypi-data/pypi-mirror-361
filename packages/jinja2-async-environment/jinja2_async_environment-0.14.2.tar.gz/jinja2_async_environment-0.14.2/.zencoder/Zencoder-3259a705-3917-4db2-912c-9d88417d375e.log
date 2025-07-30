@@ -1,0 +1,127 @@
+[1m========================================================================= test session starts =========================================================================[0m
+platform darwin -- Python 3.13.5, pytest-8.4.0, pluggy-1.6.0 -- /Users/les/Projects/jinja2-async-environment/.venv/bin/python
+cachedir: .pytest_cache
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /Users/les/Projects/jinja2-async-environment
+configfile: pyproject.toml
+plugins: xdist-3.7.0, anyio-4.9.0, timeout-2.4.0, cov-6.2.1, mock-3.14.1, benchmark-5.1.0, asyncio-1.0.0
+timeout: 300.0s
+timeout method: thread
+timeout func_only: False
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0m[1mcollected 8 items                                                                                                                                                     [0m
+
+tests/test_e2e.py::TestEndToEnd::test_render_from_dict_loader [32mPASSED[0m[32m                                                                                            [ 12%][0m
+tests/test_e2e.py::TestEndToEnd::test_render_from_function_loader [31mFAILED[0m[31m                                                                                        [ 25%][0m
+tests/test_e2e.py::TestEndToEnd::test_template_inheritance [31mFAILED[0m[31m                                                                                               [ 37%][0m
+tests/test_e2e.py::TestEndToEnd::test_template_include [32mPASSED[0m[31m                                                                                                   [ 50%][0m
+tests/test_e2e.py::TestEndToEnd::test_async_content_generation [31mFAILED[0m[31m                                                                                           [ 62%][0m
+tests/test_e2e.py::TestEndToEnd::test_template_not_found [32mPASSED[0m[31m                                                                                                 [ 75%][0m
+tests/test_e2e.py::TestEndToEnd::test_select_template [32mPASSED[0m[31m                                                                                                    [ 87%][0m
+tests/test_e2e.py::TestEndToEnd::test_get_or_select_template [31mFAILED[0m[31m                                                                                             [100%][0m
+
+============================================================================== FAILURES ===============================================================================
+[31m[1m____________________________________________________________ TestEndToEnd.test_render_from_function_loader ____________________________________________________________[0m
+
+self = <tests.test_e2e.TestEndToEnd object at 0x1088f5d10>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_render_from_function_loader[39;49;00m([96mself[39;49;00m) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test rendering a template from the function loader (mock storage)."""[39;49;00m[90m[39;49;00m
+        [94masync[39;49;00m [94mwith[39;49;00m setup_template_environment() [94mas[39;49;00m (env, _):[90m[39;49;00m
+            template = [94mawait[39;49;00m env.get_template_async([33m"[39;49;00m[33mpage.html[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+            context = {[90m[39;49;00m
+                [33m"[39;49;00m[33mtitle[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mPage Title[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                [33m"[39;49;00m[33mcontent[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mThis is the page content.[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            }[90m[39;49;00m
+            rendered = [94mawait[39;49;00m render_template(template, context)[90m[39;49;00m
+    [90m[39;49;00m
+>           [94massert[39;49;00m [33m"[39;49;00m[33m<h1>Page Title</h1>[39;49;00m[33m"[39;49;00m [95min[39;49;00m rendered[90m[39;49;00m
+[1m[31mE           AssertionError: assert '<h1>Page Title</h1>' in 'None'[0m
+
+[1m[31mtests/test_e2e.py[0m:141: AssertionError
+[31m[1m_______________________________________________________________ TestEndToEnd.test_template_inheritance ________________________________________________________________[0m
+
+self = <tests.test_e2e.TestEndToEnd object at 0x1088e69e0>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_template_inheritance[39;49;00m([96mself[39;49;00m) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test template inheritance with extends and blocks."""[39;49;00m[90m[39;49;00m
+        [94masync[39;49;00m [94mwith[39;49;00m setup_template_environment() [94mas[39;49;00m (env, _):[90m[39;49;00m
+            template = [94mawait[39;49;00m env.get_template_async([33m"[39;49;00m[33mpage.html[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+            context = {[90m[39;49;00m
+                [33m"[39;49;00m[33mtitle[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mInheritance Test[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                [33m"[39;49;00m[33mcontent[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mContent from child template[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            }[90m[39;49;00m
+            rendered = [94mawait[39;49;00m render_template(template, context)[90m[39;49;00m
+    [90m[39;49;00m
+            [90m# Check that base template structure is preserved[39;49;00m[90m[39;49;00m
+>           [94massert[39;49;00m [33m"[39;49;00m[33m<!DOCTYPE html><html><body>[39;49;00m[33m"[39;49;00m [95min[39;49;00m rendered[90m[39;49;00m
+[1m[31mE           AssertionError: assert '<!DOCTYPE html><html><body>' in 'None'[0m
+
+[1m[31mtests/test_e2e.py[0m:158: AssertionError
+[31m[1m_____________________________________________________________ TestEndToEnd.test_async_content_generation ______________________________________________________________[0m
+
+self = <tests.test_e2e.TestEndToEnd object at 0x1088d3650>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_async_content_generation[39;49;00m([96mself[39;49;00m) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test rendering with async content generation."""[39;49;00m[90m[39;49;00m
+        [94masync[39;49;00m [94mwith[39;49;00m setup_template_environment() [94mas[39;49;00m (env, _):[90m[39;49;00m
+            template = [94mawait[39;49;00m env.get_template_async([33m"[39;49;00m[33masync_content.html[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+            [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92masync_item_generator[39;49;00m() -> AsyncIterator[[96mstr[39;49;00m]:[90m[39;49;00m
+                items = [[33m"[39;49;00m[33mItem 1[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mItem 2[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mItem 3[39;49;00m[33m"[39;49;00m][90m[39;49;00m
+                [94mfor[39;49;00m item [95min[39;49;00m items:[90m[39;49;00m
+                    [94myield[39;49;00m item[90m[39;49;00m
+    [90m[39;49;00m
+            context = {[33m"[39;49;00m[33masync_items[39;49;00m[33m"[39;49;00m: async_item_generator()}[90m[39;49;00m
+            rendered = [94mawait[39;49;00m render_template(template, context)[90m[39;49;00m
+    [90m[39;49;00m
+>           [94massert[39;49;00m rendered == [33m"[39;49;00m[33mItem 1Item 2Item 3[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+[1m[31mE           AssertionError: assert 'NoneNoneNone' == 'Item 1Item 2Item 3'[0m
+[1m[31mE             [0m
+[1m[31mE             [0m[91m- Item 1Item 2Item 3[39;49;00m[90m[39;49;00m[0m
+[1m[31mE             [92m+ NoneNoneNone[39;49;00m[90m[39;49;00m[0m
+
+[1m[31mtests/test_e2e.py[0m:197: AssertionError
+[31m[1m______________________________________________________________ TestEndToEnd.test_get_or_select_template _______________________________________________________________[0m
+
+self = <tests.test_e2e.TestEndToEnd object at 0x1088ead50>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_get_or_select_template[39;49;00m([96mself[39;49;00m) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test get_or_select_template_async functionality."""[39;49;00m[90m[39;49;00m
+        [94masync[39;49;00m [94mwith[39;49;00m setup_template_environment() [94mas[39;49;00m (env, _):[90m[39;49;00m
+            [90m# Test with a string (should use get_template_async)[39;49;00m[90m[39;49;00m
+            template1 = [94mawait[39;49;00m env.get_or_select_template_async([33m"[39;49;00m[33mnotification.html[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+            context1 = {[33m"[39;49;00m[33mmessage[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mImportant notification[39;49;00m[33m"[39;49;00m}[90m[39;49;00m
+            rendered1 = [94mawait[39;49;00m render_template(template1, context1)[90m[39;49;00m
+            [94massert[39;49;00m [33m"[39;49;00m[33m<div class=[39;49;00m[33m'[39;49;00m[33mnotification[39;49;00m[33m'[39;49;00m[33m>Important notification</div>[39;49;00m[33m"[39;49;00m [95min[39;49;00m rendered1[90m[39;49;00m
+    [90m[39;49;00m
+            [90m# Test with a list (should use select_template_async)[39;49;00m[90m[39;49;00m
+            template2 = [94mawait[39;49;00m env.get_or_select_template_async([[33m"[39;49;00m[33mpage.html[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33memail.html[39;49;00m[33m"[39;49;00m])[90m[39;49;00m
+            context2 = {[33m"[39;49;00m[33mtitle[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mSelected Page[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mcontent[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mContent from selection[39;49;00m[33m"[39;49;00m}[90m[39;49;00m
+            rendered2 = [94mawait[39;49;00m render_template(template2, context2)[90m[39;49;00m
+>           [94massert[39;49;00m [33m"[39;49;00m[33m<h1>Selected Page</h1>[39;49;00m[33m"[39;49;00m [95min[39;49;00m rendered2[90m[39;49;00m
+[1m[31mE           AssertionError: assert '<h1>Selected Page</h1>' in 'None'[0m
+
+[1m[31mtests/test_e2e.py[0m:235: AssertionError
+=========================================================================== tests coverage ============================================================================
+__________________________________________________________ coverage: platform darwin, python 3.13.5-final-0 ___________________________________________________________
+
+Name                                      Stmts   Miss  Cover
+-------------------------------------------------------------
+jinja2_async_environment/bccache.py          45     20    56%
+jinja2_async_environment/compiler.py        237    116    51%
+jinja2_async_environment/environment.py     115     41    64%
+jinja2_async_environment/loaders.py         273    165    40%
+-------------------------------------------------------------
+TOTAL                                       670    342    49%
+[32mRequired test coverage of 42% reached. Total coverage: 48.96%
+[0m[36m[1m======================================================================= short test summary info =======================================================================[0m
+[31mFAILED[0m tests/test_e2e.py::[1mTestEndToEnd::test_render_from_function_loader[0m - AssertionError: assert '<h1>Page Title</h1>' in 'None'
+[31mFAILED[0m tests/test_e2e.py::[1mTestEndToEnd::test_template_inheritance[0m - AssertionError: assert '<!DOCTYPE html><html><body>' in 'None'
+[31mFAILED[0m tests/test_e2e.py::[1mTestEndToEnd::test_async_content_generation[0m - AssertionError: assert 'NoneNoneNone' == 'Item 1Item 2Item 3'
+[31mFAILED[0m tests/test_e2e.py::[1mTestEndToEnd::test_get_or_select_template[0m - AssertionError: assert '<h1>Selected Page</h1>' in 'None'
+[31m===================================================================== [31m[1m4 failed[0m, [32m4 passed[0m[31m in 0.65s[0m[31m =====================================================================[0m

@@ -1,0 +1,247 @@
+# Resource object code (Python 3)
+# Created by: object code
+# Created by: The Resource Compiler for Qt version 6.9.1
+# WARNING! All changes made in this file will be lost!
+
+from PySide6 import QtCore
+
+qt_resource_data = b"\
+\x00\x00\x01\xcd\
+\x89\
+PNG\x0d\x0a\x1a\x0a\x00\x00\x00\x0dIHDR\x00\
+\x00\x00\x10\x00\x00\x00\x10\x08\x06\x00\x00\x00\x1f\xf3\xffa\
+\x00\x00\x00\x19tEXtSoftware\
+\x00Adobe ImageRead\
+yq\xc9e<\x00\x00\x01oIDATx\xdab\
+\xfc\xff\xff?\x03\x08\xb8\x9e\x0dc\x80\x81\x7f\xff\xfe1\
+\xfc\xf9\xf3\x07\xc4\xfc\xff\xf7\xef_\x06\xa0\x1aF\x10\x0d\
+\xc20p\xday\x17\x98fb\xc0\x02\x18\x19\x19\x19\x98\
+\x98\x10R K`\x16\xa1\x03\x16,b\x07\x08\x889\
+\x102\xc0\x9eH1\x9c\x060\x22\xb1\xffc\x11\xc3n\
+\xc0\xcc\x8a\xf7(~\xeeL\xe2d\xb8\xa9\xc8|\x10\xc4\
+W\xbf\xff\x97!\x7f\xda{p\xe0\x22B\x11j2,\
+p\xee\xb9\xba\xc2\xa4\x1a@b\xa0\x10\x07i@\xa7A\
+\xf2 \xc2\xe8\xf4i\x9c^\xa8g\xc0\x0f\x1a\xf0\x86\xc1\
+s^^\xc6\xa7<<\xf8\x5c\x00\x06F\xe8\x06\xcc2\
+6\x861\xf9\x81^h\x04j\x88\x00j\x90\x00\xd2\x0f\
+\x80\xb4<\xd4\x80\x87@y\x05\x90\xa2T\xa8bl\x09\
+\xa9\x11\x883\x81x\x07\x94/\x0f\xc4\xc7\x80\xf8\x17\x10\
+'\xa0+\xc6f@\x04\x10o\x04\xa6\xc6\x04$'W\
+\x83\xc4\x80x\x05N\x03\x96/_\x8ea\x12493\
+\xa2\xa7\xce\xcd\x9b7#\x12\x0d,\x1aA\xe9_NN\
+\x8e!22r\x02P,\x13\xe8\xe7\xe5@\x17<\x80\
+\xfa]\x0bH\xfb\x03\xe9\xe9@\xcd\x05\xcf\x9e=\x83\xe7\
+\x0dd\x03\xd8\x80\x14\x8f\xa8\xa8\xa8\xb4\x8f\x8fO\x81\x90\
+\x90\x90\x0fP\x83\x18\xd4\x80W@\xb0u\xcf\x9e=\x13\
+\xdf\xbd{\xf7\x14\xa8\xee3P\xdfOt\x03\x98\x81\x14\
+\xc8\x10\x0e f\xc7\x12> \x85 M?@\x01\x0a\
+\xd4\x07\xce\xef\x00\x01\x06\x00un\xd8\xf0\xc8!\xcf\xfa\
+\x00\x00\x00\x00IEND\xaeB`\x82\
+\x00\x00\x0a\xaa\
+<\
+?xml version=\x221.\
+0\x22 encoding=\x22iso\
+-8859-1\x22?>\x0d\x0a<!--\
+ Generator: Adob\
+e Illustrator 19\
+.0.0, SVG Export\
+ Plug-In . SVG V\
+ersion: 6.00 Bui\
+ld 0)  -->\x0d\x0a<svg\
+ version=\x221.1\x22 i\
+d=\x22Layer_1\x22 xmln\
+s=\x22http://www.w3\
+.org/2000/svg\x22 x\
+mlns:xlink=\x22http\
+://www.w3.org/19\
+99/xlink\x22 x=\x220px\
+\x22 y=\x220px\x22\x0d\x0a\x09 vie\
+wBox=\x220 0 512 51\
+2\x22 style=\x22enable\
+-background:new \
+0 0 512 512;\x22 xm\
+l:space=\x22preserv\
+e\x22>\x0d\x0a<path style\
+=\x22fill:#FFBD66;\x22\
+ d=\x22M259.011,22.\
+261L105.968,153.\
+006l33.391,200.3\
+48c1.342,8.048,8\
+.304,13.951,16.4\
+67,13.951h200.34\
+8\x0d\x0a\x09c8.163,0,15.\
+125-5.902,16.467\
+-13.951l33.391-2\
+00.348L259.011,2\
+2.261z\x22/>\x0d\x0a<path\
+ style=\x22fill:#FF\
+B24D;\x22 d=\x22M256.0\
+01,24.833v342.47\
+1h100.174c8.163,\
+0,15.125-5.902,1\
+6.467-13.951l33.\
+391-200.348L259.\
+011,22.261\x0d\x0a\x09L25\
+6.001,24.833z\x22/>\
+\x0d\x0a<path style=\x22f\
+ill:#ACABB1;\x22 d=\
+\x22M256.001,512c-9\
+.223,0-16.696-7.\
+473-16.696-16.69\
+6V350.609c0-9.22\
+3,7.473-16.696,1\
+6.696-16.696\x0d\x0a\x09c\
+9.223,0,16.696,7\
+.473,16.696,16.6\
+96v144.696C272.6\
+96,504.527,265.2\
+23,512,256.001,5\
+12z\x22/>\x0d\x0a<path st\
+yle=\x22fill:#A1A2B\
+3;\x22 d=\x22M272.696,\
+495.305V350.609c\
+0-9.223-7.473-16\
+.696-16.696-16.6\
+96V512\x0d\x0a\x09C265.22\
+3,512,272.696,50\
+4.527,272.696,49\
+5.305z\x22/>\x0d\x0a<path\
+ style=\x22fill:#99\
+7B57;\x22 d=\x22M422.9\
+57,367.305H89.04\
+4c-9.223,0-16.69\
+6-7.473-16.696-1\
+6.696c0-9.223,7.\
+473-16.696,16.69\
+6-16.696\x0d\x0a\x09h333.\
+913c9.223,0,16.6\
+96,7.473,16.696,\
+16.696C439.653,3\
+59.832,432.18,36\
+7.305,422.957,36\
+7.305z\x22/>\x0d\x0a<path\
+ style=\x22fill:#80\
+6749;\x22 d=\x22M422.9\
+57,333.913H256.0\
+01v33.391h166.95\
+7c9.223,0,16.696\
+-7.473,16.696-16\
+.696\x0d\x0a\x09C439.653,\
+341.386,432.18,3\
+33.913,422.957,3\
+33.913z\x22/>\x0d\x0a<pat\
+h style=\x22fill:#A\
+6673A;\x22 d=\x22M256.\
+001,233.739c-27.\
+619,0-50.087-22.\
+468-50.087-50.08\
+7s22.468-50.087,\
+50.087-50.087\x0d\x0a\x09\
+s50.087,22.468,5\
+0.087,50.087S283\
+.62,233.739,256.\
+001,233.739z\x22/>\x0d\
+\x0a<path style=\x22fi\
+ll:#99522E;\x22 d=\x22\
+M306.088,183.652\
+c0-27.619-22.468\
+-50.087-50.087-5\
+0.087v100.174\x0d\x0a\x09\
+C283.62,233.739,\
+306.088,211.271,\
+306.088,183.652z\
+\x22/>\x0d\x0a<path style\
+=\x22fill:#E6563A;\x22\
+ d=\x22M431.305,208\
+.696c-4.272,0-8.\
+544-1.631-11.804\
+-4.892L256.001,4\
+0.305L92.5,203.8\
+04\x0d\x0a\x09c-6.521,6.5\
+21-17.087,6.521-\
+23.609,0c-6.521-\
+6.516-6.521-17.0\
+92,0-23.609L244.\
+196,4.891c6.521-\
+6.521,17.087-6.5\
+21,23.609,0\x0d\x0a\x09l1\
+75.304,175.304c6\
+.521,6.516,6.521\
+,17.092,0,23.609\
+C439.849,207.065\
+,435.577,208.696\
+,431.305,208.696\
+z\x22/>\x0d\x0a<path styl\
+e=\x22fill:#D9472B;\
+\x22 d=\x22M419.501,20\
+3.804c3.261,3.26\
+1,7.533,4.892,11\
+.804,4.892s8.544\
+-1.631,11.804-4.\
+892\x0d\x0a\x09c6.521-6.5\
+16,6.521-17.092,\
+0-23.609L267.805\
+,4.891C264.544,1\
+.631,260.273,0,2\
+56.001,0v40.304L\
+419.501,203.804z\
+\x22/>\x0d\x0a<circle sty\
+le=\x22fill:#FFE9CC\
+;\x22 cx=\x22256.001\x22 \
+cy=\x22283.826\x22 r=\x22\
+16.696\x22/>\x0d\x0a<path\
+ style=\x22fill:#FF\
+DEB3;\x22 d=\x22M272.6\
+96,283.826c0-9.2\
+2-7.475-16.696-1\
+6.696-16.696v33.\
+391\x0d\x0a\x09C265.221,3\
+00.522,272.696,2\
+93.047,272.696,2\
+83.826z\x22/>\x0d\x0a<g>\x0d\
+\x0a</g>\x0d\x0a<g>\x0d\x0a</g>\
+\x0d\x0a<g>\x0d\x0a</g>\x0d\x0a<g>\
+\x0d\x0a</g>\x0d\x0a<g>\x0d\x0a</g\
+>\x0d\x0a<g>\x0d\x0a</g>\x0d\x0a<g\
+>\x0d\x0a</g>\x0d\x0a<g>\x0d\x0a</\
+g>\x0d\x0a<g>\x0d\x0a</g>\x0d\x0a<\
+g>\x0d\x0a</g>\x0d\x0a<g>\x0d\x0a<\
+/g>\x0d\x0a<g>\x0d\x0a</g>\x0d\x0a\
+<g>\x0d\x0a</g>\x0d\x0a<g>\x0d\x0a\
+</g>\x0d\x0a<g>\x0d\x0a</g>\x0d\
+\x0a</svg>\x0d\x0a\
+"
+
+qt_resource_name = b"\
+\x00\x0f\
+\x04\xc5\x13b\
+\x00p\
+\x00l\x00u\x00g\x00i\x00n\x00s\x00_\x00m\x00a\x00n\x00a\x00g\x00e\x00r\
+\x00\x07\
+\x0e\x07W\x87\
+\x00g\
+\x00i\x00t\x00.\x00p\x00n\x00g\
+\x00\x08\
+\x0aaW'\
+\x00i\
+\x00c\x00o\x00n\x00.\x00s\x00v\x00g\
+"
+
+qt_resource_struct = b"\
+\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x01\
+\x00\x00\x00\x00\x00\x00\x00\x00\
+\x00\x00\x00\x00\x00\x02\x00\x00\x00\x02\x00\x00\x00\x02\
+\x00\x00\x00\x00\x00\x00\x00\x00\
+\x00\x00\x008\x00\x00\x00\x00\x00\x01\x00\x00\x01\xd1\
+\x00\x00\x01\x94\xb5\xf4\xdf$\
+\x00\x00\x00$\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\
+\x00\x00\x01\x94\xb5\xf4\xdf#\
+"
+
+def qInitResources():
+    QtCore.qRegisterResourceData(0x03, qt_resource_struct, qt_resource_name, qt_resource_data)
+
+def qCleanupResources():
+    QtCore.qUnregisterResourceData(0x03, qt_resource_struct, qt_resource_name, qt_resource_data)
+
+qInitResources()

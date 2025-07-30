@@ -1,0 +1,56 @@
+{
+    "version": "1.0",
+    "workflows": [
+        {
+            "spec_type": "dag",
+            "name": "spam",
+            "version": "1.0",
+            "description": "A workflow with spam, spam, eggs and spam.",
+            "tasks": [
+                {
+                    "id": "foo",
+                    "type": {
+                        "name": "spam-foo",
+                        "version": "0.3"
+                    },
+                    "input": {
+                        "type": "workflow-input",
+                        "path": "$.foo"
+                    },
+                    "heartbeat": 60,
+                    "timeout": 86400,
+                    "task_list": "eggs",
+                    "priority": 1
+                },
+                {
+                    "id": "bar",
+                    "type": {
+                        "name": "spam-bar",
+                        "version": "0.1"
+                    },
+                    "input": {
+                        "type": "workflow-input",
+                        "path": "$.bar"
+                    },
+                    "heartbeat": 60,
+                    "timeout": 86400,
+                    "dependencies": ["foo"]
+                },
+                {
+                    "id": "yay",
+                    "type": {
+                        "name": "spam-foo",
+                        "version": "0.3"
+                    },
+                    "input": {
+                        "type": "workflow-input",
+                        "path": "$.yay"
+                    },
+                    "heartbeat": 60,
+                    "timeout": 86400,
+                    "dependencies": ["foo"]
+                }
+            ]
+        }
+    ]
+}

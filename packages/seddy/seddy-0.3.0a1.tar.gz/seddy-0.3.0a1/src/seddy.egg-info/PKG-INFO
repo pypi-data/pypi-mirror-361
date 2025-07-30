@@ -1,0 +1,91 @@
+Metadata-Version: 2.4
+Name: seddy
+Version: 0.3.0a1
+Summary: Multi-workflow SWF Decider and Workflow Management Service
+Home-page: https://github.com/EpicWink/seddy
+Author: Laurie O
+Author-email: laurie_opperman@hotmail.com
+Project-URL: Documentation, https://seddy.readthedocs.io/en/latest/
+Project-URL: Source, https://github.com/EpicWink/seddy
+Project-URL: Tracker, https://github.com/EpicWink/seddy/issues
+Keywords: swf,decider
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Natural Language :: English
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Topic :: Software Development
+Classifier: Topic :: System :: Distributed Computing
+Classifier: Typing :: Typed
+Requires-Python: ~=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: boto3
+Requires-Dist: dataclasses; python_version < "3.7"
+Requires-Dist: importlib-metadata; python_version < "3.8"
+Dynamic: license-file
+
+# seddy
+[![Build status](
+https://github.com/EpicWink/seddy/workflows/test/badge.svg?branch=master)](
+https://github.com/EpicWink/seddy/actions?query=branch%3Amaster+workflow%3Atest)
+[![codecov](https://codecov.io/gh/EpicWink/seddy/branch/master/graph/badge.svg)](
+https://codecov.io/gh/EpicWink/seddy)
+[![Documentation Status](https://readthedocs.org/projects/seddy/badge/?version=latest)](
+https://seddy.readthedocs.io/en/latest/?badge=latest)
+[![PyPI - Version](https://img.shields.io/pypi/v/seddy?logo=pypi)](
+https://pypi.org/project/seddy/)
+
+Multi-workflow SWF decider and workflow management service.
+
+Features:
+* Start a decider on many workflows
+* Specify a directed graph (aka DAG) of activity (via dependencies) tasks in the
+  workflow
+* Supports coloured logging
+* Extensible decision-building: just subclass `seddy.DecisionsBuilder`
+* Register workflows
+* Customise task input
+
+What `seddy` doesn't do:
+* Activity workers
+* Anything [AWS CLI](https://aws.amazon.com/cli/) can
+  * Workflows listing and detailing
+  * Workflow execution management and history detailing
+  * Tag management
+  * Domain management
+  * Activities management
+* Validate workflow execution input
+* Manage workflows definition file (`seddy` just uses it)
+
+## Installation
+```bash
+pip3 install seddy
+```
+
+Install extra packages for further functionality
+* Coloured logging: [`coloredlogs`](https://pypi.org/project/coloredlogs/)
+* YAML workflows specs file: [`pyyaml`](https://pypi.org/project/PyYAML/) or
+  [`ruamel.yaml`](https://pypi.org/project/ruamel.yaml/)
+* JSON-format logging:
+  [`python-json-logger`](https://pypi.org/project/python-json-logger/)
+
+## Usage
+Get the CLI usage
+```bash
+seddy -h
+```
+
+API documentation
+```bash
+pydoc3 seddy
+```
+
+## Docker
+Instead of installing `seddy` locally, you can use our pre-built Docker image
+```bash
+docker run -v /path/to/workflow/file/parent:/seddy-data epicwink/seddy -h
+```

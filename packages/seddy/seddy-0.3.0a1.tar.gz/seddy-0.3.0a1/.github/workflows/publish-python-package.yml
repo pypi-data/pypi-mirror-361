@@ -1,0 +1,27 @@
+name: publish
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/seddy
+    permissions:
+      id-token: write
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+    - name: Update pip
+      run: pip install -U pip
+    - name: Build package
+      run: |
+        apt-get update && apt-get install -y git
+        pip install build
+        python -m build --outdir dist .
+    - name: Publish package
+      uses: pypa/gh-action-pypi-publish@release/v1

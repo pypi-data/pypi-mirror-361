@@ -1,0 +1,64 @@
+version: 1.0
+workflows:
+  - spec_type: dag
+    name: spam
+    version: "1.0"
+    description: A workflow with spam, spam, eggs and spam.
+    registration:
+      active: true
+      task_timeout: 5
+      execution_timeout: 3600
+      task_list: coffee
+    tasks:
+      - id: foo
+        type:
+          name: spam-foo
+          version: "0.3"
+        input:
+          type: workflow-input
+          path: $.foo
+        timeout: 10
+        task_list: eggs
+        priority: 1
+      - id: bar
+        type:
+          name: spam-foo
+          version: "0.4"
+        input:
+          type: workflow-input
+          path: $.bar
+        timeout: 10
+        task_list: eggs
+        dependencies:
+          - foo
+  - spec_type: dag
+    name: spam
+    version: "1.1"
+    description: A workflow with better spam, spam, eggs and spam.
+    registration:
+      active: true
+      task_timeout: 5
+      execution_timeout: 3600
+      task_list: coffee
+    tasks:
+      - id: foo
+        type:
+          name: spam-foo
+          version: "0.4"
+        input:
+          type: workflow-input
+          path: $.foo
+        timeout: 5
+        task_list: eggs
+        priority: 1
+      - id: bar
+        type:
+          name: spam-foo
+          version: "0.4"
+        input:
+          type: workflow-input
+          path: $.bar
+        timeout: 5
+        task_list: eggs
+        dependencies:
+          - foo

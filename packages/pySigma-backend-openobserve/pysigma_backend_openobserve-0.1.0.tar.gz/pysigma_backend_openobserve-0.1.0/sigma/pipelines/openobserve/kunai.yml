@@ -1,0 +1,46 @@
+# TODO: replace TABLENAME
+name: Sigma to kunai field mapping
+priority: 30
+rule_conditions:
+  - type: os_type
+    product: linux
+transformations:
+- id: field_mapping
+  type: field_name_mapping
+  mapping:
+    Image:
+    - data_exe_path
+    CommandLine:
+    - data_command_line
+    ParentImage:
+    - data_ancestors
+    User:
+    - info_task_user
+    ProcessId:
+    - info_task_pid
+    ParentProcessId:
+    - info_parent_task_pid
+    Computer:
+    - host_name
+    md5:
+    - data_exe_md5
+    sha1:
+    - data_exe_sha1
+    sha256:
+    - data_exe_sha256
+    DestinationHostname:
+    - data_dst_hostname
+    DestinationIp:
+    - data_dst_ip
+    DestinationPort:
+    - data_dst_port
+    # Initiated: not existing
+    TargetFilename:
+    - data_path
+    LogonId:
+    - info_task_uid
+    # CurrentDirectory: not existing
+    # ParentCommandLine: not existing (need join)
+# category: network_connection = info_event_name='connect'
+# category: process_creation = info_event_name in ('execve', 'execve_script')
+# category: file_event = info_event_name in ('file_create', 'file_rename', 'file_unlink', 'read_config', 'write_config', 'read', 'write')

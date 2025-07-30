@@ -1,0 +1,52 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python C++ Debug",
+            "type": "pythoncpp",
+            "request": "launch",
+            "pythonConfig": "custom",
+            "pythonLaunchName": "Python: main",
+            "cppConfig": "default (gdb) Attach"
+        },
+        {
+            "name": "C++ Discrete gdb",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build_cpp/DiscreteGOMEA",
+            "args": ["-F10000", "0", "10", "0"],
+            "cwd": "${workspaceFolder}/build_cpp/"
+        },
+        {
+            "name": "C++ Real-Valued gdb",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build_cpp/RealValuedGOMEA",
+            "args": ["-s","-f","1","-r","0","10","-100","-115","0.35","10","1","0.9","1","100000","1e-10","100","0","10"],
+            "cwd": "${workspaceFolder}/build_cpp/"
+        },
+        {
+            "name": "(gdb) Attach",
+            "type": "cppdbg",
+            "program": "gdb",
+            "request": "attach",
+            "logging": {
+                "engineLogging": true
+            },
+            "sourceFileMap": {
+                "${workspaceFolder}": {
+                    "editorPath": "${workspaceFolder}",
+                    "useForBreakpoints": "true"
+                }
+            }
+        },
+        {
+            "name": "Python: main",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/debug/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/debug/"
+        }
+    ]
+}

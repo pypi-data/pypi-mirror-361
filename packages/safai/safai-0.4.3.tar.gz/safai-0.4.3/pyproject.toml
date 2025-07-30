@@ -1,0 +1,54 @@
+[project]
+name = "safai"
+version = "0.4.3"
+authors = [
+  { name="Shubham Biswas", email="connect@xolve.dev" },
+]
+description = "CLI that cleans up folder by intelligently organizing it"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "GPL-3.0-or-later" }
+dependencies = [
+    "anthropic>=0.57.1",
+    "google-genai>=1.24.0",
+    "openai>=1.93.2",
+    "pydantic>=2.11.7",
+    "pyyaml>=6.0.2",
+    "rich>=14.0.0",
+    "typer>=0.16.0",
+]
+
+[tool.ruff.lint]
+    select = [
+      "E",    
+      "F",     
+      "UP",   
+      "RUF",  
+      "N", 
+    ]
+
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.1",
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.0.0",
+    "pytest-cov>=6.2.1",
+    "pytest-mock>=3.14.1",
+    "ruff>=0.12.2",
+    "setuptools>=80.9.0",
+    "twine>=6.1.0",
+]
+
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project.scripts]
+safai = "safai.main:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+exclude = ["tests*", "dist"]
+namespaces = false 
+

@@ -1,0 +1,41 @@
+[package]
+name = "econometrust"
+version = "0.1.10"
+edition = "2021"
+description = "High-performance econometrics library written in Rust"
+authors = ["Wouter de Ligt <wouterdeligt3@gmail.com>"]
+repository = "https://github.com/wdeligt/econometrust"
+documentation = "https://github.com/wdeligt/econometrust#readme"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+categories = ["science", "mathematics", "data-structures", "algorithms"]
+keywords = ["econometrics", "regression", "ols", "gls", "python"]
+
+[dependencies]
+# Python and FFI (optional for pure Rust usage)
+pyo3 = { version = "0.21", features = ["extension-module"], optional = true }
+numpy = { version = "0.21", optional = true }
+# Math and linear algebra
+ndarray = { version = "0.15", features = ["rayon"] }
+ndarray-linalg = { version = "0.16", features = ["openblas-system"] }
+libm = "0.2"
+statrs = "0.17"
+chrono = { version = "0.4", features = ["serde"] }
+rayon = "1.7"
+approx = "0.5.1"
+
+[features]
+default = []
+python = ["pyo3", "numpy"]
+
+[lib]
+name = "econometrust"
+crate-type = ["cdylib", "rlib"]
+
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+debug = false

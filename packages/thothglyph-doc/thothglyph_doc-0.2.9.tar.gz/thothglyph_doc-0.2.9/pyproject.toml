@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "thothglyph-doc"
+version = "0.2.9"
+description = "A Documentation converter and language for Engineers"
+authors = ["nakandev <nakandev.s@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [
+    { include = "thothglyph" },
+]
+
+[tool.poetry.scripts]
+thothglyph = "thothglyph.app.converter:main"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+pillow = "^9.2.0"
+cairosvg = "^2.5.2"
+markdown-it-py = {extras = ["plugins"], version = "^3.0.0"}
+pyyaml = "^6.0.2"
+
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^0.982"
+
+[tool.mypy]
+python_version = "3.8"
+ignore_missing_imports = true
+check_untyped_defs = true
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

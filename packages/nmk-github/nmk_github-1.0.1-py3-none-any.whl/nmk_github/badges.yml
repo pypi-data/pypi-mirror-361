@@ -1,0 +1,32 @@
+config:
+
+    # License file (relative path to project root)
+    githubLicenseFile: LICENSE
+
+    # License type (parsed from license file)
+    githubLicense:
+      __resolver__: nmk_github.info.GithubLicenseParser
+      params:
+        file: ${githubLicenseFile}
+
+    # Issues hosting repo (default to current repo)
+    githubIssuesRepo: ${githubRepo}
+
+    # Issues optional label
+    githubIssuesLabel: ""
+    githubIssuesLabelSuffix:
+        __resolver__: nmk_github.info.GithubIssuesLabelResolver
+        params:
+            label: "${githubIssuesLabel}"
+
+    # Badges configuration
+    badges:
+      - alt: "License: ${githubLicense}"
+        img: https://img.shields.io/github/license/${githubUser}/${githubRepo}
+        url: https://github.com/${githubUser}/${githubRepo}/blob/main/${githubLicenseFile}
+      - alt: Checks
+        img: https://img.shields.io/github/actions/workflow/status/${githubUser}/${githubRepo}/build.yml?branch=main&label=build%20%26%20u.t.
+        url: https://github.com/${githubUser}/${githubRepo}/actions?query=branch%3Amain
+      - alt: Issues
+        img: https://img.shields.io/github/issues-search/${githubUser}/${githubIssuesRepo}?label=issues&query=is%3Aopen+is%3Aissue${githubIssuesLabelSuffix}
+        url: https://github.com/${githubUser}/${githubIssuesRepo}/issues?q=is%3Aopen+is%3Aissue${githubIssuesLabelSuffix}

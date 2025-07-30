@@ -1,0 +1,60 @@
+config:
+    # Generated Github action file
+    githubAction: ${PROJECTDIR}/.github/workflows/build.yml
+
+    # Template file for Github action
+    githubActionTemplate: ${BASEDIR}/templates/build.yml
+
+    # List of python versions to be tested
+    githubPythonVersions: [] # (manual configuration)
+    githubDetectedPythonVersions: # (deduced configuration from python plugin, if any)
+        __resolver__: nmk_github.action.PythonVersionsResolver
+
+    # List of operating systems (build images) for github action
+    githubOSImages:
+        - ubuntu-latest
+        - windows-latest
+
+    # Build command for github action
+    githubCommand: ./buildenv.sh run nmk tests
+
+    # Package command for github action
+    githubPackageCommand: ./buildenv.sh run nmk package
+
+    # Github user
+    githubUser:
+        __resolver__: nmk_github.info.GithubUserResolver
+
+    # Github repository
+    githubRepo:
+        __resolver__: nmk_github.info.GithubRepoResolver
+
+    # Turn default project name to be the repository name
+    projectName: ${githubRepo}
+
+    # Github build workflow steps contribution
+    # Expected to be a list of objects, that will be serialized in generated build.yml file
+    # Special keys:
+    # - __if__: generate this step if condition is met
+    # - __unless__: generate this step unless condition is met
+    githubBuildSteps: []
+
+    # Github publish workflow steps contribution
+    # See above
+    githubPublishSteps: []
+
+tasks:
+    # Github action file generation
+    gh.actions:
+        description: Generate Github action file
+        emoji: ":octopus:.:clapper_board:"
+        appendToDeps: setup
+        input: ${githubActionTemplate}
+        output: ${githubAction}
+        if: ${githubDetectedPythonVersions}
+        params:
+            python_versions: ${githubDetectedPythonVersions}
+            images: ${githubOSImages}
+            build_steps: ${githubBuildSteps}
+            publish_steps: ${githubPublishSteps}
+        builder: nmk_github.action.ActionFileBuilder

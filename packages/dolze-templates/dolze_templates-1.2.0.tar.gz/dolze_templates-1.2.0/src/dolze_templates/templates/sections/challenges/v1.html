@@ -1,0 +1,54 @@
+<section
+  id="challenges"
+  class="py-24 bg-white relative overflow-hidden"
+>
+  <!-- Subtle background elements -->
+  <div class="absolute inset-0 bg-[#F8F8F8] opacity-50 -skew-y-6 transform origin-top-left h-1/2"></div>
+  
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <!-- Elegant section header -->
+    <div class="text-center mb-20">
+      <span class="inline-block text-xs uppercase tracking-widest text-gray-500 mb-3">
+        Our Approach
+      </span>
+      <h2 class="text-3xl sm:text-4xl font-light text-gray-900 mb-4">
+        {{ sections.challenges.title }}
+      </h2>
+      <div class="w-16 h-px bg-gray-300 mx-auto mb-6"></div>
+      <p class="text-gray-600 max-w-xl mx-auto font-light">
+        {{ sections.challenges.subtitle }}
+      </p>
+    </div>
+
+    <!-- Elegant card layout -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      {% for item in sections.challenges.items %}
+      <div class="group">
+        <div class="bg-white p-8 border border-gray-100 rounded-sm shadow-sm transition-all duration-300 hover:shadow-md">
+          <!-- Minimal icon presentation -->
+          <div class="w-12 h-12 flex items-center justify-center mb-6">
+            <i class="{{ item.icon }} text-{{ item.color }}-500 text-xl group-hover:scale-110 transition-transform duration-300"></i>
+          </div>
+          
+          <!-- Content with minimal styling -->
+          <h3 class="text-lg font-light text-gray-900 mb-3 tracking-wide">
+            {{ item.value }}
+          </h3>
+          <div class="w-8 h-px bg-{{ item.color }}-200 mb-4"></div>
+          <p class="text-gray-600 font-light">
+            {{ item.label }}
+          </p>
+          
+          <!-- Subtle hover effect -->
+          <div class="w-full h-px bg-{{ item.color }}-100 mt-6 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    
+    <!-- Optional decorative element -->
+    <div class="mt-20 flex justify-center">
+      <div class="w-16 border-t border-gray-200"></div>
+    </div>
+  </div>
+</section>

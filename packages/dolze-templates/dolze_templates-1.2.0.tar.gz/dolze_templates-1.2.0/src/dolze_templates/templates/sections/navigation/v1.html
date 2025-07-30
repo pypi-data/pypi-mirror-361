@@ -1,0 +1,222 @@
+<nav
+  class="fixed w-full z-50 transition-all duration-300"
+  id="nav"
+>
+  <!-- Modern semi-transparent backdrop -->
+  <div class="absolute inset-0 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm transition-all duration-300"></div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="flex items-center justify-between h-20">
+      <!-- Logo/Brand -->
+      <a href="/" class="text-3xl text-gray-900 transition-colors duration-300 hover:text-primary" style="font-family: {{settings.fonts.heading}}">
+        {{ settings.seo.title.split(' - ')[0] }}
+      </a>
+
+      <!-- Mobile Hamburger -->
+      <div class="md:hidden">
+        <button
+          id="mobile-menu-button"
+          type="button"
+          class="text-gray-600 hover:text-primary focus:outline-none focus:ring-1 focus:ring-gray-300 focus:ring-offset-2 transition-colors duration-300"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+        >
+          <i class="ri-menu-line text-2xl"></i>
+        </button>
+      </div>
+
+      <!-- Desktop Navigation -->
+      <div class="hidden md:flex space-x-8">
+        {% for link in sections.navigation.links %}
+        <a 
+          href="{{ link.url }}" 
+          class="text-gray-600 hover:text-gray-900 font-light relative group transition-colors duration-300"
+          style="font-family: {{settings.fonts.body}}"
+        >
+          <span>{{ link.label }}</span>
+          <span class="absolute bottom-0 left-0 w-0 h-px bg-gray-900 group-hover:w-full transition-all duration-300"></span>
+        </a>
+        {% endfor %}
+      </div>
+
+      <!-- Desktop CTA -->
+      <div class="hidden md:flex items-center space-x-8">
+        {% for link in sections.navigation.items %}
+        <a 
+          href="{{ link.url }}" 
+          class="text-gray-600 hover:text-gray-900 font-light relative group transition-colors duration-300"
+          style="font-family: {{settings.fonts.body}}"
+        >
+          <span>{{ link.label }}</span>
+          <span class="absolute bottom-0 left-0 w-0 h-px bg-gray-900 group-hover:w-full transition-all duration-300"></span>
+        </a>
+        {% endfor %} 
+        
+        {% if sections.navigation.ctaItems and sections.navigation.ctaItems|length > 0 %} 
+        {% for ctaItem in sections.navigation.ctaItems %}
+        <a
+          href="{{ ctaItem.url }}"
+          class="px-6 py-3 bg-gray-900 text-white font-light tracking-wide uppercase text-sm hover:bg-gray-800 transition-all duration-300 ease-out focus:outline-none focus:ring-1 focus:ring-gray-900 focus:ring-offset-2"
+          style="font-family: {{settings.fonts.body}}"
+        >
+          {{ ctaItem.label }}
+        </a>
+        {% endfor %} 
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div
+    id="mobile-menu"
+    class="hidden absolute top-full left-0 w-full bg-white border-t border-gray-100 shadow-md md:hidden transform transition-transform duration-300 ease-in-out"
+    aria-hidden="true"
+  >
+    <div class="px-6 py-8 space-y-6">
+      {% for link in sections.navigation.links %}
+      <div>
+        <a
+          href="{{ link.url }}"
+          onclick="toggleMobileMenu()"
+          class="block text-gray-600 hover:text-gray-900 font-light py-2 transition-colors duration-300"
+          style="font-family: {{settings.fonts.body}}"
+        >
+          {{ link.label }}
+        </a>
+      </div>
+      {% endfor %}
+      
+      {% for link in sections.navigation.items %}
+      <div>
+        <a
+          href="{{ link.url }}"
+          onclick="toggleMobileMenu()"
+          class="block text-gray-600 hover:text-gray-900 font-light py-2 transition-colors duration-300"
+          style="font-family: {{settings.fonts.body}}"
+        >
+          {{ link.label }}
+        </a>
+      </div>
+      {% endfor %} 
+      
+      {% if sections.navigation.ctaItems and sections.navigation.ctaItems|length > 0 %} 
+      <div class="pt-4 border-t border-gray-100">
+        {% for ctaItem in sections.navigation.ctaItems %}
+        <a
+          href="{{ ctaItem.url }}"
+          onclick="toggleMobileMenu()"
+          class="block text-center px-8 py-3 bg-gray-900 text-white font-light tracking-wide uppercase text-sm hover:bg-gray-800 transition-all duration-300 ease-out focus:outline-none focus:ring-1 focus:ring-gray-900 focus:ring-offset-2"
+          style="font-family: {{settings.fonts.body}}"
+        >
+          {{ ctaItem.label }}
+        </a>
+        {% endfor %} 
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Mobile menu toggle functionality
+      function toggleMobileMenu() {
+        const menu = document.getElementById("mobile-menu");
+        const button = document.getElementById("mobile-menu-button");
+        const isExpanded = button.getAttribute("aria-expanded") === "true";
+        
+        if (isExpanded) {
+          // Close menu
+          menu.classList.add("hidden");
+          menu.classList.remove("slide-in-top");
+          button.setAttribute("aria-expanded", "false");
+          menu.setAttribute("aria-hidden", "true");
+          button.querySelector("i").classList.remove("ri-close-line");
+          button.querySelector("i").classList.add("ri-menu-line");
+        } else {
+          // Open menu
+          menu.classList.remove("hidden");
+          menu.classList.add("slide-in-top");
+          button.setAttribute("aria-expanded", "true");
+          menu.setAttribute("aria-hidden", "false");
+          button.querySelector("i").classList.remove("ri-menu-line");
+          button.querySelector("i").classList.add("ri-close-line");
+        }
+      }
+      
+      document
+        .getElementById("mobile-menu-button")
+        .addEventListener("click", toggleMobileMenu);
+      
+      // Scroll behavior for navigation
+      let lastScrollTop = 0;
+      const nav = document.getElementById("nav");
+      const navHeight = nav.offsetHeight;
+      
+      window.addEventListener("scroll", function() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        // Add shadow and adjust opacity when scrolling down
+        if (scrollTop > 10) {
+          nav.classList.add("shadow-md", "bg-white/98");
+          nav.classList.remove("bg-white/95");
+        } else {
+          nav.classList.remove("shadow-md", "bg-white/98");
+          nav.classList.add("bg-white/95");
+        }
+        
+        // Hide/show navigation based on scroll direction
+        if (scrollTop > lastScrollTop && scrollTop > navHeight) {
+          // Scrolling down
+          nav.style.transform = "translateY(-100%)";
+        } else {
+          // Scrolling up
+          nav.style.transform = "translateY(0)";
+        }
+        
+        lastScrollTop = scrollTop;
+      });
+    });
+  </script>
+  
+  <style>
+    /* Sliding animation for mobile menu */
+    .slide-in-top {
+      animation: slide-in-top 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+    }
+    
+    @keyframes slide-in-top {
+      0% {
+        transform: translateY(-10px);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    /* Modern hover animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Ensure consistent font rendering */
+    nav {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    /* Consistent transitions */
+    nav a, nav button {
+      transition: all 0.3s ease;
+    }
+  </style>
+</nav>

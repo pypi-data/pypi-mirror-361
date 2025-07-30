@@ -1,0 +1,146 @@
+<section id="menu" class="relative py-32 bg-gradient-to-b from-gray-900 to-black overflow-hidden">
+  <!-- Decorative elements -->
+  <div class="absolute inset-0 opacity-10">
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNGRkZGRkYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTIgMmg0djRIMnptNiAwaDR2NEg4em02IDBoNHY0aC00em02IDBoNHY0aC00em02IDBoNHY0aC00eiIvPjwvZz48L2c+PC9zdmc+')]"></div>
+  </div>
+  
+  <!-- Animated neon glow effects -->
+  <div class="absolute top-40 right-20 w-80 h-80 bg-emerald-500 rounded-full mix-blend-screen filter blur-[100px] opacity-20 animate-pulse-slow"></div>
+  <div class="absolute bottom-40 left-20 w-96 h-96 bg-purple-500 rounded-full mix-blend-screen filter blur-[100px] opacity-20 animate-pulse-slow animation-delay-2000"></div>
+  <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-500 rounded-full mix-blend-screen filter blur-[120px] opacity-10 animate-pulse-slow animation-delay-4000"></div>
+  
+  <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+    <!-- Modern header with glow effect -->
+    <div class="text-center mb-24" data-aos="fade-up">
+      <span class="inline-block px-4 py-1.5 bg-gray-800/80 text-emerald-400 border border-emerald-500/30 rounded-full text-sm font-medium tracking-wide mb-6 backdrop-blur-sm">
+        <span class="inline-block w-2 h-2 bg-emerald-400 rounded-full mr-2 animate-ping"></span>
+        Culinary Masterpieces
+      </span>
+      <h2 class="text-6xl font-bold text-white mb-8 relative inline-block text-shadow-glow">
+        {{ sections.menu.title }}
+        <div class="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full"></div>
+      </h2>
+      <p class="max-w-2xl mx-auto text-gray-300 text-lg">
+        Experience our chef's visionary creations, where tradition meets innovation in every bite
+      </p>
+    </div>
+
+    <!-- Menu categories with modern neon design -->
+    <div class="space-y-32">
+      {% for category in sections.menu.categories %}
+      <div data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+        <!-- Category header with neon effect -->
+        <div class="relative mb-16 text-center">
+          <h3 class="inline-block text-3xl font-bold text-white px-8 py-2 relative">
+            {{ category.name }}
+            <span class="absolute -bottom-2 left-0 right-0 h-0.5 bg-gradient-to-r from-emerald-500 via-blue-500 to-purple-500 glow-line"></span>
+          </h3>
+        </div>
+
+        <!-- Menu items in a modern dark glass card design -->
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
+          {% for item in category.items %}
+          <div class="group">
+            <div class="relative bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(16,185,129,0.15)]">
+              {% if item.media %}
+              <div class="relative overflow-hidden h-56">
+                <img
+                  src="{{ item.media.src }}"
+                  alt="{{ item.media.alt }}"
+                  class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+                <!-- Overlay gradient on hover -->
+                <div class="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-60"></div>
+                
+                <!-- Floating price tag -->
+                <div class="absolute top-4 right-4 px-3 py-1 bg-gray-900/80 text-emerald-400 border border-emerald-500/30 rounded-full font-medium backdrop-blur-sm">
+                  {{ item.price }}
+                </div>
+                
+                <!-- Dish name overlay -->
+                <div class="absolute bottom-0 left-0 right-0 p-4">
+                  <h4 class="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors">
+                    {{ item.name }}
+                  </h4>
+                </div>
+              </div>
+              {% endif %}
+              
+              <div class="p-6 {% if item.media %}pt-3{% endif %}">
+                {% if not item.media %}
+                <div class="flex justify-between items-start mb-3">
+                  <h4 class="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors">
+                    {{ item.name }}
+                  </h4>
+                  <span class="px-3 py-1 bg-gray-900/80 text-emerald-400 border border-emerald-500/30 rounded-full font-medium backdrop-blur-sm">
+                    {{ item.price }}
+                  </span>
+                </div>
+                {% endif %}
+                
+                <p class="text-gray-400 text-sm">{{ item.description }}</p>
+                
+                <!-- Interactive order button -->
+                <div class="mt-6">
+                  <button class="w-full py-2.5 bg-gray-700 hover:bg-gradient-to-r hover:from-emerald-600 hover:to-blue-600 text-white rounded-lg font-medium transition-all duration-300 border border-gray-600 hover:border-emerald-500 group-hover:shadow-[0_0_15px_rgba(16,185,129,0.3)]">
+                    <span class="flex items-center justify-center space-x-2">
+                      <span>Add to Order</span>
+                      <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                      </svg>
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    
+    <!-- Modern CTA button with neon effect -->
+    <div class="text-center mt-28">
+      <a href="#full-menu" class="group relative inline-flex items-center justify-center">
+        <span class="absolute inset-0 w-full h-full transition duration-300 ease-out bg-gradient-to-r from-emerald-600 to-blue-600 rounded-lg opacity-70 group-hover:opacity-100 blur-md group-hover:blur-lg"></span>
+        <span class="relative px-8 py-4 bg-gray-900 border border-gray-700 rounded-lg">
+          <span class="relative flex items-center space-x-3 text-white font-bold">
+            <span>Explore Full Menu</span>
+            <svg class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+            </svg>
+          </span>
+        </span>
+      </a>
+    </div>
+  </div>
+  
+  <style>
+    /* Custom animations */
+    @keyframes pulse-slow {
+      0%, 100% { opacity: 0.1; transform: scale(1); }
+      50% { opacity: 0.2; transform: scale(1.1); }
+    }
+    
+    .animate-pulse-slow {
+      animation: pulse-slow 8s infinite ease-in-out;
+    }
+    
+    .animation-delay-2000 {
+      animation-delay: 2s;
+    }
+    
+    .animation-delay-4000 {
+      animation-delay: 4s;
+    }
+    
+    .text-shadow-glow {
+      text-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+    }
+    
+    .glow-line {
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+    }
+  </style>
+</section>

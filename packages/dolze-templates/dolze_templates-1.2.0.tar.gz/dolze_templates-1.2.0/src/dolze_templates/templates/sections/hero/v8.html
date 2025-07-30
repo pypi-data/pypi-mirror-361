@@ -1,0 +1,230 @@
+<section class="relative min-h-screen overflow-hidden bg-slate-950">
+  <!-- Gradient background -->
+  <div class="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+    <div class="absolute inset-0 opacity-30">
+      <div class="absolute top-0 -left-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+      <div class="absolute top-0 -right-40 w-80 h-80 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+      <div class="absolute -bottom-40 left-20 w-80 h-80 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+    </div>
+  </div>
+
+  <!-- Noise texture overlay -->
+  <div class="absolute inset-0 opacity-30" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGQ9Ik0wIDBoMzAwdjMwMEgweiIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIuMDUiLz48L3N2Zz4=');"></div>
+
+  <!-- Grid pattern -->
+  <div class="absolute inset-0 opacity-10" style="background-size: 40px 40px; background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);"></div>
+
+  <!-- Main content -->
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20">
+    <div class="flex flex-col items-center text-center mb-16">
+      <!-- Animated badge -->
+      <div class="inline-flex items-center mb-6 px-3 py-1 rounded-full text-sm font-medium bg-slate-800 text-slate-200 border border-slate-700">
+        <span class="flex h-2 w-2 rounded-full bg-blue-500 mr-2"></span>
+        <span>{% if sections.hero.badge %}{{ sections.hero.badge }}{% else %}Next Generation Platform{% endif %}</span>
+      </div>
+      
+      <!-- Headline with gradient -->
+      <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-blue-200 mb-8 leading-tight max-w-4xl">
+        {{ sections.hero.title }}
+      </h1>
+      
+      <!-- Description -->
+      <p class="text-xl text-slate-300 mb-10 max-w-2xl">
+        {{ sections.hero.description }}
+      </p>
+      
+      <!-- Interactive CTA section -->
+      <div class="flex flex-wrap justify-center gap-4 mb-16">
+        {% for btn in sections.hero.ctaButtons %}
+        {% if loop.first %}
+        <a
+          href="{{ btn.url }}"
+          aria-label="{{ btn.ariaLabel }}"
+          class="group relative inline-flex items-center justify-center px-8 py-4 text-base font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 rounded-md shadow-lg hover:shadow-blue-500/20 hover:shadow-xl transition-all duration-300"
+        >
+          <span class="relative flex items-center">
+            {{ btn.label }}
+            <svg class="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+            </svg>
+          </span>
+        </a>
+        {% else %}
+        <a
+          href="{{ btn.url }}"
+          aria-label="{{ btn.ariaLabel }}"
+          class="group relative inline-flex items-center justify-center px-8 py-4 text-base font-medium text-slate-300 bg-slate-800/50 border border-slate-700 rounded-md hover:bg-slate-800 hover:text-white transition-all duration-300"
+        >
+          <span class="relative">{{ btn.label }}</span>
+        </a>
+        {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    
+    <!-- Feature showcase -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+      <!-- Feature 1 -->
+      <div class="relative group">
+        <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
+        <div class="relative p-6 bg-slate-900 border border-slate-800 rounded-lg">
+          <div class="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold text-white mb-2">Easy Setup</h3>
+          <p class="text-slate-300">Get started in minutes with our intuitive onboarding process.</p>
+        </div>
+      </div>
+      
+      <!-- Feature 2 -->
+      <div class="relative group">
+        <div class="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-blue-600 rounded-xl blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
+        <div class="relative p-6 bg-slate-900 border border-slate-800 rounded-lg">
+          <div class="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold text-white mb-2">Lightning Fast</h3>
+          <p class="text-slate-300">Optimized performance ensures your workflow is never interrupted.</p>
+        </div>
+      </div>
+      
+      <!-- Feature 3 -->
+      <div class="relative group">
+        <div class="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
+        <div class="relative p-6 bg-slate-900 border border-slate-800 rounded-lg">
+          <div class="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold text-white mb-2">Secure by Design</h3>
+          <p class="text-slate-300">Enterprise-grade security keeps your data protected at all times.</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Image showcase with glass morphism -->
+    <div class="relative mx-auto max-w-5xl">
+      <!-- Decorative elements -->
+      <div class="absolute -top-10 -right-10 w-40 h-40 bg-blue-500/10 rounded-full filter blur-3xl"></div>
+      <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-indigo-500/10 rounded-full filter blur-3xl"></div>
+      
+      <!-- Main image with glass effect -->
+      <div class="relative">
+        <div class="relative rounded-xl overflow-hidden border border-slate-800 bg-slate-900/50 backdrop-blur-sm">
+          <!-- Subtle grid overlay -->
+          <div class="absolute inset-0 opacity-10" style="background-size: 20px 20px; background-image: linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px);"></div>
+          
+          <img
+            src="{{ sections.hero.heroImage.src }}"
+            alt="{{ sections.hero.heroImage.alt }}"
+            class="w-full h-auto object-cover rounded-xl"
+            loading="{% if sections.hero.heroImage.lazyLoad %}lazy{% else %}eager{% endif %}"
+          />
+          
+          <!-- Subtle overlay -->
+          <div class="absolute inset-0 bg-gradient-to-tr from-slate-900/40 via-transparent to-transparent"></div>
+          
+          <!-- Floating stats card -->
+          <div class="absolute top-6 right-6 bg-slate-900/80 backdrop-blur-md rounded-lg shadow-lg p-4 border border-slate-700 transform hover:scale-105 transition-transform duration-300">
+            <div class="flex items-center space-x-4">
+              <div class="flex -space-x-2">
+                {% for i in range(4) %}
+                <div class="w-8 h-8 rounded-full bg-slate-800 border-2 border-slate-700 flex items-center justify-center overflow-hidden">
+                  <div class="w-full h-full bg-gradient-to-br from-blue-500 to-indigo-600"></div>
+                </div>
+                {% endfor %}
+              </div>
+              <div>
+                <p class="font-medium text-white">2,500+ Users</p>
+                <p class="text-xs text-slate-400">Joined this month</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Floating metrics card -->
+          <div class="absolute bottom-6 left-6 bg-slate-900/80 backdrop-blur-md rounded-lg shadow-lg p-4 border border-slate-700 transform hover:scale-105 transition-transform duration-300">
+            <div class="flex items-center space-x-4">
+              <div class="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center">
+                <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                </svg>
+              </div>
+              <div>
+                <p class="font-medium text-white">98.7% Uptime</p>
+                <p class="text-xs text-slate-400">Last 30 days</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Social proof section -->
+    <div class="mt-20 text-center">
+      <p class="text-sm text-slate-500 mb-6">Trusted by innovative companies worldwide</p>
+      <div class="flex flex-wrap justify-center gap-x-12 gap-y-8">
+        {% for i in range(5) %}
+        <div class="h-8 opacity-40 hover:opacity-70 transition-opacity duration-300">
+          <div class="w-24 h-8 bg-white/10 rounded"></div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-slate-500 animate-bounce">
+    <span class="text-sm mb-1">Explore</span>
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+    </svg>
+  </div>
+  
+  <style>
+    @keyframes blob {
+      0% {
+        transform: translate(0px, 0px) scale(1);
+      }
+      33% {
+        transform: translate(30px, -50px) scale(1.1);
+      }
+      66% {
+        transform: translate(-20px, 20px) scale(0.9);
+      }
+      100% {
+        transform: translate(0px, 0px) scale(1);
+      }
+    }
+    
+    .animate-blob {
+      animation: blob 7s infinite;
+    }
+    
+    .animation-delay-2000 {
+      animation-delay: 2s;
+    }
+    
+    .animation-delay-4000 {
+      animation-delay: 4s;
+    }
+  </style>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Parallax effect on scroll
+      window.addEventListener('scroll', function() {
+        const scrollY = window.scrollY;
+        const elements = document.querySelectorAll('.bg-slate-900/50, .bg-slate-800/50');
+        
+        elements.forEach(element => {
+          element.style.transform = `translateY(${scrollY * 0.02}px)`;
+        });
+      });
+    });
+  </script>
+</section>

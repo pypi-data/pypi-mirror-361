@@ -1,0 +1,173 @@
+<section
+  id="hero"
+  class="relative min-h-screen overflow-hidden bg-cover bg-center bg-no-repeat"
+  style="background-image: url('{{ sections.hero.heroImage.src }}');"
+>
+  <!-- Customizable overlay with gradient -->
+  <div
+    class="absolute inset-0 {{ sections.hero.overlay | default('bg-gradient-to-r from-white via-white/60 to-transparent') }}"
+  ></div>
+
+  <!-- Animated particles (optional) -->
+  {% if sections.hero.particles %}
+  <div id="particles-js" class="absolute inset-0 z-0"></div>
+  {% endif %}
+
+  <div
+    class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center min-h-screen"
+  >
+    <div class="max-w-2xl backdrop-blur-sm bg-white/10 p-8 rounded-lg shadow-xl border border-white/20 transform transition-all duration-500 hover:scale-[1.02]">
+      <!-- Badge (optional) -->
+      {% if sections.hero.badge %}
+      <span class="inline-flex items-center px-3 py-1 mb-4 text-xs font-medium rounded-full bg-primary/20 text-primary">
+        <span class="w-2 h-2 mr-1 rounded-full bg-primary animate-pulse"></span>
+        {{ sections.hero.badge }}
+      </span>
+      {% endif %}
+      
+      <!-- Main heading with animation -->
+      <h1 class="text-5xl font-extrabold text-gray-900 mb-6 text-left animate-fade-in-down">
+        {{ sections.hero.title }}
+      </h1>
+
+      <!-- Subtitles with typing effect -->
+      {%- if sections.hero.subtitles %}
+      <div class="flex flex-wrap gap-2 mb-4">
+        {%- for subtitle in sections.hero.subtitles %}
+        <span class="text-xl text-gray-600 typewriter-effect">{{ subtitle }}</span>
+        {%- endfor %}
+      </div>
+      {%- endif %}
+
+      <!-- Description with fade-in animation -->
+      <p class="text-xl text-gray-600 mb-8 text-left animate-fade-in-up">
+        {{ sections.hero.description }}
+      </p>
+
+      <!-- Enhanced CTA buttons with Flowbite styling -->
+      <div class="flex flex-wrap gap-4">
+        {%- for btn in sections.hero.ctaButtons %}
+        <a
+          href="{{ btn.url }}"
+          {%- if btn.ariaLabel %}
+          aria-label="{{ btn.ariaLabel }}"
+          {%- endif %}
+          class="inline-flex items-center justify-center px-8 py-4 !rounded-button whitespace-nowrap transition-all duration-300 hover:shadow-lg focus:ring-4 focus:outline-none
+          {% if btn.size == 'lg' %}text-lg{% endif %}
+          {% if btn.style == 'filled' %}
+            bg-primary text-white hover:bg-primary/90 focus:ring-primary/50
+          {% elif btn.style == 'outline' %}
+            bg-white text-primary border-2 border-primary hover:bg-gray-50 focus:ring-primary/30
+          {% elif btn.style == 'gradient' %}
+            text-white bg-gradient-to-r from-primary to-secondary hover:bg-gradient-to-br focus:ring-primary/50
+          {% elif btn.style == 'soft' %}
+            bg-primary/10 text-primary hover:bg-primary/20 focus:ring-primary/30
+          {% else %}
+            bg-primary text-white hover:bg-primary/90 focus:ring-primary/50
+          {% endif %}"
+        >
+          {% if btn.icon %}
+          <i class="{{ btn.icon }} {% if btn.iconPosition != 'right' %}mr-2{% else %}ml-2 order-2{% endif %}"></i>
+          {% endif %}
+          <span {% if btn.icon and btn.iconPosition == 'right' %}class="order-1"{% endif %}>{{ btn.label }}</span>
+        </a>
+        {%- endfor %}
+      </div>
+      
+      <!-- Trust indicators (optional) -->
+      {% if sections.hero.trustIndicators %}
+      <div class="mt-12 pt-6 border-t border-gray-200">
+        <p class="text-sm text-gray-500 mb-4">{{ sections.hero.trustIndicators.title | default('Trusted by:') }}</p>
+        <div class="flex flex-wrap items-center gap-6">
+          {% for indicator in sections.hero.trustIndicators.items %}
+          <div class="grayscale opacity-70 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+            {% if indicator.logo %}
+            <img src="{{ indicator.logo }}" alt="{{ indicator.name }}" class="h-8">
+            {% else %}
+            <span class="text-gray-600">{{ indicator.name }}</span>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+      
+      <!-- Scroll indicator (optional) -->
+      {% if sections.hero.scrollIndicator %}
+      <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center animate-bounce">
+        <span class="text-sm text-gray-600 mb-2">{{ sections.hero.scrollIndicator.text | default('Scroll down') }}</span>
+        <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+        </svg>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- Optional: Add Flowbite and particles.js scripts -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize typewriter effect for subtitles
+    const typewriterElements = document.querySelectorAll('.typewriter-effect');
+    if (typewriterElements.length > 0) {
+      typewriterElements.forEach((element, index) => {
+        const text = element.textContent;
+        element.textContent = '';
+        let i = 0;
+        setTimeout(() => {
+          const interval = setInterval(() => {
+            if (i < text.length) {
+              element.textContent += text.charAt(i);
+              i++;
+            } else {
+              clearInterval(interval);
+            }
+          }, 100);
+        }, index * 1000); // Stagger the animations
+      });
+    }
+    
+    // Initialize particles.js if enabled
+    if (document.getElementById('particles-js') && typeof particlesJS !== 'undefined') {
+      particlesJS('particles-js', {
+        particles: {
+          number: { value: 80, density: { enable: true, value_area: 800 } },
+          color: { value: "#ffffff" },
+          opacity: { value: 0.5, random: false },
+          size: { value: 3, random: true },
+          line_linked: { enable: true, distance: 150, color: "#ffffff", opacity: 0.4, width: 1 },
+          move: { enable: true, speed: 2, direction: "none", random: false, straight: false, out_mode: "out", bounce: false }
+        },
+        interactivity: {
+          detect_on: "canvas",
+          events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" } },
+          modes: { repulse: { distance: 100, duration: 0.4 }, push: { particles_nb: 4 } }
+        }
+      });
+    }
+  });
+</script>
+
+<style>
+  /* Animation keyframes */
+  @keyframes fade-in-down {
+    0% { opacity: 0; transform: translateY(-20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes fade-in-up {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  
+  .animate-fade-in-down {
+    animation: fade-in-down 1s ease forwards;
+  }
+  
+  .animate-fade-in-up {
+    animation: fade-in-up 1s ease forwards;
+    animation-delay: 0.3s;
+    opacity: 0;
+  }
+</style>

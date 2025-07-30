@@ -1,0 +1,125 @@
+<section class="relative min-h-screen pt-20 overflow-hidden" id="hero">
+  <!-- Background image with overlay -->
+  <div
+    class="absolute inset-0 bg-cover bg-center"
+    style="
+      background-image: url('{{ sections.hero.heroImage.src }}');
+    "
+  ></div>
+  <div
+    class="absolute inset-0 bg-gradient-to-r from-primary/90 to-transparent"
+  ></div>
+
+  <!-- Animated decorative elements -->
+  <div class="absolute top-1/4 right-1/4 w-64 h-64 bg-white/10 rounded-full mix-blend-overlay filter blur-3xl animate-pulse"></div>
+  <div class="absolute bottom-1/3 left-1/3 w-80 h-80 bg-primary/20 rounded-full mix-blend-overlay filter blur-3xl animate-float animation-delay-2000"></div>
+
+  <!-- Main content -->
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
+    <div class="max-w-2xl">
+      <!-- Animated badge -->
+      <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-white/20 text-white/90 backdrop-blur-sm mb-6 animate-fade-in-up">
+        <span class="w-2 h-2 rounded-full bg-white mr-2 animate-pulse"></span>
+        {% if sections.hero.badge %}{{ sections.hero.badge }}{% else %}Introducing Our Latest Collection{% endif %}
+      </div>
+      
+      <!-- Main heading -->
+      <h1
+        class="text-4xl sm:text-5xl md:text-6xl font-playfair font-bold text-white leading-tight mb-6 animate-fade-in-up animation-delay-300"
+      >
+        {{ sections.hero.title }}
+      </h1>
+      
+      <!-- Description with subtle animation -->
+      <p class="text-lg sm:text-xl text-white/90 mb-8 max-w-xl animate-fade-in-up animation-delay-600">
+        {{ sections.hero.description }}
+      </p>
+      
+      <!-- CTA buttons with hover effects -->
+      <div class="flex flex-wrap gap-4 animate-fade-in-up animation-delay-900">
+        {% for btn in sections.hero.ctaButtons %}
+        <a
+          href="{{ btn.url }}"
+          {% if btn.ariaLabel %} aria-label="{{ btn.ariaLabel }}" {% endif %}
+          class="group relative px-8 py-4 overflow-hidden rounded-lg transition-all duration-300 
+            {% if btn.style == 'filled' or loop.first %} 
+              bg-white text-primary hover:bg-white/90 shadow-lg hover:shadow-xl
+            {% elif btn.style == 'outline' %} 
+              bg-transparent text-white border-2 border-white/30 hover:border-white/60
+            {% endif %}"
+        >
+          <span class="relative z-10 font-medium">{{ btn.label }}</span>
+          <span class="absolute inset-0 bg-white/20 transform scale-x-0 origin-left transition-transform duration-500 group-hover:scale-x-100"></span>
+        </a>
+        {% endfor %}
+      </div>
+      
+      <!-- Social proof or featured logos -->
+      {% if sections.hero.featuredLogos %}
+      <div class="mt-16 animate-fade-in-up animation-delay-1200">
+        <p class="text-white/70 text-sm mb-4">Trusted by leading brands</p>
+        <div class="flex flex-wrap items-center gap-8">
+          {% for logo in sections.hero.featuredLogos %}
+          <img src="{{ logo.src }}" alt="{{ logo.alt }}" class="h-8 opacity-70 hover:opacity-100 transition-opacity duration-300">
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-white/60 animate-bounce">
+    <span class="text-sm mb-2">Scroll to explore</span>
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+    </svg>
+  </div>
+  
+  <style>
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+      100% { transform: translateY(0px); }
+    }
+    
+    @keyframes fade-in-up {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .animate-float {
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    .animate-fade-in-up {
+      animation: fade-in-up 0.8s ease-out forwards;
+    }
+    
+    .animation-delay-300 {
+      animation-delay: 0.3s;
+    }
+    
+    .animation-delay-600 {
+      animation-delay: 0.6s;
+    }
+    
+    .animation-delay-900 {
+      animation-delay: 0.9s;
+    }
+    
+    .animation-delay-1200 {
+      animation-delay: 1.2s;
+    }
+    
+    .animation-delay-2000 {
+      animation-delay: 2s;
+    }
+  </style>
+</section>

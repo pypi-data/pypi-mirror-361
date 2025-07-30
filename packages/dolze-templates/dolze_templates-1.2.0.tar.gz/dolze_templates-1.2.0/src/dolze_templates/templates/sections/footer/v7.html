@@ -1,0 +1,248 @@
+<footer id="footer" aria-label="Footer" class="relative pt-24 pb-16 overflow-hidden {{ sections.footer.background.color | default('bg-emerald-950') }} {{ sections.footer.text.color | default('text-emerald-100') }}">
+  <!-- Decorative elements -->
+  <div class="absolute inset-0 pointer-events-none">
+    <!-- Background gradient -->
+    <div class="absolute inset-0 {{ sections.footer.background.gradient | default('bg-gradient-to-tr from-emerald-950 via-teal-900 to-emerald-900') }}"></div>
+    
+    <!-- Pattern overlay -->
+    <div class="absolute inset-0 opacity-5 {{ sections.footer.pattern.class | default('bg-[url(\'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4OCIgaGVpZ2h0PSI4OCIgdmlld0JveD0iMCAwIDg4IDg4Ij48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMS41IiBkPSJNMjIgMjJjMTIuMTUgMCAyMiA5Ljg1IDIyIDIycy05Ljg1IDIyLTIyIDIyLTIyLTkuODUtMjItMjIgOS44NS0yMiAyMi0yMnptMCAwYzEyLjE1IDAgMjIgOS44NSAyMiAyMnMtOS44NSAyMi0yMiAyMi0yMi05Ljg1LTIyLTIyIDkuODUtMjIgMjItMjJ6TTY2IDY2YzEyLjE1IDAgMjIgOS44NSAyMiAyMnMtOS44NSAyMi0yMiAyMi0yMi05Ljg1LTIyLTIyIDkuODUtMjIgMjItMjJ6bTAgMGMxMi4xNSAwIDIyIDkuODUgMjIgMjJzLTkuODUgMjItMjIgMjItMjItOS44NS0yMi0yMiA5Ljg1LTIyIDIyLTIyeiIvPjwvc3ZnPg==\')]') }}"></div>
+    
+    <!-- Floating elements -->
+    <div class="absolute top-40 left-1/3 w-72 h-72 {{ sections.footer.decorations.blob1 | default('bg-teal-400/10') }} rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-20 right-1/3 w-96 h-96 {{ sections.footer.decorations.blob2 | default('bg-emerald-300/10') }} rounded-full blur-3xl"></div>
+  </div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Top section with logo and features -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 pb-16 border-b {{ sections.footer.divider.color | default('border-emerald-800/50') }}">
+      <!-- Brand section -->
+      <div class="lg:col-span-{{ sections.footer.brand.width | default('4') }} space-y-6">
+        <!-- Logo -->
+        <a href="{{ sections.footer.brand.href | default('#') }}" class="inline-block group">
+          <div class="flex items-center space-x-3">
+            <!-- Logo mark -->
+            <div class="relative">
+              <div class="w-14 h-14 rounded-2xl {{ sections.footer.brand.logo.background | default('bg-gradient-to-br from-teal-400 to-emerald-500') }} flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:shadow-emerald-500/30 transition-all duration-300 {{ sections.footer.brand.logo.animation | default('rotate-3 group-hover:rotate-0') }}">
+                <span class="{{ sections.footer.brand.logo.textColor | default('text-white') }} font-bold text-2xl">{{ sections.footer.brand.name | slice(0, 1) }}</span>
+              </div>
+              <!-- Glow effect -->
+              <div class="absolute -inset-2 rounded-2xl {{ sections.footer.brand.logo.glowColor | default('bg-teal-400/20') }} blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            </div>
+            
+            <!-- Logo text -->
+            <div>
+              <span class="block text-2xl font-bold {{ sections.footer.brand.textStyle | default('bg-gradient-to-r from-teal-300 to-emerald-300 bg-clip-text text-transparent') }}">
+                {{ sections.footer.brand.name }}
+              </span>
+              <span class="text-xs {{ sections.footer.brand.taglineColor | default('text-emerald-400') }} tracking-widest uppercase">{{ sections.footer.brand.tagline | default('Naturally Inspired') }}</span>
+            </div>
+          </div>
+        </a>
+        
+        <!-- Description -->
+        <p class="{{ sections.footer.brand.description.color | default('text-emerald-300/80') }} leading-relaxed max-w-md">
+          {{ sections.footer.brand.description.text }}
+        </p>
+        
+        <!-- Social links -->
+        {% if sections.footer.brand.socialLinks is defined %}
+        <div class="flex {{ sections.footer.brand.socialLinks.layout | default('space-x-4') }}">
+          {% for social in sections.footer.brand.socialLinks.links %}
+          <a
+            href="{{ social.url }}"
+            class="group relative {{ sections.footer.brand.socialLinks.style | default('w-10 h-10 flex items-center justify-center rounded-full bg-emerald-800/50 hover:bg-teal-600') }} transition-all duration-300"
+            aria-label="{{ social.platform }}"
+          >
+            <!-- Ripple effect -->
+            <span class="absolute inset-0 rounded-full {{ sections.footer.brand.socialLinks.effectColor | default('bg-teal-400') }} transform scale-0 group-hover:scale-100 opacity-0 group-hover:opacity-20 transition-all duration-500"></span>
+            <i class="{{ social.icon }} text-lg {{ sections.footer.brand.socialLinks.iconColor | default('text-emerald-300 group-hover:text-white') }} relative z-10"></i>
+          </a>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      
+      <!-- Features section -->
+      <div class="lg:col-span-{{ sections.footer.features.width | default('8') }}">
+        <div class="grid grid-cols-1 sm:grid-cols-{{ sections.footer.features.columns | default('2') }} gap-{{ sections.footer.features.gap | default('8') }}">
+          <!-- Feature 1 -->
+          {% if sections.footer.features.items is defined %}
+            {% for feature in sections.footer.features.items %}
+              <div class="{{ sections.footer.features.itemStyle | default('p-6 rounded-2xl bg-gradient-to-br from-emerald-900/80 to-emerald-950/80 backdrop-blur-sm border border-emerald-800/30 shadow-lg group hover:border-emerald-700/50') }} transition-all duration-300">
+                <div class="{{ sections.footer.features.iconWrapper | default('w-12 h-12 mb-4 rounded-xl bg-teal-500/10 flex items-center justify-center group-hover:bg-teal-500/20') }} transition-colors duration-300">
+                  <i class="{{ feature.icon }} {{ sections.footer.features.iconColor | default('text-teal-400') }}"></i>
+                </div>
+                <h3 class="{{ sections.footer.features.titleStyle | default('text-lg font-bold text-white mb-2') }}">{{ feature.title }}</h3>
+                <p class="{{ sections.footer.features.textStyle | default('text-emerald-300/70 text-sm') }}">
+                  {{ feature.description }}
+                </p>
+              </div>
+            {% endfor %}
+          {% else %}
+            <!-- Default Feature 1 -->
+            <div class="{{ sections.footer.features.itemStyle | default('p-6 rounded-2xl bg-gradient-to-br from-emerald-900/80 to-emerald-950/80 backdrop-blur-sm border border-emerald-800/30 shadow-lg group hover:border-emerald-700/50') }} transition-all duration-300">
+              <div class="{{ sections.footer.features.iconWrapper | default('w-12 h-12 mb-4 rounded-xl bg-teal-500/10 flex items-center justify-center group-hover:bg-teal-500/20') }} transition-colors duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 {{ sections.footer.features.iconColor | default('text-teal-400') }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h3 class="{{ sections.footer.features.titleStyle | default('text-lg font-bold text-white mb-2') }}">{{ sections.footer.features.feature1.title | default('Sustainable Practices') }}</h3>
+              <p class="{{ sections.footer.features.textStyle | default('text-emerald-300/70 text-sm') }}">
+                {{ sections.footer.features.feature1.description | default('We\'re committed to environmental responsibility in everything we do.') }}
+              </p>
+            </div>
+            
+            <!-- Default Feature 2 -->
+            <div class="{{ sections.footer.features.itemStyle | default('p-6 rounded-2xl bg-gradient-to-br from-emerald-900/80 to-emerald-950/80 backdrop-blur-sm border border-emerald-800/30 shadow-lg group hover:border-emerald-700/50') }} transition-all duration-300">
+              <div class="{{ sections.footer.features.iconWrapper | default('w-12 h-12 mb-4 rounded-xl bg-teal-500/10 flex items-center justify-center group-hover:bg-teal-500/20') }} transition-colors duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 {{ sections.footer.features.iconColor | default('text-teal-400') }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h3 class="{{ sections.footer.features.titleStyle | default('text-lg font-bold text-white mb-2') }}">{{ sections.footer.features.feature2.title | default('Secure & Private') }}</h3>
+              <p class="{{ sections.footer.features.textStyle | default('text-emerald-300/70 text-sm') }}">
+                {{ sections.footer.features.feature2.description | default('Your data is protected with industry-leading security measures.') }}
+              </p>
+            </div>
+          {% endif %}
+          
+          <!-- Newsletter section -->
+          <div class="{{ sections.footer.subscribe.wrapperClass | default('sm:col-span-2 p-6 rounded-2xl bg-gradient-to-br from-emerald-900/80 to-emerald-950/80 backdrop-blur-sm border border-emerald-800/30 shadow-lg') }}">
+            <div class="flex items-start gap-4 mb-6">
+              <div class="{{ sections.footer.subscribe.iconWrapper | default('w-12 h-12 rounded-xl bg-teal-500/10 flex-shrink-0 flex items-center justify-center') }}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 {{ sections.footer.subscribe.iconColor | default('text-teal-400') }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div>
+                <h3 class="{{ sections.footer.subscribe.titleStyle | default('text-lg font-bold text-white mb-1') }}">{{ sections.footer.subscribe.title }}</h3>
+                <p class="{{ sections.footer.subscribe.descriptionStyle | default('text-emerald-300/70 text-sm') }}">
+                  {{ sections.footer.subscribe.description.text }}
+                </p>
+              </div>
+            </div>
+            
+            <!-- Newsletter form -->
+            <form class="{{ sections.footer.subscribe.formLayout | default('space-y-3') }}">
+              <div class="{{ sections.footer.subscribe.inputGroupLayout | default('flex flex-col sm:flex-row gap-3') }}">
+                <div class="relative flex-1">
+                  <input
+                    type="email"
+                    placeholder="{{ sections.footer.subscribe.input.placeholder }}"
+                    class="{{ sections.footer.subscribe.inputStyle | default('w-full px-4 py-3 rounded-xl bg-emerald-900/50 border border-emerald-800 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none text-white placeholder-emerald-500/50') }} transition-all duration-300"
+                  />
+                </div>
+                
+                <button
+                  type="submit"
+                  class="{{ sections.footer.subscribe.button.style | default('relative px-5 py-3 bg-gradient-to-r from-teal-500 to-emerald-500 text-white font-medium rounded-xl overflow-hidden group') }}"
+                >
+                  <!-- Hover effect -->
+                  <span class="absolute inset-0 w-full h-full {{ sections.footer.subscribe.button.hoverEffect | default('bg-gradient-to-r from-teal-400 to-emerald-400') }} opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                  <span class="relative flex items-center justify-center">
+                    {{ sections.footer.subscribe.button.text }}
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+              
+              <!-- Privacy note -->
+              <p class="{{ sections.footer.subscribe.privacyNoteStyle | default('text-xs text-emerald-500/70') }}">
+                {{ sections.footer.subscribe.privacyNote | default('By subscribing, you agree to our Privacy Policy and consent to receive updates.') }}
+              </p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Middle section with links -->
+    <div class="py-12 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-12 gap-8">
+      <!-- Navigation Columns -->
+      {% for column in sections.footer.navigation %}
+      <div class="lg:col-span-{{ sections.footer.navigation.columnWidth | default('3') }}">
+        <h3 class="{{ sections.footer.navigation.titleStyle | default('text-lg font-bold text-white mb-6 relative inline-block') }}">
+          {{ column.title }}
+          <!-- Decorative underline -->
+          <span class="{{ sections.footer.navigation.underlineStyle | default('absolute -bottom-2 left-0 w-8 h-0.5 bg-gradient-to-r from-teal-400 to-emerald-400 rounded-full') }}"></span>
+        </h3>
+        
+        <ul class="{{ sections.footer.navigation.listStyle | default('space-y-4') }}">
+          {% for link in column.links %}
+          <li>
+            <a
+              href="{{ link.url }}"
+              class="{{ sections.footer.navigation.linkStyle | default('text-emerald-300/80 hover:text-white transition-colors duration-300 flex items-center group') }}"
+              aria-label="{{ link.ariaLabel | default(link.label) }}"
+            >
+              <!-- Icon indicator -->
+              <span class="{{ sections.footer.navigation.iconStyle | default('mr-2 opacity-0 transform -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300') }}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 {{ sections.footer.navigation.iconColor | default('text-teal-400') }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
+              </span>
+              {{ link.label }}
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endfor %}
+    </div>
+    
+    <!-- Bottom section -->
+    <div class="pt-12 border-t {{ sections.footer.divider.color | default('border-emerald-800/50') }}">
+      <div class="{{ sections.footer.bottom.layout | default('flex flex-col md:flex-row justify-between items-center gap-6') }}">
+        <!-- Copyright -->
+        <p class="{{ sections.footer.bottom.copyrightStyle | default('text-emerald-500/70 text-sm order-2 md:order-1') }}">
+          {{ sections.footer.bottom.copyright }}
+        </p>
+        
+        <!-- Payment methods -->
+        {% if sections.footer.paymentMethods is defined %}
+        <div class="{{ sections.footer.paymentMethods.layout | default('flex flex-wrap items-center gap-4 order-1 md:order-2') }}">
+          {% for payment in sections.footer.paymentMethods %}
+          <div class="group relative">
+            <div class="{{ sections.footer.paymentMethods.itemStyle | default('w-12 h-8 flex items-center justify-center rounded-md bg-emerald-900/70 border border-emerald-800 group-hover:border-teal-500/50') }} transition-colors duration-300">
+              <i class="{{ payment.icon }} text-lg {{ sections.footer.paymentMethods.iconColor | default('text-emerald-400 group-hover:text-white') }} transition-colors duration-300" aria-label="{{ payment.name }}"></i>
+            </div>
+            <!-- Tooltip -->
+            <span class="{{ sections.footer.paymentMethods.tooltipStyle | default('absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-emerald-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap border border-emerald-700') }}">
+              {{ payment.name }}
+            </span>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      
+      <!-- Additional links -->
+      <div class="{{ sections.footer.legalLinks.layout | default('mt-8 flex flex-wrap gap-x-8 gap-y-3 text-sm text-emerald-500/70 justify-center md:justify-start') }}">
+        {% if sections.footer.legalLinks.items is defined %}
+          {% for link in sections.footer.legalLinks.items %}
+            <a href="{{ link.url }}" class="{{ sections.footer.legalLinks.style | default('hover:text-teal-300 transition-colors duration-300') }}">{{ link.label }}</a>
+          {% endfor %}
+        {% else %}
+          <a href="#" class="{{ sections.footer.legalLinks.style | default('hover:text-teal-300 transition-colors duration-300') }}">Privacy Policy</a>
+          <a href="#" class="{{ sections.footer.legalLinks.style | default('hover:text-teal-300 transition-colors duration-300') }}">Terms of Service</a>
+          <a href="#" class="{{ sections.footer.legalLinks.style | default('hover:text-teal-300 transition-colors duration-300') }}">Cookie Settings</a>
+          <a href="#" class="{{ sections.footer.legalLinks.style | default('hover:text-teal-300 transition-colors duration-300') }}">Accessibility</a>
+        {% endif %}
+      </div>
+      
+      <!-- Back to top button -->
+      <div class="{{ sections.footer.backToTop.layout | default('mt-8 flex justify-center md:justify-end') }}">
+        <a href="#" class="{{ sections.footer.backToTop.style | default('group inline-flex items-center gap-2 text-sm text-emerald-400 hover:text-white transition-colors duration-300') }}">
+          {{ sections.footer.backToTop.text | default('Back to top') }}
+          <span class="{{ sections.footer.backToTop.iconWrapper | default('w-8 h-8 rounded-full bg-emerald-800/70 flex items-center justify-center group-hover:bg-teal-600 transition-colors duration-300') }}">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+            </svg>
+          </span>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>

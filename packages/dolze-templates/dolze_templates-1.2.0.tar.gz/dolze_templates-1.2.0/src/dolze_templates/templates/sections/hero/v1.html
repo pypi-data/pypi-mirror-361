@@ -1,0 +1,153 @@
+<!-- Modern Hero Section with Elegant Styling -->
+<section class="relative min-h-screen flex items-center justify-center overflow-hidden" id="hero">
+  <!-- Background Image -->
+  <div
+    class="absolute inset-0 bg-cover bg-center"
+    style="background-image: url('{{ sections.hero.heroImage.src }}');"
+  ></div>
+
+  <!-- Subtle Gradient Overlay -->
+  <div class="absolute inset-0 bg-gradient-to-br from-gray-900/80 via-gray-800/60 to-gray-900/40"></div>
+
+  <!-- Main Content Container -->
+  <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <div class="max-w-4xl mx-auto">
+
+      <!-- Subtitle Badge -->
+      {% if sections.hero.subtitles %}
+      <div class="inline-flex items-center bg-white/10 backdrop-blur-sm border border-white/20 rounded-sm px-6 py-2 mb-8">
+        <span class="w-2 h-2 bg-white rounded-sm mr-3"></span>
+        <span class="text-white/90 text-xs uppercase tracking-widest font-light">
+          {% for subtitle in sections.hero.subtitles %}{{ subtitle }}{% if not loop.last %} • {% endif %}{% endfor %}
+        </span>
+      </div>
+      {% endif %}
+
+      <!-- Main Heading -->
+      <h1 class="text-5xl sm:text-6xl md:text-7xl font-light text-white leading-tight mb-8">
+        {{ sections.hero.title | default('Transform Your Vision') }}
+      </h1>
+      
+      <!-- Elegant divider -->
+      <div class="w-16 h-px bg-white/30 mx-auto mb-8"></div>
+
+      <!-- Description -->
+      <p class="text-xl sm:text-2xl text-white/80 mb-12 max-w-3xl mx-auto leading-relaxed font-light">
+        {{ sections.hero.description | default('Discover innovative solutions that elevate your business to new heights with cutting-edge technology and exceptional design.') }}
+      </p>
+
+      <!-- CTA Buttons -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+        {% for button in sections.hero.ctaButtons | default([
+          {'label': 'Get Started', 'url': '#about', 'style': 'primary'},
+          {'label': 'Watch Demo', 'url': '#demo', 'style': 'secondary'}
+        ]) %}
+          {% if button.style == 'filled' or button.style == 'primary' %}
+            <a href="{{ button.url | default('#') }}"
+               class="inline-flex items-center px-8 py-3 bg-white text-gray-900 font-light text-sm tracking-widest uppercase rounded-sm transition-all duration-300 hover:bg-gray-100"
+               {% if button.ariaLabel %}aria-label="{{ button.ariaLabel }}"{% endif %}>
+              {{ button.label | default('Get Started') }}
+            </a>
+          {% else %}
+            <a href="{{ button.url | default('#') }}"
+               class="inline-flex items-center px-8 py-3 bg-transparent border border-white/50 text-white font-light text-sm tracking-widest uppercase rounded-sm transition-all duration-300 hover:border-white hover:bg-white/10">
+              {% if button.label == 'Watch Demo' or 'demo' in button.url %}
+                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+              {% endif %}
+              {{ button.label | default('Learn More') }}
+            </a>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <!-- Scroll Indicator -->
+      <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+        <div class="flex flex-col items-center text-white/60">
+          <span class="text-xs font-light uppercase tracking-widest mb-2">Scroll to explore</span>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Simplified animations */
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-fadeInUp {
+    animation: fadeInUp 0.6s ease-out forwards;
+  }
+  
+  /* Staggered animation delay for children */
+  #hero h1 {
+    opacity: 0;
+    animation: fadeInUp 0.6s ease-out forwards;
+    animation-delay: 0.1s;
+  }
+  
+  #hero p {
+    opacity: 0;
+    animation: fadeInUp 0.6s ease-out forwards;
+    animation-delay: 0.2s;
+  }
+  
+  #hero .flex {
+    opacity: 0;
+    animation: fadeInUp 0.6s ease-out forwards;
+    animation-delay: 0.3s;
+  }
+  
+  /* Hover transitions */
+  #hero a {
+    transition: all 0.3s ease;
+  }
+  
+  #hero a:hover {
+    transform: translateY(-3px);
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Reveal animations on scroll
+    const heroElements = document.querySelectorAll('#hero > div > div');
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-fadeInUp');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    
+    heroElements.forEach(element => {
+      observer.observe(element);
+    });
+  });
+</script>

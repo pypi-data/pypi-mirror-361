@@ -1,0 +1,195 @@
+<nav id="navigation" class="bg-white sticky top-0 z-50 shadow-sm">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-20">
+      <!-- Logo -->
+      <div class="flex-shrink-0 flex items-center">
+        {% if sections.navigation.logo %}
+        <a href="{{ sections.navigation.logo.url|default('/') }}" class="flex items-center">
+          <img 
+            src="{{ sections.navigation.logo.src }}" 
+            alt="{{ sections.navigation.logo.alt }}" 
+            class="h-10 w-auto"
+          >
+        </a>
+        {% else %}
+        <a href="/" class="text-2xl font-bold text-gray-900">
+          {{ sections.navigation.brand_name|default('Brand') }}
+        </a>
+        {% endif %}
+      </div>
+      
+      <!-- Desktop navigation -->
+      <div class="hidden md:flex items-center space-x-8">
+        {% for item in sections.navigation.menu_items %}
+        <div class="relative group">
+          <a 
+            href="{{ item.url }}" 
+            class="text-gray-600 hover:text-indigo-600 font-medium transition-colors duration-300 {% if item.active %}text-indigo-600{% endif %}"
+            {% if item.external %}target="_blank" rel="noopener"{% endif %}
+          >
+            {{ item.label }}
+            
+            {% if item.submenu %}
+            <svg class="w-4 h-4 ml-1 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+            {% endif %}
+          </a>
+          
+          {% if item.submenu %}
+          <div class="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-left">
+            <div class="py-2">
+              {% for subitem in item.submenu %}
+              <a 
+                href="{{ subitem.url }}" 
+                class="block px-4 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors duration-300"
+                {% if subitem.external %}target="_blank" rel="noopener"{% endif %}
+              >
+                {{ subitem.label }}
+              </a>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      
+      <!-- CTA buttons -->
+      <div class="hidden md:flex items-center space-x-4">
+        {% for button in sections.navigation.buttons %}
+        <a 
+          href="{{ button.url }}" 
+          class="inline-flex items-center justify-center px-4 py-2 rounded-lg font-medium transition-all duration-300 {% if button.style == 'primary' %}bg-indigo-600 text-white hover:bg-indigo-700{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}"
+          {% if button.external %}target="_blank" rel="noopener"{% endif %}
+        >
+          {% if button.icon %}
+          <i class="{{ button.icon }} mr-2" aria-hidden="true"></i>
+          {% endif %}
+          {{ button.label }}
+        </a>
+        {% endfor %}
+      </div>
+      
+      <!-- Mobile menu button -->
+      <div class="md:hidden flex items-center">
+        <button 
+          type="button" 
+          class="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-indigo-600 hover:bg-gray-100 transition-colors duration-300"
+          aria-controls="mobile-menu"
+          aria-expanded="false"
+          id="mobile-menu-button"
+        >
+          <span class="sr-only">Open main menu</span>
+          <svg class="h-6 w-6" id="mobile-menu-icon-open" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <svg class="h-6 w-6 hidden" id="mobile-menu-icon-close" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Mobile menu -->
+  <div class="md:hidden hidden" id="mobile-menu">
+    <div class="px-2 pt-2 pb-3 space-y-1 bg-white border-t border-gray-100">
+      {% for item in sections.navigation.menu_items %}
+      <div>
+        <a 
+          href="{{ item.url }}" 
+          class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50 transition-colors duration-300 {% if item.active %}text-indigo-600 bg-indigo-50{% endif %}"
+          {% if item.external %}target="_blank" rel="noopener"{% endif %}
+          {% if item.submenu %}id="mobile-submenu-button-{{ loop.index }}" aria-expanded="false" aria-controls="mobile-submenu-{{ loop.index }}"{% endif %}
+        >
+          {{ item.label }}
+          
+          {% if item.submenu %}
+          <svg class="w-4 h-4 ml-1 inline-block float-right" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+          {% endif %}
+        </a>
+        
+        {% if item.submenu %}
+        <div class="hidden pl-4 mt-1" id="mobile-submenu-{{ loop.index }}">
+          {% for subitem in item.submenu %}
+          <a 
+            href="{{ subitem.url }}" 
+            class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-indigo-600 hover:bg-gray-50 transition-colors duration-300"
+            {% if subitem.external %}target="_blank" rel="noopener"{% endif %}
+          >
+            {{ subitem.label }}
+          </a>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+      
+      <!-- Mobile CTA buttons -->
+      <div class="pt-4 pb-3 border-t border-gray-100">
+        <div class="flex flex-col space-y-3 px-3">
+          {% for button in sections.navigation.buttons %}
+          <a 
+            href="{{ button.url }}" 
+            class="w-full inline-flex items-center justify-center px-4 py-2 rounded-lg font-medium transition-all duration-300 {% if button.style == 'primary' %}bg-indigo-600 text-white hover:bg-indigo-700{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}"
+            {% if button.external %}target="_blank" rel="noopener"{% endif %}
+          >
+            {% if button.icon %}
+            <i class="{{ button.icon }} mr-2" aria-hidden="true"></i>
+            {% endif %}
+            {{ button.label }}
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Initialize AOS -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize AOS
+    if (typeof AOS !== 'undefined') {
+      AOS.init({
+        duration: 800,
+        easing: 'ease-out-cubic',
+        once: true
+      });
+    }
+    
+    // Mobile menu toggle
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileMenuIconOpen = document.getElementById('mobile-menu-icon-open');
+    const mobileMenuIconClose = document.getElementById('mobile-menu-icon-close');
+    
+    if (mobileMenuButton && mobileMenu) {
+      mobileMenuButton.addEventListener('click', function() {
+        mobileMenu.classList.toggle('hidden');
+        mobileMenuIconOpen.classList.toggle('hidden');
+        mobileMenuIconClose.classList.toggle('hidden');
+      });
+    }
+    
+    // Mobile submenu toggles
+    const mobileSubmenuButtons = document.querySelectorAll('[id^="mobile-submenu-button-"]');
+    
+    mobileSubmenuButtons.forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        const submenuId = this.getAttribute('aria-controls');
+        const submenu = document.getElementById(submenuId);
+        
+        if (submenu) {
+          submenu.classList.toggle('hidden');
+          const isExpanded = this.getAttribute('aria-expanded') === 'true';
+          this.setAttribute('aria-expanded', !isExpanded);
+        }
+      });
+    });
+  });
+</script>

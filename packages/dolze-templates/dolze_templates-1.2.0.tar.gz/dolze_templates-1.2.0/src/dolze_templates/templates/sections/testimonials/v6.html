@@ -1,0 +1,300 @@
+<section id="testimonials" class="py-24 bg-gradient-to-br from-rose-50 via-amber-50 to-yellow-50 relative overflow-hidden">
+  <!-- Background elements -->
+  <div class="absolute inset-0 overflow-hidden">
+    <!-- Honeycomb pattern -->
+    <div class="absolute inset-0 opacity-10">
+      <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="honeycomb-testimonials-v6" width="56" height="100" patternUnits="userSpaceOnUse" patternTransform="scale(2) rotate(0)">
+            <path d="M28 66L0 50L0 16L28 0L56 16L56 50L28 66Z M28 33L56 16L56 50L28 66L0 50L0 16L28 0L56 16L28 33Z" stroke="rgba(245, 158, 11, 0.3)" fill="none"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#honeycomb-testimonials-v6)"/>
+      </svg>
+    </div>
+    
+    <!-- Floating elements -->
+    <div class="absolute top-1/4 right-1/5 w-64 h-64 bg-gradient-to-br from-amber-200/30 to-rose-200/30 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-float"></div>
+    <div class="absolute bottom-1/3 left-1/4 w-80 h-80 bg-gradient-to-br from-rose-200/30 to-yellow-200/30 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-float animation-delay-4000"></div>
+  </div>
+  
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Section header -->
+    <div class="text-center max-w-3xl mx-auto mb-16" data-aos="fade-up">
+      <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-amber-100 text-amber-800 mb-4">
+        <span class="w-2 h-2 rounded-full mr-2 bg-amber-500 animate-pulse"></span>
+        {{ sections.testimonials.badge | default('Testimonials') }}
+      </span>
+      <h2 class="text-4xl font-bold text-slate-800 mb-6" id="testimonials-heading-v6">{{ sections.testimonials.title }}</h2>
+      <div class="w-24 h-1 bg-gradient-to-r from-amber-400 to-rose-400 mx-auto mb-6 rounded-full" data-animate="underline"></div>
+      <p class="text-xl text-slate-600">{{ sections.testimonials.subtitle }}</p>
+    </div>
+    
+    <!-- Testimonial slider -->
+    <div class="testimonial-slider relative" data-aos="fade-up" data-aos-delay="200">
+      <div class="overflow-hidden rounded-xl">
+        <div class="testimonial-track flex transition-transform duration-500 ease-in-out">
+          {% for testimonial in sections.testimonials.items %}
+          <div class="testimonial-slide flex-shrink-0 w-full md:w-1/2 lg:w-1/3 p-4">
+            <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-amber-100/50 p-8 h-full hover:shadow-xl transition-all duration-300 hover:border-amber-300/50 group">
+              <!-- Quote icon -->
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-100 to-rose-100 flex items-center justify-center text-amber-700 mb-6">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                </svg>
+              </div>
+              
+              <!-- Quote text -->
+              <p class="text-slate-700 italic mb-6 flex-grow text-lg leading-relaxed">
+                "{{ testimonial.quote }}"
+              </p>
+              
+              <!-- Rating stars -->
+              <div class="flex text-amber-400 mb-4">
+                {# Render filled stars #}
+                {% for _ in range(testimonial.rating) %}
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                </svg>
+                {% endfor %}
+                
+                {# Render empty stars up to 5 #}
+                {% for _ in range(5 - testimonial.rating) %}
+                <svg class="w-5 h-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                </svg>
+                {% endfor %}
+              </div>
+              
+              <!-- Author info with horizontal line separator -->
+              <div class="pt-4 border-t border-amber-100 flex items-center">
+                <div class="relative">
+                  {%- if testimonial.avatar %}
+                  <div class="w-14 h-14 rounded-xl overflow-hidden border-2 border-amber-200/50 p-0.5 bg-gradient-to-br from-amber-100 to-rose-100">
+                    <img
+                      src="{{ testimonial.avatar }}"
+                      alt="{{ testimonial.author }}"
+                      class="w-full h-full object-cover rounded-lg"
+                    />
+                  </div>
+                  {%- else %}
+                  {# Fallback to initials #}
+                  {% set parts = testimonial.author.split(' ') %}
+                  <div class="w-14 h-14 rounded-xl overflow-hidden border-2 border-amber-200/50 p-0.5 bg-gradient-to-br from-amber-100 to-rose-100">
+                    <div class="w-full h-full rounded-lg bg-gradient-to-br from-amber-200/50 to-rose-200/50 flex items-center justify-center">
+                      <span class="text-lg font-semibold text-amber-700">
+                        {{ parts[0][0] }}{{ parts[1][0] if parts|length > 1 else '' }}
+                      </span>
+                    </div>
+                  </div>
+                  {%- endif %}
+                  <div class="absolute -bottom-1 -right-1 bg-gradient-to-r from-amber-500 to-rose-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                </div>
+                <div class="ml-4">
+                  <h4 class="font-bold text-slate-800">{{ testimonial.author }}</h4>
+                  <p class="text-sm text-slate-500">{{ testimonial.role }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      
+      <!-- Navigation controls -->
+      <div class="flex justify-center items-center mt-10">
+        <button class="prev-button bg-white rounded-full p-3 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-amber-400/50 transition-all duration-300 transform hover:-translate-x-1 mx-2 group">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-700 group-hover:text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        
+        <div class="flex space-x-2 dots-container">
+          {%- for t in sections.testimonials.items %}
+          <button class="w-3 h-3 rounded-full transition-all duration-300 focus:outline-none dot {% if loop.first %}bg-gradient-to-r from-amber-400 to-rose-400 scale-125{% else %}bg-gray-300{% endif %}" data-index="{{ loop.index0 }}"></button>
+          {%- endfor %}
+        </div>
+        
+        <button class="next-button bg-white rounded-full p-3 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-amber-400/50 transition-all duration-300 transform hover:translate-x-1 mx-2 group">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-700 group-hover:text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <style>
+    /* Animations matching about v5 */
+    @keyframes fade-in-up {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes fade-in-right {
+      from { opacity: 0; transform: translateX(40px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    
+    @keyframes float {
+      0% { transform: translate(0px, 0px) scale(1); }
+      33% { transform: translate(20px, -30px) scale(1.05); }
+      66% { transform: translate(-10px, 20px) scale(0.95); }
+      100% { transform: translate(0px, 0px) scale(1); }
+    }
+    
+    .animate-float {
+      animation: float 15s ease-in-out infinite;
+    }
+    
+    .animation-delay-4000 {
+      animation-delay: 4000ms;
+    }
+    
+    [data-animate="underline"] {
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform 0.6s ease-out;
+    }
+    
+    /* Testimonial card hover effects */
+    .testimonial-slide > div {
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+    
+    .testimonial-slide > div:hover {
+      transform: translateY(-5px);
+    }
+    
+    /* Smooth transitions for dot indicators */
+    .dot {
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+  </style>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Typing effect for heading matching about v5
+      const heading = document.getElementById('testimonials-heading-v6');
+      if (heading) {
+        const text = heading.textContent.trim();
+        heading.textContent = '';
+        let i = 0;
+        
+        function typeWriter() {
+          if (i < text.length) {
+            heading.textContent += text.charAt(i);
+            i++;
+            setTimeout(typeWriter, 50);
+          }
+        }
+        
+        // Start typing after a short delay
+        setTimeout(typeWriter, 800);
+      }
+      
+      // Animate underline after header appears
+      setTimeout(() => {
+        const underlineElement = document.querySelector('[data-animate="underline"]');
+        if (underlineElement) {
+          underlineElement.style.transform = 'scaleX(1)';
+        }
+      }, 1000);
+      
+      const track = document.querySelector('.testimonial-track');
+      const slides = document.querySelectorAll('.testimonial-slide');
+      const nextButton = document.querySelector('.next-button');
+      const prevButton = document.querySelector('.prev-button');
+      const dots = document.querySelectorAll('.dot');
+      
+      let currentIndex = 0;
+      const slideWidth = slides[0].offsetWidth;
+      const slidesToShow = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
+      
+      function updateSlidePosition() {
+        track.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+        
+        // Update active dot
+        dots.forEach((dot, i) => {
+          if (i === currentIndex) {
+            dot.classList.add('bg-gradient-to-r', 'from-amber-400', 'to-rose-400', 'scale-125');
+            dot.classList.remove('bg-gray-300');
+          } else {
+            dot.classList.remove('bg-gradient-to-r', 'from-amber-400', 'to-rose-400', 'scale-125');
+            dot.classList.add('bg-gray-300');
+          }
+        });
+      }
+      
+      function nextSlide() {
+        currentIndex = (currentIndex + 1) % (slides.length - slidesToShow + 1);
+        updateSlidePosition();
+      }
+      
+      function prevSlide() {
+        currentIndex = (currentIndex - 1 + (slides.length - slidesToShow + 1)) % (slides.length - slidesToShow + 1);
+        updateSlidePosition();
+      }
+      
+      function goToSlide(index) {
+        currentIndex = Math.min(index, slides.length - slidesToShow);
+        updateSlidePosition();
+      }
+      
+      // Event listeners
+      nextButton.addEventListener('click', nextSlide);
+      prevButton.addEventListener('click', prevSlide);
+      
+      dots.forEach((dot, i) => {
+        dot.addEventListener('click', () => goToSlide(i));
+      });
+      
+      // Auto slide
+      let autoSlideInterval = setInterval(nextSlide, 5000);
+      
+      const slider = document.querySelector('.testimonial-slider');
+      slider.addEventListener('mouseenter', () => clearInterval(autoSlideInterval));
+      slider.addEventListener('mouseleave', () => {
+        autoSlideInterval = setInterval(nextSlide, 5000);
+      });
+      
+      // Responsive handling
+      window.addEventListener('resize', () => {
+        const newSlidesToShow = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
+        if (newSlidesToShow !== slidesToShow) {
+          slidesToShow = newSlidesToShow;
+          currentIndex = Math.min(currentIndex, slides.length - slidesToShow);
+          updateSlidePosition();
+        }
+      });
+      
+      // Parallax effect on scroll matching about v5
+      window.addEventListener('scroll', function() {
+        const scrollY = window.pageYOffset;
+        const testimonialSection = document.getElementById('testimonials');
+        if (!testimonialSection) return;
+        
+        // Apply parallax to floating elements
+        const floatingElements = testimonialSection.querySelectorAll('.absolute.rounded-full');
+        floatingElements.forEach((el, index) => {
+          const speed = 0.05 + (index * 0.02);
+          const yPos = scrollY * speed;
+          el.style.transform = `translate3d(0, ${yPos}px, 0)`;
+        });
+      });
+      
+      // Initialize AOS (Animate on Scroll) if available
+      if (typeof AOS !== 'undefined') {
+        AOS.init({
+          duration: 800,
+          easing: 'ease-out',
+          once: true
+        });
+      }
+    });
+  </script>
+</section>

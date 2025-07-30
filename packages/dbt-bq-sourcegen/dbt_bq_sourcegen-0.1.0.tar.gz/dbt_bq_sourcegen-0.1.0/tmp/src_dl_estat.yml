@@ -1,0 +1,607 @@
+version: 2
+
+sources:
+  - name: dl_estat
+    database: sukuna-dataplatform-dev
+    schema: dl_estat
+    description: ""
+    tables:
+      - name: estat_data_catalog
+        description: ""
+        columns:
+          - name: aid
+            data_type: STRING
+            description: ""
+          - name: dataset__stat_name__acode
+            data_type: STRING
+            description: ""
+          - name: dataset__stat_name__x
+            data_type: STRING
+            description: ""
+          - name: dataset__organization__acode
+            data_type: STRING
+            description: ""
+          - name: dataset__organization__x
+            data_type: STRING
+            description: ""
+          - name: dataset__title__name
+            data_type: STRING
+            description: ""
+          - name: dataset__title__tabulation_category
+            data_type: STRING
+            description: ""
+          - name: dataset__title__tabulation_sub_category1
+            data_type: STRING
+            description: ""
+          - name: dataset__title__tabulation_sub_category2
+            data_type: STRING
+            description: ""
+          - name: dataset__title__tabulation_sub_category3
+            data_type: STRING
+            description: ""
+          - name: dataset__title__tabulation_sub_category4
+            data_type: STRING
+            description: ""
+          - name: dataset__title__tabulation_sub_category5
+            data_type: STRING
+            description: ""
+          - name: dataset__title__cycle
+            data_type: STRING
+            description: ""
+          - name: dataset__title__survey_date
+            data_type: INTEGER
+            description: ""
+          - name: dataset__title__collect_area
+            data_type: STRING
+            description: ""
+          - name: dataset__description
+            data_type: STRING
+            description: ""
+          - name: dataset__publisher
+            data_type: STRING
+            description: ""
+          - name: dataset__contact_point
+            data_type: STRING
+            description: ""
+          - name: dataset__creator
+            data_type: STRING
+            description: ""
+          - name: dataset__release_date
+            data_type: STRING
+            description: ""
+          - name: dataset__last_modified_date
+            data_type: STRING
+            description: ""
+          - name: dataset__frequency_of_update
+            data_type: STRING
+            description: ""
+          - name: dataset__landing_page
+            data_type: STRING
+            description: ""
+          - name: resources__resource__aid
+            data_type: STRING
+            description: ""
+          - name: resources__resource__title__name
+            data_type: STRING
+            description: ""
+          - name: resources__resource__title__table_category
+            data_type: STRING
+            description: ""
+          - name: resources__resource__title__table_no
+            data_type: STRING
+            description: ""
+          - name: resources__resource__title__table_name
+            data_type: STRING
+            description: ""
+          - name: resources__resource__title__table_explanation
+            data_type: STRING
+            description: ""
+          - name: resources__resource__title__table_sub_category1
+            data_type: STRING
+            description: ""
+          - name: resources__resource__title__table_sub_category2
+            data_type: STRING
+            description: ""
+          - name: resources__resource__title__table_sub_category3
+            data_type: STRING
+            description: ""
+          - name: resources__resource__url
+            data_type: STRING
+            description: ""
+          - name: resources__resource__description
+            data_type: STRING
+            description: ""
+          - name: resources__resource__format
+            data_type: STRING
+            description: ""
+          - name: resources__resource__release_date
+            data_type: STRING
+            description: ""
+          - name: resources__resource__last_modified_date
+            data_type: STRING
+            description: ""
+          - name: resources__resource__resource_licence_id
+            data_type: STRING
+            description: ""
+          - name: resources__resource__language
+            data_type: STRING
+            description: ""
+          - name: _dlt_load_id
+            data_type: STRING
+            description: ""
+          - name: _dlt_id
+            data_type: STRING
+            description: ""
+          - name: dataset__title__survey_date__v_text
+            data_type: STRING
+            description: ""
+          - name: dataset__description__tabulation_category_explanation
+            data_type: STRING
+            description: ""
+          - name: dataset__description__tabulation_sub_category_explanation1
+            data_type: STRING
+            description: ""
+          - name: dataset__description__tabulation_sub_category_explanation2
+            data_type: STRING
+            description: ""
+      - name: estat_data_catalog__resources__resource
+        description: ""
+        columns:
+          - name: aid
+            data_type: STRING
+            description: ""
+          - name: title__name
+            data_type: STRING
+            description: ""
+          - name: title__table_category
+            data_type: STRING
+            description: ""
+          - name: title__table_no
+            data_type: INTEGER
+            description: ""
+          - name: title__table_name
+            data_type: STRING
+            description: ""
+          - name: title__table_explanation
+            data_type: STRING
+            description: ""
+          - name: title__table_sub_category1
+            data_type: STRING
+            description: ""
+          - name: title__table_sub_category2
+            data_type: STRING
+            description: ""
+          - name: title__table_sub_category3
+            data_type: STRING
+            description: ""
+          - name: url
+            data_type: STRING
+            description: ""
+          - name: description
+            data_type: STRING
+            description: ""
+          - name: format
+            data_type: STRING
+            description: ""
+          - name: release_date
+            data_type: STRING
+            description: ""
+          - name: last_modified_date
+            data_type: STRING
+            description: ""
+          - name: resource_licence_id
+            data_type: STRING
+            description: ""
+          - name: language
+            data_type: STRING
+            description: ""
+          - name: _dlt_root_id
+            data_type: STRING
+            description: ""
+          - name: _dlt_parent_id
+            data_type: STRING
+            description: ""
+          - name: _dlt_list_idx
+            data_type: INTEGER
+            description: ""
+          - name: _dlt_id
+            data_type: STRING
+            description: ""
+          - name: title__table_no__v_text
+            data_type: STRING
+            description: ""
+      - name: estat_downloader_state
+        description: ""
+        columns:
+          - name: stats_data_id
+            data_type: STRING
+            description: |-
+              統計表ID(10 or 12桁)
+          - name: created_at
+            data_type: STRING
+            description: ""
+          - name: client_request_id
+            data_type: STRING
+            description: |-
+              fetch側で発行したrequest_id
+          - name: task_id
+            data_type: STRING
+            description: |-
+              (ULID)時系列sort可 downloader内の一意なID
+          - name: format
+            data_type: STRING
+            description: |-
+              file format (XLS, CSV...)
+          - name: title
+            data_type: STRING
+            description: ""
+          - name: description
+            data_type: STRING
+            description: ""
+          - name: url
+            data_type: STRING
+            description: ""
+          - name: dataset__title__survey_date
+            data_type: STRING
+            description: ""
+          - name: download_status
+            data_type: STRING
+            description: |-
+              success or failed
+          - name: download_error
+            data_type: STRING
+            description: |-
+              download errorの内容
+          - name: upload_status
+            data_type: STRING
+            description: |-
+              success or failed
+          - name: upload_error
+            data_type: STRING
+            description: |-
+              GCSへのupload errorの内容
+          - name: bucket_name
+            data_type: STRING
+            description: |-
+              アップロード先のGCSのbucket名
+          - name: blob_name
+            data_type: STRING
+            description: |-
+              アップロード先のGCSのblob名
+      - name: local_finance__expenditure_and_revenue_breakdown
+        description: |-
+          (削除予定)地方財政調査の歳出内訳(表07-13)3年分
+          都道府県+市区町村
+        columns:
+          - name: source_file_name
+            data_type: STRING
+            description: ""
+          - name: fiscal_year
+            data_type: STRING
+            description: ""
+          - name: survey_code
+            data_type: STRING
+            description: ""
+          - name: localgov_code
+            data_type: STRING
+            description: ""
+          - name: prefecture_name
+            data_type: STRING
+            description: ""
+          - name: localgov_name
+            data_type: STRING
+            description: ""
+          - name: localgov_type
+            data_type: STRING
+            description: ""
+          - name: statistical_table_number
+            data_type: STRING
+            description: ""
+          - name: statistical_table_name
+            data_type: STRING
+            description: ""
+          - name: character_number
+            data_type: STRING
+            description: ""
+          - name: character_name
+            data_type: STRING
+            description: ""
+          - name: function_name
+            data_type: STRING
+            description: ""
+          - name: amount_thousand_yen
+            data_type: FLOAT
+            description: ""
+          - name: function_code
+            data_type: STRING
+            description: ""
+      - name: local_finance__expenditure_and_revenue_breakdown__munic
+        description: |-
+          (e-Stat)地方財政状況調査における歳出内訳及び財源内訳の市町村のデータ(表7-13)
+                      例: https://www.e-stat.go.jp/stat-search/files?page=1&layout=datalist&toukei=00200251&stat_infid=000040171707
+        columns:
+          - name: source_file_name
+            data_type: STRING
+            description: |-
+              ソースファイル名(e-statの統計表ID)
+          - name: fiscal_year
+            data_type: STRING
+            description: |-
+              決算年度
+          - name: survey_code
+            data_type: STRING
+            description: |-
+              統計調査コード(謎)
+          - name: localgov_code
+            data_type: STRING
+            description: |-
+              地方自治体コード
+          - name: prefecture_name
+            data_type: STRING
+            description: |-
+              都道府県名
+          - name: localgov_name
+            data_type: STRING
+            description: |-
+              地方自治体名
+          - name: localgov_type
+            data_type: STRING
+            description: |-
+              地方自治体タイプ(空文字: 都道府県, 1-9: 市町村+組合)
+          - name: statistical_table_number
+            data_type: STRING
+            description: |-
+              統計表番号(歳出内訳の場合は07-13)
+          - name: statistical_table_name
+            data_type: STRING
+            description: |-
+              統計表名
+          - name: character_number
+            data_type: STRING
+            description: |-
+              行番号(連番なのでファイル毎に異なる)
+          - name: character_name
+            data_type: STRING
+            description: |-
+              性質名
+          - name: function_name
+            data_type: STRING
+            description: |-
+              目的名
+          - name: amount_thousand_yen
+            data_type: FLOAT
+            description: |-
+              金額(千円)
+          - name: function_code
+            data_type: STRING
+            description: |-
+              目的連番（使えない）
+          - name: survey_year
+            data_type: INTEGER
+            description: ""
+      - name: local_finance__expenditure_and_revenue_breakdown__pref
+        description: ""
+        columns:
+          - name: source_file_name
+            data_type: STRING
+            description: |-
+              ソースファイル名(e-statの統計表ID)
+          - name: fiscal_year
+            data_type: STRING
+            description: |-
+              決算年度
+          - name: survey_code
+            data_type: STRING
+            description: |-
+              統計調査コード(謎)
+          - name: localgov_code
+            data_type: STRING
+            description: |-
+              地方自治体コード
+          - name: prefecture_name
+            data_type: STRING
+            description: |-
+              都道府県名
+          - name: localgov_name
+            data_type: STRING
+            description: |-
+              地方自治体名
+          - name: localgov_type
+            data_type: STRING
+            description: |-
+              地方自治体タイプ(空文字: 都道府県, 1-9: 市町村+組合)
+          - name: statistical_table_number
+            data_type: STRING
+            description: |-
+              統計表番号(歳出内訳の場合は07-13)
+          - name: statistical_table_name
+            data_type: STRING
+            description: |-
+              統計表名
+          - name: character_number
+            data_type: STRING
+            description: |-
+              行番号(連番なのでファイル毎に異なる)
+          - name: character_name
+            data_type: STRING
+            description: |-
+              性質名
+          - name: function_name
+            data_type: STRING
+            description: |-
+              目的名
+          - name: amount_thousand_yen
+            data_type: FLOAT
+            description: |-
+              金額(千円)
+          - name: function_code
+            data_type: STRING
+            description: |-
+              目的連番（使えない）
+          - name: survey_year
+            data_type: INTEGER
+            description: ""
+      - name: local_public_enterprise_finance__all_tables_waterworks
+        description: |-
+          (e-Stat)地方公営企業決算状況調査 全表 水道事業のデータ
+                      例: https://www.e-stat.go.jp/stat-search/files?page=1&layout=datalist&toukei=00200251&tstat=000001125335
+        columns:
+          - name: source_file_name
+            data_type: STRING
+            description: |-
+              統計表ID
+          - name: fiscal_year
+            data_type: STRING
+            description: |-
+              決算年度
+          - name: survey_code
+            data_type: STRING
+            description: |-
+              業務コード
+          - name: industry_code
+            data_type: STRING
+            description: |-
+              業種コード
+          - name: business_code
+            data_type: STRING
+            description: |-
+              事業コード
+          - name: localgov_code
+            data_type: STRING
+            description: |-
+              団体コード
+          - name: localgov_name
+            data_type: STRING
+            description: |-
+              団体名
+          - name: facility_code
+            data_type: STRING
+            description: |-
+              施設コード
+          - name: facility_name
+            data_type: STRING
+            description: |-
+              施設名
+          - name: statistical_table_number
+            data_type: STRING
+            description: |-
+              表番号
+          - name: row_index
+            data_type: STRING
+            description: |-
+              行番号
+          - name: condition_1
+            data_type: STRING
+            description: |-
+              条件1: 事業区分
+          - name: condition_2
+            data_type: STRING
+            description: |-
+              条件2: 経営主体
+          - name: condition_3
+            data_type: STRING
+            description: |-
+              条件3: 黒・赤字区分
+          - name: condition_4
+            data_type: STRING
+            description: |-
+              条件4: 条件5と合わせて給水人口段階区分
+          - name: condition_5
+            data_type: STRING
+            description: |-
+              条件5
+          - name: condition_6
+            data_type: STRING
+            description: |-
+              条件6: 用途区分
+          - name: condition_7
+            data_type: STRING
+            description: |-
+              条件7: 水源区分
+          - name: condition_8
+            data_type: STRING
+            description: |-
+              条件8: 給水原課区分
+          - name: item_key
+            data_type: STRING
+            description: |-
+              列名: 別途マスタとjoinすること
+          - name: value
+            data_type: INTEGER
+            description: |-
+              値
+          - name: survey_year
+            data_type: INTEGER
+            description: ""
+      - name: social_demographic_municipal_basic
+        description: ""
+        columns:
+          - name: tab
+            data_type: STRING
+            description: ""
+          - name: cat01
+            data_type: STRING
+            description: ""
+          - name: area
+            data_type: STRING
+            description: ""
+          - name: time
+            data_type: STRING
+            description: ""
+          - name: unit
+            data_type: STRING
+            description: ""
+          - name: value
+            data_type: FLOAT
+            description: ""
+          - name: tab_metadata
+            data_type: RECORD
+            description: ""
+          - name: cat01_metadata
+            data_type: RECORD
+            description: ""
+          - name: area_metadata
+            data_type: RECORD
+            description: ""
+          - name: time_metadata
+            data_type: RECORD
+            description: ""
+          - name: stat_inf
+            data_type: RECORD
+            description: ""
+      - name: social_demographic_pref_basic
+        description: ""
+        columns:
+          - name: tab
+            data_type: STRING
+            description: ""
+          - name: cat01
+            data_type: STRING
+            description: ""
+          - name: area
+            data_type: STRING
+            description: ""
+          - name: time
+            data_type: STRING
+            description: ""
+          - name: unit
+            data_type: STRING
+            description: ""
+          - name: value
+            data_type: FLOAT
+            description: ""
+          - name: tab_metadata
+            data_type: RECORD
+            description: ""
+          - name: cat01_metadata
+            data_type: RECORD
+            description: ""
+          - name: area_metadata
+            data_type: RECORD
+            description: ""
+          - name: time_metadata
+            data_type: RECORD
+            description: ""
+          - name: stat_inf
+            data_type: RECORD
+            description: ""

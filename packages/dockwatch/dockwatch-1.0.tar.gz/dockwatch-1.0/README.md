@@ -1,0 +1,90 @@
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+
+# 🛡️ DockWatch
+
+**Docker container monitoring and image analysis CLI tool**
+
+---
+
+## 🚀 Overview
+
+**DockWatch is a powerful yet beginner-friendly CLI tool to monitor your Docker containers, analyze crashes, and inspect Docker image layers for optimization. It provides real-time alerts for container status changes, crash analysis with clear explanations, and an interactive Dockerfile creator to help you build optimized images.**
+
+---
+
+## Features
+
+- 🛡️ **Real-time container monitoring:** Track container status changes (running, exited, created) with easy-to-understand alerts.  
+- 💥 **Crash analysis:** Detect container crashes with clear explanations based on exit codes and logs.  
+- 📊 **Docker image analyzer:** Inspect image layers for size and bloat, with smart tips for optimization.  
+- 🐳 **Multi-runtime support:** Works well with Node.js, Python, Go, Java, Ruby, PHP, and .NET images.  
+- 🔧 **Dockerfile Creator:** Interactive session to generate optimized single-stage or multi-stage Dockerfiles for various runtimes.  
+- 🎨 Beautiful, color-coded console output powered by [Rich](https://github.com/Textualize/rich).
+
+---
+
+## Installation
+
+You can install DockWatch directly from PyPI:
+
+```bash
+pip install dockwatch
+```
+---
+
+## Usage
+### Monitor containers
+Monitor running containers by name:
+
+```bash
+dockwatch monitor [container1] [container2] ...
+```
+Add the --show-logs or -l flag to show logs on crashes:
+
+```bash
+dockwatch monitor backend frontend --show-logs
+```
+### Analyze Docker images
+Analyze a local Docker image to identify large layers and optimize size:
+
+```bash
+dockwatch analyze [my-image:latest]
+```
+### Create Dockerfiles interactively
+Generate Dockerfiles with guided prompts (supports multi-stage builds):
+
+```bash
+dockwatch create
+```
+---
+
+## Supported Runtimes
+- Node.js
+- Python
+- Go
+- Java
+- Ruby
+- PHP
+- .NET Core
+
+## Examples
+
+```bash
+# Monitor containers
+dockwatch monitor backend --show-logs
+
+# Analyze image layers
+dockwatch analyze node:18-alpine
+
+# Create Dockerfile
+dockwatch create
+```
+## Contributing
+Contributions and issues are welcome! Feel free to open a pull request or issue on GitHub.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+## Contact
+For questions or support, email: bsse1402@iit.du.ac.bd

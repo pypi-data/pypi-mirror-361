@@ -1,0 +1,78 @@
+# This is a basic workflow that is manually triggered
+
+name: Check if all version are the same.
+
+# Controls when the action will run. Workflow runs when manually triggered using the UI
+# or API.
+on:
+  workflow_dispatch:
+    # Inputs the workflow accepts.
+    inputs:
+      name:
+        # Friendly description to be shown in the UI instead of 'name'
+        description: 'Person to greet'
+        # Default value if no value is explicitly provided
+        default: 'World'
+        # Input has to be provided for the workflow to run
+        required: true
+        # The data type of the input
+        type: string
+  pull_request:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "greet"
+  checkVersion:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    - uses: actions/checkout@v2
+    
+    # Runs a single command using the runners shell
+    - name: Send greeting
+      run: echo "Hello ${{ inputs.name }}"
+
+    - name: Check version of package file
+      uses: antifree/json-to-variables@v1.0.1
+      with:
+        filename: 'package.json'
+        prefix: package
+    - name: Show output
+      run: echo "The version of the package file is ${{ env.package_version }}, ${{ env.package_name }}"
+    - name: Check version of package file
+      uses: antifree/json-to-variables@v1.0.1
+      with:
+        filename: 'package.json'
+        prefix: package
+    # read a toml file and print
+    - uses: sravinet/toml-select@v1.0.1
+      id: read_toml
+      with:
+        file: 'pyproject.toml'
+        field: 'project.version'
+    - name: Show output
+      run: |
+        echo "::group::Package File ${{ env.package_version }}"
+        echo "The version of the package file is ${{ env.package_version }}"
+        echo "::endgroup::"
+        echo "::group::Pyproject.TOML File  ${{steps.read_toml.outputs.value }}"
+        echo "The version of the TOML file is ${{steps.read_toml.outputs.value }}"
+        echo "::endgroup::"    
+
+    - name: create summery
+      run: |
+        echo "### Versions :rocket:" >> $GITHUB_STEP_SUMMARY
+        echo "Package File ${{ env.package_version }}" >> $GITHUB_STEP_SUMMARY
+        echo "Pyproject.TOML File  ${{steps.read_toml.outputs.value }}" >> $GITHUB_STEP_SUMMARY
+
+
+    - name: Fail PR if versions not matching
+      if: ${{ env.package_version  !=  steps.read_toml.outputs.value }}
+      run: |
+        echo "::error The versions in pyproject and package.json are not the same."
+        exit 1
+    
+
+

@@ -1,0 +1,207 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent-sentinel"
+version = "0.4.0"
+description = "Enterprise Security Monitoring SDK for AI Agents - Secure any AI agent in just 3 lines of code with real-time threat detection, behavioral analysis, and separate logging and threat reporting for comprehensive security monitoring"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "AgentSentinel Team", email = "team@agentsentinel.dev"}
+]
+maintainers = [
+    {name = "AgentSentinel Team", email = "team@agentsentinel.dev"}
+]
+keywords = [
+    "ai", "security", "monitoring", "agents", "threat-detection", 
+    "enterprise", "compliance", "audit", "dashboard", "mcp", 
+    "langchain", "autogen", "crewai", "real-time", "analytics", "simple", "easy"
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Monitoring",
+    "Topic :: System :: Logging",
+    "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "pyyaml>=6.0",
+    "requests>=2.28.0",
+    "aiohttp>=3.8.0",
+    "asyncio-mqtt>=0.11.0",
+    "websockets>=10.0",
+    "structlog>=22.0.0",
+    "prometheus-client>=0.14.0",
+    "psutil>=5.9.0",
+    "python-dateutil>=2.8.0",
+    "typing-extensions>=4.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "weave>=0.50.0",
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.0.0",
+    "pytest-mock>=3.10.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+    "pre-commit>=3.0.0",
+    "coverage>=7.0.0",
+    "bandit>=1.7.0",
+]
+test = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.0.0",
+    "pytest-mock>=3.10.0",
+    "coverage>=7.0.0",
+    "responses>=0.23.0",
+    "httpx>=0.24.0",
+    "freezegun>=1.2.0",
+    "factory-boy>=3.3.0",
+    "faker>=19.0.0",
+]
+docs = [
+    "sphinx>=7.0.0",
+    "sphinx-rtd-theme>=1.3.0",
+    "myst-parser>=2.0.0",
+    "sphinx-autodoc-typehints>=1.24.0",
+    "sphinx-copybutton>=0.5.0",
+    "sphinx-tabs>=3.4.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/agentsentinel/agent-sentinel"
+Documentation = "https://docs.agentsentinel.dev"
+Repository = "https://github.com/agentsentinel/agent-sentinel.git"
+"Bug Tracker" = "https://github.com/agentsentinel/agent-sentinel/issues"
+"Security Policy" = "https://github.com/agentsentinel/agent-sentinel/security/policy"
+"Code of Conduct" = "https://github.com/agentsentinel/agent-sentinel/blob/main/CODE_OF_CONDUCT.md"
+"Contributing" = "https://github.com/agentsentinel/agent-sentinel/blob/main/CONTRIBUTING.md"
+"Changelog" = "https://github.com/agentsentinel/agent-sentinel/blob/main/CHANGELOG.md"
+
+[project.scripts]
+agent-sentinel = "agent_sentinel.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"agent_sentinel" = ["py.typed", "*.pyi"]
+
+[tool.black]
+line-length = 88
+target-version = ['py39', 'py310', 'py311', 'py312']
+include = '\\.*\\.pyi?$'
+extend-exclude = '/(\\\\.eggs|\\\\.git|\\\\.hg|\\\\.mypy_cache|\\\\.tox|\\\\.venv|build|dist)/'
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["agent_sentinel"]
+known_third_party = ["pytest", "asyncio", "typing"]
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+show_error_codes = true
+
+[[tool.mypy.overrides]]
+module = [
+    "tests.*",
+    "test_*",
+    "*_test",
+]
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--cov=agent_sentinel",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+]
+testpaths = ["tests", "src"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+    "security: Security tests",
+    "slow: Slow running tests",
+    "ai: Tests requiring AI services",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::PendingDeprecationWarning",
+]
+
+[tool.coverage.run]
+source = ['src/agent_sentinel']
+omit = [
+    '*/tests/*',
+    '*/test_*',
+    '*/__pycache__/*',
+    '*/migrations/*',
+    '*/venv/*',
+    '*/env/*',
+    '*/\\.venv/*',
+    '*/\\.env/*',
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    'pragma: no cover',
+    'def __repr__',
+    'if self.debug:',
+    'if settings.DEBUG',
+    'raise AssertionError',
+    'raise NotImplementedError',
+    'if 0:',
+    'if __name__ == .__main__.:',
+    'class .*Protocol\\):',
+    '@(abc\\.)?abstractmethod',
+]
+
+[tool.bandit]
+exclude_dirs = ["tests", "test_*"]
+skips = ["B101", "B601"]
+
+[tool.safety]
+policy = "strict" 

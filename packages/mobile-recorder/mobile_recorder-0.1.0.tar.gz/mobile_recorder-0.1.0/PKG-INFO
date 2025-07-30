@@ -1,0 +1,55 @@
+Metadata-Version: 2.4
+Name: mobile_recorder
+Version: 0.1.0
+Summary: Record Android device screens and run operations using uiautomator2
+Home-page: https://github.com/raisfeld-ori/mobile_recorder
+Author: Ori Raisfeld
+Author-email: Ori Raisfeld <raisfeldori@gmail.com>
+License: MIT
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: uiautomator2>=3.3.3
+Dynamic: author
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-python
+
+# mobile_recorder
+
+A Python package to record the screen of Android devices and perform automated operations using [uiautomator2](https://github.com/openatx/uiautomator2).
+
+## Features
+
+- Record Android device screen
+- Run automated UI operations
+
+## Installation
+
+```bash
+pip install mobile_recorder
+```
+
+## Requirements
+
+- Python 3.7+
+- [uiautomator2](https://github.com/openatx/uiautomator2)
+- Android device with USB debugging enabled OR an android studio emulator
+
+## Usage
+
+```python
+from mobile_recorder import AndroidRecorder
+
+def handle_frame(img: MatLike | Image | None):
+    ... # Here, the function does whatever you want
+
+recorder = AndroidRecorder([handle_frame], device="mydevice123") # device name is optional
+recorder.start_recording()
+# The recording runs in the background
+recorder.stop_recording()
+```
+
+## License
+
+MIT 

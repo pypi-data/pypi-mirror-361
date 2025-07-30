@@ -1,0 +1,85 @@
+[build-system]
+requires = ["hatchling", "uv-dynamic-versioning"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "uv-dynamic-versioning"
+
+[tool.uv-dynamic-versioning]
+pattern = "default-unprefixed"
+
+[project]
+name = "powernap"
+dynamic = ["version"]
+description = "A small REST client that refills your batteries"
+authors = [{ name = "Joachim Jablon", email = "ewjoachim@gmail.com" }]
+requires-python = ">=3.9"
+readme = "README.md"
+license = { file = "LICENSE.md" }
+keywords = ["rest", "httpx"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: MIT License",
+]
+dependencies = ["httpx", "typing-extensions"]
+
+[project.urls]
+Repository = "https://github.com/ewjoachim/powernap"
+
+[dependency-groups]
+lint = ["ruff", "pyright"]
+tests = ["pytest", "pytest-cov", "pytest-call-checker>=1.0.5,<2"]
+
+[tool.uv]
+default-groups = ["lint", "tests"]
+
+[tool.hatch.build.targets.sdist]
+include = ["powernap"]
+
+[tool.hatch.build.targets.wheel]
+include = ["powernap"]
+
+[tool.pytest.ini_options]
+addopts = """
+    --cov-report term-missing --cov-branch --cov-report html --cov-report term
+    --cov=powernap -vv --strict-markers -rfE
+"""
+testpaths = ["tests"]
+
+[tool.coverage.run]
+relative_files = true
+
+[tool.ruff]
+extend-exclude = [".venv"]
+
+[tool.ruff.lint]
+extend-select = [
+    "UP",  # pyupgrade
+    "I",   # isort
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "RUF", # ruff
+]
+fixable = ["ALL"]
+extend-ignore = [
+    "E501", # line too long
+    # It's not exactly false but it's not supported enough by our dependencies,
+    # so ruff is fighting with Pyright on this.
+    "RUF012", # Mutable class attributes should be annotated with `typing.ClassVar`
+]
+
+[tool.ruff.lint.isort]
+required-imports = ["from __future__ import annotations"]
+
+[tool.pyright]
+exclude = ["tests", ".venv"]
+
+[tool.sync-pre-commit-with-uv.pyright-python]
+pypi_package_name = "pyright"

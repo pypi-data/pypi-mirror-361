@@ -1,0 +1,31 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "hamel_tools"
+version = "0.1.1"
+description = "CLI tools for YouTube transcripts, chapters, and annotated talks"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+    {name = "Hamel Husain", email = "hamel.husain@gmail.com"},
+]
+dependencies = [
+    "hamel",
+    "typer",
+    "rich",
+    "youtube-transcript-api",
+    "httpx",
+    "fastcore",
+    "google-genai",
+]
+
+[project.scripts]
+ai-transcribe = "hamel_tools.transcribe:main"
+ai-chapters = "hamel_tools.chapters:main"
+ai-annotate-talk = "hamel_tools.annotate_talk:main"
+
+[tool.hatch.build]
+packages = ["hamel_tools"]

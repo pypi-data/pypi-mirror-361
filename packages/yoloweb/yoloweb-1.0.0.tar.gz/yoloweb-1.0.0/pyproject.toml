@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools>=45,<70", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "yoloweb"
+version = "1.0.0"
+description = "通用YOLO检测Web服务，支持动态模型替换"
+readme = "README.md"
+authors = [
+    {name = "YOLOWeb Team", email = "your-email@example.com"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "Flask>=2.3.0",
+    "ultralytics>=8.0.0",
+    "opencv-python>=4.8.0",
+    "numpy>=1.24.0",
+    "Pillow>=10.0.0",
+    "supervision>=0.16.0",
+    "torch>=2.0.0",
+    "torchvision>=0.15.0",
+    "requests>=2.31.0",
+    "gunicorn>=21.2.0",
+]
+keywords = ["yolo", "detection", "web", "opencv", "computer-vision"]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/yoloweb"
+Repository = "https://github.com/yourusername/yoloweb"
+"Bug Reports" = "https://github.com/yourusername/yoloweb/issues"
+
+[project.scripts]
+yoloweb = "yoloweb.main:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["yoloweb*"]
+
+[tool.setuptools.package-data]
+yoloweb = ["templates/*.html", "static/*"]
+
+
+
+

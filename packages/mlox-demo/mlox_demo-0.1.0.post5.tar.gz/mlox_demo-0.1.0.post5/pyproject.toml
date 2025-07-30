@@ -1,0 +1,78 @@
+[build-system]
+requires = ["setuptools", "setuptools-git-versioning"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mlox-demo"
+readme = "README.md"
+keywords = ["Infrastructure", "Server", "Service", "Dashboard", "Opinionated", "MLOps"]
+license = { file = "LICENSE" }
+description = "MLOps Platform for Data Scientists and Engineers to build, deploy and manage machine learning applications and more."
+requires-python = ">=3.11"
+authors = [{ name = "nicococo", email = "contact@mlox.org" }]
+classifiers = [
+    # How mature is this project? Common values are
+    #   1 - Planning
+    #   2 - Pre-Alpha 
+    #   3 - Alpha
+    #   4 - Beta
+    #   5 - Production/Stable
+    "Development Status :: 3 - Alpha",
+
+    # Indicate who your project is intended for
+    "Intended Audience :: Developers",
+    "Topic :: Software Development",
+    "Topic :: System :: Distributed Computing",
+    "Topic :: Internet",
+    "Topic :: Database",
+
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dynamic = ["version"]
+dependencies = [
+    "dacite",
+    "pyyaml",
+    "fabric",
+    "cryptography",
+    "bcrypt",
+    "passlib",
+]
+
+[project.optional-dependencies]
+ui = [
+    "streamlit",
+    "streamlit-vis-timeline",
+    "pandas",
+    "numpy",
+]
+ml = ["mlflow", "mlserver", "psutil"]
+gcp = ["google-cloud-secret-manager", "oauth2client"]
+telemetry = ["opentelemetry-api", "opentelemetry-sdk", "opentelemetry-exporter-otlp"]
+connectors = ["redis", "grpcio"]
+all = ["mlox-demo[ui,ml,gcp,telemetry,connectors]"]
+dev = ["mlox-demo[all]", "pytest", "pytest-cov", "flake8", "build", "twine"]
+
+[project.urls]
+"Homepage" = "https://github.com/nicococo/mlox"
+"Tracker" = "https://github.com/nicococo/mlox/issues"
+"Source" = "https://github.com/nicococo/mlox"
+"Examples" = "https://github.com/nicococo/mlox"
+
+[project.scripts]
+mlox-start-multipass = "mlox.cli:start_multipass"
+
+[tool.setuptools-git-versioning]
+enabled = true
+# Use the tag directly for a clean release version (e.g., v0.1.0 -> 0.1.0)
+template = "{tag}"
+# For development builds after a tag (e.g., v0.1.0 + 2 commits -> 0.1.0.post2)
+dev_template = "{tag}.post{ccount}"
+# ATTENTION: Dirty builds are no longer accepted in PyPI, so this is commented out.
+# For dirty builds (e.g., uncommitted changes after a tag -> 0.1.0.post2.dirty)
+# dirty_template = "{tag}.post{ccount}+dirty"
+
+[tool.setuptools]
+include-package-data = true
+packages = ["mlox"]

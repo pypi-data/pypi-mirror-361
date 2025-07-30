@@ -1,0 +1,119 @@
+Metadata-Version: 2.4
+Name: mlox-demo
+Version: 0.1.0.post5
+Summary: MLOps Platform for Data Scientists and Engineers to build, deploy and manage machine learning applications and more.
+Author-email: nicococo <contact@mlox.org>
+License: MIT License
+        
+        Copyright (c) 2024 nicococo
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+Project-URL: Homepage, https://github.com/nicococo/mlox
+Project-URL: Tracker, https://github.com/nicococo/mlox/issues
+Project-URL: Source, https://github.com/nicococo/mlox
+Project-URL: Examples, https://github.com/nicococo/mlox
+Keywords: Infrastructure,Server,Service,Dashboard,Opinionated,MLOps
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development
+Classifier: Topic :: System :: Distributed Computing
+Classifier: Topic :: Internet
+Classifier: Topic :: Database
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: dacite
+Requires-Dist: pyyaml
+Requires-Dist: fabric
+Requires-Dist: cryptography
+Requires-Dist: bcrypt
+Requires-Dist: passlib
+Provides-Extra: ui
+Requires-Dist: streamlit; extra == "ui"
+Requires-Dist: streamlit-vis-timeline; extra == "ui"
+Requires-Dist: pandas; extra == "ui"
+Requires-Dist: numpy; extra == "ui"
+Provides-Extra: ml
+Requires-Dist: mlflow; extra == "ml"
+Requires-Dist: mlserver; extra == "ml"
+Requires-Dist: psutil; extra == "ml"
+Provides-Extra: gcp
+Requires-Dist: google-cloud-secret-manager; extra == "gcp"
+Requires-Dist: oauth2client; extra == "gcp"
+Provides-Extra: telemetry
+Requires-Dist: opentelemetry-api; extra == "telemetry"
+Requires-Dist: opentelemetry-sdk; extra == "telemetry"
+Requires-Dist: opentelemetry-exporter-otlp; extra == "telemetry"
+Provides-Extra: connectors
+Requires-Dist: redis; extra == "connectors"
+Requires-Dist: grpcio; extra == "connectors"
+Provides-Extra: all
+Requires-Dist: mlox-demo[connectors,gcp,ml,telemetry,ui]; extra == "all"
+Provides-Extra: dev
+Requires-Dist: mlox-demo[all]; extra == "dev"
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: pytest-cov; extra == "dev"
+Requires-Dist: flake8; extra == "dev"
+Requires-Dist: build; extra == "dev"
+Requires-Dist: twine; extra == "dev"
+Dynamic: license-file
+
+# mlox
+MLOps-in-a-Box: A simple and cost-efficient way of running your OSS MLOps stack.
+
+
+[![Maintainability](https://qlty.sh/badges/f6765ee4-a13b-4106-8ba2-236cfa251443/maintainability.svg)](https://qlty.sh/gh/nicococo/projects/mlox)
+
+[![Code Coverage](https://qlty.sh/badges/f6765ee4-a13b-4106-8ba2-236cfa251443/test_coverage.svg)](https://qlty.sh/gh/nicococo/projects/mlox)
+
+
+### ATTENTION
+
+Do **not** use MLOX yet.
+MLOX is in a very early development phase.
+
+### About
+
+Machine Learning (ML) and Artificial Intelligence (AI) are revolutionizing businesses and industries. Despite its importance, many companies struggle to go from ML/AI prototype to production.
+
+ML/AI systems consist of eight non-trivial sub-problems: data collection, data processing, feature engineering, data labeling, model design, model training and optimization, endpoint deployment, and endpoint monitoring. Each of these step require specialized expert knowledge and specialized software. 
+
+MLOps, short for **Machine Learning Operations,** is a paradigm that aims to tackle those problems and deploy and maintain machine learning models in production reliably and efficiently. The word is a compound of "machine learning" and the continuous delivery practice of DevOps in the software field.
+
+Cloud provider such as Google Cloud Platform or Amazon AWS offer a wide range of solutions for each of the MLOps steps. However, solutions are complex and costs are notorious hard to control on these platforms and are prohibitive high for individuals and small businesses such as startups and SMBs. E.g. a common platform for data ingestion is Google Cloud Composer who’s monthly base rate is no less than 450 Euro for a meager 2GB RAM VPS. Solutions for model endpoint hosting are often worse and often cost thousands of euros p. month (cf. Databricks).
+
+Interestingly, the basis of many cloud provider MLOps solutions is widely available open source software (e.g. Google Cloud Composer is based on Apache Airflow). However, these are  complex software packages were setup, deploy and maintaining is a non-trivial task.
+
+This is were the MLOX project comes in. The goal of MLOX is four-fold:
+
+1. [Infrastructure] MLOX offers individuals, startups, and small teams easy-to-use UI to securily deploy, maintain, and monitor complete MLOps infrastructures on-premise based on open-source software without any vendor lock-in.
+2. [Code] To bridge the gap between the users` code base and the MLOps infrastructure,  MLOX offers a Python PYPI package that adds necessary functionality to integrate with all MLOps services out-of-the-box. 
+3. [Processes] MLOX provides fully-functional templates for dealing with data from ingestion, transformation, storing, model building, up until serving.
+4. [Migration] Scripts help to easily migrate parts of your MLOps infrastructure to other service providers.
+
+Links:
+
+1. https://en.wikipedia.org/wiki/MLOps
+2. https://www.databricks.com/glossary/mlops
+3. https://martinfowler.com/articles/cd4ml.html
+
+--------

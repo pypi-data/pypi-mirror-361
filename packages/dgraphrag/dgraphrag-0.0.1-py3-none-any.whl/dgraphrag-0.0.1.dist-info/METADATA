@@ -1,0 +1,95 @@
+Metadata-Version: 2.4
+Name: dgraphrag
+Version: 0.0.1
+Summary: GraphRAG toolkit: ingestion → knowledge graph → retrieval-augmented generation, with pluggable graph adapters and retrievers.
+Author-email: Longtao Wu <eustancewu@gmail.com>
+Maintainer-email: Longtao Wu <eustancewu@gmail.com>
+License: MIT License
+        
+        Copyright (c) 2025 Longtao Wu
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+         to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Project-URL: Homepage, https://github.com/eust-w/dgraphrag
+Project-URL: Repository, https://github.com/eust-w/dgraphrag
+Project-URL: Issues, https://github.com/eust-w/dgraphrag/issues
+Keywords: graph,rag,knowledge-graph,retrieval,llm
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: networkx>=2.8
+Requires-Dist: pydantic>=2.5
+Provides-Extra: neo4j
+Requires-Dist: neo4j>=5.0; extra == "neo4j"
+Provides-Extra: arangodb
+Requires-Dist: python-arango>=7.5; extra == "arangodb"
+Provides-Extra: tigergraph
+Requires-Dist: pyTigerGraph>=1.0; extra == "tigergraph"
+Provides-Extra: vector
+Requires-Dist: faiss-cpu>=1.7; extra == "vector"
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: ruff>=0.4; extra == "dev"
+Requires-Dist: black>=24.4; extra == "dev"
+Dynamic: license-file
+
+# dgraphrag
+
+Minimal Viable Product (MVP) implementation of a GraphRAG toolkit for Python.
+
+## Installation
+```bash
+pip install dgraphrag[arangodb,tigergraph,vector]
+# 或者开发模式
+pip install -e .[arangodb,tigergraph,vector]
+```
+
+## Quick Start
+```python
+from pathlib import Path
+
+from dgraphrag import (
+    LocalTextLoader,
+    SimpleParagraphSplitter,
+    RegexExtractor,
+    InMemoryGraphAdapter,
+    SimpleGraphBuilder,
+    BasicGraphRetriever,
+)
+
+# create a small demo file
+Path("demo.txt").write_text("GraphRAG is RetrievalAugmentedGeneration.\n\nRetrievalAugmentedGeneration is Powerful.")
+
+loader = LocalTextLoader()
+text = loader.load("demo.txt")
+
+paragraphs = SimpleParagraphSplitter().split(text)
+triples = RegexExtractor().extract(paragraphs)
+
+adapter = InMemoryGraphAdapter()
+SimpleGraphBuilder(adapter).build(triples)
+
+retriever = BasicGraphRetriever(adapter)
+print(retriever.answer("What is GraphRAG?"))
+```

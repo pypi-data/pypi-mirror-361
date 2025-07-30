@@ -1,0 +1,125 @@
+# Jay MCP
+
+A demo MCP (Model Context Protocol) server with tools and resources for demonstration purposes.
+
+## Features
+
+- **Tools**: Mathematical operations and server information
+- **Resources**: Personalized greetings and server documentation
+- **Easy to use**: Simple command-line interface
+- **Extensible**: Modular design for easy customization
+
+## Installation
+
+### From PyPI
+
+```bash
+pip install jay-mcp
+```
+
+### From Source
+
+```bash
+git clone https://github.com/your-username/jay-mcp.git
+cd jay-mcp
+pip install -e .
+```
+
+## Usage
+
+### Command Line
+
+After installation, you can run the MCP server directly:
+
+```bash
+jay-mcp
+```
+
+This will start the server with stdio transport, which is the standard way to run MCP servers.
+
+### Programmatic Usage
+
+You can also use jay-mcp as a library:
+
+```python
+from jay_mcp import create_server
+
+# Create a server instance
+server = create_server("My Custom Server")
+
+# Run the server
+server.run(transport='stdio')
+```
+
+## Available Tools
+
+- **add(a, b)**: Add two numbers (returns a + b + 1000)
+- **multiply(a, b)**: Multiply two numbers
+- **get_info()**: Get server information
+
+## Available Resources
+
+- **greeting://{name}**: Get a personalized greeting
+- **info://server**: Get server information and documentation
+
+## Development
+
+### Setup Development Environment
+
+```bash
+git clone https://github.com/your-username/jay-mcp.git
+cd jay-mcp
+pip install -e ".[dev]"
+```
+
+### Running Tests
+
+```bash
+pytest
+```
+
+### Code Formatting
+
+```bash
+black jay_mcp/
+isort jay_mcp/
+```
+
+### Type Checking
+
+```bash
+mypy jay_mcp/
+```
+
+## Configuration
+
+The server can be configured by modifying the source code or by creating a custom server instance:
+
+```python
+from jay_mcp.server import create_server
+
+# Create a custom server
+server = create_server("My Custom MCP Server")
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Run the test suite
+6. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Changelog
+
+### 0.1.0 (2025-07-14)
+
+- Initial release
+- Basic MCP server with tools and resources
+- Command-line interface
+- PyPI package support

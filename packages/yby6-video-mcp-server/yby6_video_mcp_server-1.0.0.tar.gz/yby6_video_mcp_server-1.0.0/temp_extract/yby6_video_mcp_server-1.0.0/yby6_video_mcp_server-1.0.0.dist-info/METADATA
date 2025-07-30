@@ -1,0 +1,316 @@
+Metadata-Version: 2.4
+Name: yby6_video_mcp_server
+Version: 1.0.0
+Summary: 全网短视频/图集去水印链接提取、视频文本内容提取MCP服务
+Project-URL: Homepage, https://github.com/yangbuyiya/yby6-crawl-videos-mcp-server
+Project-URL: Repository, https://github.com/yangbuyiya/yby6-crawl-videos-mcp-server
+Author-email: yangbuyiya <yangbuyiya@duck.com>
+License: MIT
+License-File: LICENSE
+Requires-Python: >=3.10
+Requires-Dist: aiofiles>=23.2.1
+Requires-Dist: annotated-types>=0.6.0
+Requires-Dist: anyio>=4.5
+Requires-Dist: certifi>=2024.2.2
+Requires-Dist: click>=8.1.7
+Requires-Dist: colorama>=0.4.6
+Requires-Dist: cssselect>=1.2.0
+Requires-Dist: exceptiongroup>=1.2.2
+Requires-Dist: fake-useragent>=1.5.1
+Requires-Dist: faker>=24.4.0
+Requires-Dist: fastapi>=0.110.1
+Requires-Dist: fastmcp>=2.10.2
+Requires-Dist: ffmpeg-python>=0.2.0
+Requires-Dist: h11>=0.14.0
+Requires-Dist: httpcore>=1.0.5
+Requires-Dist: httptools>=0.6.1
+Requires-Dist: httpx>=0.28.1
+Requires-Dist: idna>=3.6
+Requires-Dist: jinja2>=3.1.3
+Requires-Dist: jmespath>=1.0.1
+Requires-Dist: lxml>=5.2.1
+Requires-Dist: markdown-it-py>=3.0.0
+Requires-Dist: markupsafe>=2.1.5
+Requires-Dist: mdurl>=0.1.2
+Requires-Dist: parsel>=1.9.0
+Requires-Dist: pydantic>=2.11.7
+Requires-Dist: pygments>=2.17.2
+Requires-Dist: pyjwt>=2.8.0
+Requires-Dist: python-dateutil>=2.9.0.post0
+Requires-Dist: python-dotenv>=1.1.0
+Requires-Dist: pyyaml>=6.0.1
+Requires-Dist: rich>=13.9.4
+Requires-Dist: shellingham>=1.5.4
+Requires-Dist: six>=1.16.0
+Requires-Dist: sniffio>=1.3.1
+Requires-Dist: starlette>=0.37.2
+Requires-Dist: typer>=0.15.2
+Requires-Dist: uvicorn>=0.29.0
+Requires-Dist: w3lib>=2.1.2
+Requires-Dist: watchfiles>=0.21.0
+Requires-Dist: websockets>=12.0
+Description-Content-Type: text/markdown
+
+# 全网短视频去水印链接提取 MCP服务
+
+## 项目简介
+
+本项目是一个基于 FastMCP 的全网短视频去水印解析服务，支持多平台视频分享链接的解析，自动提取视频真实地址及相关信息。  
+适用于需要批量解析、去水印、采集短视频的场景。本项目还支持视频内容文本提取功能，可以通过语音识别将视频内容转为文本。
+
+本项目基于 parse-video-py 项目二次开发，感谢作者的贡献。
+
+## 主要特性
+
+- 支持20+种短视频平台（抖音、快手、小红书、微博、西瓜视频等）
+- 一键解析视频分享链接，获取无水印视频地址
+- 支持多种传输方式（stdio、SSE、HTTP）
+- 支持视频内容文本提取功能（需要API Key）
+- 支持Docker容器化部署
+- 代码结构清晰，易于扩展
+
+## 支持平台
+
+目前支持以下短视频平台的解析：
+
+- 抖音（DouYin）
+- 快手（KuaiShou）
+- 小红书（RedBook）
+- 微博（WeiBo）
+- 皮皮虾（PiPiXia）
+- 微视（WeiShi）
+- 绿洲（LvZhou）
+- 最右（ZuiYou）
+- 度小视/全民小视频（QuanMin）
+- 西瓜视频（XiGua）
+- 梨视频（LiShiPin）
+- 皮皮搞笑（PiPiGaoXiao）
+- 虎牙（HuYa）
+- AcFun（AcFun）
+- 逗拍（DouPai）
+- 美拍（MeiPai）
+- 全民K歌（QuanMinKGe）
+- 六间房（SixRoom）
+- 新片场（XinPianChang）
+- 好看视频（HaoKan）
+
+## 目录结构
+
+```
+crawling-short-video-mcp/
+├── yby6_video_mcp_server/
+│   ├── server.py                # 主服务入口
+│   ├── functionality/           # 各平台解析功能模块
+│   │   ├── base.py             # 基础类和枚举定义
+│   │   ├── douyin.py           # 抖音解析实现
+│   │   ├── kuaishou.py         # 快手解析实现
+│   │   ├── ...                 # 其他平台实现
+│   │   └── video_processor.py  # 视频处理和文本提取
+│   └── utils/                   # 工具函数
+├── Dockerfile.base              # 基础镜像构建文件
+├── Dockerfile.mcp               # MCP服务镜像构建文件
+├── requirements.txt             # 依赖包列表
+├── pyproject.toml              # 项目配置和元数据
+└── README.md                    # 项目说明
+```
+
+## 安装方法
+
+### 方法一：使用 pip 安装（推荐）
+
+```bash
+pip install yby6-video-mcp-server
+```
+
+### 方法二：从源码安装
+
+1. 克隆本项目
+
+   ```bash
+   git clone https://github.com/yangbuyiya/yby6-crawling-short-video-mcp.git
+   cd yby6-crawling-short-video-mcp
+   ```
+
+2. 安装依赖
+
+   推荐使用 Python 3.10+，并建议使用虚拟环境：
+   
+   **macOS/Linux:**
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   pip install -r requirements.txt
+   ```
+   
+   **Windows:**
+   ```bash
+   python -m venv venv
+   venv\Scripts\activate
+   pip install -r requirements.txt
+   ```
+
+### 方法三：使用 Docker 部署
+
+本项目提供了 Docker 支持，可以通过以下命令快速部署：
+
+1. 构建基础镜像（包含 FFmpeg 和 Python 环境）
+
+   ```bash
+   docker build -t ffmpeg-python-base:1.0.0 -f Dockerfile.base .
+   ```
+
+2. 构建 MCP 服务镜像
+
+   ```bash
+   docker build -t yby6-video-mcp:latest -f Dockerfile.mcp .
+   ```
+
+3. 运行容器
+
+   ```bash
+   docker run -d -p 8637:8637 yby6-video-mcp:latest
+   ```
+
+## 使用方法
+
+### 启动服务
+
+在项目根目录下，使用如下命令启动服务：
+
+```bash
+# 使用pip安装后
+yby6_video_mcp_server --transport http --host 0.0.0.0 --port 8637
+
+# 或从源码运行
+python -m yby6_video_mcp_server.server --transport http --host 0.0.0.0 --port 8637
+```
+
+参数说明：
+- `--transport` 传输方式，可选：`stdio`、`sse`、`http`（推荐 http）
+- `--host` 主机地址，默认 `0.0.0.0`
+- `--port` 端口号，默认 `8000`
+- `--path` 自定义MCP请求路径（可选）
+
+### API 接口说明
+
+#### 1. 解析视频分享链接
+
+**接口名称:** `share_url_parse_tool`
+
+**请求参数:**
+
+| 参数名 | 类型   | 必填 | 说明             |
+|--------|--------|------|------------------|
+| url    | string | 是   | 视频分享链接     |
+
+**返回示例:**
+
+```json
+{
+  "code": 200,
+  "msg": "解析成功",
+  "data": {
+    "video_url": "https://xxx.com/xxx.mp4",
+    "cover_url": "https://xxx.com/cover.jpg",
+    "title": "视频标题",
+    "music_url": "https://xxx.com/music.mp3",
+    "images": [],
+    "author": {
+      "uid": "用户ID",
+      "name": "用户名",
+      "avatar": "头像URL"
+    }
+  }
+}
+```
+
+#### 2. 根据视频ID解析
+
+**接口名称:** `video_id_parse_tool`
+
+**请求参数:**
+
+| 参数名    | 类型   | 必填 | 说明                                 |
+|-----------|--------|------|--------------------------------------|
+| source    | string | 是   | 视频来源，如 douyin、kuaishou 等     |
+| video_id  | string | 是   | 视频ID                               |
+
+**返回示例:** 同上
+
+#### 3. 视频内容文本提取
+
+**接口名称:** `share_text_parse_tool`
+
+**请求参数:**
+
+| 参数名       | 类型   | 必填 | 说明                                       |
+|--------------|--------|------|------------------------------------------|
+| text         | string | 是   | 包含分享链接的文本                        |
+| api_base_url | string | 否   | API基础URL，默认使用SiliconFlow           |
+| model        | string | 否   | 语音识别模型，默认使用SenseVoiceSmall     |
+
+**请求头:**
+
+需要在请求头中添加 `apikey` 字段，或者在URL参数中添加 `apikey` 参数。
+
+**返回示例:**
+
+```json
+{
+  "code": 200,
+  "msg": "解析成功",
+  "data": {
+    "video_url": "https://xxx.com/xxx.mp4",
+    "cover_url": "https://xxx.com/cover.jpg",
+    "title": "视频标题",
+    "author": {
+      "uid": "用户ID",
+      "name": "用户名",
+      "avatar": "头像URL"
+    }
+  },
+  "text_content": "视频中的语音文本内容"
+}
+```
+
+## 依赖说明
+
+主要依赖包括：
+
+- fastmcp: MCP服务框架
+- httpx: 异步HTTP客户端
+- ffmpeg-python: 视频处理
+- lxml & parsel: HTML解析
+- fake-useragent: 模拟浏览器请求
+- pydantic: 数据验证
+
+## Docker 部署
+
+项目提供了两个Dockerfile:
+- `Dockerfile.base`: 构建基础镜像，包含Python环境和FFmpeg
+- `Dockerfile.mcp`: 构建MCP服务镜像
+
+使用脚本快速部署:
+```bash
+# Windows
+.\script\deployBase.bat
+.\script\deployMcp.bat
+
+# Linux/macOS
+bash script/deployBase.sh
+bash script/deployMcp.sh
+```
+
+## 贡献与反馈
+
+欢迎提交 issue 或 PR 参与项目改进！
+
+- 项目地址: https://github.com/yangbuyiya/yby6-crawling-short-video-mcp
+- 作者邮箱: yangbuyiya@duck.com
+
+---
+
+本项目站在巨人的肩膀上，感谢以下项目：
+
+- [parse-video-py](https://github.com/wujunwei928/parse-video-py)
+- [fastmcp](https://github.com/jlowin/fastmcp)

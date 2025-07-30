@@ -1,0 +1,75 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fourpoints"
+version = "0.1.0"
+description = "A production-grade Python library for real-time vehicle telemetry and diagnostics"
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [
+    {name = "FourPoints Team", email = "info@fourpoints.example.com"}
+]
+license = {text = "MIT"}
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: System :: Hardware :: Hardware Drivers",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+]
+keywords = ["obd", "vehicle", "telemetry", "diagnostics", "automotive"]
+dependencies = [
+    "python-obd>=0.7.1",
+    "fastapi>=0.95.0",
+    "uvicorn>=0.21.1",
+    "pydantic>=1.10.7",
+    "google-generativeai==0.1.0rc1",
+    "jinja2>=3.1.2",
+    "weasyprint>=59.0",
+    "matplotlib>=3.7.1",
+    "gpsd-py3>=0.3.0",
+    "pyserial>=3.5",
+    "websockets>=11.0.3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.3.1",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.3.0",
+    "isort>=5.12.0",
+    "flake8>=6.0.0",
+    "mypy>=1.3.0",
+]
+docs = [
+    "sphinx>=6.2.1",
+    "sphinx-rtd-theme>=1.2.1",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/fourpoints/fourpoints"
+"Bug Tracker" = "https://github.com/fourpoints/fourpoints/issues"
+"Documentation" = "https://fourpoints.readthedocs.io/"
+
+[tool.black]
+line-length = 88
+target-version = ["py38", "py39", "py310", "py311"]
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false

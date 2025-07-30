@@ -1,0 +1,127 @@
+Metadata-Version: 2.4
+Name: agent-sentinel
+Version: 0.1.6
+Summary: Enterprise Security Monitoring SDK for AI Agents - Secure any AI agent in just 3 lines of code with real-time threat detection, behavioral analysis, and comprehensive reporting
+Author-email: AgentSentinel Team <team@agentsentinel.dev>
+Maintainer-email: AgentSentinel Team <team@agentsentinel.dev>
+License: MIT
+Project-URL: Homepage, https://github.com/agentsentinel/agent-sentinel
+Project-URL: Documentation, https://docs.agentsentinel.dev
+Project-URL: Repository, https://github.com/agentsentinel/agent-sentinel.git
+Project-URL: Bug Tracker, https://github.com/agentsentinel/agent-sentinel/issues
+Project-URL: Security Policy, https://github.com/agentsentinel/agent-sentinel/security/policy
+Project-URL: Code of Conduct, https://github.com/agentsentinel/agent-sentinel/blob/main/CODE_OF_CONDUCT.md
+Project-URL: Contributing, https://github.com/agentsentinel/agent-sentinel/blob/main/CONTRIBUTING.md
+Project-URL: Changelog, https://github.com/agentsentinel/agent-sentinel/blob/main/CHANGELOG.md
+Keywords: ai,security,monitoring,agents,threat-detection,enterprise,compliance,audit,dashboard,mcp,langchain,autogen,crewai,real-time,analytics,simple,easy
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: System Administrators
+Classifier: Intended Audience :: Information Technology
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Security
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: System :: Monitoring
+Classifier: Topic :: System :: Logging
+Classifier: Topic :: Internet :: WWW/HTTP :: HTTP Servers
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Software Development :: Libraries :: Application Frameworks
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: pyyaml>=6.0
+Requires-Dist: requests>=2.28.0
+Requires-Dist: aiohttp>=3.8.0
+Requires-Dist: asyncio-mqtt>=0.11.0
+Requires-Dist: websockets>=10.0
+Requires-Dist: structlog>=22.0.0
+Requires-Dist: prometheus-client>=0.14.0
+Requires-Dist: psutil>=5.9.0
+Requires-Dist: python-dateutil>=2.8.0
+Requires-Dist: typing-extensions>=4.0.0
+Provides-Extra: ai
+Requires-Dist: openai>=1.0.0; extra == "ai"
+Requires-Dist: google-generativeai>=0.3.0; extra == "ai"
+Provides-Extra: dev
+Requires-Dist: weave>=0.50.0; extra == "dev"
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.21.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"
+Requires-Dist: pytest-mock>=3.10.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: isort>=5.12.0; extra == "dev"
+Requires-Dist: flake8>=6.0.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Requires-Dist: pre-commit>=3.0.0; extra == "dev"
+Requires-Dist: coverage>=7.0.0; extra == "dev"
+Requires-Dist: bandit>=1.7.0; extra == "dev"
+Provides-Extra: test
+Requires-Dist: pytest>=7.0.0; extra == "test"
+Requires-Dist: pytest-asyncio>=0.21.0; extra == "test"
+Requires-Dist: pytest-cov>=4.0.0; extra == "test"
+Requires-Dist: pytest-mock>=3.10.0; extra == "test"
+Requires-Dist: coverage>=7.0.0; extra == "test"
+Requires-Dist: responses>=0.23.0; extra == "test"
+Requires-Dist: httpx>=0.24.0; extra == "test"
+Requires-Dist: freezegun>=1.2.0; extra == "test"
+Requires-Dist: factory-boy>=3.3.0; extra == "test"
+Requires-Dist: faker>=19.0.0; extra == "test"
+Provides-Extra: docs
+Requires-Dist: sphinx>=7.0.0; extra == "docs"
+Requires-Dist: sphinx-rtd-theme>=1.3.0; extra == "docs"
+Requires-Dist: myst-parser>=2.0.0; extra == "docs"
+Requires-Dist: sphinx-autodoc-typehints>=1.24.0; extra == "docs"
+Requires-Dist: sphinx-copybutton>=0.5.0; extra == "docs"
+Requires-Dist: sphinx-tabs>=3.4.0; extra == "docs"
+Provides-Extra: enterprise
+Requires-Dist: redis>=4.5.0; extra == "enterprise"
+Requires-Dist: celery>=5.3.0; extra == "enterprise"
+Requires-Dist: sqlalchemy>=2.0.0; extra == "enterprise"
+Requires-Dist: alembic>=1.11.0; extra == "enterprise"
+Requires-Dist: psycopg2-binary>=2.9.0; extra == "enterprise"
+Requires-Dist: pymongo>=4.4.0; extra == "enterprise"
+Requires-Dist: elasticsearch>=8.8.0; extra == "enterprise"
+Requires-Dist: prometheus-client>=0.17.0; extra == "enterprise"
+Requires-Dist: opentelemetry-api>=1.20.0; extra == "enterprise"
+Requires-Dist: opentelemetry-sdk>=1.20.0; extra == "enterprise"
+Requires-Dist: opentelemetry-instrumentation>=0.40b0; extra == "enterprise"
+
+# Agent Sentinel
+
+**Enterprise Security Monitoring SDK for AI Agents**
+
+**Secure any AI agent in just 3 lines of code** - Real-time threat detection, behavioral analysis, and comprehensive reporting with zero-config deployment.
+
+```python
+from agent_sentinel import monitor, monitor_mcp
+
+@monitor
+def my_function(): pass
+
+@monitor_mcp()
+def my_mcp_tool(): pass
+```
+
+---
+
+## 🚀 **3 Lines to Secure Any Agent**
+
+### **Simple Integration**
+```python
+from agent_sentinel import monitor, monitor_mcp
+
+@monitor
+def process_user_input(user_data: str) -> str:
+    return f"Processed: {user_data}"
+
+@monitor_mcp()
+def search_web(query: str) -> dict:
+    return {"results": "web search results"}
+```
+
+**That's it!** Your agent is now protected against 20+ threat types with enterprise-grade monitoring.

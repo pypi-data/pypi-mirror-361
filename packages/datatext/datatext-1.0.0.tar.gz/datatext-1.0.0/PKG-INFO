@@ -1,0 +1,311 @@
+Metadata-Version: 2.4
+Name: datatext
+Version: 1.0.0
+Summary: A simple database library that operates on plain text files
+Home-page: https://github.com/tikipiya/datatext
+Author: tikipiya
+Author-email: s2501082@sendai-nct.jp
+Project-URL: Bug Reports, https://github.com/tikipiya/datatext/issues
+Project-URL: Source, https://github.com/tikipiya/datatext
+Keywords: database,text,file,simple,lightweight,zero-dependency
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Database
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0; extra == "dev"
+Requires-Dist: pytest-cov>=2.0; extra == "dev"
+Requires-Dist: black>=21.0; extra == "dev"
+Requires-Dist: flake8>=3.8; extra == "dev"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: project-url
+Dynamic: provides-extra
+Dynamic: requires-python
+Dynamic: summary
+
+# DataText
+
+プレーンテキストファイルで動作するシンプルなデータベースライブラリ
+
+## 📋 概要
+
+DataTextは、プレーンテキストファイルをデータベースとして使用できるPythonライブラリです。CSVよりも柔軟で直感的なデータ操作が可能で、外部依存関係は一切ありません。
+
+## ✨ 特徴
+
+- **依存ゼロ**: 外部ライブラリは一切不要
+- **直感的API**: SQL風のクエリ構文
+- **人間が読める**: プレーンテキストファイルで保存
+- **軽量**: シンプルで高速
+- **柔軟**: CSVよりも自由度の高いデータ形式
+
+## 🚀 クイックスタート
+
+### インストール
+
+```bash
+pip install datatext
+```
+
+### 基本的な使い方
+
+```python
+from datatext import DataText
+
+# データベースファイルを作成
+db = DataText('mydata.txt')
+
+# テーブル作成
+db.create_table('users', {
+    'id': 'int',
+    'name': 'str',
+    'email': 'str',
+    'age': 'int'
+})
+
+# データ挿入
+db.insert('users', {
+    'id': 1,
+    'name': '田中太郎',
+    'email': 'tanaka@example.com',
+    'age': 25
+})
+
+# データ検索
+users = db.select('users').where('age', '>', 20).execute()
+print(users)
+```
+
+## 📊 サポートするデータ型
+
+- `int`: 整数
+- `float`: 浮動小数点数
+- `str`: 文字列
+- `bool`: 真偽値
+- `datetime`: 日時（ISO形式）
+
+## 🔍 クエリ機能
+
+### SELECT文
+
+```python
+# 全データを取得
+all_users = db.select('users').execute()
+
+# 特定のフィールドのみ取得
+names = db.select('users', ['name', 'email']).execute()
+
+# 条件付き検索
+young_users = db.select('users').where('age', '<', 30).execute()
+
+# 複数条件
+results = db.select('users').where('age', '>', 18).where('name', 'like', '田').execute()
+
+# ソート
+sorted_users = db.select('users').order_by('age', desc=True).execute()
+
+# 件数制限
+limited_users = db.select('users').limit(10).offset(5).execute()
+```
+
+### WHERE条件
+
+| 演算子 | 説明 | 例 |
+|--------|------|-----|
+| `=` | 等しい | `.where('age', '=', 25)` |
+| `!=` | 等しくない | `.where('name', '!=', '田中')` |
+| `>` | より大きい | `.where('age', '>', 20)` |
+| `<` | より小さい | `.where('age', '<', 30)` |
+| `>=` | 以上 | `.where('age', '>=', 18)` |
+| `<=` | 以下 | `.where('age', '<=', 65)` |
+| `like` | 文字列を含む | `.where('name', 'like', '田')` |
+| `in` | リストに含まれる | `.where('age', 'in', [20, 25, 30])` |
+
+### カスタム条件
+
+```python
+# 関数を使った条件
+def adult_filter(record):
+    return record['age'] >= 18
+
+adults = db.select('users').where_func(adult_filter).execute()
+```
+
+## 🛠️ データ操作
+
+### データの挿入
+
+```python
+# 単一レコード
+db.insert('users', {'id': 2, 'name': '佐藤花子', 'email': 'sato@example.com'})
+
+# 複数レコード
+users = [
+    {'id': 3, 'name': '鈴木一郎', 'email': 'suzuki@example.com'},
+    {'id': 4, 'name': '高橋美咲', 'email': 'takahashi@example.com'}
+]
+for user in users:
+    db.insert('users', user)
+```
+
+### データの更新
+
+```python
+# 条件に一致するレコードを更新
+updated = db.update('users', 
+                   {'age': 26}, 
+                   lambda record: record['name'] == '田中太郎')
+print(f"{updated}件のレコードが更新されました")
+```
+
+### データの削除
+
+```python
+# 条件に一致するレコードを削除
+deleted = db.delete('users', lambda record: record['age'] < 18)
+print(f"{deleted}件のレコードが削除されました")
+
+# 全削除
+db.delete('users')
+```
+
+## 🗂️ テーブル管理
+
+### テーブル情報の取得
+
+```python
+# テーブル情報
+info = db.get_table_info('users')
+print(f"テーブル名: {info['name']}")
+print(f"レコード数: {info['record_count']}")
+print(f"スキーマ: {info['schema']}")
+
+# 全テーブル一覧
+tables = db.list_tables()
+print(f"テーブル一覧: {tables}")
+```
+
+### テーブルの削除
+
+```python
+# テーブルを削除
+db.drop_table('users')
+```
+
+## 📁 ファイル形式
+
+DataTextは以下の形式でデータを保存します：
+
+```
+# datatext database file
+# generated by datatext library
+
+@table users
+id:int|name:str|email:str|age:int
+1|田中太郎|tanaka@example.com|25
+2|佐藤花子|sato@example.com|30
+
+@table products
+id:int|name:str|price:float|available:bool
+1|商品A|1000.0|true
+2|商品B|1500.5|false
+```
+
+## 🎯 使用例
+
+### 設定ファイルの管理
+
+```python
+# 設定データベース
+config_db = DataText('config.txt')
+
+config_db.create_table('settings', {
+    'key': 'str',
+    'value': 'str',
+    'updated_at': 'datetime'
+})
+
+# 設定の保存
+config_db.insert('settings', {
+    'key': 'theme',
+    'value': 'dark',
+    'updated_at': '2024-01-01 10:00:00'
+})
+
+# 設定の読み込み
+theme = config_db.select('settings').where('key', '=', 'theme').first()
+print(f"テーマ: {theme['value']}")
+```
+
+### ログデータの管理
+
+```python
+# ログデータベース
+log_db = DataText('logs.txt')
+
+log_db.create_table('access_logs', {
+    'timestamp': 'datetime',
+    'ip': 'str',
+    'path': 'str',
+    'status': 'int'
+})
+
+# ログの記録
+log_db.insert('access_logs', {
+    'timestamp': '2024-01-01 10:00:00',
+    'ip': '192.168.1.100',
+    'path': '/api/users',
+    'status': 200
+})
+
+# エラーログの検索
+errors = log_db.select('access_logs').where('status', '>=', 400).execute()
+```
+
+## 🧪 テスト
+
+```bash
+# テストの実行
+python -m pytest tests/
+
+# サンプルコードの実行
+python examples/basic_usage.py
+```
+
+## 🚀 パフォーマンス
+
+- **小規模データ**: 1,000件程度まで高速
+- **中規模データ**: 10,000件程度まで実用的
+- **大規模データ**: より高機能なデータベースを検討
+
+## 📄 ライセンス
+
+MIT License
+
+## 👤 作者
+
+**tikisan** - GitHub: [@tikipiya](https://github.com/tikipiya)
+
+## 🔗 関連リンク
+
+- [GitHub Repository](https://github.com/tikipiya/datatext)
+- [PyPI Package](https://pypi.org/project/datatext/)
+- [Documentation](https://github.com/tikipiya/datatext/docs)
+
+---

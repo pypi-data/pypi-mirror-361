@@ -1,0 +1,87 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  MyAppWithPrismarine
+Parameters:
+  Stage:
+    Type: String
+    Default: dev
+Globals:
+  Function:
+    Runtime: python3.13
+    Handler: index.handler
+    Architectures:
+      - x86_64
+    Timeout: 30
+    Environment:
+      Variables:
+        ENV: !Ref Stage
+  Api:
+    Cors:
+      AllowOrigin: "'*'"
+      AllowHeaders: "'*'"
+      AllowMethods: "'*'"
+      AllowCredentials: False
+Resources:
+    # paths
+    # streams
+  GatewayDynamoRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action:
+              - 'sts:AssumeRole'
+            Effect: Allow
+            Principal:
+              Service:
+                - apigateway.amazonaws.com
+      Policies:
+        - PolicyName: APIGatewayDynamoDBPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'dynamodb:PutItem'
+                  - 'dynamodb:Query'
+                  - 'dynamodb:GetItem'
+## Todo: provide only required resources list
+                Resource: '*'
+    # tables
+    # queues
+    # streams
+    # buckets
+    # queues
+  MyAppWithPrismarineItem:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub MyAppWithPrismarineItem-${Stage}
+      AttributeDefinitions:
+        - AttributeName: Foo
+          AttributeType: S
+        - AttributeName: Bar
+          AttributeType: S
+      KeySchema:
+        - AttributeName: Foo
+          KeyType: HASH
+        - AttributeName: Bar
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+        RecoveryPeriodInDays: 14
+    # tables
+  PythonLambdaLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: !Sub pythonthrdparty-${Stage}
+      Description: Dependencies for all python lambdas
+      ContentUri: thirdparty/.
+      CompatibleRuntimes:
+        - python3.13
+    Metadata:
+      BuildMethod: python3.13
+      BuildArchitecture: x86_64
+    # functions

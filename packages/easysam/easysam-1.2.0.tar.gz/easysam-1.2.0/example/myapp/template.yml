@@ -1,0 +1,142 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  MyApp
+Parameters:
+  Stage:
+    Type: String
+    Default: dev
+Globals:
+  Function:
+    Runtime: python3.13
+    Handler: index.handler
+    Architectures:
+      - x86_64
+    Timeout: 30
+    Environment:
+      Variables:
+        ENV: !Ref Stage
+  Api:
+    Cors:
+      AllowOrigin: "'*'"
+      AllowHeaders: "'*'"
+      AllowMethods: "'*'"
+      AllowCredentials: False
+Resources:
+  ####### Necessary for API Gateway Logging ########
+  ApiGwAccountConfig: 
+    Type: "AWS::ApiGateway::Account"
+    Properties: 
+      CloudWatchRoleArn: !GetAtt "ApiGatewayLoggingRole.Arn"
+  ApiGatewayLoggingRole: 
+    Type: "AWS::IAM::Role"
+    Properties: 
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - Effect: Allow
+            Principal: 
+              Service: 
+                - "apigateway.amazonaws.com"
+            Action: "sts:AssumeRole"
+      Path: "/"
+      ManagedPolicyArns: 
+        - !Sub "arn:${AWS::Partition}:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+  ApiDeployment:
+    Type: AWS::Serverless::Api
+    Properties:
+      OpenApiVersion: 3.0.1
+      StageName: !Ref Stage
+      AccessLogSetting:
+        DestinationArn: !GetAtt ApiLogGroup.Arn
+        Format: '{"requestTime":"$context.requestTime","requestId":"$context.requestId","httpMethod":"$context.httpMethod","path":"$context.path","resourcePath":"$context.resourcePath","status":$context.status,"responseLatency":$context.responseLatency}'
+      DefinitionBody:
+        'Fn::Transform':
+          Name: 'AWS::Include'
+          Parameters:
+            Location: './build/swagger.yaml'
+  ApiLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+        LogGroupName: !Sub "apigw-${AWS::StackName}-${Stage}"
+        RetentionInDays: 7
+    # paths
+    # streams
+  GatewayDynamoRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action:
+              - 'sts:AssumeRole'
+            Effect: Allow
+            Principal:
+              Service:
+                - apigateway.amazonaws.com
+      Policies:
+        - PolicyName: APIGatewayDynamoDBPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'dynamodb:PutItem'
+                  - 'dynamodb:Query'
+                  - 'dynamodb:GetItem'
+## Todo: provide only required resources list
+                Resource: '*'
+    # tables
+    # queues
+    # streams
+    # buckets
+    # queues
+  MyAppMyItem:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub myappMyItem-${Stage}
+      AttributeDefinitions:
+        - AttributeName: ItemID
+          AttributeType: S
+      KeySchema:
+        - AttributeName: ItemID
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+        RecoveryPeriodInDays: 14
+    # tables
+  PythonLambdaLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: !Sub pythonthrdparty-${Stage}
+      Description: Dependencies for all python lambdas
+      ContentUri: thirdparty/.
+      CompatibleRuntimes:
+        - python3.13
+    Metadata:
+      BuildMethod: python3.13
+      BuildArchitecture: x86_64
+  myfunctionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "myfunction-${Stage}"
+      CodeUri: backend/function/myfunction
+      Policies:
+        - AWSSecretsManagerGetSecretValuePolicy:
+            SecretArn: !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:*
+        - SSMParameterReadPolicy:
+            ParameterName: "*"
+        - DynamoDBCrudPolicy:
+            TableName: !Ref MyAppMyItem
+      Layers:
+        - !Ref PythonLambdaLayer
+      Events:
+        itemsAPI:
+          Type: Api
+          Properties:
+            Method: ANY
+            Path: /items
+            RestApiId: !Ref ApiDeployment
+            Auth:
+    # functions

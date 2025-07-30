@@ -1,0 +1,40 @@
+[project]
+name = "evalsync"
+version = "0.3.1"
+description = "evalsync is a library used to synchronize applications under benchmark with an external manager"
+authors = [
+    { name = "minhuw", email = "wangmh15@gmail.com" }
+]
+dependencies = [
+    "jinja2>=3.1.5",
+    "pyzmq>=27",
+    "protobuf>=6.0.0",
+    "typer>=0.15.1",
+    "loguru>=0.7.3",
+]
+readme = "README.md"
+requires-python = ">= 3.8"
+
+[project.scripts]
+evalsyncli = "evalsync.cli:main"
+
+[build-system]
+requires = ["hatchling==1.26.3"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = [
+    "pytest>=8.3.4",
+    "mypy-protobuf>=3.6.0",
+    "pytest-timeout>=2.3.1",
+    "ruff>=0.9.5",
+    "black>=25.1.0",
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/evalsync"]
+include = ["src/evalsync/py.typed"]

@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tracy-blob-storage-client"
+version = "0.4.0"
+description = "A unified async interface to upload and download blobs to/from Azure or AWS S3, switchable via env var."
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [{name = "Bert Van der Heyden"}]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent"
+]
+dependencies = [
+  "aioboto3>=4.0.0",            # brings in botocore/new boto3 transitively
+  "aiofiles>=23.1.0",
+  "azure-storage-blob>=12.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest",
+  "pytest-asyncio",
+  "moto[s3]>=5.1.8",
+  "moto[server]",
+  "flake8",
+  "mypy",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"

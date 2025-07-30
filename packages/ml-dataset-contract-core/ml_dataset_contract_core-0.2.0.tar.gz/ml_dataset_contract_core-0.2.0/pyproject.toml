@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=70", "setuptools_scm[toml]>=8", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ml_dataset_contract_core"
+description = "Runtime utilities for ML dataset contract packages"
+authors = [{name = "Nikolskii D.N.", email = "nikolskydn@mail.ru"}]
+requires-python = ">=3.10"
+readme = "README.md"
+license = {text = "MIT"}
+dependencies = [
+    "pydantic>=2.6",
+    "pyyaml>=6.0"
+]
+dynamic = ["version"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools_scm]
+version_scheme = "no-guess-dev"
+local_scheme   = "no-local-version"
+fallback_version = "0.0.0"
+
+[tool.setuptools.package-data]
+"ml_dataset_contract" = []

@@ -1,0 +1,103 @@
+/**
+ * Extends the Active Directory schema and updates permissions as necessary to prepare a forest and domain 
+ * for a domain controller that runs Windows Server.
+ * 
+ * Adprep.exe is a command-line tool available in Windows Server. You must run adprep from an elevated 
+ * command prompt. To open an elevated command prompt, select Start, right-select Command Prompt, and then 
+ * select Run as administrator.
+ * 
+ * Adprep is available in a 32-bit version and a 64-bit version. The 64-bit version runs by default. If you 
+ * need to run Adprep on a 32-bit computer, run the 32-bit version (Adprep32.exe).
+ */
+@command("adprep [FLAGS]")
+class adprep {
+    /**
+     * Prepares a forest for the introduction of a domain controller that runs Windows Server. 
+     * You run this command only once in the forest. You must run this command on the domain controller 
+     * that holds the schema operations master role (also known as flexible single master operations or FSMO) 
+     * for the forest. You must be a member of all the following groups to run this command:
+     * - The Enterprise Admins group
+     * - The Schema Admins group
+     * - The Domain Admins group of the domain that hosts the schema master
+     */
+    @flag(format: "/forestprep")
+    forestprep: bool
+
+    /**
+     * Prepares a domain for the introduction of a domain controller that runs Windows Server. 
+     * You run this command after the forestprep command finishes and after the changes replicate to all 
+     * the domain controllers in the forest.
+     * 
+     * Run this command in each domain where you plan to add a domain controller that runs Windows Server. 
+     * You must run this command on the domain controller that holds the infrastructure operations master 
+     * role for the domain. You must be a member of the Domain Admins group to run this command.
+     */
+    @flag(format: "/domainprep")
+    domainprep: bool
+
+    /**
+     * Performs similar updates to domainprep. However, this command also provides updates that are necessary 
+     * to enable the Resultant Set of Policy (RSOP) Planning Mode functionality.
+     * 
+     * In Active Directory environments that run Microsoft Windows, this command performs updates during 
+     * off-peak hours. Replicating updates to file system permissions and Active Directory permissions on 
+     * existing Group Policy objects (GPOs) during off-peak hours minimizes replication traffic.
+     * 
+     * Run this command after the forestprep command finishes and after the changes replicate to all domain 
+     * controllers in the forest. You must run this command on the infrastructure master for the domain.
+     */
+    @flag(format: "/domainprep /gpprep")
+    domainprep-gpprep: bool
+
+    /**
+     * Updates permissions on the application directory partitions to enable replication of the partitions to 
+     * read-only domain controllers (RODCs). This operation runs remotely; it contacts the infrastructure 
+     * master in each domain to update the permissions. You need to run this command only once in the forest. 
+     * However, you can rerun this command anytime if it fails to complete successfully because an 
+     * infrastructure master isn't available. You can run this command on any computer in the forest. 
+     * You must be a member of the Enterprise Admins group to run this command.
+     */
+    @flag(format: "/rodcprep")
+    rodcprep: bool
+
+    /**
+     * Returns an expanded set of exit codes, instead of just 0 (Success) and 1 (Failure).
+     */
+    @flag(format: "/wssg")
+    wssg: bool
+
+    /**
+     * Specifies that no standard output is returned from an operation. This parameter can be used only if 
+     * /wssg is also used.
+     */
+    @flag(format: "/silent")
+    silent: bool
+
+    /**
+     * Displays Help for this command.
+     */
+    @flag(format: "/?")
+    help: bool
+
+    /**
+     * Exit codes that Adprep can return after an operation completes.
+     */
+    static enum Error {
+        Failure = 1,
+        SchemaConflictError,
+        FSMORoleError,
+        ConnectionError,
+        SchemaUpgradeError,
+        UnableToModifyError,
+        ServerBusyError,
+        PermissionError,
+        UnableToInitializeLogFileError,
+        NotADomainController,
+        InNonnativeMode,
+        NeedToRunForestUpdateFirst,
+        ForestUpdateAlreadyDone,
+        DomainUpdateAlreadyDone,
+        GPOUpdateAlreadyDone,
+        ForestUpdateWaitReplication
+    }
+}

@@ -1,0 +1,14 @@
+// Displays the name of the current directory or changes the current directory. If used with only a drive letter (for example, cd C:), cd displays the names of the current directory in the specified drive. If used without parameters, cd displays the current drive and directory.
+@command("cd [FLAGS] path")
+pub class cd {
+    // Changes the current drive as well as the current directory for a drive.
+    @flag(format: "/d")
+    d: bool
+
+    @option(bind: "path")
+    path: str
+
+    // Displays help at the command prompt.
+    @flag(short: "h", long: "help", format: "/?")
+    help: bool
+}

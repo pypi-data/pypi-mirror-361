@@ -1,0 +1,44 @@
+/*
+@annotation
+fn pattern(params: OptionParams) {
+    return option({ kind: "pattern", ...params  }) 
+}
+*/
+
+@command("awk [FLAGS] pattern ...")
+pub class awk {
+    @flag(short: "F", long: "field-separator")
+    sep: str?
+
+    @flag(alias: "-v")
+    vars: str?
+
+    @flag(alias: "-f")
+    file: str?
+
+    @flag(alias: "-p", proxy: awk.handle_pattern, native: false)
+    pattern: str?
+
+    @option(bind: "pattern", verify: "awk_pattern_auth")
+    rule: str
+
+    @option(bind: "eclipsis")
+    files: list<str>? | str?
+
+    comptime prompt() -> suggest[] {
+        return suggest.work_dir()
+    }
+
+    static fn handle_pattern(p: str) -> {
+        this.rule = p
+        this.pattern = null
+    }
+}
+
+fn test_awk() {
+    awk "{print}" "./word.txt"
+    awk -f "cal.awk" ["log.txt", "log2.txt"]
+    awk("{print}", "./word.txt")
+    awk(file: "cal.awk", "log.txt")
+    awk -p "{print}" "./word.txt"
+}

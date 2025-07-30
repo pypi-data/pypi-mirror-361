@@ -1,0 +1,58 @@
+pub comptime enum Weekday {
+    Sunday,
+    Monday,
+    Tuesday,
+    Wednesday,
+    Thursday,
+    Friday,
+    Saturday;
+
+    pub fn name() -> str {
+        match $this {
+            Weekday::Sunday => "Sunday",
+            Weekday::Monday => "Monday",
+            Weekday::Tuesday => "Tuesday",
+            Weekday::Wednesday => "Wednesday",
+            Weekday::Thursday => "Thursday",
+            Weekday::Friday => "Friday",
+            Weekday::Saturday => "Saturday",
+        }
+    }
+
+    pub fn short_name() -> str {
+        match $this {
+            Weekday::Sunday => "Sun",
+            Weekday::Monday => "Mon",
+            Weekday::Tuesday => "Tue",
+            Weekday::Wednesday => "Wed",
+            Weekday::Thursday => "Thu",
+            Weekday::Friday => "Fri",
+            Weekday::Saturday => "Sat",
+        }
+    }
+
+    pub fn from_num(n: num) throws -> Weekday {
+        match $n {
+            0 => Weekday::Sunday,
+            1 => Weekday::Monday,
+            2 => Weekday::Tuesday,
+            3 => Weekday::Wednesday,
+            4 => Weekday::Thursday,
+            5 => Weekday::Friday,
+            6 => Weekday::Saturday,
+            _ => throw RangeError("Weekday number must be 0-6")
+        }
+    }
+
+    pub fn to_iso_num() -> num {
+        match $this {
+            Weekday::Sunday => 7,
+            Weekday::Monday => 1,
+            Weekday::Tuesday => 2,
+            Weekday::Wednesday => 3,
+            Weekday::Thursday => 4,
+            Weekday::Friday => 5,
+            Weekday::Saturday => 6,
+        }
+    }
+}

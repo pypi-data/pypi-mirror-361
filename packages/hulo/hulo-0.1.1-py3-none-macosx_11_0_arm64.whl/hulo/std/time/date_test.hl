@@ -1,0 +1,32 @@
+import * from "time"
+
+fn test_date() {
+    let dt = DateTime.now().add_hours(8).
+        with_timezone(TimeZone.named("Asia/Shanghai"))
+    println!($dt.to_str("YYYY-MM-DD HH:mm:ss")) // 2023-12-25 08:00:00
+}
+
+fn test_weekday() {
+    let dt = DateTime(2023, 12, 25)
+    let wd = $dt.weekday()
+
+    assert_eq!($wd, Weekday::Monday)
+    assert_eq!($wd.name(), "Monday")
+    assert_eq!($wd.to_iso_num(), 1)
+}
+
+fn test_duration() {
+    let d = Duration(hours: 2, minutes: 30);
+    assert_eq!($d.in_seconds(), 9000);
+    assert_eq!($d.to_human_string(), "2h 30m");
+
+    let dt = DateTime.now();
+    let later = $dt.add_duration(Durations::DAY);
+    assert_eq!($dt.duration_since($later), -Durations::DAY);
+}
+
+fn test_callback() {
+    set_timeout!(Duration(seconds: 5), () => {
+        echo "Hello World!"
+    })
+}

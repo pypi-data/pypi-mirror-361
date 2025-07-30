@@ -1,0 +1,35 @@
+#Settings for packaging the project with setuptools, for distribution with PyPI.
+#For just using a local version of the code this can be safely ignored
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "normPlot"
+version = "2.5.0"
+authors = [ { name="Colin Folsom", email="fosomcp+dev@gmail.com" },
+]
+description = "An interactive tool for normalizing stellar spectra"
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Astronomy",
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "numpy",
+    "scipy",
+    "matplotlib",
+]
+
+[project.urls]
+Homepage = "https://github.com/folsomcp/normPlot/"
+Documentation = "https://folsomcp.github.io/specpolFlow/"
+
+[project.scripts]
+normplot = "normPlot.normPlot2:normplot_cli"

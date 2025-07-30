@@ -1,0 +1,68 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "smiffer"
+requires-python = ">= 3.5"
+dependencies = [
+    "mdanalysis",
+    "numpy",
+    "pyyaml",
+    "scipy",
+    "tqdm",
+]
+description = "Compute possible interaction with fields arround protein or RNA."
+authors = [
+    { name = "Diego BARQUERO MORERA", email = "diegobarqueromorera@gmail.com" },
+    { name = "Lucas ROUAUD", email = "lucas.rouaud@gmail.com" }
+]
+maintainers = [{ name = "Lucas ROUAUD", email = "lucas.rouaud@gmail.com" }]
+license = { text = "MIT License" }
+readme = "README.md"
+keywords = [
+    "python", "chemical", "grid", "RNA", "protein", "properties",
+    "physical based computation", "bioinformatic", "chemoinformatic"
+]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Development Status :: 4 - Beta",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "Topic :: Scientific/Engineering :: Visualization",
+]
+dynamic = ["version"]
+
+[tool.setuptools.dynamic]
+version = {attr = "smiffer.__version__"}
+
+[project.scripts]
+smiffer = "smiffer:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["smiffer*"]
+exclude = ["tests*", "module*", "docs*"]
+
+[project.urls]
+Homepage = "https://gitlab.galaxy.ibpc.fr/rouaud/smiffer"
+Documentation = "https://smiffer.mol3d.tech"
+Repository = "https://gitlab.galaxy.ibpc.fr/rouaud/smiffer"
+
+[project.optional-dependencies]
+dev = [
+    "ipython",
+    "markdown",
+    "mkdocs",
+    "mkdocs-autorefs",
+    "mkdocs-callouts",
+    "mkdocs-material",
+    "mkdocs-material-extensions",
+    "mkdocstrings",
+    "mkdocstrings-python",
+    "pylint",
+    "pymdown-extensions",
+    "pytest",
+]

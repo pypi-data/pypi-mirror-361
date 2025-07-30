@@ -1,0 +1,25 @@
+deploy:
+  stage: deploy
+  image: python:latest
+  variables:
+    GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no"
+  before_script:
+    - eval $(ssh-agent -s)
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+    - printf -- "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -H 167.235.115.90 >> ~/.ssh/known_hosts
+    - chmod 600 ~/.ssh/known_hosts
+  script:
+    - apt-get update && apt-get install --reinstall debian-archive-keyring
+    - apt-get install -y rsync
+    - pip install mkdocs mkdocs-autorefs mkdocs-callouts mkdocs-material mkdocs-material-extensions mkdocstrings mkdocstrings-python
+    - mkdocs build --site-dir public
+  rules:
+    - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
+  after_script:
+    - set +e
+    - rsync -avzc --rsync-path='./rsync' --delete public/ --exclude 'data/' marcbaad@167.235.115.90:domains/smiffer.mol3d.tech/public_html/ || true
+    - set -e

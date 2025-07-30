@@ -1,0 +1,167 @@
+@startwbs code_architecture
+
+skinparam backgroundColor transparent
+
+scale 1
+
+<style>
+wbsDiagram {
+    FontSize 30px
+    LineColor #2E2E3E
+    LineThickness 5px
+    
+    node {
+        FontName Roboto Slab
+        BackgroundColor #2E2E3E
+        FontColor #FFFFFF
+    }
+
+    boxless {
+        FontName Roboto Light
+        FontColor #2E2E3E
+    }
+}
+</style>
+
++ <b>📂 smiffer/</b>
+
+
+++ <b>📂 grid/</b>
+
++++< 📄 grid.py
+++++_ 🛠 grid()
+
++++< 📄 class_stamp.py
+++++_ 🛠 Stamp._<U+200B>_init_<U+200B>_()
+++++_ 🛠 Stamp.refresh_orientation()
+++++_ 🛠 Stamp.stamp_kernel()
+
++++< 📄 class_grid_factory.py
+++++_ 🛠 GridFactory._<U+200B>_init_<U+200B>_()
+++++_ 🛠 GridFactory._<U+200B>_whole()
+++++_ 🛠 GridFactory._<U+200B>_pocket_sphere()
+
++++< 📄 class_grid.py
+++++_ 🛠 Grid._<U+200B>_init_<U+200B>_()
+++++_ 🛠 Grid._<U+200B>_setitem_<U+200B>_()
+++++_ 🛠 Grid.launch_trimming()
+++++_ 🛠 Grid.compute_property()
+++++_ 🛠 Grid.mask()
+++++_ 🛠 Grid.trimming_coord()
+++++_ 🛠 Grid.molecule_broad()
+++++_ 🛠 Grid.resolution()
+
+
++++ <b>📂 trimming_strategy/</b>
+
+++++< 📄 class_rnds.py
++++++_ 🛠 StrategyRndsTrimming.trim_box()
+
+++++< 📄 class_sphere.py
++++++_ 🛠 StrategySphereTrimming.trim_box()
+
+++++ 📄 class_trimming.py
++++++_ 🛠 StrategyTrimming.trim_box()
+
+++++ 📄 class_occupancy.py
++++++_ 🛠 StrategyOccupancyTrimming._<U+200B>_init_<U+200B>_()
++++++_ 🛠 StrategyOccupancyTrimming.trim_box()
+
+
++++ <b>📂 property_strategy/</b>
+
+++++< 📄 class_apbs.py
++++++_ 🛠 StrategyApbs._<U+200B>_init_<U+200B>_()
++++++_ 🛠 StrategyApbs.populate_grid()
++++++_ 🛠 StrategyApbs.log_grid()
+
+++++< 📄 class_h_bond.py
++++++_ 🛠 StrategyHBond._<U+200B>_init_<U+200B>_()
++++++_ 🛠 StrategyHBond.populate_grid()
+
+++++ 📄 class_hydrophobicity.py
++++++_ 🛠 StrategyHydrophobic.populate_grid()
+
+++++ 📄 class_pi_stacking.py
++++++_ 🛠 StrategyPiStacking._<U+200B>_get_angle()
++++++_ 🛠 StrategyPiStacking.populate_grid()
+
+++++ 📄 class_property.py
++++++_ 🛠 StrategyProperty._<U+200B>_init_<U+200B>_()
++++++_ 🛠 StrategyProperty._<U+200B>_str_<U+200B>_()
++++++_ 🛠 StrategyProperty.name()
++++++_ 🛠 StrategyProperty.populate_grid()
+
+
++++ <b>📂 kernel/</b>
+
+++++< 📄 class_gaussian.py
++++++_ 🛠 GaussianKernel._<U+200B>_init_<U+200B>_()
+
+++++< 📄 class_kernel.py
++++++_ 🛠 Kernel._<U+200B>_init_<U+200B>_()
++++++_ 🛠 Kernel.kernel()
++++++_ 🛠 Kernel.kernel_resolution()
+
+++++ 📄 class_occupancy.py
++++++_ 🛠 OccupancyKernel._<U+200B>_init_<U+200B>_()
+
+++++ 📄 class_bivariate_gaussian.py
++++++_ 🛠 BivariateGaussianKernel._<U+200B>_init_<U+200B>_()
++++++_ 🛠 BivariateGaussianKernel.refresh_orientation()
++++++_ 🛠 BivariateGaussianKernel._<U+200B>_get_normal_vector()
++++++_ 🛠 BivariateGaussianKernel._<U+200B>_get_angle()
++++++_ 🛠 BivariateGaussianKernel._<U+200B>_stacking_gaussian()
+
+
+
+++ <U+200B>
+
++++< 📄 main.py
+++++_ 🛠 main()
+
+
++++ <b>📂 parse_yaml/</b>
+
+++++ 📄 class_parse_yaml.py
++++++_ 🛠 ParseYaml._<U+200B>_init_<U+200B>_()
++++++_ 🛠 ParseYaml._<U+200B>_setitem_<U+200B>_()
++++++_ 🛠 ParseYaml._<U+200B>_getitem_<U+200B>_()
++++++_ 🛠 ParseYaml.keys()
++++++_ 🛠 ParseYaml.values()
++++++_ 🛠 ParseYaml.items()
++++++_ 🛠 ParseYaml.clean()
++++++_ 🛠 ParseYaml._<U+200B>_str_<U+200B>_()
+
+++++ 📄 class_set_parameter.py
++++++_ 🛠 SetParameter._<U+200B>_init_<U+200B>_()
++++++_ 🛠 SetParameter.check_error()
++++++_ 🛠 SetParameter._<U+200B>_length_good()
++++++_ 🛠 SetParameter._<U+200B>_type_good()
++++++_ 🛠 SetParameter.value()
++++++_ 🛠 SetParameter.path()
++++++_ 🛠 SetParameter._<U+200B>_str_<U+200B>_()
+
+++++ 📄 parse_yaml.py
++++++_ 🛠 parse_yaml()
+
+
++++< <b>📂 utils/</b>
+
+++++ 📄 class_atom_constant.py
++++++_ 🛠 AtomConstant._<U+200B>_setitem_<U+200B>_()
++++++_ 🛠 AtomConstant._<U+200B>_getitem_<U+200B>_()
++++++_ 🛠 AtomConstant.keys()
++++++_ 🛠 AtomConstant.values()
++++++_ 🛠 AtomConstant.items()
++++++_ 🛠 AtomConstant._<U+200B>_str_<U+200B>_()
+
+++++ 📄 parse_argument.py
++++++_ 🛠 parse_argument()
+
+++++ 📄 class_write_json.py
++++++_ 🛠 WriteJson._<U+200B>_init_<U+200B>_()
++++++_ 🛠 WriteJson.write()
++++++_ 🛠 WriteJson._<U+200B>_str_<U+200B>_()
+
+@endwbs

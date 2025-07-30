@@ -1,0 +1,45 @@
+#!/bin/bash
+# SCRIPT: ./UPLOAD
+# AUTHOR: Lucas ROUAUD <lucas.rouaud@gmail.com>
+# DATE:   13/09/2024
+#
+# DESCRIPTION
+# Upload a Python package to PyPI using `twine`.
+#
+# USAGE
+# ./UPLOAD
+#
+# DEPENDENCIES
+# - conda: Ensure conda is installed and a conda environment is activated.
+# - jq: Required for parsing JSON output from conda.
+# - pytest: To run tests before uploading the package.
+# - twine and build: Ensure the twine and build packages are installed in thei
+#                    Python environment.
+#
+# EXIT CODES
+# 0    Success
+# 1    Conda environment not activated or pytest failure.
+
+# Check that a conda environment is enabled.
+conda_env_name="$(conda info --json | jq '.active_prefix_name' --raw-output)"
+
+if [[ "${conda_env_name}" == "null" ]];then
+    echo "[Err##] Please, activate a conda environment."
+    exit 1
+fi
+
+# Run pytest to check that the code is working.
+pytest --disable-warnings &> /dev/null
+
+if [[ "${?}" != "0" ]];then
+    echo "[Err##] Pytest failed! The code might be broken."
+    exit 1
+fi
+
+# Upload the package to Pypi.
+if [ -d "dist" ];then
+    rm -rf "dist"
+fi
+
+python -m build
+python -m twine upload dist/*

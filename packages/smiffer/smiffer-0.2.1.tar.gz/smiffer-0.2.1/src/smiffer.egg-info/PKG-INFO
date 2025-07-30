@@ -1,0 +1,165 @@
+Metadata-Version: 2.4
+Name: smiffer
+Version: 0.2.1
+Summary: Compute possible interaction with fields arround protein or RNA.
+Author-email: Diego BARQUERO MORERA <diegobarqueromorera@gmail.com>, Lucas ROUAUD <lucas.rouaud@gmail.com>
+Maintainer-email: Lucas ROUAUD <lucas.rouaud@gmail.com>
+License: MIT License
+Project-URL: Homepage, https://gitlab.galaxy.ibpc.fr/rouaud/smiffer
+Project-URL: Documentation, https://smiffer.mol3d.tech
+Project-URL: Repository, https://gitlab.galaxy.ibpc.fr/rouaud/smiffer
+Keywords: python,chemical,grid,RNA,protein,properties,physical based computation,bioinformatic,chemoinformatic
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Development Status :: 4 - Beta
+Classifier: Natural Language :: English
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Scientific/Engineering :: Bio-Informatics
+Classifier: Topic :: Scientific/Engineering :: Chemistry
+Classifier: Topic :: Scientific/Engineering :: Visualization
+Requires-Python: >=3.5
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: mdanalysis
+Requires-Dist: numpy
+Requires-Dist: pyyaml
+Requires-Dist: scipy
+Requires-Dist: tqdm
+Provides-Extra: dev
+Requires-Dist: ipython; extra == "dev"
+Requires-Dist: markdown; extra == "dev"
+Requires-Dist: mkdocs; extra == "dev"
+Requires-Dist: mkdocs-autorefs; extra == "dev"
+Requires-Dist: mkdocs-callouts; extra == "dev"
+Requires-Dist: mkdocs-material; extra == "dev"
+Requires-Dist: mkdocs-material-extensions; extra == "dev"
+Requires-Dist: mkdocstrings; extra == "dev"
+Requires-Dist: mkdocstrings-python; extra == "dev"
+Requires-Dist: pylint; extra == "dev"
+Requires-Dist: pymdown-extensions; extra == "dev"
+Requires-Dist: pytest; extra == "dev"
+Dynamic: license-file
+
+<div align="center">
+
+# ⌛️ smiffer 🦙
+
+[![Python 3.5](https://img.shields.io/badge/python-%E2%89%A5_3.5.0-blue.svg)](https://www.python.org/downloads/release/python-350/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+<img src="https://smiffer.mol3d.tech/ressources/img/logo_compress.png" width="40%">
+
+Contributors: **Diego BARQUERO MORERA** and **Lucas ROUAUD**
+
+**Documentation:** https://smiffer.mol3d.tech/
+
+</div align="center">
+
+This software is coded in python. It permits to produced grids, into a OpenDX format (`.dx`). With those grids, it is possible to visualize multiple physical and chemical properties around a protein. This permit to see all possible area of interaction (with proteins, ligands or lipids) around a protein.
+
+## ⚙️ Installation
+
+### 📦 Using pipx (recommended)
+
+- pipx link: [https://github.com/pypa/pipx?tab=readme-ov-file#install-pipx](https://github.com/pypa/pipx?tab=readme-ov-file#install-pipx)
+
+```bash
+$ pipx install smiffer
+
+# Checking the installation is done.
+$ smiffer --help
+```
+
+> **🦊 From the GitLab repository:**
+> 
+> ```bash
+> $ git clone https://gitlab.galaxy.ibpc.fr/rouaud/smiffer.git
+> $ cd smiffer/
+> $ pipx install .
+> 
+> # Checking the installation is done.
+> $ smiffer --help
+> ```
+
+### 🐍 Using pip
+
+```bash
+$ python3 -m pip install smiffer
+
+# Checking the installation is done.
+$ smiffer --help
+```
+
+> **🦊 From the GitLab repository:**
+> 
+> ```bash
+> $ git clone https://gitlab.galaxy.ibpc.fr/rouaud/smiffer.git
+> $ cd smiffer/
+> $ python3 -m pip install .
+> 
+> # Checking the installation is done.
+> $ smiffer --help
+> ```
+
+### 🐋 Using docker
+
+```bash
+$ 
+```
+
+### 🛠 From scratch (not recommended)
+
+```bash
+$ git clone https://gitlab.galaxy.ibpc.fr/rouaud/smiffer.git
+$ cd smiffer
+
+# Install globaly these packages…
+$ pip install -r env/requirements.txt
+
+# Checking the installation is done.
+$ python -m src.smiffer --help
+```
+
+## 🌐 External software
+
+The APBS server can be found at next url: https://server.poissonboltzmann.org/.
+
+## 🚀 Launching the software
+
+### 🎥 Example
+
+To test the program, use the following commands in `📁 smiffer/`:
+
+```sh
+$ mkdir data/output/
+
+# Launching the software.
+$ smiffer -i data1EHE.pdb \
+$         -p data1EHE_parameter.yml \
+$         -a data/1EHE_APBS.dx \
+$         -o data/output/
+
+# Visualize using VMD (or other like PyMol, Chimera, Mol*, etc.).
+$ vmd data/1EHE.pdb data/output/*.dx
+```
+
+### 🔍 Parameters description
+
+| **Argument**              | **Mandatory?** | **Type and usage**     | **Description**                                                              |
+| :------------------------ | :------------: | :--------------------- | :--------------------------------------------------------------------------- |
+| **`-i` or `--input`**     |      Yes       | `--input file.pdb`     | The `.pdb` file that while be used<br/>to computed the properties.           |
+| **`-o` or `--output`**    |      Yes       | `--output directory`   | The directory to output the results.                                         |
+| **`-p` or `--parameter`** |       No       | `--parameter file.yml` | The YAML parameters file.                                                    |
+| **`-a` or `--apbs`**      |       No       | `--apbs file.dx`       | The already computed APBS<br/>electrostatic grid.                            |
+| **`-h` or `--help`**      |       No       | Flag                   | Display the help and exit the<br/>program.                                   |
+| **`-v` or `--version`**   |       No       | Flag                   | Display the version and exit the<br/>program.                                |
+| **`--verbose`**           |       No       | Flag                   | Activated a verbose mode, so more<br/>information are going to be displayed. |
+
+## 🙇‍♂️ Acknowledgement
+
+🔍 Code reviewing: **Hubert SANTUZ**
+
+✒️ Formula checking: **Jules MARIEN**
+
+_This work is licensed under a [MIT License](https://opensource.org/licenses/MIT)._
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)

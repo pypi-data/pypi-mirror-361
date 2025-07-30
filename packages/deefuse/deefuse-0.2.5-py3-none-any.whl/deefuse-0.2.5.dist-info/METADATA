@@ -1,0 +1,126 @@
+Metadata-Version: 2.4
+Name: deefuse
+Version: 0.2.5
+Summary: Deemix library upgrader, automatically matching local files
+Author-email: Mitchell Winter <mitchell.winter@queensu.ca>
+License: MIT License
+        
+        Copyright (c) 2025 Mitchell Winter
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Environment :: Win32 (MS Windows)
+Classifier: Environment :: MacOS X
+Classifier: Environment :: X11 Applications
+Classifier: Topic :: Multimedia :: Sound/Audio :: Players
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: customtkinter>=5.1
+Requires-Dist: mutagen>=1.47
+Requires-Dist: requests>=2.31
+Provides-Extra: dev
+Requires-Dist: pyinstaller>=6.0; extra == "dev"
+Requires-Dist: build; extra == "dev"
+Dynamic: license-file
+
+<div style="
+  background: white;
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+">
+  <img 
+    src="https://github.com/user-attachments/assets/09298035-dcb7-4762-a6f3-e27165714beb" 
+    alt="deefuse_logo_high_dpi" 
+    style="
+      max-width: 100%;
+      height: auto;
+      display: block;
+    "
+  />
+</div>
+
+# DeeFuse
+[![PyPI](https://img.shields.io/pypi/v/deefuse)](https://pypi.org/project/deefuse/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/deefuse)](https://pypi.org/project/deefuse/)
+[![License](https://img.shields.io/github/license/mojwinter/DeeFuse)](https://github.com/mojwinter/DeeFuse/blob/main/LICENSE)
+[![Build](https://github.com/mojwinter/DeeFuse/actions/workflows/build.yml/badge.svg)](https://github.com/mojwinter/DeeFuse/actions/workflows/build.yml)
+[![GitHub release](https://img.shields.io/github/v/release/mojwinter/DeeFuse)](https://github.com/mojwinter/DeeFuse/releases)
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/mojwinter/DeeFuse/total)
+[![Issues](https://img.shields.io/github/issues/mojwinter/DeeFuse)](https://github.com/mojwinter/DeeFuse/issues)
+[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](https://github.com/mojwinter/DeeFuse/issues)
+
+DeeFuse is a desktop application for upgrading your existing music library using tracks downloaded from Deezer. It scans your existing files, finds matches via the Deezer API and downloads the highest quality versions using the `deemix` command line interface. This aims to improve bitrate, metadata and organization.
+
+## Features
+
+- Automatic scanning of a directory for `.flac`, `.mp3` and `.m4a` files
+- Strict matching of artist, title and duration for unattended downloads
+- Manual search and relaxed matching when no automatic match is found
+- Progress dialog with the ability to cancel a scan
+- CSV logs for skipped and matched tracks
+
+## Requirements
+
+- Python 3.9 or newer
+- The [deemix](https://deemix.app/) CLI available on your `PATH`
+
+The application installs its Python dependencies automatically when you install the package.
+
+## Installation
+
+Install the package from source:
+
+```bash
+pip install .
+```
+
+This will install a `deefuse` entry point.
+
+## Building a standalone executable
+
+Use PyInstaller's module mode to bundle the application:
+
+```bash
+pyinstaller --noconsole --onefile --name DeeFuse --icon assets/deefuse_desktop.ico src/deefuse/__main__.py
+```
+
+Running in module mode ensures the package context is correctly set when the
+executable starts.
+
+## Usage
+
+Run the program either with the installed command or via the module:
+
+```bash
+deefuse
+# or
+python -m deefuse
+```
+
+Select your music directory and click **Scan & Download**. Matches will be downloaded automatically. Unmatched tracks will appear in the **Skipped Tracks** table where you can perform manual searches and downloads.
+
+Matched and skipped tracks are recorded in `matched_tracks.csv` and `skipped_tracks.csv` respectively.
+
+## License
+
+This project is licensed under the terms of the MIT License. See the [LICENSE](LICENSE) file for details.

@@ -1,0 +1,48 @@
+Metadata-Version: 2.1
+Name: smart-chunker
+Version: 0.0.2
+Summary: Smart-Chunker is a semantic chunker to prepare a long document for RAG
+Home-page: https://github.com/bond005/smart_chunker
+Author: Ivan Bondarenko
+Author-email: bond005@yandex.ru
+License: Apache License Version 2.0
+Keywords: smart-chunker,rag,chunker,cross-encoder,encoder,reranker
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Science/Research
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development
+Classifier: Topic :: Scientific/Engineering
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Text Processing
+Classifier: Topic :: Text Processing :: Linguistic
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+License-File: LICENSE
+Requires-Dist: nltk
+Requires-Dist: nltk-punkt
+Requires-Dist: razdel==0.5.0
+Requires-Dist: sentencepiece
+Requires-Dist: torch>=2.0.1
+Requires-Dist: transformers>=4.38.1
+
+
+Smart-Chunker
+===============
+
+This smart chunker is a semantic chunker to prepare a
+long document for retrieval augmented generation (RAG).
+
+Unlike a usual chunker, it does not split the text into
+identical groups of N tokens. Instead, it uses a cross-encoder
+to calculate the similarity function between neighboring
+sentences and divides the text based on the most significant
+boundaries of semantic transitions, i.e. minima in the
+above-mentioned similarity function.
+
+The BAAI/bge-reranker-v2-m3, or any other model that supports the
+AutoModelForSequenceClassification interface, should be used
+as a cross encoder.
+
+The smart chunker supports Russian and English.

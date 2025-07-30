@@ -1,0 +1,123 @@
+{% if use_webhook %}
+from contextlib import asynccontextmanager
+
+import uvicorn
+from fastapi import FastAPI
+{% else %}
+import asyncio
+from aiogram import Bot, Dispatcher
+{% endif %}
+
+from . import ComponentRegistry
+{% if use_admin %}
+from .admin import AdminComponent
+{% endif %}
+{% if use_webhook %}
+from .app import AppComponent
+{% endif %}
+from .bot import BotComponent
+{% if use_db %}
+from .db import DBComponent
+{% endif %}
+{% if use_redis %}
+from .redis import RedisComponent
+{% endif %}
+{% if use_scheduler %}
+from .scheduler import SchedulerComponent
+{% endif %}
+from .utils import resolve_component_attr
+
+registry = ComponentRegistry()
+
+
+{% if use_webhook %}
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    await registry.startup_all()
+    yield
+    await registry.shutdown_all()
+
+
+{% endif %}
+def setup_components():
+    {% if use_redis %}
+    registry.register(RedisComponent)
+    {% endif %}
+    {% if use_db %}
+    registry.register(DBComponent)
+    {% endif %}
+    {% if use_scheduler and use_redis %}
+    registry.register(
+        SchedulerComponent,
+        depends_on=[RedisComponent],
+    )
+    {% elif use_scheduler %}
+    registry.register(SchedulerComponent)
+    {% endif %}
+    {% if use_scheduler and use_db %}
+    registry.register(
+        BotComponent,
+        depends_on=[
+            SchedulerComponent,
+            DBComponent,
+        ]
+    )
+    {% elif use_scheduler %}
+    registry.register(
+        BotComponent,
+        depends_on=[SchedulerComponent],
+    )
+    {% elif use_db %}
+    registry.register(
+        BotComponent,
+        depends_on=[DBComponent],
+    )
+    {% else %}
+    registry.register(BotComponent)
+    {% endif %}
+    {% if use_webhook %}
+    registry.register(
+        AppComponent,
+        depends_on=[BotComponent],
+    )
+    {% endif %}
+    {% if use_admin %}
+    registry.register(
+        AdminComponent,
+        depends_on=[AppComponent],
+    )
+    {% endif %}
+
+
+{% if use_webhook %}
+def main() -> None:
+    setup_components()
+    app: FastAPI = resolve_component_attr(AppComponent, "app")
+    app.router.lifespan_context = lifespan  # type: ignore
+    from .app.config import app_config
+
+    uvicorn.run(
+        app=app,
+        host=app_config.HOST,
+        port=app_config.PORT,
+        forwarded_allow_ips="*",
+        proxy_headers=True,
+    )
+
+
+if __name__ == "__main__":
+    main()
+{% else %}
+async def main() -> None:
+    setup_components()
+    dp: Dispatcher = resolve_component_attr(BotComponent, "dp")
+    bot: Bot = resolve_component_attr(BotComponent, "bot")
+
+    dp.startup.register(registry.startup_all)
+    dp.shutdown.register(registry.shutdown_all)
+    await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+{% endif %}

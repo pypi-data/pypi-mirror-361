@@ -1,0 +1,42 @@
+from __future__ import annotations
+
+from sqlalchemy import (
+    BigInteger,
+    {% if auth_type == "telegram" %}
+    ForeignKey,
+    {% elif auth_type == "tonconnect" %}
+    VARCHAR,
+    {% endif %}
+)
+from sqlalchemy.orm import (
+    Mapped,
+    mapped_column,
+)
+
+from .base import BaseModel
+from .mixins import ModelCreatedAtMixin
+{% if auth_type == "telegram" %}
+from .user import UserModel
+{% endif %}
+
+
+class AdminModel(BaseModel, ModelCreatedAtMixin):
+    __tablename__ = "admins"
+
+    id: Mapped[int] = mapped_column(
+        BigInteger,
+        primary_key=True,
+        nullable=False,
+    )
+    {% if auth_type == "telegram" %}
+    user_id: Mapped[int] = mapped_column(
+        BigInteger,
+        ForeignKey(UserModel.id),
+        nullable=False,
+    )
+    {% elif auth_type == "tonconnect" %}
+    wallet_address: Mapped[str] = mapped_column(
+        VARCHAR(48),
+        nullable=False,
+    )
+    {% endif %}

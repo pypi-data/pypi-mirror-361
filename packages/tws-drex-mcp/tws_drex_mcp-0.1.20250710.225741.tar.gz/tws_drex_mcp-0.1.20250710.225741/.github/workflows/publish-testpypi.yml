@@ -1,0 +1,87 @@
+name: Publish to TestPyPI on dev
+on:
+  push:
+    branches: [ dev ]
+
+jobs:
+  publish-testpypi:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write  # Needed to create tags
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # Important: Fetches all history for hatch-vcs to determine version from tags
+        token: ${{ secrets.GH_PAT }}
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Install build tooling and Hatch
+      run: |
+        python -m pip install --upgrade pip
+        # build is for python -m build, hatchling & hatch-vcs are its build deps specified in pyproject.toml
+        # hatch is for the `hatch version` command and `hatch build`
+        pip install build hatchling hatch-vcs hatch
+
+    - name: Create test version tag
+      id: create_version
+      run: |
+        # Get current date and time for version
+        DATE=$(date +%Y%m%d)
+        TIME=$(date +%H%M%S)
+        COMMIT_HASH=$(git rev-parse --short HEAD)
+        
+        # Create test tag that won't trigger PyPI workflow
+        TEST_TAG="test-0.1.$DATE.$TIME"
+        
+        # Create corresponding version tag for hatch-vcs (this will have 4 parts so PyPI won't trigger)
+        VERSION_TAG="v0.1.$DATE.$TIME"
+        
+        echo "Creating test tag: $TEST_TAG"
+        echo "Creating version tag: $VERSION_TAG (commit: $COMMIT_HASH)"
+        
+        # Create and push the tags
+        git tag $TEST_TAG
+        git tag $VERSION_TAG
+        git push origin $TEST_TAG
+        git push origin $VERSION_TAG
+        
+        # Output for later steps
+        echo "test_tag=$TEST_TAG" >> "$GITHUB_OUTPUT"
+        echo "version_tag=$VERSION_TAG" >> "$GITHUB_OUTPUT"
+        echo "version_number=0.1.$DATE.$TIME" >> "$GITHUB_OUTPUT"
+        echo "commit_hash=$COMMIT_HASH" >> "$GITHUB_OUTPUT"
+
+    - name: Get dynamic version for confirmation
+      id: get_version
+      run: |
+        # hatch version will use the version tag we just created
+        VERSION=$(hatch version)
+        echo "Calculated project version: $VERSION"
+        echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+    - name: Clean previous builds
+      run: rm -rf dist/ *.egg-info
+
+    - name: Build
+      run: python -m build
+
+    - name: Publish to TestPyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        user: __token__
+        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+        repository-url: https://test.pypi.org/legacy/
+
+    - name: Confirm
+      run: |
+        echo "✅ Published ${{ steps.get_version.outputs.version }} to TestPyPI"
+        echo "🏷️  Test tag: ${{ steps.create_version.outputs.test_tag }}"
+        echo "🏷️  Version tag: ${{ steps.create_version.outputs.version_tag }}"
+        echo "📦 Package version: ${{ steps.create_version.outputs.version_number }}"
+        echo "📝 Commit hash: ${{ steps.create_version.outputs.commit_hash }}"

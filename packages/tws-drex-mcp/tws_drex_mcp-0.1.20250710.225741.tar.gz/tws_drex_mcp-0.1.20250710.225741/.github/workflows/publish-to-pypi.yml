@@ -1,0 +1,45 @@
+name: Publish Python Package to PyPI
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+jobs:
+  publish-pypi:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write  # For PyPI publishing using OIDC
+      contents: write  # To allow creating/updating GitHub Releases
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # Important: Fetches all history for hatch-vcs to determine version from tags
+        token: ${{ secrets.GH_PAT }}
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Install dependencies
+      run: |
+        pip install --upgrade pip
+        pip install build hatchling hatch-vcs hatch
+
+    - name: Build
+      run: python -m build
+
+    - name: Upload to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        user: __token__
+        password: ${{ secrets.PYPI_API_TOKEN }}
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        name: Release ${{ github.ref_name }}
+        tag_name: ${{ github.ref_name }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,242 @@
+// Copyright 2023 Yunseong Hwang
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// SPDX-License-Identifier: Apache-2.0
+
+syntax = "proto3";
+
+package axserve;
+
+
+service Active {
+  rpc Create(CreateRequest) returns (CreateResponse) {}
+  rpc Refer(ReferRequest) returns (ReferResponse) {}
+  rpc Release(ReleaseRequest) returns (ReleaseResponse) {}
+  rpc Destroy(DestroyRequest) returns (DestroyResponse) {}
+  rpc List(ListRequest) returns (ListResponse) {}
+  rpc Describe(DescribeRequest) returns (DescribeResponse) {}
+  rpc GetProperty(GetPropertyRequest) returns (GetPropertyResponse) {}
+  rpc SetProperty(SetPropertyRequest) returns (SetPropertyResponse) {}
+  rpc InvokeMethod(InvokeMethodRequest) returns (InvokeMethodResponse) {}
+  rpc ConnectEvent(ConnectEventRequest) returns (ConnectEventResponse) {}
+  rpc DisconnectEvent(DisconnectEventRequest) returns (DisconnectEventResponse) {}
+  rpc HandleEvent(stream HandleEventResponse) returns (stream HandleEventRequest) {}
+}
+
+
+enum ContextType {
+  DEFAULT = 0;
+  EVENT = 1;
+}
+
+message ContextInfo {
+  string id = 1;
+  string instance = 2;
+  uint32 index = 3;
+}
+
+message Context {
+  ContextType context_type = 1;
+  ContextInfo context_info = 2;
+}
+
+
+message CreateRequest {
+  Context context = 1;
+  string clsid = 2;
+}
+
+message CreateResponse {
+  string instance = 1;
+}
+
+
+message ReferRequest {
+  Context context = 1;
+  string instance = 2;
+}
+
+message ReferResponse {
+  bool successful = 1;
+}
+
+
+message ReleaseRequest {
+  Context context = 1;
+  string instance = 2;
+}
+
+message ReleaseResponse {
+  bool successful = 1;
+}
+
+
+message DestroyRequest {
+  Context context = 1;
+  string instance = 2;
+}
+
+message DestroyResponse {
+  bool successful = 1;
+}
+
+
+message ListRequest {
+  Context context = 1;
+}
+
+message ListItem {
+  string instance = 1;
+  string clsid = 2;
+  int32 references = 3;
+}
+
+message ListResponse {
+  repeated ListItem items = 1;
+}
+
+
+message DescribeRequest {
+  Context context = 1;
+  string instance = 2;
+}
+
+message PropertyInfo {
+  uint32 index = 1;
+  string name = 2;
+  string property_type = 3;
+  bool is_readable = 4;
+  bool is_writable = 5;
+}
+
+message ArgumentInfo {
+  string name = 1;
+  string argument_type = 2;
+}
+
+message MethodInfo {
+  uint32 index = 1;
+  string name = 2;
+  repeated ArgumentInfo arguments = 3;
+  string return_type = 4;
+}
+
+message EventInfo {
+  uint32 index = 1;
+  string name = 2;
+  repeated ArgumentInfo arguments = 3;
+}
+
+message DescribeResponse {
+  repeated PropertyInfo properties = 1;
+  repeated MethodInfo methods = 2;
+  repeated EventInfo events = 3;
+}
+
+
+message VariantList {
+  repeated Variant values = 1;
+}
+
+message VaraintHashMap {
+  map<string, Variant> values = 1;
+}
+
+message Variant {
+  oneof value {
+    bool bool_value = 1;
+    string string_value = 2;
+    int32 int_value = 3;
+    uint32 uint_value = 4;
+    double double_value = 5;
+    VariantList list_value = 6;
+    VaraintHashMap map_value = 7;
+  }
+}
+
+
+message GetPropertyRequest {
+  Context context = 1;
+  string instance = 2;
+  uint32 index = 3;
+}
+
+message GetPropertyResponse {
+  Variant value = 1;
+}
+
+
+message SetPropertyRequest {
+  Context context = 1;
+  string instance = 2;
+  uint32 index = 3;
+  Variant value = 4;
+}
+
+message SetPropertyResponse {
+  bool successful = 1;
+}
+
+
+message InvokeMethodRequest {
+  Context context = 1;
+  string instance = 2;
+  uint32 index = 3;
+  repeated Variant arguments = 4;
+}
+
+message InvokeMethodResponse {
+  Variant return_value = 1;
+}
+
+
+message ConnectEventRequest {
+  Context context = 1;
+  string instance = 2;
+  uint32 index = 3;
+}
+
+message ConnectEventResponse {
+  bool successful = 1;
+}
+
+
+message DisconnectEventRequest {
+  Context context = 1;
+  string instance = 2;
+  uint32 index = 3;
+}
+
+message DisconnectEventResponse {
+  bool successful = 1;
+}
+
+
+message HandleEventRequest {
+  uint64 timestamp = 1;
+  string id = 2;
+  string instance = 3;
+  uint32 index = 4;
+  repeated Variant arguments = 5;
+  bool is_ping = 6;
+  bool is_pong = 7;
+}
+
+message HandleEventResponse {
+  string id = 1;
+  string instance = 2;
+  uint32 index = 3;
+  bool is_ping = 4;
+  bool is_pong = 5;
+}

@@ -1,0 +1,67 @@
+cmake_minimum_required(VERSION 3.27)
+
+include_guard(GLOBAL)
+
+message(CHECK_START "Checking ZLIB provider")
+
+if (BUILD_SHARED_LIBS)
+    set(ZLIB_USE_STATIC_LIBS OFF)
+else()
+    set(ZLIB_USE_STATIC_LIBS ON)
+endif()
+
+if(AXSERVE_ZLIB_PROVIDER STREQUAL "module")
+    set(ZLIB_EXTERNAL_NAME "ZLIB")
+    set(ZLIB_PREFIX_NAME "zlib")
+    set(ZLIB_THIRD_PARTY_NAME "zlib")
+
+    set(ZLIB_GIT_REPOSITORY "https://github.com/zlib-ng/zlib-ng.git")
+    set(ZLIB_GIT_TAG "2.2.4")
+
+    set(ZLIB_PATCH_COMMAND
+        git restore * &&
+        git apply --ignore-whitespace "${CMAKE_CURRENT_LIST_DIR}/../../patches/zlib-ng-2.2.4.patch")
+
+    include("${CMAKE_CURRENT_LIST_DIR}/googletest.cmake")
+
+    set(ZLIB_CMAKE_CACHE_ARGS
+        "-DCMAKE_SYSTEM_NAME:STRING=${CMAKE_SYSTEM_NAME}"
+        "-DCMAKE_SYSTEM_VERSION:STRING=${CMAKE_SYSTEM_VERSION}"
+        "-DCMAKE_SYSTEM_PROCESSOR:STRING=${CMAKE_SYSTEM_PROCESSOR}"
+        "-DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_TOOLCHAIN_FILE}"
+        "-DCMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD}"
+        "-DCMAKE_CXX_STANDARD_REQUIRED:BOOL=${CMAKE_CXX_STANDARD_REQUIRED}"
+        "-DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}"
+        "-DBUILD_TESTING:BOOL=${BUILD_TESTING}"
+        "-DZLIB_ENABLE_TESTS:BOOL=${BUILD_TESTING}"
+        "-DZLIBNG_ENABLE_TESTS:BOOL=${BUILD_TESTING}"
+        "-DZLIB_COMPAT:BOOL=ON"
+    )
+
+    if(AXSERVE_GTEST_PROVIDER STREQUAL "module")
+        list(APPEND ZLIB_DEPENDS GTest)
+    endif()
+
+    include("${CMAKE_CURRENT_LIST_DIR}/../util/external-project.cmake")
+
+    ExternalProject_AddForThisProject("${ZLIB_EXTERNAL_NAME}"
+        PREFIX_NAME "${ZLIB_PREFIX_NAME}"
+        THIRD_PARTY_NAME "${ZLIB_THIRD_PARTY_NAME}"
+        GIT_REPOSITORY "${ZLIB_GIT_REPOSITORY}"
+        GIT_TAG "${ZLIB_GIT_TAG}"
+        CMAKE_CACHE_ARGS ${ZLIB_CMAKE_CACHE_ARGS}
+        DEPENDS ${ZLIB_DEPENDS}
+        START_UNPARSED_ARGUMENTS
+        PATCH_COMMAND ${ZLIB_PATCH_COMMAND}
+        LOG_CONFIGURE TRUE
+        LOG_BUILD TRUE
+        LOG_OUTPUT_ON_FAILURE TRUE
+    )
+
+    message(CHECK_PASS "${AXSERVE_ZLIB_PROVIDER}")
+elseif(AXSERVE_ZLIB_PROVIDER STREQUAL "package")
+    find_package(ZLIB REQUIRED)
+    message(CHECK_PASS "${AXSERVE_ZLIB_PROVIDER}")
+else()
+    message(CHECK_FAIL "${AXSERVE_ZLIB_PROVIDER}")
+endif()

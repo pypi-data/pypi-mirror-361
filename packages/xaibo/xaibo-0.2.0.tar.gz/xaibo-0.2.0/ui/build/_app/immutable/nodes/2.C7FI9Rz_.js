@@ -1,0 +1,1 @@
+import{L as c}from"../chunks/64be4XcA.js";const t=async({parent:e})=>({breadcrumbs:(await e()).breadcrumbs.concat({name:"Agents",href:"/agents"})}),r=Object.freeze(Object.defineProperty({__proto__:null,load:t},Symbol.toStringTag,{value:"Module"}));export{c as component,r as universal};

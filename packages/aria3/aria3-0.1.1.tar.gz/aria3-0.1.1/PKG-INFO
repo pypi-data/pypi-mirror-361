@@ -1,0 +1,565 @@
+Metadata-Version: 2.3
+Name: aria3
+Version: 0.1.1
+Summary: 高级多线程下载器与流媒体代理 - Advanced multi-threaded downloader and streaming proxy (aria2 replacement)
+License: MIT
+Keywords: download,multi-thread,streaming,proxy,hls,dash,aria2,replacement
+Author: wmymz
+Author-email: wmymz@icloud.com
+Requires-Python: >=3.8,<4.0
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Topic :: Multimedia :: Video
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Dist: aiofiles (>=0.7.0,<0.8.0)
+Requires-Dist: fastapi (>=0.68.0,<0.69.0)
+Requires-Dist: m3u8 (>=3.0.0,<4.0.0)
+Requires-Dist: requests (>=2.25.0,<3.0.0)
+Requires-Dist: tqdm (>=4.60.0,<5.0.0)
+Requires-Dist: uvicorn (>=0.15.0,<0.16.0)
+Project-URL: Homepage, https://github.com/qy527145/aria3
+Project-URL: Repository, https://github.com/qy527145/aria3
+Description-Content-Type: text/markdown
+
+# aria3 - Advanced Multi-Threaded Downloader & Streaming Proxy (aria2 replacement)
+
+A comprehensive Python library for multi-threaded downloading with advanced features including dynamic source prioritization, resumable downloads, intelligent performance monitoring, and a powerful streaming proxy server for accelerating media streaming. Designed as a modern replacement for aria2 with enhanced Python integration.
+
+## Features
+
+### Core Functionality
+- **Multi-threaded downloading** using Python's threading module
+- **Multiple source URLs** with automatic failover and load balancing
+- **Automatic file chunking** for parallel downloading with configurable chunk sizes
+- **Resumable downloads** with range request support
+- **Progress tracking** with real-time updates and ETA calculation
+
+### Advanced Features
+- **Dynamic source prioritization** - automatically adjusts source priorities based on performance
+- **Speed monitoring** - switches to faster sources when others become slow
+- **Custom HTTP headers** and cookie support for authentication
+- **Intelligent retry logic** with exponential backoff
+- **Comprehensive logging** and error handling
+- **Thread-safe progress reporting** with optional progress bars
+
+### Streaming Proxy Features
+- **HTTP streaming proxy server** - accelerates media streaming with multi-threaded downloads
+- **HLS/DASH support** - handles popular streaming protocols with playlist parsing
+- **Intelligent caching** - caches segments locally with TTL and size limits
+- **Smart pre-fetching** - pre-fetches upcoming segments based on playlist analysis
+- **Bandwidth monitoring** - adapts behavior based on network conditions
+- **Range request support** - enables efficient seeking and partial content delivery
+- **Authentication passthrough** - forwards auth headers to original sources
+
+### Configuration Options
+- Configurable maximum chunk/segment sizes
+- Custom thread pool sizes
+- Timeout and retry settings
+- Speed thresholds for source switching
+- Custom User-Agent and headers
+- Cookie support for session management
+
+## Installation
+
+```bash
+# Install from source
+git clone <repository-url>
+cd aget
+pip install -e .
+
+# Or install dependencies directly
+pip install requests tqdm
+```
+
+## Quick Start
+
+### Simple Download
+```python
+from aget import download_file
+
+# Download a file from a single source
+success = download_file(
+    urls=["https://example.com/file.zip"],
+    output_path="downloaded_file.zip"
+)
+```
+
+### Multi-Source Download
+```python
+from aget import MultiThreadDownloader, DownloadConfig
+
+# Configure download settings
+config = DownloadConfig(
+    max_chunk_size=1024 * 1024,  # 1MB chunks
+    max_threads=4,
+    timeout=30,
+    retry_attempts=3
+)
+
+# Create downloader with multiple sources
+downloader = MultiThreadDownloader(config)
+downloader.add_sources([
+    "https://mirror1.example.com/file.zip",
+    "https://mirror2.example.com/file.zip",
+    "https://mirror3.example.com/file.zip"
+], priorities=[1.0, 0.8, 0.6])  # Higher priority for first source
+
+# Start download
+success = downloader.download("output_file.zip")
+```
+
+### Custom Headers and Authentication
+```python
+config = DownloadConfig(
+    headers={
+        'Authorization': 'Bearer your-token',
+        'User-Agent': 'MyApp/1.0'
+    },
+    cookies={
+        'session': 'session-id',
+        'csrf_token': 'token-value'
+    }
+)
+
+downloader = MultiThreadDownloader(config)
+downloader.add_source("https://api.example.com/protected-file")
+success = downloader.download("protected_file.dat")
+```
+
+## Streaming Proxy Server
+
+The aget streaming proxy provides an HTTP server that accelerates media streaming by using multi-threaded downloads, intelligent caching, and smart pre-fetching.
+
+### Quick Start - Streaming Proxy
+
+```bash
+# Start streaming proxy with default settings
+python -m aget.streaming_cli start
+
+# Start with custom port and cache directory
+python -m aget.streaming_cli start --port 9090 --cache-dir /tmp/aget_cache
+
+# Generate configuration file
+python -m aget.streaming_cli config --generate config.json
+
+# Start with configuration file
+python -m aget.streaming_cli start --config config.json
+```
+
+### Using the Streaming Proxy
+
+```python
+from aget import StreamingProxyServer, StreamingProxyConfig
+
+# Create configuration
+config = StreamingProxyConfig()
+config.server.port = 8080
+config.cache.max_cache_size = 1024 * 1024 * 1024  # 1GB cache
+config.prefetch.prefetch_segments = 5  # Pre-fetch 5 segments ahead
+
+# Start server
+server = StreamingProxyServer(config)
+server.run()  # This blocks - run in separate thread for non-blocking
+```
+
+### Proxy URLs for Media Players
+
+Replace original streaming URLs with proxy URLs:
+
+```python
+# Original URL
+original_url = "https://example.com/stream/playlist.m3u8"
+
+# Proxy URL (URL-encoded)
+import urllib.parse
+encoded_url = urllib.parse.quote(original_url, safe='')
+proxy_url = f"http://localhost:8080/proxy?url={encoded_url}"
+
+# Use proxy_url in your media player for accelerated streaming
+```
+
+## Command Line Interface
+
+The package includes a powerful CLI for direct usage:
+
+```bash
+# Simple download
+python -m aget.cli download https://example.com/file.zip output.zip
+
+# Multi-source download with custom settings
+python -m aget.cli download -t 8 -c 2048 \
+    https://mirror1.com/file.zip \
+    https://mirror2.com/file.zip \
+    output.zip
+
+# Download with custom headers and cookies
+python -m aget.cli download \
+    -H "Authorization: Bearer token" \
+    -C "session=abc123" \
+    https://api.example.com/file \
+    output
+
+# Get file information
+python -m aget.cli info https://example.com/largefile.zip
+```
+
+### CLI Options
+
+```
+download command options:
+  -t, --threads         Maximum number of threads (default: 4)
+  -c, --chunk-size      Maximum chunk size in bytes (default: 1MB)
+  --timeout             Request timeout in seconds (default: 30)
+  --retries             Number of retry attempts (default: 3)
+  --retry-delay         Delay between retries in seconds (default: 1.0)
+  --speed-threshold     Speed threshold for slow sources in bytes/s
+  -H, --headers         Custom headers in format "Key: Value"
+  -C, --cookies         Custom cookies in format "name=value"
+  --user-agent          User agent string
+  -p, --priorities      Priority for each URL
+  --stats               Show detailed download statistics
+```
+
+### Streaming Proxy CLI Options
+
+```
+streaming proxy commands:
+  start                 Start the streaming proxy server
+  config                Configuration management
+  stats                 Show server statistics
+
+start command options:
+  --host HOST           Server host (default: 127.0.0.1)
+  --port PORT           Server port (default: 8080)
+  --cache-dir DIR       Cache directory path
+  --cache-size MB       Maximum cache size in MB
+  --no-cache            Disable caching
+  --threads NUM         Maximum download threads
+  --no-prefetch         Disable pre-fetching
+  --prefetch-segments N Number of segments to pre-fetch
+  --auth-header HEADER  Default auth header (Key: Value)
+  --cookie COOKIE       Default cookie (name=value)
+```
+
+## Configuration Reference
+
+### DownloadConfig Class
+
+```python
+@dataclass
+class DownloadConfig:
+    max_chunk_size: int = 1024 * 1024  # Maximum size per chunk (1MB)
+    max_threads: int = 4               # Maximum concurrent threads
+    timeout: int = 30                  # Request timeout in seconds
+    retry_attempts: int = 3            # Number of retry attempts
+    retry_delay: float = 1.0           # Delay between retries
+    speed_threshold: float = 1024      # Bytes/sec threshold for slow sources
+    headers: Dict[str, str] = {}       # Custom HTTP headers
+    cookies: Dict[str, str] = {}       # Custom cookies
+    user_agent: str = "aget/1.0"       # User agent string
+```
+
+### StreamingProxyConfig Class
+
+```python
+@dataclass
+class StreamingProxyConfig:
+    cache: CacheConfig                 # Cache configuration
+    prefetch: PreFetchConfig          # Pre-fetch configuration
+    server: StreamingServerConfig     # Server configuration
+    auth: AuthConfig                  # Authentication configuration
+    download: DownloadConfig          # Download configuration
+
+    # Streaming-specific settings
+    supported_formats: List[str]      # Supported file formats
+    hls_segment_timeout: int = 30     # HLS segment timeout
+    dash_segment_timeout: int = 30    # DASH segment timeout
+    enable_range_requests: bool = True # Enable HTTP range requests
+```
+
+## Advanced Usage Examples
+
+### Dynamic Source Prioritization
+```python
+# Sources will be automatically prioritized based on performance
+downloader = MultiThreadDownloader(DownloadConfig(
+    speed_threshold=5000  # Sources slower than 5KB/s get lower priority
+))
+
+downloader.add_sources([
+    "https://fast-server.com/file.zip",
+    "https://slow-server.com/file.zip",
+    "https://medium-server.com/file.zip"
+])
+
+# The system will automatically favor faster sources
+success = downloader.download("output.zip")
+```
+
+### Progress Monitoring
+```python
+def custom_progress_callback(downloaded, total, speed):
+    percent = (downloaded / total) * 100
+    print(f"Progress: {percent:.1f}% - Speed: {speed/1024:.2f} KB/s")
+
+downloader = MultiThreadDownloader()
+downloader.add_source("https://example.com/largefile.zip")
+success = downloader.download("output.zip", custom_progress_callback)
+```
+
+### Resumable Downloads
+```python
+# If download is interrupted, it will automatically resume
+# from where it left off (if the server supports range requests)
+downloader = MultiThreadDownloader()
+downloader.add_source("https://example.com/largefile.zip")
+
+# First attempt (may be interrupted)
+downloader.download("partial_file.zip")
+
+# Second attempt will resume from where it left off
+success = downloader.download("partial_file.zip")
+```
+
+### Streaming Proxy Examples
+
+#### Live Stream Acceleration
+```python
+from aget import StreamingProxyConfig, StreamingProxyServer
+
+# Configure for live streaming
+config = StreamingProxyConfig()
+config.prefetch.prefetch_segments = 5  # Aggressive pre-fetching
+config.prefetch.enable_bandwidth_adaptation = True
+config.cache.max_cache_size = 500 * 1024 * 1024  # 500MB cache
+
+server = StreamingProxyServer(config)
+# server.run()  # Start the proxy server
+
+# Use in media player:
+# Original: https://live.example.com/stream.m3u8
+# Proxied:  http://localhost:8080/proxy?url=https%3A//live.example.com/stream.m3u8
+```
+
+#### VOD Content Caching
+```python
+# Configure for video-on-demand with large cache
+config = StreamingProxyConfig()
+config.cache.max_cache_size = 5 * 1024 * 1024 * 1024  # 5GB cache
+config.cache.max_file_age = 3600 * 24 * 7  # 7 days
+config.prefetch.prefetch_segments = 10  # Pre-fetch more segments
+
+server = StreamingProxyServer(config)
+```
+
+#### Authentication with Protected Streams
+```python
+# Configure authentication for protected content
+config = StreamingProxyConfig()
+config.auth.default_headers.update({
+    "Authorization": "Bearer your-token",
+    "X-API-Key": "your-api-key"
+})
+config.auth.default_cookies.update({
+    "session": "session-id"
+})
+
+server = StreamingProxyServer(config)
+```
+
+### Error Handling and Recovery
+```python
+# The downloader automatically handles various error scenarios
+config = DownloadConfig(
+    retry_attempts=5,      # Retry failed chunks up to 5 times
+    retry_delay=2.0,       # Wait 2 seconds between retries
+    timeout=15             # 15 second timeout per request
+)
+
+downloader = MultiThreadDownloader(config)
+downloader.add_sources([
+    "https://unreliable-server.com/file.zip",  # May fail sometimes
+    "https://backup-server.com/file.zip",      # Backup source
+])
+
+# Download will automatically switch sources on failures
+success = downloader.download("output.zip")
+```
+
+## API Reference
+
+### MultiThreadDownloader Class
+
+The main class for handling multi-threaded downloads.
+
+#### Constructor
+```python
+MultiThreadDownloader(config: Optional[DownloadConfig] = None)
+```
+
+#### Methods
+
+##### add_source(url: str, priority: float = 1.0)
+Add a single download source.
+- `url`: Source URL
+- `priority`: Priority value (higher = more preferred)
+
+##### add_sources(urls: List[str], priorities: Optional[List[float]] = None)
+Add multiple download sources.
+- `urls`: List of source URLs
+- `priorities`: Optional list of priority values
+
+##### download(output_path: str, progress_callback: Optional[Callable] = None) -> bool
+Start the download process.
+- `output_path`: Path where file should be saved
+- `progress_callback`: Optional callback for progress updates
+- Returns: True if successful, False otherwise
+
+##### get_download_info() -> Dict[str, Any]
+Get current download statistics and information.
+
+### DownloadProgress Class
+
+Thread-safe progress tracking.
+
+#### Methods
+- `update(bytes_downloaded: int)`: Update progress
+- `get_speed() -> float`: Get current speed in bytes/second
+- `get_eta() -> float`: Get estimated time to completion
+- `get_progress_percent() -> float`: Get progress percentage
+
+### Utility Functions
+
+#### download_file(urls, output_path, config=None, priorities=None) -> bool
+Convenience function for simple downloads.
+
+## Performance Tips
+
+1. **Optimal Thread Count**: Start with 4-8 threads. More threads don't always mean faster downloads.
+
+2. **Chunk Size**: Use 1-4MB chunks for most files. Smaller chunks for slower connections, larger for faster ones.
+
+3. **Multiple Sources**: Use 2-4 sources for best performance. Too many sources can overwhelm slower servers.
+
+4. **Network Optimization**:
+   ```python
+   config = DownloadConfig(
+       max_threads=6,
+       max_chunk_size=2 * 1024 * 1024,  # 2MB chunks
+       timeout=45,
+       speed_threshold=10000  # 10KB/s threshold
+   )
+   ```
+
+## Troubleshooting
+
+### Common Issues
+
+**Download fails with "No sources available"**
+- Check that URLs are accessible
+- Verify network connectivity
+- Check if authentication is required
+
+**Slow download speeds**
+- Increase thread count (up to 8-10)
+- Adjust chunk size based on connection speed
+- Check if sources support range requests
+
+**Memory usage too high**
+- Reduce chunk size
+- Reduce thread count
+- Monitor system resources
+
+### Debug Mode
+
+Enable detailed logging for troubleshooting:
+
+```python
+import logging
+logging.basicConfig(level=logging.DEBUG)
+
+# Or use CLI with verbose flag
+python -m aget.cli download -v https://example.com/file.zip output.zip
+```
+
+## Streaming Proxy Use Cases
+
+### Media Player Integration
+1. **VLC Media Player**: Replace stream URLs with proxy URLs
+2. **FFmpeg**: Use proxy URLs for input streams
+3. **Web Players**: Configure HLS.js or Dash.js with proxy endpoints
+4. **Mobile Apps**: Point streaming libraries to proxy server
+
+### Performance Benefits
+- **Faster startup**: Pre-fetched segments reduce initial buffering
+- **Smooth playback**: Intelligent caching prevents rebuffering
+- **Bandwidth efficiency**: Cached segments reduce redundant downloads
+- **CDN failover**: Multiple sources provide redundancy
+
+### Supported Streaming Formats
+- **HLS (.m3u8)**: HTTP Live Streaming with segment pre-fetching
+- **DASH (.mpd)**: Dynamic Adaptive Streaming with manifest parsing
+- **Progressive download**: Direct file streaming with range requests
+- **Live streams**: Real-time segment fetching and caching
+
+## Examples Directory
+
+The `examples/` directory contains comprehensive examples:
+
+- `basic_usage.py` - Simple download scenarios
+- `advanced_usage.py` - Advanced features and configuration
+- `streaming_proxy_examples.py` - Streaming proxy demonstrations
+
+Run examples:
+```bash
+cd examples
+python basic_usage.py
+python advanced_usage.py
+python streaming_proxy_examples.py
+```
+
+Run streaming demos:
+```bash
+python streaming_demo.py
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Add tests for new functionality
+4. Ensure all tests pass
+5. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Changelog
+
+### Version 0.1.0
+- Initial release
+- Multi-threaded downloading
+- Dynamic source prioritization
+- Resumable downloads
+- Progress tracking
+- Command-line interface
+- Comprehensive error handling
+- **NEW**: Streaming proxy server with HTTP API
+- **NEW**: HLS/DASH playlist parsing and segment handling
+- **NEW**: Intelligent caching with TTL and size limits
+- **NEW**: Smart pre-fetching based on playlist analysis
+- **NEW**: Bandwidth monitoring and adaptive behavior
+- **NEW**: Range request support for efficient seeking
+- **NEW**: Authentication passthrough for protected content
+- **NEW**: FastAPI-based server with CORS support
+- **NEW**: Streaming-specific CLI with configuration management

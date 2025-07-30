@@ -1,0 +1,148 @@
+Metadata-Version: 2.4
+Name: airpy-tool
+Version: 1.1.0
+Summary: A tool for cleaning and processing CPCB air quality data
+Home-page: https://github.com/chandankr014/airpy-tool
+Author: Chandan Kumar
+Author-email: Chandan Kumar <chandankr014@gmail.com>
+License: MIT License
+        
+        Copyright © [2025] CAPLab, Environmental Science and Engineering Department,  
+        Indian Institute of Technology Bombay. All rights reserved.
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE. 
+Project-URL: Homepage, https://github.com/chandankr014/airpy-tool
+Project-URL: Bug Tracker, https://github.com/chandankr014/airpy-tool/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Scientific/Engineering :: Atmospheric Science
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pandas
+Requires-Dist: numpy
+Dynamic: author
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-python
+
+# AirPy Tool
+
+A Python package for cleaning and processing CPCB air quality data.
+
+## Installation
+
+You can install AirPy from PyPI:
+
+```bash
+pip install airpy-tool
+```
+
+You can also install directly from GitHub:
+
+```bash
+pip install git+https://github.com/chandankr014/airpy-tool.git
+```
+
+Or clone the repository and install locally:
+
+```bash
+git clone https://github.com/chandankr014/airpy-tool.git
+cd airpy-tool
+pip install -e .
+```
+
+## Usage
+
+### Command-line Interface
+
+AirPy provides a command-line tool for processing air quality data:
+
+```bash
+# Process all data
+airpy
+
+# Process data for a specific city
+airpy --city "Delhi"
+
+# Process live data
+airpy --live
+
+# Specify custom directories
+airpy --raw-dir /path/to/raw/data --clean-dir /path/to/output
+
+# Process specific pollutants
+airpy --pollutants PM25 PM10 NO2
+```
+
+### Python API
+
+You can also use AirPy as a Python library:
+
+```python
+from airpy.core.processor import process_data
+
+# Process data with default settings
+process_data()
+
+# Process data for a specific city
+process_data(city="Delhi")
+
+# Process live data
+process_data(live=True)
+
+# Specify custom directories
+process_data(raw_dir="/path/to/raw/data", clean_dir="/path/to/output")
+
+# Process specific pollutants
+process_data(pollutants=["PM25", "PM10", "NO2"])
+```
+
+## Features
+
+AirPy provides the following features for air quality data processing:
+
+- Data cleaning and formatting
+- Outlier detection and removal
+- Consecutive repeat detection
+- Unit inconsistency correction for nitrogen compounds
+- Time series analysis and visualization
+
+## Data Format
+
+AirPy supports the following file formats:
+- CSV files
+- Excel (XLSX) files
+
+The data should follow one of these filename formats:
+- `15Min_YEAR_site_ID_STATION_CITY_ORG_15Min.csv`
+- `Raw_data_15Min_YEAR_site_ID_STATION_CITY_ORG_15Min.csv`
+- `site_ID_YEAR.csv`
+- Live data format: `site_IDYYYYMMDDHHMMSS.xlsx`
+
+## Accessing CPCB State and City-wise Data
+
+You can access the complete CPCB air quality dataset, organized by state and city, using the following link:
+
+[Download CPCB State and City-wise Data](https://iitbacin-my.sharepoint.com/:f:/g/personal/30006023_iitb_ac_in/EjiZ_EVBacNKknIN7jIJK3YBm8EssUld0C6kAHBcvGcUGA?e=0vsLeM)
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details. 

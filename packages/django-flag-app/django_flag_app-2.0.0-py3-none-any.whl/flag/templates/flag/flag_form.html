@@ -1,0 +1,77 @@
+{% load i18n %}
+{% load static %}
+{% load flag_tags %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{% static 'flag/css/flag.css' %}">
+{% if user.is_anonymous %}
+{% get_login_url as login_url %}
+<a
+  href="{{ login_url }}?next={{ request.build_absolute_uri }}"
+  class="{% block cls_flag_icon_unauthenticated %}{% endblock cls_flag_icon_unauthenticated %}">
+  <span title="{% trans 'Report content' %}">
+    {% include "flag/flag_icon.html" %}
+  </span>
+</a>
+{% else %}
+<div class="report-modal-form-combined {% block cls_flag %}{% endblock cls_flag %}">
+  <div class="flag-report-icon {% block cls_flag_icon %}{% endblock cls_flag_icon %}"
+    data-url="{% url 'flag:flag' %}"
+    data-app-name="{{ app_name }}"
+    data-model-name="{{ model_name }}"
+    data-model-id="{{ model_id }}"
+    data-csrf="{{ csrf_token }}">
+    <span
+      title="{% if has_flagged %}{% trans "Remove flag" %}{% else %}{% trans "Report content" %}{% endif %}">
+        {% include "flag/flag_icon.html" %}
+    </span>
+  </div>
+  <div
+    class="flag-report-modal {% block cls_flag_modal %}{% endblock cls_flag_modal %}">
+    <div class="report-modal-content {% block cls_flag_modal_content %}{% endblock cls_flag_modal_content %}">
+      <span
+        class="report-modal-close {% block cls_flag_modal_close %}{% endblock cls_flag_modal_close %}">&times;</span>
+      <div class="report-modal-flag-form {% block cls_flag_modal_form_div %}{% endblock cls_flag_modal_form_div %}">
+        <form
+          class="m-2 p-1 report-modal-form {% block cls_flag_modal_form %}{% endblock cls_flag_modal_form %}">
+          <div class="{% block cls_flag_modal_title %}flag-modal-title{% endblock cls_flag_modal_title %}">{% trans "Report this content" %}</div>
+            {% csrf_token %}
+            <table>
+                <tr class="report-modal-form-reasons {% block cls_flag_modal_reasons %}{% endblock cls_flag_modal_reasons %}">
+                {% for reason in flag_reasons  %}
+                  <input
+                    type="radio"
+                    value="{{ reason.value }}"
+                    id="reason_{{ reason.value }}"
+                    class="{% if forloop.last %}last-flag-reason{% endif %} {% block cls_flag_modal_reason %}flag-reason{% endblock cls_flag_modal_reason %}"
+                    name="reason" required>
+                  <label for="reason_{{ reason.value }}">{{ reason.reason }}</label><br>
+                {% endfor %}
+                </tr>
+                <tr>
+                  <td>
+                    <textarea
+                      class="report-modal-form-info {% block cls_flag_modal_info %}{% endblock cls_flag_modal_info %}"
+                      rows="10"
+                      cols="40"
+                      name="info"></textarea>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <input
+                      type="submit"
+                      class="mt-2 {% block cls_flag_modal_submit %}flag-submit-btn{% endblock cls_flag_modal_submit %}"
+                      value={% trans "Submit" %} />
+                  </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+  </div>
+</div>
+<script
+  type="text/javascript"
+  src="{% static 'flag/js/flag.js' %}"></script>
+{% endif %}

@@ -1,0 +1,117 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agentbase"
+version = "0.2.0"
+authors = [
+    {name = "AgentBase Contributors", email = "hello@agentbase.org"},
+]
+description = "Open Source AI Agent Storage with Learning and Adaptation"
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Archiving :: Backup",
+    "Topic :: System :: Logging",
+    "Topic :: System :: Monitoring",
+]
+keywords = ["ai", "agent", "storage", "machine-learning", "reinforcement-learning", "memory", "cache", "drift-detection", "lifelong-learning"]
+dependencies = [
+    "numpy>=1.20.0",
+]
+license-files = ["LICENSE"]
+
+[project.optional-dependencies]
+ml = [
+    "scikit-learn>=1.0.0",
+    "pandas>=1.3.0",
+    "scipy>=1.7.0",
+]
+viz = [
+    "matplotlib>=3.4.0",
+    "seaborn>=0.11.0",
+    "plotly>=5.0.0",
+]
+full = [
+    "scipy>=1.7.0",
+    "scikit-learn>=1.0.0",
+    "pandas>=1.3.0",
+    "matplotlib>=3.4.0",
+    "seaborn>=0.11.0",
+    "psutil>=5.8.0",
+    "memory-profiler>=0.60.0",
+]
+dev = [
+    "pytest>=6.0.0",
+    "pytest-cov>=2.12.0",
+    "black>=21.0.0",
+    "flake8>=3.9.0",
+    "mypy>=0.910",
+    "coverage>=5.5.0",
+    "pre-commit>=2.15.0",
+    "bandit>=1.7.0",
+    "build>=0.8.0",
+    "twine>=4.0.0",
+]
+
+[project.urls]
+Homepage = "https://bestagents.github.io/agentbase/"
+Documentation = "https://agentbase.readthedocs.io/"
+Repository = "https://github.com/bestagents/agentbase"
+Issues = "https://github.com/bestagents/agentbase/issues"
+Changelog = "https://github.com/bestagents/agentbase/blob/main/CHANGELOG.md"
+
+[tool.setuptools]
+packages = ["agentbase", "agentbase.core", "agentbase.memory", "agentbase.logging", "agentbase.drift"]
+
+[tool.setuptools.package-data]
+agentbase = ["py.typed"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::PendingDeprecationWarning",
+] 

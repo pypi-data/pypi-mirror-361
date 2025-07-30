@@ -1,0 +1,54 @@
+{% extends 'layout/page.html' %}
+{% import 'layout/view.tmpl' as view with context -%}
+{% import 'layout/edit.tmpl' as edit with context -%}
+
+{% block head_title %}
+  {% trans %}File display{% endtrans %}
+{% endblock %}
+
+{% block page_header %}
+  {% trans %}File display{% endtrans %}
+{% endblock %}
+
+{% block content %}
+
+  {% include 'layout/permission.html' %}
+
+  {% if context.is_view_ok() %}
+    <form method="POST"
+      enctype="multipart/form-data" action='{{ context.designator() }}'>
+
+      <dl class="row row-cols-1 row-cols-lg-2 no-gutters">
+		{% if context.is_edit_ok() %}
+		{{ edit.field_small('Name', 'name', 'name', required=True) }}
+		{{ edit.field_small('Content Type', 'type', 'type', required=True) }}
+		{% else %}
+		{{ view.field_small('Name', 'name') }}
+		{{ view.field_small('Content Type', 'type') }}
+		{% endif %}
+	  </dl>
+
+      <input type="hidden" name="@template" value="item">
+      <input type="hidden" name="@required" value="name,type">
+      {% if '@multilink' in request.form %}
+        <input type="hidden" name="@multilink"
+          value='{{ request.form["@multilink"].value()|u }}'>
+      {% endif %}
+      {% if context.is_edit_ok() %}
+      <div class='form-actions'>
+        {{ context.submit(html_kwargs={'class': 'btn btn-primary'})|u|safe }}
+      </div>
+      {% endif %}
+    </form>
+  {% endif %}
+
+  {% if context.id and context.is_view_ok() %}
+    <div>
+      <a class="btn btn-success" href="file{{ context.id }}/{{ context.name.plain()|u }}">{% trans %}Download{% endtrans %}</a>
+    </div>
+  {% endif %}
+
+  <div class='vspace-five'></div>
+  {{ context.history()|u|safe }}
+
+{% endblock %}

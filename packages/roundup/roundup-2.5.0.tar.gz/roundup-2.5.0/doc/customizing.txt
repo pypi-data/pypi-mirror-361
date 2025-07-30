@@ -1,0 +1,2455 @@
+.. meta::
+    :description:
+        How to customise and extend the Roundup Issue
+        Tracker. Includes many cookbook and how-to
+        examples.
+
+:tocdepth: 2
+
+===================
+Customising Roundup
+===================
+
+.. This document borrows from the ZopeBook section on ZPT. The original is at:
+   http://www.zope.org/Documentation/Books/ZopeBook/current/ZPT.stx
+
+.. admonition:: Welcome
+
+  This document used to be much larger and include a lot of
+  reference material. That has been moved to the `reference document`_.
+
+  The documentation is slowly being reorganized using the `Diataxis
+  framework`_. Help with the reorganization is welcome.
+
+  .. _reference document: reference.html
+  .. _diataxis framework: https://diataxis.fr/
+
+.. contents::
+   :depth: 3
+   :local:
+
+What You Can Do
+===============
+
+Before you get too far, it's probably worth having a quick read of the Roundup
+`design documentation`_.
+
+Customisation of Roundup can take one of six forms:
+
+1. `tracker configuration <reference.html#tracker-configuration>`_ changes
+2. database, or `tracker schema <reference.html#tracker-schema>`_ changes
+3. "definition" class `database content <reference.html#database-content>`_ changes
+4. behavioural changes through `detectors <reference.html#detectors>`_,
+   `extensions <reference.html#extensions>`_ and
+   `interfaces.py <reference.html#interfaces-py>`_
+5. `security / access controls <reference.html#security-access-controls>`_
+6. change the `web interface <reference.html#web-interface>`_
+
+The third case is special because it takes two distinctly different forms
+depending upon whether the tracker has been initialised or not. The other two
+may be done at any time, before or after tracker initialisation. Yes, this
+includes adding or removing properties from classes.
+
+.. _CustomExamples:
+
+Examples
+========
+
+Changing what's stored in the database
+--------------------------------------
+
+The following examples illustrate ways to change the information stored in
+the database.
+
+
+Adding a new field to the classic schema
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This example shows how to add a simple field (a due date) to the default
+classic schema. It does not add any additional behaviour, such as enforcing
+the due date, or causing automatic actions to fire if the due date passes.
+
+You add new fields by editing the ``schema.py`` file in you tracker's home.
+Schema changes are automatically applied to the database on the next
+tracker access (note that roundup-server would need to be restarted as it
+caches the schema).
+
+.. index:: schema; example changes
+
+1. Modify the ``schema.py``::
+
+     issue = IssueClass(db, "issue", 
+                    assignedto=Link("user"), keyword=Multilink("keyword"),
+                    priority=Link("priority"), status=Link("status"),
+                    due_date=Date())
+
+2. Add an edit field to the ``issue.item.html`` template::
+
+     <tr> 
+      <th>Due Date</th> 
+      <td tal:content="structure context/due_date/field" /> 
+     </tr>
+    
+   If you want to show only the date part of due_date then do this instead::
+   
+    <tr> 
+     <th>Due Date</th> 
+     <td tal:content="structure python:context.due_date.field(display_time=False)" />
+    </tr>
+
+3. Add the property to the ``issue.index.html`` page::
+
+    (in the heading row)
+      <th tal:condition="request/show/due_date">Due Date</th>
+    (in the data row)
+      <td tal:condition="request/show/due_date" 
+          tal:content="i/due_date" />
+          
+   If you want format control of the display of the due date you can
+   enter the following in the data row to show only the actual due date::
+    
+      <td tal:condition="request/show/due_date" 
+          tal:content="python:i.due_date.pretty('%Y-%m-%d')">&nbsp;</td>
+
+4. Add the property to the ``issue.search.html`` page::
+
+     <tr tal:define="name string:due_date">
+       <th i18n:translate="">Due Date:</th>
+       <td metal:use-macro="search_input"></td>
+       <td metal:use-macro="column_input"></td>
+       <td metal:use-macro="sort_input"></td>
+       <td metal:use-macro="group_input"></td>
+     </tr>
+
+5. If you wish for the due date to appear in the standard views listed
+   in the sidebar of the web interface then you'll need to add "due_date"
+   to the columns and columns_showall lists in your ``page.html``::
+    
+    columns string:id,activity,due_date,title,creator,status;
+    columns_showall string:id,activity,due_date,title,creator,assignedto,status;
+
+Adding a new constrained field to the classic schema
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This example shows how to add a new constrained property (i.e. a
+selection of distinct values) to your tracker.
+
+
+Introduction
+::::::::::::
+
+To make the classic schema of Roundup useful as a TODO tracking system
+for a group of systems administrators, it needs an extra data field per
+issue: a category.
+
+This would let sysadmins quickly list all TODOs in their particular area
+of interest without having to do complex queries, and without relying on
+the spelling capabilities of other sysadmins (a losing proposition at
+best).
+
+
+Adding a field to the database
+::::::::::::::::::::::::::::::
+
+This is the easiest part of the change. The category would just be a
+plain string, nothing fancy. To change what is in the database you need
+to add some lines to the ``schema.py`` file of your tracker instance.
+Under the comment::
+
+    # add any additional database schema configuration here
+
+add::
+
+    category = Class(db, "category", name=String())
+    category.setkey("name")
+
+Here we are setting up a chunk of the database which we are calling
+"category". It contains a string, which we are refering to as "name" for
+lack of a more imaginative title. (Since "name" is one of the properties
+that Roundup looks for on items if you do not set a key for them, it's
+probably a good idea to stick with it for new classes if at all
+appropriate.) Then we are setting the key of this chunk of the database
+to be that "name". This is equivalent to an index for database types.
+This also means that there can only be one category with a given name.
+
+Adding the above lines allows us to create categories, but they're not
+tied to the issues that we are going to be creating. It's just a list of
+categories off on its own, which isn't much use. We need to link it in
+with the issues. To do that, find the lines 
+in ``schema.py`` which set up the "issue" class, and then add a link to
+the category::
+
+    issue = IssueClass(db, "issue", ... ,
+        category=Multilink("category"), ... )
+
+The ``Multilink()`` means that each issue can have many categories. If
+you were adding something with a one-to-one relationship to issues (such
+as the "assignedto" property), use ``Link()`` instead.
+
+That is all you need to do to change the schema. The rest of the effort
+is fiddling around so you can actually use the new category.
+
+
+Populating the new category class
+:::::::::::::::::::::::::::::::::
+
+If you haven't initialised the database with the
+"``roundup-admin initialise``" command, then you
+can add the following to the tracker ``initial_data.py``
+under the comment::
+
+    # add any additional database creation steps here - but only if you
+    # haven't initialised the database with the admin "initialise" command
+
+Add::
+
+     category = db.getclass('category')
+     category.create(name="scipy")
+     category.create(name="chaco")
+     category.create(name="weave")
+
+.. index:: roundup-admin; create entries in class
+
+If the database has already been initalised, then you need to use the
+``roundup-admin`` tool::
+
+     % roundup-admin -i <tracker home>
+     Roundup <version> ready for input.
+     Type "help" for help.
+     roundup> create category name=scipy
+     1
+     roundup> create category name=chaco
+     2
+     roundup> create category name=weave
+     3
+     roundup> exit...
+     There are unsaved changes. Commit them (y/N)? y
+
+
+Setting up security on the new objects
+::::::::::::::::::::::::::::::::::::::
+
+By default only the admin user can look at and change objects. This
+doesn't suit us, as we want any user to be able to create new categories
+as required, and obviously everyone needs to be able to view the
+categories of issues for it to be useful.
+
+We therefore need to change the security of the category objects. This
+is also done in ``schema.py``.
+
+There are currently two loops which set up permissions and then assign
+them to various roles. Simply add the new "category" to both lists::
+
+    # Assign the access and edit permissions for issue, file and message
+    # to regular users now
+    for cl in 'issue', 'file', 'msg', 'category':
+        p = db.security.getPermission('View', cl)
+        db.security.addPermissionToRole('User', 'View', cl)
+        db.security.addPermissionToRole('User', 'Edit', cl)
+        db.security.addPermissionToRole('User', 'Create', cl)
+
+These lines assign the "View" and "Edit" Permissions to the "User" role,
+so that normal users can view and edit "category" objects.
+
+This is all the work that needs to be done for the database. It will
+store categories, and let users view and edit them. Now on to the
+interface stuff.
+
+
+Changing the web left hand frame
+::::::::::::::::::::::::::::::::
+
+We need to give the users the ability to create new categories, and the
+place to put the link to this functionality is in the left hand function
+bar, under the "Issues" area. The file that defines how this area looks
+is ``html/page.html``, which is what we are going to be editing next.
+
+If you look at this file you can see that it contains a lot of
+"classblock" sections which are chunks of HTML that will be included or
+excluded in the output depending on whether the condition in the
+classblock is met. We are going to add the category code at the end of
+the classblock for the *issue* class::
+
+  <p class="classblock"
+     tal:condition="python:request.user.hasPermission('View', 'category')">
+   <b>Categories</b><br>
+   <a tal:condition="python:request.user.hasPermission('Edit', 'category')"
+      href="category?@template=item">New Category<br></a>
+  </p>
+
+The first two lines is the classblock definition, which sets up a
+condition that only users who have "View" permission for the "category"
+object will have this section included in their output. Next comes a
+plain "Categories" header in bold. Everyone who can view categories will
+get that.
+
+Next comes the link to the editing area of categories. This link will
+only appear if the condition - that the user has "Edit" permissions for
+the "category" objects - is matched. If they do have permission then
+they will get a link to another page which will let the user add new
+categories.
+
+Note that if you have permission to *view* but not to *edit* categories,
+then all you will see is a "Categories" header with nothing underneath
+it. This is obviously not very good interface design, but will do for
+now. I just claim that it is so I can add more links in this section
+later on. However, to fix the problem you could change the condition in
+the classblock statement, so that only users with "Edit" permission
+would see the "Categories" stuff.
+
+
+Setting up a page to edit categories
+::::::::::::::::::::::::::::::::::::
+
+We defined code in the previous section which let users with the
+appropriate permissions see a link to a page which would let them edit
+conditions. Now we have to write that page.
+
+The link was for the *item* template of the *category* object. This
+translates into Roundup looking for a file called ``category.item.html``
+in the ``html`` tracker directory. This is the file that we are going to
+write now.
+
+First, we add an info tag in a comment which doesn't affect the outcome
+of the code at all, but is useful for debugging. If you load a page in a
+browser and look at the page source, you can see which sections come
+from which files by looking for these comments::
+
+    <!-- category.item -->
+
+Next we need to add in the METAL macro stuff so we get the normal page
+trappings::
+
+ <tal:block metal:use-macro="templates/page/macros/icing">
+  <title metal:fill-slot="head_title">Category editing</title>
+  <td class="page-header-top" metal:fill-slot="body_title">
+   <h2>Category editing</h2>
+  </td>
+  <td class="content" metal:fill-slot="content">
+
+Next we need to setup up a standard HTML form, which is the whole
+purpose of this file. We link to some handy javascript which sends the
+form through only once. This is to stop users hitting the send button
+multiple times when they are impatient and thus having the form sent
+multiple times::
+
+    <form method="POST" onSubmit="return submit_once()"
+          enctype="multipart/form-data">
+
+Next we define some code which sets up the minimum list of fields that
+we require the user to enter. There will be only one field - "name" - so
+they better put something in it, otherwise the whole form is pointless::
+
+    <input type="hidden" name="@required" value="name">
+
+To get everything to line up properly we will put everything in a table,
+and put a nice big header on it so the user has an idea what is
+happening::
+
+    <table class="form">
+     <tr><th class="header" colspan="2">Category</th></tr>
+
+Next, we need the field into which the user is going to enter the new
+category. The ``context.name.field(size=60)`` bit tells Roundup to
+generate a normal HTML field of size 60, and the contents of that field
+will be the "name" variable of the current context (namely "category").
+The upshot of this is that when the user types something in
+to the form, a new category will be created with that name::
+
+    <tr>
+     <th>Name</th>
+     <td tal:content="structure python:context.name.field(size=60)">
+     name</td>
+    </tr>
+
+Then a submit button so that the user can submit the new category::
+
+    <tr>
+     <td>&nbsp;</td>
+     <td colspan="3" tal:content="structure context/submit">
+      submit button will go here
+     </td>
+    </tr>
+
+The ``context/submit`` bit generates the submit button but also
+generates the @action and @csrf hidden fields. The @action field is
+used to tell Roundup how to process the form. The @csrf field provides
+a unique single use token to defend against CSRF attacks. (More about
+anti-csrf measures can be found in ``upgrading.txt``.)
+
+Finally we finish off the tags we used at the start to do the METAL
+stuff::
+
+  </td>
+ </tal:block>
+
+So putting it all together, and closing the table and form we get::
+
+ <!-- category.item -->
+ <tal:block metal:use-macro="templates/page/macros/icing">
+  <title metal:fill-slot="head_title">Category editing</title>
+  <td class="page-header-top" metal:fill-slot="body_title">
+   <h2>Category editing</h2>
+  </td>
+  <td class="content" metal:fill-slot="content">
+   <form method="POST" onSubmit="return submit_once()"
+         enctype="multipart/form-data">
+
+    <table class="form">
+     <tr><th class="header" colspan="2">Category</th></tr>
+
+     <tr>
+      <th>Name</th>
+      <td tal:content="structure python:context.name.field(size=60)">
+      name</td>
+     </tr>
+
+     <tr>
+      <td>
+        &nbsp;
+        <input type="hidden" name="@required" value="name"> 
+      </td>
+      <td colspan="3" tal:content="structure context/submit">
+       submit button will go here
+      </td>
+     </tr>
+    </table>
+   </form>
+  </td>
+ </tal:block>
+
+This is quite a lot to just ask the user one simple question, but there
+is a lot of setup for basically one line (the form line) to do its work.
+To add another field to "category" would involve one more line (well,
+maybe a few extra to get the formatting correct).
+
+
+Adding the category to the issue
+::::::::::::::::::::::::::::::::
+
+We now have the ability to create issues to our heart's content, but
+that is pointless unless we can assign categories to issues.  Just like
+the ``html/category.item.html`` file was used to define how to add a new
+category, the ``html/issue.item.html`` is used to define how a new issue
+is created.
+
+Just like ``category.issue.html``, this file defines a form which has a
+table to lay things out. It doesn't matter where in the table we add new
+stuff, it is entirely up to your sense of aesthetics::
+
+   <th>Category</th>
+   <td>
+    <span tal:replace="structure context/category/field" />
+    <span tal:replace="structure python:db.category.classhelp('name',
+                property='category', width='200')" />
+   </td>
+
+First, we define a nice header so that the user knows what the next
+section is, then the middle line does what we are most interested in.
+This ``context/category/field`` gets replaced by a field which contains
+the category in the current context (the current context being the new
+issue).
+
+The classhelp lines generate a link (labelled "list") to a popup window
+which contains the list of currently known categories.
+
+
+Searching on categories
+:::::::::::::::::::::::
+
+Now we can add categories, and create issues with categories. The next
+obvious thing that we would like to be able to do, would be to search
+for issues based on their category, so that, for example, anyone working
+on the web server could look at all issues in the category "Web".
+
+If you look for "Search Issues" in the ``html/page.html`` file, you will
+find that it looks something like 
+``<a href="issue?@template=search">Search Issues</a>``. This shows us
+that when you click on "Search Issues" it will be looking for a
+``issue.search.html`` file to display. So that is the file that we will
+change.
+
+If you look at this file it should begin to seem familiar, although it
+does use some new macros. You can add the new category search code anywhere you
+like within that form::
+
+  <tr tal:define="name string:category;
+                  db_klass string:category;
+                  db_content string:name;">
+    <th>Priority:</th>
+    <td metal:use-macro="search_select"></td>
+    <td metal:use-macro="column_input"></td>
+    <td metal:use-macro="sort_input"></td>
+    <td metal:use-macro="group_input"></td>
+  </tr>
+
+The definitions in the ``<tr>`` opening tag are used by the macros:
+
+- ``search_select`` expands to a drop-down box with all categories using
+  ``db_klass`` and ``db_content``.
+- ``column_input`` expands to a checkbox for selecting what columns
+  should be displayed.
+- ``sort_input`` expands to a radio button for selecting what property
+  should be sorted on.
+- ``group_input`` expands to a radio button for selecting what property
+  should be grouped on.
+
+The category search code above would expand to the following::
+
+  <tr>
+    <th>Category:</th>
+    <td>
+      <select name="category">
+        <option value="">don't care</option>
+        <option value="">------------</option>      
+        <option value="1">scipy</option>
+        <option value="2">chaco</option>
+        <option value="3">weave</option>
+      </select>
+    </td>
+    <td><input type="checkbox" name=":columns" value="category"></td>
+    <td><input type="radio" name=":sort0" value="category"></td>
+    <td><input type="radio" name=":group0" value="category"></td>
+  </tr>
+
+Adding category to the default view
+:::::::::::::::::::::::::::::::::::
+
+We can now add categories, add issues with categories, and search for
+issues based on categories. This is everything that we need to do;
+however, there is some more icing that we would like. I think the
+category of an issue is important enough that it should be displayed by
+default when listing all the issues.
+
+Unfortunately, this is a bit less obvious than the previous steps. The
+code defining how the issues look is in ``html/issue.index.html``. This
+is a large table with a form down at the bottom for redisplaying and so
+forth. 
+
+Firstly we need to add an appropriate header to the start of the table::
+
+    <th tal:condition="request/show/category">Category</th>
+
+The *condition* part of this statement is to avoid displaying the
+Category column if the user has selected not to see it.
+
+The rest of the table is a loop which will go through every issue that
+matches the display criteria. The loop variable is "i" - which means
+that every issue gets assigned to "i" in turn.
+
+The new part of code to display the category will look like this::
+
+    <td tal:condition="request/show/category"
+        tal:content="i/category"></td>
+
+The condition is the same as above: only display the condition when the
+user hasn't asked for it to be hidden. The next part is to set the
+content of the cell to be the category part of "i" - the current issue.
+
+Finally we have to edit ``html/page.html`` again. This time, we need to
+tell it that when the user clicks on "Unassigned Issues" or "All Issues",
+the category column should be included in the resulting list. If you
+scroll down the page file, you can see the links with lots of options.
+The option that we are interested in is the ``:columns=`` one which
+tells Roundup which fields of the issue to display. Simply add
+"category" to that list and it all should work.
+
+Adding a time log to your issues
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+We want to log the dates and amount of time spent working on issues, and
+be able to give a summary of the total time spent on a particular issue.
+
+1. Add a new class to your tracker ``schema.py``::
+
+    # storage for time logging
+    timelog = Class(db, "timelog", period=Interval())
+
+   Note that we automatically get the date of the time log entry
+   creation through the standard property "creation".
+
+   You will need to grant "Creation" permission to the users who are
+   allowed to add timelog entries. You may do this with::
+
+    db.security.addPermissionToRole('User', 'Create', 'timelog')
+    db.security.addPermissionToRole('User', 'View', 'timelog')
+
+   If users are also able to *edit* timelog entries, then also include::
+
+    db.security.addPermissionToRole('User', 'Edit', 'timelog')
+
+.. index:: schema; example changes
+
+2. Link to the new class from your issue class (again, in
+   ``schema.py``)::
+
+    issue = IssueClass(db, "issue", 
+                    assignedto=Link("user"), keyword=Multilink("keyword"),
+                    priority=Link("priority"), status=Link("status"),
+                    times=Multilink("timelog"))
+
+   the "times" property is the new link to the "timelog" class.
+
+3. We'll need to let people add in times to the issue, so in the web
+   interface we'll have a new entry field. This is a special field
+   because unlike the other fields in the ``issue.item`` template, it
+   affects a different item (a timelog item) and not the template's
+   item (an issue). We have a special syntax for form fields that affect
+   items other than the template default item (see the cgi 
+   documentation on `special form variables
+   <reference.html#special-form-variables>`_). In particular, we add a
+   field to capture a new timelog item's period::
+
+    <tr> 
+     <th>Time Log</th> 
+     <td colspan=3><input type="text" name="timelog-1@period" /> 
+      (enter as '3y 1m 4d 2:40:02' or parts thereof) 
+     </td> 
+    </tr> 
+         
+   and another hidden field that links that new timelog item (new
+   because it's marked as having id "-1") to the issue item. It looks
+   like this::
+
+     <input type="hidden" name="@link@times" value="timelog-1" />
+
+   On submission, the "-1" timelog item will be created and assigned a
+   real item id. The "times" property of the issue will have the new id
+   added to it.
+   
+   The full entry will now look like this::
+   
+    <tr> 
+     <th>Time Log</th> 
+     <td colspan=3><input type="text" name="timelog-1@period" /> 
+      (enter as '3y 1m 4d 2:40:02' or parts thereof)
+      <input type="hidden" name="@link@times" value="timelog-1" /> 
+     </td> 
+    </tr> 
+   
+.. _adding-a-time-log-to-your-issues-4:
+
+4. We want to display a total of the timelog times that have been
+   accumulated for an issue. To do this, we'll need to actually write
+   some Python code, since it's beyond the scope of PageTemplates to
+   perform such calculations. We do this by adding a module ``timespent.py``
+   to the ``extensions`` directory in our tracker. The contents of this
+   file is as follows::
+
+    from roundup import date
+
+    def totalTimeSpent(times):
+        ''' Call me with a list of timelog items (which have an
+            Interval "period" property)
+        '''
+        total = date.Interval('0d')
+        for time in times:
+            total += time.period._value
+        return total
+
+    def init(instance):
+        instance.registerUtil('totalTimeSpent', totalTimeSpent)
+
+   We will now be able to access the ``totalTimeSpent`` function via the
+   ``utils`` variable in our templates, as shown in the next step.
+
+5. Display the timelog for an issue::
+
+     <table class="otherinfo" tal:condition="context/times">
+      <tr><th colspan="3" class="header">Time Log
+       <tal:block
+            tal:replace="python:utils.totalTimeSpent(context.times)" />
+      </th></tr>
+      <tr><th>Date</th><th>Period</th><th>Logged By</th></tr>
+      <tr tal:repeat="time context/times">
+       <td tal:content="time/creation"></td>
+       <td tal:content="time/period"></td>
+       <td tal:content="time/creator"></td>
+      </tr>
+     </table>
+
+   I put this just above the Messages log in my issue display. Note our
+   use of the ``totalTimeSpent`` method which will total up the times
+   for the issue and return a new Interval. That will be automatically
+   displayed in the template as text like "+ 1y 2:40" (1 year, 2 hours
+   and 40 minutes).
+
+6. If you're using a persistent web server - ``roundup-server`` or
+   ``mod_wsgi`` for example - then you'll need to restart that to pick up
+   the code changes. When that's done, you'll be able to use the new
+   time logging interface.
+
+An extension of this modification attaches the timelog entries to any
+change message entered at the time of the timelog entry:
+
+A. Add a link to the timelog to the msg class in ``schema.py``:
+
+    msg = FileClass(db, "msg",
+                    author=Link("user", do_journal='no'),
+                    recipients=Multilink("user", do_journal='no'),
+                    date=Date(),
+                    summary=String(),
+                    files=Multilink("file"),
+                    messageid=String(),
+                    inreplyto=String(),
+                    times=Multilink("timelog"))
+
+B. Add a new hidden field that links that new timelog item (new
+   because it's marked as having id "-1") to the new message.
+   The link is placed in ``issue.item.html`` in the same section that
+   handles the timelog entry.
+   
+   It looks like this after this addition::
+
+    <tr> 
+     <th>Time Log</th> 
+     <td colspan=3><input type="text" name="timelog-1@period" /> 
+      (enter as '3y 1m 4d 2:40:02' or parts thereof)
+      <input type="hidden" name="@link@times" value="timelog-1" />
+      <input type="hidden" name="msg-1@link@times" value="timelog-1" /> 
+     </td> 
+    </tr> 
+ 
+   The "times" property of the message will have the new id added to it.
+
+C. Add the timelog listing from step 5. to the ``msg.item.html`` template
+   so that the timelog entry appears on the message view page. Note that
+   the call to totalTimeSpent is not used here since there will only be one
+   single timelog entry for each message.
+   
+   I placed it after the Date entry like this::
+   
+    <tr>
+     <th i18n:translate="">Date:</th>
+     <td tal:content="context/date"></td>
+    </tr>
+    </table>
+    
+    <table class="otherinfo" tal:condition="context/times">
+     <tr><th colspan="3" class="header">Time Log</th></tr>
+     <tr><th>Date</th><th>Period</th><th>Logged By</th></tr>
+     <tr tal:repeat="time context/times">
+      <td tal:content="time/creation"></td>
+      <td tal:content="time/period"></td>
+      <td tal:content="time/creator"></td>
+     </tr>
+    </table>
+    
+    <table class="messages">
+
+The wiki includes an `auditor that extracts specially formatted timelog
+entries from emails`_ sent to the tracker.
+
+.. _auditor that extracts specially formatted timelog
+   entries from emails: https://wiki.roundup-tracker.org/TimelogAuditor
+
+Tracking different types of issues
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Sometimes you will want to track different types of issues - developer,
+customer support, systems, sales leads, etc. A single Roundup tracker is
+able to support multiple types of issues. This example demonstrates adding
+a system support issue class to a tracker.
+
+1. Figure out what information you're going to want to capture. OK, so
+   this is obvious, but sometimes it's better to actually sit down for a
+   while and think about the schema you're going to implement.
+
+2. Add the new issue class to your tracker's ``schema.py``. Just after the
+   "issue" class definition, add::
+
+    # list our systems
+    system = Class(db, "system", name=String(), order=Number())
+    system.setkey("name")
+
+    # store issues related to those systems
+    support = IssueClass(db, "support", 
+                    assignedto=Link("user"), keyword=Multilink("keyword"),
+                    status=Link("status"), deadline=Date(),
+                    affects=Multilink("system"))
+
+3. Copy the existing ``issue.*`` (item, search and index) templates in the
+   tracker's ``html`` to ``support.*``. Edit them so they use the properties
+   defined in the ``support`` class. Be sure to check for hidden form
+   variables like "required" to make sure they have the correct set of
+   required properties.
+
+4. Edit the modules in the ``detectors``, adding lines to their ``init``
+   functions where appropriate. Look for ``audit`` and ``react`` registrations
+   on the ``issue`` class, and duplicate them for ``support``.
+
+5. Create a new sidebar box for the new support class. Duplicate the
+   existing issues one, changing the ``issue`` class name to ``support``.
+
+6. Re-start your tracker and start using the new ``support`` class.
+
+
+Optionally, you might want to restrict the users able to access this new
+class to just the users with a new "SysAdmin" Role. To do this, we add
+some security declarations::
+
+    db.security.addPermissionToRole('SysAdmin', 'View', 'support')
+    db.security.addPermissionToRole('SysAdmin', 'Create', 'support')
+    db.security.addPermissionToRole('SysAdmin', 'Edit', 'support')
+
+You would then (as an "admin" user) edit the details of the appropriate
+users, and add "SysAdmin" to their Roles list.
+
+Alternatively, you might want to change the Edit/View permissions granted
+for the ``issue`` class so that it's only available to users with the "System"
+or "Developer" Role, and then the new class you're adding is available to
+all with the "User" Role.
+
+
+.. _external-authentication:
+
+Using External User Databases
+-----------------------------
+
+Using an external password validation source
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. note:: You will need to either have an "admin" user in your external
+          password source *or* have one of your regular users have
+          the Admin Role assigned. If you need to assign the Role *after*
+          making the changes below, you may use the ``roundup-admin``
+          program to edit a user's details.
+
+We have a centrally-managed password changing system for our users. This
+results in a UN*X passwd-style file that we use for verification of
+users. Entries in the file consist of ``name:password`` where the
+password is encrypted using the standard UN*X ``crypt()`` function (see
+the ``crypt`` module in your Python distribution). An example entry
+would be::
+
+    admin:aamrgyQfDFSHw
+
+Each user of Roundup must still have their information stored in the Roundup
+database - we just use the passwd file to check their password. To do this, we
+need to override the standard ``verifyPassword`` method defined in
+``roundup.cgi.actions.LoginAction`` and register the new class. The
+following is added as ``externalpassword.py`` in the tracker ``extensions``
+directory::
+
+    import os, crypt
+    from roundup.cgi.actions import LoginAction    
+
+    class ExternalPasswordLoginAction(LoginAction):
+        def verifyPassword(self, userid, password):
+            '''Look through the file, line by line, looking for a
+            name that matches.
+            '''
+            # get the user's username
+            username = self.db.user.get(userid, 'username')
+
+            # the passwords are stored in the "passwd.txt" file in the
+            # tracker home
+            file = os.path.join(self.db.config.TRACKER_HOME, 'passwd.txt')
+
+            # see if we can find a match
+            for ent in [line.strip().split(':') for line in
+                                                open(file).readlines()]:
+                if ent[0] == username:
+                    return crypt.crypt(password, ent[1][:2]) == ent[1]
+
+            # user doesn't exist in the file
+            return 0
+
+    def init(instance):
+        instance.registerAction('login', ExternalPasswordLoginAction)
+
+You should also remove the redundant password fields from the ``user.item``
+template.
+
+
+Using a UN*X passwd file as the user database
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+On some systems the primary store of users is the UN*X passwd file. It
+holds information on users such as their username, real name, password
+and primary user group.
+
+Roundup can use this store as its primary source of user information,
+but it needs additional information too - email address(es), Roundup
+Roles, vacation flags, Roundup hyperdb item ids, etc. Also, "retired"
+users must still exist in the user database, unlike some passwd files in
+which the users are removed when they no longer have access to a system.
+
+To make use of the passwd file, we therefore synchronise between the two
+user stores. We also use the passwd file to validate the user logins, as
+described in the previous example, `using an external password
+validation source`_. We keep the user lists in sync using a fairly
+simple script that runs once a day, or several times an hour if more
+immediate access is needed. In short, it:
+
+1. parses the passwd file, finding usernames, passwords and real names,
+2. compares that list to the current Roundup user list:
+
+   a. entries no longer in the passwd file are *retired*
+   b. entries with mismatching real names are *updated*
+   c. entries only exist in the passwd file are *created*
+
+3. send an email to administrators to let them know what's been done.
+
+The retiring and updating are simple operations, requiring only a call
+to ``retire()`` or ``set()``. The creation operation requires more
+information though - the user's email address and their Roundup Roles.
+We're going to assume that the user's email address is the same as their
+login name, so we just append the domain name to that. The Roles are
+determined using the passwd group identifier - mapping their UN*X group
+to an appropriate set of Roles.
+
+The script to perform all this, broken up into its main components, is
+as follows. Firstly, we import the necessary modules and open the
+tracker we're to work on::
+
+    import sys, os, smtplib
+    from roundup import instance, date
+
+    # open the tracker
+    tracker_home = sys.argv[1]
+    tracker = instance.open(tracker_home)
+
+Next we read in the *passwd* file from the tracker home::
+
+    # read in the users from the "passwd.txt" file
+    file = os.path.join(tracker_home, 'passwd.txt')
+    users = [x.strip().split(':') for x in open(file).readlines()]
+
+Handle special users (those to ignore in the file, and those who don't
+appear in the file)::
+
+    # users to not keep ever, pre-load with the users I know aren't
+    # "real" users
+    ignore = ['ekmmon', 'bfast', 'csrmail']
+
+    # users to keep - pre-load with the roundup-specific users
+    keep = ['comment_pool', 'network_pool', 'admin', 'dev-team',
+            'cs_pool', 'anonymous', 'system_pool', 'automated']
+
+Now we map the UN*X group numbers to the Roles that users should have::
+
+    roles = {
+     '501': 'User,Tech',  # tech
+     '502': 'User',       # finance
+     '503': 'User,CSR',   # customer service reps
+     '504': 'User',       # sales
+     '505': 'User',       # marketing
+    }
+
+Now we do all the work. Note that the body of the script (where we have
+the tracker database open) is wrapped in a ``try`` / ``finally`` clause,
+so that we always close the database cleanly when we're finished. So, we
+now do all the work::
+
+    # open the database
+    db = tracker.open('admin')
+    try:
+        # store away messages to send to the tracker admins
+        msg = []
+
+        # loop over the users list read in from the passwd file
+        for user,passw,uid,gid,real,home,shell in users:
+            if user in ignore:
+                # this user shouldn't appear in our tracker
+                continue
+            keep.append(user)
+            try:
+                # see if the user exists in the tracker
+                uid = db.user.lookup(user)
+
+                # yes, they do - now check the real name for correctness
+                if real != db.user.get(uid, 'realname'):
+                    db.user.set(uid, realname=real)
+                    msg.append('FIX %s - %s'%(user, real))
+            except KeyError:
+                # nope, the user doesn't exist
+                db.user.create(username=user, realname=real,
+                    address='%s@ekit-inc.com'%user, roles=roles[gid])
+                msg.append('ADD %s - %s (%s)'%(user, real, roles[gid]))
+
+        # now check that all the users in the tracker are also in our
+        # "keep" list - retire those who aren't
+        for uid in db.user.list():
+            user = db.user.get(uid, 'username')
+            if user not in keep:
+                db.user.retire(uid)
+                msg.append('RET %s'%user)
+
+        # if we did work, then send email to the tracker admins
+        if msg:
+            # create the email
+            msg = '''Subject: %s user database maintenance
+
+            %s
+            '''%(db.config.TRACKER_NAME, '\n'.join(msg))
+
+            # send the email
+            smtp = smtplib.SMTP(db.config.MAILHOST)
+            addr = db.config.ADMIN_EMAIL
+            smtp.sendmail(addr, addr, msg)
+
+        # now we're done - commit the changes
+        db.commit()
+    finally:
+        # always close the database cleanly
+        db.close()
+
+And that's it!
+
+
+Using an LDAP database for user information
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A script that reads users from an LDAP store using
+https://pypi.org/project/python-ldap/ and then compares the list to the users in the
+Roundup user database would be pretty easy to write. You'd then have it run
+once an hour / day (or on demand if you can work that into your LDAP store
+workflow). See the example `Using a UN*X passwd file as the user database`_
+for more information about doing this.
+
+To authenticate off the LDAP store (rather than using the passwords in the
+Roundup user database) you'd use the same python-ldap module inside an
+extension to the cgi interface. You'd do this by overriding the method called
+``verifyPassword`` on the ``LoginAction`` class in your tracker's
+``extensions`` directory (see `using an external password validation
+source`_). The method is implemented by default as::
+
+    def verifyPassword(self, userid, password):
+        ''' Verify the password that the user has supplied
+        '''
+        stored = self.db.user.get(self.userid, 'password')
+        if password == stored:
+            return 1
+        if not password and not stored:
+            return 1
+        return 0
+
+So you could reimplement this as something like::
+
+    def verifyPassword(self, userid, password):
+        ''' Verify the password that the user has supplied
+        '''
+        # look up some unique LDAP information about the user
+        username = self.db.user.get(self.userid, 'username')
+        # now verify the password supplied against the LDAP store
+
+Other External Databases
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+See examples for `Shibboleth`_ and info about using `OAUTH`_ in the
+Roundup Wiki.
+
+Changes to Tracker Behaviour
+----------------------------
+
+.. index:: single: auditors; how to register (example)
+   single: reactors; how to register (example)
+
+Preventing SPAM
+~~~~~~~~~~~~~~~
+
+The following detector code may be installed in your tracker's
+``detectors`` directory. It will block any messages being created that
+have HTML attachments (a very common vector for spam and phishing)
+and any messages that have more than 2 HTTP URLs in them. Just copy
+the following into ``detectors/anti_spam.py`` in your tracker::
+
+    from roundup.exceptions import Reject
+
+    def reject_html(db, cl, nodeid, newvalues):
+        if newvalues['type'] == 'text/html':
+        raise Reject('not allowed')
+
+    def reject_manylinks(db, cl, nodeid, newvalues):
+        content = newvalues['content']
+        if content.count('http://') > 2:
+        raise Reject('not allowed')
+
+    def init(db):
+        db.file.audit('create', reject_html)
+        db.msg.audit('create', reject_manylinks)
+
+You may also wish to block image attachments if your tracker does not
+need that ability::
+
+    if newvalues['type'].startswith('image/'):
+        raise Reject('not allowed')
+
+
+Stop "nosy" messages going to people on vacation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When users go on vacation and set up vacation email bouncing, you'll
+start to see a lot of messages come back through Roundup "Fred is on
+vacation". Not very useful, and relatively easy to stop.
+
+1. add a "vacation" flag to your users::
+
+         user = Class(db, "user",
+                    username=String(),   password=Password(),
+                    address=String(),    realname=String(),
+                    phone=String(),      organisation=String(),
+                    alternate_addresses=String(),
+                    roles=String(), queries=Multilink("query"),
+                    vacation=Boolean())
+
+2. So that users may edit the vacation flags, add something like the
+   following to your ``user.item`` template::
+
+     <tr>
+      <th>On Vacation</th> 
+      <td tal:content="structure context/vacation/field">vacation</td> 
+     </tr> 
+
+3. edit your detector ``nosyreactor.py`` so that the ``nosyreaction()``
+   consists of::
+
+    def nosyreaction(db, cl, nodeid, oldvalues):
+        users = db.user
+        messages = db.msg
+        # send a copy of all new messages to the nosy list
+        for msgid in determineNewMessages(cl, nodeid, oldvalues):
+            try:
+                # figure the recipient ids
+                sendto = []
+                seen_message = {}
+                recipients = messages.get(msgid, 'recipients')
+                for recipid in messages.get(msgid, 'recipients'):
+                    seen_message[recipid] = 1
+
+                # figure the author's id, and indicate they've received
+                # the message
+                authid = messages.get(msgid, 'author')
+
+                # possibly send the message to the author, as long as
+                # they aren't anonymous
+                if (db.config.MESSAGES_TO_AUTHOR == 'yes' and
+                        users.get(authid, 'username') != 'anonymous'):
+                    sendto.append(authid)
+                seen_message[authid] = 1
+
+                # now figure the nosy people who weren't recipients
+                nosy = cl.get(nodeid, 'nosy')
+                for nosyid in nosy:
+                    # Don't send nosy mail to the anonymous user (that
+                    # user shouldn't appear in the nosy list, but just
+                    # in case they do...)
+                    if users.get(nosyid, 'username') == 'anonymous':
+                        continue
+                    # make sure they haven't seen the message already
+                    if nosyid not in seen_message:
+                        # send it to them
+                        sendto.append(nosyid)
+                        recipients.append(nosyid)
+
+                # generate a change note
+                if oldvalues:
+                    note = cl.generateChangeNote(nodeid, oldvalues)
+                else:
+                    note = cl.generateCreateNote(nodeid)
+
+                # we have new recipients
+                if sendto:
+                    # filter out the people on vacation
+                    sendto = [i for i in sendto 
+                              if not users.get(i, 'vacation', 0)]
+
+                    # map userids to addresses
+                    sendto = [users.get(i, 'address') for i in sendto]
+
+                    # update the message's recipients list
+                    messages.set(msgid, recipients=recipients)
+
+                    # send the message
+                    cl.send_message(nodeid, msgid, note, sendto)
+            except roundupdb.MessageSendError as message:
+                raise roundupdb.DetectorError(message)
+
+   Note that this is the standard nosy reaction code, with the small
+   addition of::
+
+    # filter out the people on vacation
+    sendto = [i for i in sendto if not users.get(i, 'vacation', 0)]
+
+   which filters out the users that have the vacation flag set to true.
+
+Adding in state transition control
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Sometimes tracker admins want to control the states to which users may
+move issues. You can do this by following these steps:
+
+1. make "status" a required variable. This is achieved by adding the
+   following to the top of the form in the ``issue.item.html``
+   template::
+
+     <input type="hidden" name="@required" value="status">
+
+   This will force users to select a status.
+
+2. add a Multilink property to the status class::
+
+     stat = Class(db, "status", ... , transitions=Multilink('status'),
+                  ...)
+
+   and then edit the statuses already created, either:
+
+   a. through the web using the class list -> status class editor, or
+   b. using the ``roundup-admin`` "set" command.
+
+3. add an auditor module ``checktransition.py`` in your tracker's
+   ``detectors`` directory, for example::
+
+     def checktransition(db, cl, nodeid, newvalues):
+         ''' Check that the desired transition is valid for the "status"
+             property.
+         '''
+         if 'status' not in newvalues:
+             return
+         current = cl.get(nodeid, 'status')
+         new = newvalues['status']
+         if new == current:
+             return
+         ok = db.status.get(current, 'transitions')
+         if new not in ok:
+             raise ValueError('Status not allowed to move from "%s" to "%s"'%(
+                 db.status.get(current, 'name'), db.status.get(new, 'name')))
+
+     def init(db):
+         db.issue.audit('set', checktransition)
+
+4. in the ``issue.item.html`` template, change the status editing bit
+   from::
+
+    <th>Status</th>
+    <td tal:content="structure context/status/menu">status</td>
+
+   to::
+
+    <th>Status</th>
+    <td>
+     <select tal:condition="context/id" name="status">
+      <tal:block tal:define="ok context/status/transitions"
+                 tal:repeat="state db/status/list">
+       <option tal:condition="python:state.id in ok"
+               tal:attributes="
+                    value state/id;
+                    selected python:state.id == context.status.id"
+               tal:content="state/name"></option>
+      </tal:block>
+     </select>
+     <tal:block tal:condition="not:context/id"
+                tal:replace="structure context/status/menu" />
+    </td>
+
+   which displays only the allowed status to transition to.
+
+
+Blocking issues that depend on other issues
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+We needed the ability to mark certain issues as "blockers" - that is,
+they can't be resolved until another issue (the blocker) they rely on is
+resolved. To achieve this:
+
+1. Create a new property on the ``issue`` class:
+   ``blockers=Multilink("issue")``. To do this, edit the definition of
+   this class in your tracker's ``schema.py`` file. Change this::
+
+    issue = IssueClass(db, "issue", 
+                    assignedto=Link("user"), keyword=Multilink("keyword"),
+                    priority=Link("priority"), status=Link("status"))
+
+   to this, adding the blockers entry::
+
+    issue = IssueClass(db, "issue", 
+                    blockers=Multilink("issue"),
+                    assignedto=Link("user"), keyword=Multilink("keyword"),
+                    priority=Link("priority"), status=Link("status"))
+
+2. Add the new ``blockers`` property to the ``issue.item.html`` edit
+   page, using something like::
+
+    <th>Waiting On</th>
+    <td>
+     <span tal:replace="structure python:context.blockers.field(showid=1,
+                                  size=20)" />
+     <span tal:replace="structure python:db.issue.classhelp('id,title',
+                                  property='blockers')" />
+     <span tal:condition="context/blockers"
+           tal:repeat="blk context/blockers">
+      <br>View: <a tal:attributes="href string:issue${blk/id}"
+                   tal:content="blk/id"></a>
+     </span>
+    </td>
+
+   You'll need to fiddle with your item page layout to find an
+   appropriate place to put it - I'll leave that fun part up to you.
+   Just make sure it appears in the first table, possibly somewhere near
+   the "superseders" field.
+
+3. Create a new detector module (see below) which enforces the rules:
+
+   - issues may not be resolved if they have blockers
+   - when a blocker is resolved, it's removed from issues it blocks
+
+   The contents of the detector should be something like this::
+
+
+    def blockresolution(db, cl, nodeid, newvalues):
+        ''' If the issue has blockers, don't allow it to be resolved.
+        '''
+        if nodeid is None:
+            blockers = []
+        else:
+            blockers = cl.get(nodeid, 'blockers')
+        blockers = newvalues.get('blockers', blockers)
+
+        # don't do anything if there's no blockers or the status hasn't
+        # changed
+        if not blockers or 'status' not in newvalues:
+            return
+
+        # get the resolved state ID
+        resolved_id = db.status.lookup('resolved')
+
+        # format the info
+        u = db.config.TRACKER_WEB
+        s = ', '.join(['<a href="%sissue%s">%s</a>'%(
+                        u,id,id) for id in blockers])
+        if len(blockers) == 1:
+            s = 'issue %s is'%s
+        else:
+            s = 'issues %s are'%s
+
+        # ok, see if we're trying to resolve
+        if newvalues['status'] == resolved_id:
+            raise ValueError("This issue can't be resolved until %s resolved."%s)
+
+
+    def resolveblockers(db, cl, nodeid, oldvalues):
+        ''' When we resolve an issue that's a blocker, remove it from the
+            blockers list of the issue(s) it blocks.
+        '''
+        newstatus = cl.get(nodeid,'status')
+
+        # no change?
+        if oldvalues.get('status', None) == newstatus:
+            return
+
+        resolved_id = db.status.lookup('resolved')
+
+        # interesting?
+        if newstatus != resolved_id:
+            return
+
+        # yes - find all the blocked issues, if any, and remove me from
+        # their blockers list
+        issues = cl.find(blockers=nodeid)
+        for issueid in issues:
+            blockers = cl.get(issueid, 'blockers')
+            if nodeid in blockers:
+                blockers.remove(nodeid)
+                cl.set(issueid, blockers=blockers)
+
+    def init(db):
+        # might, in an obscure situation, happen in a create
+        db.issue.audit('create', blockresolution)
+        db.issue.audit('set', blockresolution)
+
+        # can only happen on a set
+        db.issue.react('set', resolveblockers)
+
+   Put the above code in a file called "blockers.py" in your tracker's
+   "detectors" directory.
+
+4. Finally, and this is an optional step, modify the tracker web page
+   URLs so they filter out issues with any blockers. You do this by
+   adding an additional filter on "blockers" for the value "-1". For
+   example, the existing "Show All" link in the "page" template (in the
+   tracker's "html" directory) looks like this::
+
+    <a href="#"
+       tal:attributes="href python:request.indexargs_url('issue', {
+      '@sort': '-activity',
+      '@group': 'priority',
+      '@filter': 'status',
+      '@columns': columns_showall,
+      '@search_text': '',
+      'status': status_notresolved,
+      '@dispname': i18n.gettext('Show All'),
+     })"
+       i18n:translate="">Show All</a><br>
+
+   modify it to add the "blockers" info to the URL (note, both the
+   "@filter" *and* "blockers" values must be specified)::
+
+    <a href="#"
+       tal:attributes="href python:request.indexargs_url('issue', {
+      '@sort': '-activity',
+      '@group': 'priority',
+      '@filter': 'status,blockers',
+      '@columns': columns_showall,
+      '@search_text': '',
+      'status': status_notresolved,
+      'blockers': '-1',
+      '@dispname': i18n.gettext('Show All'),
+     })"
+       i18n:translate="">Show All</a><br>
+
+   The above examples are line-wrapped on the trailing & and should
+   be unwrapped.
+
+That's it. You should now be able to set blockers on your issues. Note
+that if you want to know whether an issue has any other issues dependent
+on it (i.e. it's in their blockers list) you can look at the journal
+history at the bottom of the issue page - look for a "link" event to
+another issue's "blockers" property.
+
+Add users to the nosy list based on the keyword
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Let's say we need the ability to automatically add users to the nosy
+list based
+on the occurance of a keyword. Every user should be allowed to edit their
+own list of keywords for which they want to be added to the nosy list.
+
+Below, we'll show that this change can be done with minimal
+understanding of the Roundup system, using only copy and paste.
+
+This requires three changes to the tracker: a change in the database to
+allow per-user recording of the lists of keywords for which he wants to
+be put on the nosy list, a change in the user view allowing them to edit
+this list of keywords, and addition of an auditor which updates the nosy
+list when a keyword is set.
+
+Adding the nosy keyword list
+::::::::::::::::::::::::::::
+
+The change to make in the database, is that for any user there should be a list
+of keywords for which he wants to be put on the nosy list. Adding a
+``Multilink`` of ``keyword`` seems to fullfill this. As such, all that has to
+be done is to add a new field to the definition of ``user`` within the file
+``schema.py``.  We will call this new field ``nosy_keywords``, and the updated
+definition of user will be::
+
+    user = Class(db, "user", 
+                    username=String(),   password=Password(),
+                    address=String(),    realname=String(), 
+                    phone=String(),      organisation=String(),
+                    alternate_addresses=String(),
+                    queries=Multilink('query'), roles=String(),
+                    timezone=String(),
+                    nosy_keywords=Multilink('keyword'))
+ 
+Changing the user view to allow changing the nosy keyword list
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+We want any user to be able to change the list of keywords for which
+he will by default be added to the nosy list. We choose to add this
+to the user view, as is generated by the file ``html/user.item.html``.
+We can easily 
+see that the keyword field in the issue view has very similar editing
+requirements as our nosy keywords, both being lists of keywords. As
+such, we look for Keywords in ``issue.item.html``, and extract the
+associated parts from there. We add this to ``user.item.html`` at the 
+bottom of the list of viewed items (i.e. just below the 'Alternate
+E-mail addresses' in the classic template)::
+
+ <tr>
+  <th>Nosy Keywords</th>
+  <td>
+  <span tal:replace="structure context/nosy_keywords/field" />
+  <span tal:replace="structure python:db.keyword.classhelp(property='nosy_keywords')" />
+  </td>
+ </tr>
+  
+
+Addition of an auditor to update the nosy list
+::::::::::::::::::::::::::::::::::::::::::::::
+
+The more difficult part is the logic to add
+the users to the nosy list when required. 
+We choose to perform this action whenever the keywords on an
+item are set (this includes the creation of items).
+Here we choose to start out with a copy of the 
+``detectors/nosyreaction.py`` detector, which we copy to the file
+``detectors/nosy_keyword_reaction.py``. 
+This looks like a good start as it also adds users
+to the nosy list. A look through the code reveals that the
+``nosyreaction`` function actually sends the e-mail. 
+We don't need this. Therefore, we can change the ``init`` function to::
+
+    def init(db):
+        db.issue.audit('create', update_kw_nosy)
+        db.issue.audit('set', update_kw_nosy)
+
+After that, we rename the ``updatenosy`` function to ``update_kw_nosy``.
+The first two blocks of code in that function relate to setting
+``current`` to a combination of the old and new nosy lists. This
+functionality is left in the new auditor. The following block of
+code, which handled adding the assignedto user(s) to the nosy list in
+``updatenosy``, should be replaced by a block of code to add the
+interested users to the nosy list. We choose here to loop over all
+new keywords, than looping over all users,
+and assign the user to the nosy list when the keyword occurs in the user's
+``nosy_keywords``. The next part in ``updatenosy`` -- adding the author
+and/or recipients of a message to the nosy list -- is obviously not
+relevant here and is thus deleted from the new auditor. The last
+part, copying the new nosy list to ``newvalues``, can stay as is.
+This results in the following function::
+
+    def update_kw_nosy(db, cl, nodeid, newvalues):
+        '''Update the nosy list for changes to the keywords
+        '''
+        # nodeid will be None if this is a new node
+        current = {}
+        if nodeid is None:
+            ok = ('new', 'yes')
+        else:
+            ok = ('yes',)
+            # old node, get the current values from the node if they haven't
+            # changed
+            if 'nosy' not in newvalues:
+                nosy = cl.get(nodeid, 'nosy')
+                for value in nosy:
+                    if value not in current:
+                        current[value] = 1
+
+        # if the nosy list changed in this transaction, init from the new value
+        if 'nosy' in newvalues:
+            nosy = newvalues.get('nosy', [])
+            for value in nosy:
+                if not db.hasnode('user', value):
+                    continue
+                if value not in current:
+                    current[value] = 1
+
+        # add users with keyword in nosy_keywords to the nosy list
+        if 'keyword' in newvalues and newvalues['keyword'] is not None:
+            keyword_ids = newvalues['keyword']
+            for keyword in keyword_ids:
+                # loop over all users,
+                # and assign user to nosy when keyword in nosy_keywords
+                for user_id in db.user.list():
+                    nosy_kw = db.user.get(user_id, "nosy_keywords")
+                    found = 0
+                    for kw in nosy_kw:
+                        if kw == keyword:
+                            found = 1
+                    if found:
+                        current[user_id] = 1
+
+        # that's it, save off the new nosy list
+        newvalues['nosy'] = list(current.keys())
+
+These two function are the only ones needed in the file.
+
+TODO: update this example to use the ``find()`` Class method.
+
+Caveats
+:::::::
+
+A few problems with the design here can be noted:
+
+Multiple additions
+    When a user, after automatic selection, is manually removed
+    from the nosy list, he is added to the nosy list again when the
+    keyword list of the issue is updated. A better design might be
+    to only check which keywords are new compared to the old list
+    of keywords, and only add users when they have indicated
+    interest on a new keyword.
+
+    The code could also be changed to only trigger on the ``create()``
+    event, rather than also on the ``set()`` event, thus only setting
+    the nosy list when the issue is created.
+
+Scalability
+    In the auditor, there is a loop over all users. For a site with
+    only few users this will pose no serious problem; however, with
+    many users this will be a serious performance bottleneck.
+    A way out would be to link from the keywords to the users who
+    selected these keywords as nosy keywords. This will eliminate the
+    loop over all users. See the ``rev_multilink`` attribute to make
+    this easier.
+
+Restricting updates that arrive by email
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Roundup supports multiple update methods:
+
+1. command line
+2. plain email
+3. pgp signed email
+4. web access
+
+in some cases you may need to prevent changes to properties by some of
+these methods. For example you can set up issues that are viewable
+only by people on the nosy list. So you must prevent unauthenticated
+changes to the nosy list.
+
+Since plain email can be easily forged, it does not provide sufficient
+authentication in this senario.
+
+To prevent this we can add a detector that audits the source of the
+transaction and rejects the update if it changes the nosy list.
+
+Create the detector (auditor) module and add it to the detectors
+directory of your tracker::
+
+   from roundup import roundupdb, hyperdb
+   
+   from roundup.mailgw import Unauthorized
+
+   def restrict_nosy_changes(db, cl, nodeid, newvalues):
+       '''Do not permit changes to nosy via email.'''
+
+       if 'nosy' not in newvalues:
+           # the nosy field has not changed so no need to check.
+           return
+
+       if db.tx_Source in ['web', 'rest', 'xmlrpc', 'email-sig-openpgp', 'cli' ]:
+	   # if the source of the transaction is from an authenticated
+	   # source or a privileged process allow the transaction.
+	   # Other possible sources: 'email'
+	   return
+
+       # otherwise raise an error
+       raise Unauthorized( \
+	   'Changes to nosy property not allowed via %s for this issue.'%\
+           tx_Source)
+	
+   def init(db):
+      ''' Install restrict_nosy_changes to run after other auditors. 
+
+          Allow initial creation email to set nosy.
+          So don't execute: db.issue.audit('create', requestedbyauditor)
+
+          Set priority to 110 to run this auditor after other auditors
+          that can cause nosy to change.
+      '''
+      db.issue.audit('set', restrict_nosy_changes, 110)
+
+This detector (auditor) will prevent updates to the nosy field if it
+arrives by email. Since it runs after other auditors (due to the
+priority of 110), it will also prevent changes to the nosy field that
+are done by other auditors if triggered by an email.
+
+Note that db.tx_Source was not present in roundup versions before
+1.4.22, so you must be running a newer version to use this detector.
+Read the CHANGES.txt document in the roundup source code for further
+details on tx_Source.
+
+Changes to Security and Permissions
+-----------------------------------
+
+Restricting the list of users that are assignable to a task
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+1. In your tracker's ``schema.py``, create a new Role, say "Developer"::
+
+     db.security.addRole(name='Developer', description='A developer')
+
+2. Just after that, create a new Permission, say "Fixer", specific to
+   "issue"::
+
+     p = db.security.addPermission(name='Fixer', klass='issue',
+         description='User is allowed to be assigned to fix issues')
+
+3. Then assign the new Permission to your "Developer" Role::
+
+     db.security.addPermissionToRole('Developer', p)
+
+4. In the issue item edit page (``html/issue.item.html`` in your tracker
+   directory), use the new Permission in restricting the "assignedto"
+   list::
+
+    <select name="assignedto">
+     <option value="-1">- no selection -</option>
+     <tal:block tal:repeat="user db/user/list">
+     <option tal:condition="python:user.hasPermission(
+                                'Fixer', context._classname)"
+             tal:attributes="
+                value user/id;
+                selected python:user.id == context.assignedto"
+             tal:content="user/realname"></option>
+     </tal:block>
+    </select>
+
+For extra security, you may wish to setup an auditor to enforce the
+Permission requirement (install this as ``assignedtoFixer.py`` in your
+tracker ``detectors`` directory)::
+
+  def assignedtoMustBeFixer(db, cl, nodeid, newvalues):
+      ''' Ensure the assignedto value in newvalues is used with the
+          Fixer Permission
+      '''
+      if 'assignedto' not in newvalues:
+          # don't care
+          return
+  
+      # get the userid
+      userid = newvalues['assignedto']
+      if not db.security.hasPermission('Fixer', userid, cl.classname):
+          raise ValueError('You do not have permission to edit %s'%cl.classname)
+
+  def init(db):
+      db.issue.audit('set', assignedtoMustBeFixer)
+      db.issue.audit('create', assignedtoMustBeFixer)
+
+So now, if an edit action attempts to set "assignedto" to a user that
+doesn't have the "Fixer" Permission, the error will be raised.
+
+
+Users may only edit their issues
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In this case, users registering themselves are granted Provisional
+access, meaning they
+have access to edit the issues they submit, but not others. We create a new
+Role called "Provisional User" which is granted to newly-registered users,
+and has limited access. One of the Permissions they have is the new "Edit
+Own" on issues (regular users have "Edit".)
+
+First up, we create the new Role and Permission structure in
+``schema.py``::
+
+    #
+    # New users not approved by the admin
+    #
+    db.security.addRole(name='Provisional User',
+        description='New user registered via web or email')
+
+    # These users need to be able to view and create issues but only edit
+    # and view their own
+    db.security.addPermissionToRole('Provisional User', 'Create', 'issue')
+    def own_issue(db, userid, itemid):
+        '''Determine whether the userid matches the creator of the issue.'''
+        return userid == db.issue.get(itemid, 'creator')
+    p = db.security.addPermission(name='Edit', klass='issue',
+        check=own_issue, description='Can only edit own issues')
+    db.security.addPermissionToRole('Provisional User', p)
+    p = db.security.addPermission(name='View', klass='issue',
+        check=own_issue, description='Can only view own issues')
+    db.security.addPermissionToRole('Provisional User', p)
+    # This allows the interface to get the names of the properties
+    # in the issue. Used for selecting sorting and grouping
+    # on the index page.
+    p = db.security.addPermission(name='Search', klass='issue')
+    db.security.addPermissionToRole ('Provisional User', p)
+
+
+    # Assign the Permissions for issue-related classes
+    for cl in 'file', 'msg', 'query', 'keyword':
+        db.security.addPermissionToRole('Provisional User', 'View', cl)
+        db.security.addPermissionToRole('Provisional User', 'Edit', cl)
+        db.security.addPermissionToRole('Provisional User', 'Create', cl)
+    for cl in 'priority', 'status':
+        db.security.addPermissionToRole('Provisional User', 'View', cl)
+
+    # and give the new users access to the web and email interface
+    db.security.addPermissionToRole('Provisional User', 'Web Access')
+    db.security.addPermissionToRole('Provisional User', 'Email Access')
+
+    # make sure they can view & edit their own user record
+    def own_record(db, userid, itemid):
+        '''Determine whether the userid matches the item being accessed.'''
+        return userid == itemid
+    p = db.security.addPermission(name='View', klass='user', check=own_record,
+        description="User is allowed to view their own user details")
+    db.security.addPermissionToRole('Provisional User', p)
+    p = db.security.addPermission(name='Edit', klass='user', check=own_record,
+        description="User is allowed to edit their own user details")
+    db.security.addPermissionToRole('Provisional User', p)
+
+Then, in ``config.ini``, we change the Role assigned to newly-registered
+users, replacing the existing ``'User'`` values::
+
+    [main]
+    ...
+    new_web_user_roles = Provisional User
+    new_email_user_roles = Provisional User
+
+
+All users may only view and edit issues, files and messages they create
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Replace the standard "classic" tracker View and Edit Permission assignments
+for the "issue", "file" and "msg" classes with the following::
+
+    def checker(klass):
+        def check(db, userid, itemid, klass=klass):
+            return db.getclass(klass).get(itemid, 'creator') == userid
+        return check
+    for cl in 'issue', 'file', 'msg':
+        p = db.security.addPermission(name='View', klass=cl,
+            check=checker(cl),
+            description='User can view only if creator.')
+        db.security.addPermissionToRole('User', p)
+        p = db.security.addPermission(name='Edit', klass=cl,
+            check=checker(cl),
+            description='User can edit only if creator.')
+        db.security.addPermissionToRole('User', p)
+        db.security.addPermissionToRole('User', 'Create', cl)
+    # This allows the interface to get the names of the properties
+    # in the issue. Used for selecting sorting and grouping
+    # on the index page.
+    p = db.security.addPermission(name='Search', klass='issue')
+    db.security.addPermissionToRole ('User', p)
+
+
+Moderating user registration
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You could set up new-user moderation in a public tracker by:
+
+1. creating a new highly-restricted user role "Pending",
+2. set the config new_web_user_roles and/or new_email_user_roles to that
+   role,
+3. have an auditor that emails you when new users are created with that
+   role using roundup.mailer
+4. edit the role to "User" for valid users.
+
+Some simple javascript might help in the last step. If you have high volume
+you could search for all currently-Pending users and do a bulk edit of all
+their roles at once (again probably with some simple javascript help).
+
+
+Changes to the Web User Interface
+---------------------------------
+
+Adding action links to the index page
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Add a column to the ``item.index.html`` template.  In that column add
+a form to trigger the action. Note: the form must use the POST method
+for security.
+
+Resolving the issue::
+
+    <form method="POST" tal:attributes="action string:issue${i/id}">
+      <button tal:replace="structure
+        python:context.submit(label='resolve', action='edit')" />
+      <input type="hidden" name="status" value="resolved">
+    </form>
+
+"Take" the issue::
+
+    <form method="POST" tal:attributes="action string:issue${i/id}">
+      <button tal:replace="structure
+        python:context.submit(label='take', action='edit')" />
+      <input type="hidden" name="assignedto"
+        tal:attributes="value request/user/id">
+    </form>
+
+... and so on.
+
+Colouring the rows in the issue index according to priority
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A simple ``tal:attributes`` statement will do the bulk of the work here. In
+the ``issue.index.html`` template, add this to the ``<tr>`` that
+displays the rows of data::
+
+   <tr tal:attributes="class string:priority-${i/priority/plain}">
+
+and then in your stylesheet (``style.css``) specify the colouring for the
+different priorities, as follows::
+
+   tr.priority-critical td {
+       background-color: red;
+   }
+
+   tr.priority-urgent td {
+       background-color: orange;
+   }
+
+and so on, with far less offensive colours :)
+
+Editing multiple items in an index view
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To edit the status of all items in the item index view, edit the
+``issue.index.html``:
+
+1. add a form around the listing table (separate from the existing
+   index-page form), so at the top it reads:
+
+   .. tabs::
+
+      .. code-tab:: html TAL
+
+        <form method="POST" tal:attributes="action request/classname">
+        <table class="list">
+
+      .. code-tab:: html Jinja2
+
+         <form method="POST" action='issue{{ context.id }}' class='form-inline'>
+         <table class="list">
+
+
+   and at the bottom of that table add::
+
+     </table>
+    </form
+
+   making sure you match the ``</table>`` from the list table, not the
+   navigation table or the subsequent form table.
+
+2. in the display for the issue property, change:
+
+   .. tabs::
+
+      .. code-tab:: html TAL
+
+         <td tal:condition="request/show/status"
+            tal:content="python:i.status.plain() or default">&nbsp;</td>
+
+      .. code-tab:: html Jinja2
+
+         {% if request.show.status %}
+         <td>{{ issue.status.plain()|u }}</td>
+         {% endif %}
+
+   to:
+
+   .. tabs::
+
+      .. code-tab:: html TAL
+
+         <td tal:condition="request/show/status"
+            tal:content="structure i/status/field">&nbsp;</td>
+
+      .. code-tab:: html Jinja2
+
+         {% if request.show.status %}
+         <td>{{ issue.status.menu()|u|safe }}</td>
+         {% endif %}
+         <!-- untested -->
+ 
+   this will result in an edit field for the status property.
+
+3. after the ``tal:block`` which lists the index items (marked by
+   ``tal:repeat="i batch"``) add a new table row:
+
+   .. tabs::
+
+      .. code-tab:: html TAL
+
+	 <tr>
+	  <td tal:attributes="colspan python:len(request.columns)">
+	   <input name="@csrf" type="hidden"		
+		tal:attributes="value python:utils.anti_csrf_nonce()">
+	   <input type="submit" value=" Save Changes ">
+	   <input type="hidden" name="@action" value="edit">
+	   <tal:block replace="structure request/indexargs_form" />
+	  </td>
+	 </tr>
+
+      .. code-tab:: html Jinja2
+
+         To Be Written
+
+   which gives us a submit button, indicates that we are performing an
+   edit on any changed statuses, and provides a defense against cross
+   site request forgery attacks.
+
+   The final ``tal:block`` will make sure that the current index view
+   parameters (filtering, columns, etc) will be used in rendering the
+   next page (the results of the editing).
+
+
+Displaying only message summaries in the issue display
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Alter the ``issue.item`` template section for messages to::
+
+ <table class="messages" tal:condition="context/messages">
+  <tr><th colspan="5" class="header">Messages</th></tr>
+  <tr tal:repeat="msg context/messages">
+   <td><a tal:attributes="href string:msg${msg/id}"
+          tal:content="string:msg${msg/id}"></a></td>
+   <td tal:content="msg/author">author</td>
+   <td class="date" tal:content="msg/date/pretty">date</td>
+   <td tal:content="msg/summary">summary</td>
+   <td>
+    <a tal:attributes="href string:?@remove@messages=${msg/id}&@action=edit">
+    remove</a>
+   </td>
+  </tr>
+ </table>
+
+
+Enabling display of either message summaries or the entire messages
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This is pretty simple - all we need to do is copy the code from the
+example `displaying only message summaries in the issue display`_ into
+our template alongside the summary display, and then introduce a switch
+that shows either the one or the other. We'll use a new form variable,
+``@whole_messages`` to achieve this::
+
+ <table class="messages" tal:condition="context/messages">
+  <tal:block tal:condition="not:request/form/@whole_messages/value | python:0">
+   <tr><th colspan="3" class="header">Messages</th>
+       <th colspan="2" class="header">
+         <a href="?@whole_messages=yes">show entire messages</a>
+       </th>
+   </tr>
+   <tr tal:repeat="msg context/messages">
+    <td><a tal:attributes="href string:msg${msg/id}"
+           tal:content="string:msg${msg/id}"></a></td>
+    <td tal:content="msg/author">author</td>
+    <td class="date" tal:content="msg/date/pretty">date</td>
+    <td tal:content="msg/summary">summary</td>
+    <td>
+     <a tal:attributes="href string:?@remove@messages=${msg/id}&@action=edit">remove</a>
+    </td>
+   </tr>
+  </tal:block>
+
+  <tal:block tal:condition="request/form/@whole_messages/value | python:0">
+   <tr><th colspan="2" class="header">Messages</th>
+       <th class="header">
+         <a href="?@whole_messages=">show only summaries</a>
+       </th>
+   </tr>
+   <tal:block tal:repeat="msg context/messages">
+    <tr>
+     <th tal:content="msg/author">author</th>
+     <th class="date" tal:content="msg/date/pretty">date</th>
+     <th style="text-align: right">
+      (<a tal:attributes="href string:?@remove@messages=${msg/id}&@action=edit">remove</a>)
+     </th>
+    </tr>
+    <tr><td colspan="3" tal:content="msg/content"></td></tr>
+   </tal:block>
+  </tal:block>
+ </table>
+
+
+Setting up a "wizard" (or "druid") for controlled adding of issues
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+1. Set up the page templates you wish to use for data input. My wizard
+   is going to be a two-step process: first figuring out what category
+   of issue the user is submitting, and then getting details specific to
+   that category. The first page includes a table of help, explaining
+   what the category names mean, and then the core of the form::
+
+    <form method="POST" onSubmit="return submit_once()"
+          enctype="multipart/form-data">
+       <input name="@csrf" type="hidden"
+          tal:attributes="value python:utils.anti_csrf_nonce()">
+      <input type="hidden" name="@template" value="add_page1">
+      <input type="hidden" name="@action" value="page1_submit">
+
+      <strong>Category:</strong>
+      <tal:block tal:replace="structure context/category/menu" />
+      <input type="submit" value="Continue">
+    </form>
+
+   The next page has the usual issue entry information, with the
+   addition of the following form fragments::
+
+    <form method="POST" onSubmit="return submit_once()"
+          enctype="multipart/form-data"
+          tal:condition="context/is_edit_ok"
+          tal:define="cat request/form/category/value">
+
+      <input name="@csrf" type="hidden"
+          tal:attributes="value python:utils.anti_csrf_nonce()">
+      <input type="hidden" name="@template" value="add_page2">
+      <input type="hidden" name="@required" value="title">
+      <input type="hidden" name="category" tal:attributes="value cat">
+       .
+       .
+       .
+    </form>
+
+   Note that later in the form, I use the value of "cat" to decide which
+   form elements should be displayed. For example::
+
+    <tal:block tal:condition="python:cat in '6 10 13 14 15 16 17'.split()">
+     <tr>
+      <th>Operating System</th>
+      <td tal:content="structure context/os/field"></td>
+     </tr>
+     <tr>
+      <th>Web Browser</th>
+      <td tal:content="structure context/browser/field"></td>
+     </tr>
+    </tal:block>
+
+   ... the above section will only be displayed if the category is one
+   of 6, 10, 13, 14, 15, 16 or 17.
+
+3. Determine what actions need to be taken between the pages - these are
+   usually to validate user choices and determine what page is next. Now encode
+   those actions in a new ``Action`` class (see
+   `defining new web actions <reference.html#defining-new-web-actions>`_)::
+
+    from roundup.cgi.actions import Action
+
+    class Page1SubmitAction(Action):
+        def handle(self):
+            ''' Verify that the user has selected a category, and then move
+                on to page 2.
+            '''
+            category = self.form['category'].value
+            if category == '-1':
+                self.client.add_error_message('You must select a category of report')
+                return
+            # everything's ok, move on to the next page
+            self.client.template = 'add_page2'
+
+    def init(instance):
+        instance.registerAction('page1_submit', Page1SubmitAction)
+
+4. Use the usual "new" action as the ``@action`` on the final page, and
+   you're done (the standard context/submit method can do this for you).
+
+
+Silent Submit
+~~~~~~~~~~~~~
+
+When working on an issue, most of the time the people on the nosy list
+need to be notified of changes. There are cases where a user wants to
+add a comment to an issue and not bother other users on the nosy
+list.
+This feature is called Silent Submit because it allows the user to
+silently modify an issue and not tell anyone.
+
+There are several parts to this change. The main activity part
+involves editing the stock detectors/nosyreaction.py file in your
+tracker. Insert the following lines near the top of the nosyreaction
+function::
+
+    # Did user click button to do a silent change?
+    try:
+        if db.web['submit'] == "silent_change":
+            return
+    except (AttributeError, KeyError) as err:
+        # The web attribute or submit key don't exist.
+        # That's fine. We were probably triggered by an email
+        # or cli based change.
+        pass
+  
+This checks the submit button to see if it is the silent type. If there
+are exceptions trying to make that determination they are ignored and
+processing continues. You may wonder how db.web gets set. This is done
+by creating an extension. Add the file extensions/edit.py with
+this content::
+
+  from roundup.cgi.actions import EditItemAction
+
+  class Edit2Action(EditItemAction):
+    def handle(self):
+        self.db.web = {}  # create the dict
+        # populate the dict by getting the value of the submit_button
+        # element from the form.
+        self.db.web['submit'] = self.form['submit_button'].value
+
+        # call the core EditItemAction to process the edit.
+        EditItemAction.handle(self)
+
+  def init(instance):
+    '''Override the default edit action with this new version'''
+    instance.registerAction('edit', Edit2Action)
+	
+This code is a wrapper for the Roundup EditItemAction. It checks the
+form's submit button to save the value element. The rest of the changes
+needed for the Silent Submit feature involves editing
+html/issue.item.html to add the silent submit button. In
+the stock issue.item.html the submit button is on a line that contains
+"submit button". Replace that line with something like the following::
+
+	    <input type="submit" name="submit_button"
+		   tal:condition="context/is_edit_ok"
+		   value="Submit Changes">&nbsp;
+	    <button type="submit" name="submit_button"
+		    tal:condition="context/is_edit_ok"
+		    title="Click this to submit but not send nosy email."
+		    value="silent_change" i18n:translate="">
+	      Silent Change</button>
+
+Note the difference in the value attribute for the two submit buttons.
+The value "silent_change" in the button specification must match the
+string in the nosy reaction function.
+
+Changing How the Core Code Works
+--------------------------------
+
+.. index:: single: interfaces.py; cache-control headers
+
+Changing Cache-Control Headers
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The Client class in cgi/client.py has a lookup table that is used to
+set the Cache-Control headers for static files. The entries in this
+table are set from interfaces.py using::
+
+  from roundup.cgi.client import Client
+
+  Client.Cache_Control['text/css'] = "public, max-age=3600"
+  Client.Cache_Control['application/javascript'] = "public, max-age=30"
+  Client.Cache_Control['rss.xml'] = "public, max-age=900"
+  Client.Cache_Control['local.js'] = "public, max-age=7200"
+
+In this case static files delivered using @@file will have cache
+headers set. These files are searched for along the `static_files`
+path in the tracker's `config.ini`. In the example above:
+
+* a css file (e.g. @@file/style.css) will be cached for an hour
+* javascript files (e.g. @@file/libraries/jquery.js) will be cached
+  for 30 seconds
+* a file named rss.xml will be cached for 15 minutes
+* a file named local.js will be cached for 2 hours
+
+Note that a file name match overrides the mime type settings.
+
+.. index:: single: interfaces.py; password complexity checking
+
+Implement Password Complexity Checking
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. index:: tracker; lib directory (example)
+
+This example uses the zxcvbn_ module that you can place in the zxcvbn
+subdirectory of your tracker's lib directory.
+
+If you add this to the interfaces.py file in the root directory of
+your tracker (same place as schema.py)::
+
+    import roundup.password as password
+    from roundup.exceptions import Reject
+    from zxcvbn import zxcvbn
+
+    # monkey patch the setPassword method with this method
+    # that checks password strength.
+    origPasswordFunc = password.Password.setPassword
+    def mpPasswordFunc(self, plaintext, scheme, config=None):
+	""" Replace the password set function with one that
+	    verifies that the password is complex enough. It
+	    has to be done at this point and not in an auditor
+	    as the auditor only sees the encrypted password.
+	"""
+	results = zxcvbn(plaintext)
+	if results['score'] < 3:
+	    l = []
+	    map(l.extend, [[results['feedback']['warning']], results['feedback']['suggestions']])
+	    errormsg = " ".join(l)
+	    raise Reject ("Password is too easy to guess. " + errormsg)
+	return origPasswordFunc(self, plaintext, scheme, config=config)
+
+    password.Password.setPassword = mpPasswordFunc
+
+it replaces the setPassword method in the Password class. The new
+version validates that the password is sufficiently complex. Then it
+passes off the setting of password to the original method.
+
+.. index:: single: interfaces.py; interpreting time interval values
+
+Enhance Time Intervals Forms
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To make the user interface easier to use, you may want to support
+other forms for intervals. For example you can support an interval
+like 1.5 by interpreting it the same as 1:30 (1 hour 30 minutes).
+Also you can allow a bare integer (e.g. 45) as a number of minutes.
+
+To do this we intercept the from_raw method of the Interval class in
+hyperdb.py with::
+
+    import roundup.hyperdb as hyperdb
+    origFrom_Raw = hyperdb.Interval.from_raw
+
+    def normalizeperiod(self, value, **kw):
+	''' Convert alternate time forms into standard interval format
+
+	    [+-] [#y] [#m] [#w] [#d] [[[H]H:MM]:SS]
+
+	    if value is float, it's hour and fractional hours
+	    if value is integer, it's number of minutes
+	'''
+	if ":" not in value:
+	    # Not a specified interval
+	    # if int consider number of minutes
+	    try:
+		isMinutes = int(value)
+		minutes = isMinutes%60
+		hours = (isMinutes - minutes) / 60
+		value = "%d:%d"%(hours,minutes)
+	    except ValueError:
+		pass
+	    # if float, consider it number of hours and fractional hours.
+	    import math
+	    try:
+		afterdecimal, beforedecimal = math.modf(float(value))
+		value = "%d:%d"%(beforedecimal,60*afterdecimal)
+	    except ValueError:
+		pass
+
+	return origFrom_Raw(self, value, **kw)
+
+    hyperdb.Interval.from_raw = normalizeperiod
+
+any call to convert an interval from raw form now has two simpler
+(and more friendly) ways to specify common time intervals.
+
+Modifying the Mail Gateway
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+One site receives email on a main gateway. The virtual alias delivery
+table on the postfix server is configured with::
+
+   test-issues@example.com  roundup-test@roundup-vm.example.com
+   test-support@example.com roundup-test+support-a@roundup-vm.example.com
+   test@support.example.com roundup-test+support-b@roundup-vm.example.com
+
+These modifications to the mail gateway for Roundup allows anonymous
+submissions. It hides all of the requesters under the "support"
+user. It also makes some other modifications to the mail parser
+allowing keywords to be set and prefixes to be defined based on the
+delivery alias.
+
+This is the entry in interfaces.py::
+
+    import roundup.mailgw
+    import email.utils
+
+    class SupportTracker(object):
+	def __init__(self, prefix=None, keyword=None):
+	    self.prefix = prefix
+	    self.keyword = keyword
+
+    # Define new prefixes and keywords based on local address.
+    support_trackers = {
+	### production instances ###
+
+	### test instances ###
+	'roundup-test+support-a':
+	    SupportTracker(prefix='Support 1', keyword='support1'),
+	'roundup-test+support-b':
+	    SupportTracker(prefix='Support 2', keyword='support2'),
+	'roundup-test2+support-a':
+	    SupportTracker(prefix='Support 1', keyword='support1'),
+	'roundup-test2+support-b':
+	    SupportTracker(prefix='Support 2', keyword='support2'),
+    }
+
+    class parsedMessage(roundup.mailgw.parsedMessage):
+	def __init__(self, mailgw, message, support_tracker):
+	    roundup.mailgw.parsedMessage.__init__(self, mailgw, message)
+	    if support_tracker.prefix:
+		self.prefix = '%s: ' % support_tracker.prefix
+	    else:
+		self.prefix = ''
+	    self.keywords = []
+	    if support_tracker.keyword:
+		try:
+		    self.keywords = [
+			self.db.keyword.lookup(support_tracker.keyword)]
+		except KeyError:
+		    pass
+	    self.config.ADD_AUTHOR_TO_NOSY = 'no'
+	    self.config.ADD_RECIPIENTS_TO_NOSY = 'no'
+	    self.config.MAILGW_KEEP_QUOTED_TEXT = 'yes'
+	    self.config.MAILGW_LEAVE_BODY_UNCHANGED = 'yes'
+	    self.classname = 'issue'
+	    self.pfxmode = 'loose'
+	    self.sfxmode = 'none'
+	    # set the support user id
+	    self.fixed_author = self.db.user.lookup('support')
+	    self.fixed_props = {
+		'nosy': [self.fixed_author],
+		'keyword': self.keywords,
+	    }
+
+	def handle_help(self):
+	    pass
+
+	def check_subject(self):
+	    if not self.subject:
+		self.subject = 'no subject'
+
+	def rego_confirm(self):
+	    pass
+
+	def get_author_id(self):
+	    # force the support user to be the author
+	    self.author = self.fixed_author
+
+	def get_props(self):
+	    self.props = {}
+	    if not self.nodeid:
+		self.props.update(self.fixed_props)
+		self.props['title'] = ("%s%s" % (
+		    self.prefix, self.subject.replace('[', '(').replace(']', ')')))
+
+	def get_content_and_attachments(self):
+	    roundup.mailgw.parsedMessage.get_content_and_attachments(self)
+	    if not self.content:
+		self.content = 'no text'
+	    intro = []
+	    for header in ['From', 'To', 'Cc']:
+		for addr in self.message.getaddrlist(header):
+		    intro.append('%s: %s' % (header, email.utils.formataddr(addr)))
+	    intro.append('Subject: %s' % self.subject)
+	    intro.append('\n')
+	    self.content = '\n'.join(intro) + self.content
+
+    class MailGW(roundup.mailgw.MailGW):
+	def parsed_message_class(self, mailgw, message):
+	    support_tracker = None
+	    # The delivered-to header is unique to postfix
+	    # it is the target address:
+	    #   roundup-test+support-a@roundup-vm.example.com
+            # rather than
+	    #   test-support@example.com
+	    recipients = message.getaddrlist('delivered-to')
+	    if recipients:
+		localpart = recipients[0][1].rpartition('@')[0]
+		support_tracker = support_trackers.get(localpart)
+	    if support_tracker:
+	        # parse the mesage using the parsedMessage class
+		# defined above.
+		return parsedMessage(mailgw, message, support_tracker)
+	    else:
+		# parse the message normally
+		return roundup.mailgw.parsedMessage(mailgw, message)
+
+This is the most complex example section. The mail gateway is also one
+of the more complex subsystems in Roundup, and modifying it is not
+trivial.
+
+Other Examples
+==============
+
+See the `rest interface documentation`_ for instructions on how to add
+new rest endpoints or `change the rate limiting method`_  using interfaces.py.
+
+The `reference document`_ also has examples:
+
+* `Extending the configuration file
+  <reference.html#extending-the-configuration-file>`_.
+* `Adding a new Permission <reference.html#adding-a-new-permission>`_
+
+Examples on the Wiki
+====================
+
+Even more examples of customisation have been contributed by
+users. They can be found on the `wiki
+<https://wiki.roundup-tracker.org/CustomisationExamples>`_.
+
+.. _change the rate limiting method: rest.html#creating-custom-rate-limits
+.. _`design documentation`: design.html
+.. _`developer's guide`: developers.html
+.. _`directions in the rest interface documentation`: rest.html#enabling-the-rest-api
+.. _oauth: https://wiki.roundup-tracker.org/OauthAuthentication
+.. _`rest interface documentation`: rest.html#programming-the-rest-api
+.. _`shibboleth`: https://wiki.roundup-tracker.org/ShibbolethLogin
+.. _`xmlrpc interface documentation`: xmlrpc.html#through-roundup
+.. _`zxcvbn`: https://github.com/dwolfhub/zxcvbn-python
+ 

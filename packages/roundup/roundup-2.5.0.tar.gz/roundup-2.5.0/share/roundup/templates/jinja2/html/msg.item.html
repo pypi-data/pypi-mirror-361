@@ -1,0 +1,61 @@
+{% extends 'layout/page.html' %}
+
+{% block head_title %}
+  {% if context.id %}
+    {% trans %}Message{% endtrans %} {{ context.id }} - {{ config.TRACKER_NAME }}
+  {% else %}
+    {% trans %}New Message{% endtrans %} - {{ config.TRACKER_NAME }}
+  {% endif %}
+{% endblock %}
+
+{% block page_header %}
+  {% if not (context.id or context.is_edit_ok()) %}
+    {% trans %}New Message{% endtrans %}
+  {% elif not context.id and context.is_edit_ok() %}
+    {% trans %}New Message Editing{% endtrans %}
+  {% elif context.id and not context.is_edit_ok() %}
+    {% trans %}Message{% endtrans %} {{ context.id }}
+  {% elif context.id and context.is_edit_ok() %}
+    {% trans %}Message{% endtrans %} {{ context.id }} {% trans %}editing{% endtrans %}
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+
+  {% include 'layout/permission.html' %}
+
+  {% if context.is_view_ok() %}
+    <dl class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+      <div class="col row">
+        <dt class="col col-auto">{% trans %}Author{% endtrans %}</dt>
+        <dd class="col col-auto">{{ context.author.plain()|u }}</dd>
+      </div>
+      <div class="col row">
+        <dt class="col col-auto">{% trans %}Date{% endtrans %}</dt>
+        <dd class="col col-auto">{{ context.date.plain()|u }}</dd>
+      </div>
+      <div class="col row">
+        <dt class="col col-auto">{% trans %}Message id{% endtrans %}</dt>
+        <dd class="col col-auto">{{ context.id }}</dd>
+      </div>
+    </dl>
+    <div>
+      <h4>Content</h4>
+      {% if context.type == 'text/markdown' %}
+        <div class="msg">{{ context.content.markdown()|u|safe }}</div>
+      {% elif context.type == 'text/x-rst' %}
+        <div class="msg">{{ context.content.rst()|u|safe }}</div>
+      {% else %}
+        <pre class="msg">{{ context.content.hyperlinked()|u|safe }}</pre>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {% if context.files %}
+    {% include 'file.index.html' %}
+  {% endif %}
+
+  <div class='vspace-five'></div>
+  {{ context.history()|u|safe }}
+
+{% endblock %}

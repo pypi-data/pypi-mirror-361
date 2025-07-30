@@ -1,0 +1,249 @@
+
+<!DOCTYPE html>
+
+
+
+
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PostgreSQL/psycopg Backend &mdash; Roundup 2.5.0 documentation</title>
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+          URL_ROOT:    './',
+          VERSION:     '2.5.0',
+          COLLAPSE_MODINDEX: false,
+          FILE_SUFFIX: '.html'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script type="text/javascript" src="_static/searchtools.js"></script>
+    <script type="text/javascript" src="_static/sphinx_highlight.js"></script>
+    <script type="text/javascript" src="_static/tabs.js"></script>
+    
+    <link rel="stylesheet" href="_static/NO_basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
+    <!-- https://github.com/sphinx-doc/sphinx/issues/11699 means a
+         duplicate viewport tag -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+      <meta name="description"
+        content="Page postgresql in documentation on the Roundup issue tracker, version 2.5.0.">
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="Roundup 2.5.0 documentation" href="index.html" />
+    <link rel="next" title="Implementation notes" href="implementation.html" />
+    <link rel="prev" title="MySQL Backend" href="mysql.html" /> 
+  </head>
+  <body>
+    <div class="header"><div class="label">Roundup</div>
+        <script id="documentation_options" data-url_root=""
+	      src="_static/documentation_options.js">
+        </script>
+
+        <div id="searchbox" style="display: none">
+          <form class="search" action="search.html" method="get">
+            <input type="text" name="q" size="18" />
+            <input type="submit" value="Search" />
+            <input type="hidden" name="check_keywords" value="yes" />
+            <input type="hidden" name="area" value="default" />
+          </form>
+        </div>
+        <script type="text/javascript">$('#searchbox').show(0);</script>
+    </div>
+    <div class="navigation">
+      <div class="menu">
+       
+    <h3><a href="index.html">Table Of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">PostgreSQL/psycopg Backend</a><ul>
+<li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li><a class="reference internal" href="#preparing-the-database">Preparing the Database</a><ul>
+<li><a class="reference internal" href="#creating-a-role-user">Creating a Role/User</a></li>
+<li><a class="reference internal" href="#creating-a-database">Creating a Database</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#running-the-postgresql-unit-tests">Running the PostgreSQL unit tests</a></li>
+<li><a class="reference internal" href="#credit">Credit</a></li>
+</ul>
+</li>
+</ul>
+
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mysql.html"
+                          title="previous chapter">MySQL Backend</a></p>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="implementation.html"
+                          title="next chapter">Implementation notes</a></p>
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/postgresql.txt"
+             rel="nofollow">Show Source</a></li>
+    </ul>
+  <div id="searchbox" style="display: none">
+    <h3>Quick search</h3>
+      <form class="search" action="search.html" method="get">
+        <input type="text" name="q" size="18" />
+        <input type="submit" value="Go" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+      <p style="font-size: 90%">Enter search terms or a module, class or function name.</p>
+  </div>
+  <script type="text/javascript">$('#searchbox').show(0);</script>
+      </div>
+    </div>
+    <main id="main" role="main" class="content">
+       
+    <div class="related related-top">
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="implementation.html" title="Implementation notes"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="mysql.html" title="MySQL Backend"
+             accesskey="P">previous</a></li>
+        <li><a href="index.html">Roundup 2.5.0 documentation</a></li> 
+      </ul>
+    </div>
+       
+  <section id="postgresql-psycopg-backend">
+<span id="index-0"></span><h1>PostgreSQL/psycopg Backend</h1>
+<p>This are notes about PostqreSQL backend based on the psycopg adapter for
+Roundup issue tracker.</p>
+<section id="prerequisites">
+<h2>Prerequisites</h2>
+<p>To use PostgreSQL as backend for storing roundup data, you should
+additionally install:</p>
+<ol class="arabic simple">
+<li><p><a class="reference external" href="https://www.postgresql.org/">PostgreSQL</a> 8.x or higher</p></li>
+<li><p>The <a class="reference external" href="https://www.psycopg.org/">psycopg</a> python interface to <a class="reference external" href="https://www.postgresql.org/">PostgreSQL</a></p></li>
+</ol>
+<p>Note that you currently need at least version 2.8 of <a class="reference external" href="https://www.psycopg.org/">psycopg</a> – the
+postgresql backend will work with 2.7 but if you’re using the native
+postgresql indexer you need at least 2.8. Also if you want to run the
+tests, these also need 2.8. If your distribution has an older version we
+suggest that you install into a python virtual environment.</p>
+</section>
+<section id="preparing-the-database">
+<h2>Preparing the Database</h2>
+<p>Roundup can use Postgres in one of two ways:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Roundup creates and uses a database</p></li>
+<li><p>Roundup uses a pre-created database and creates and uses a schema
+under the database.</p></li>
+</ol>
+</div></blockquote>
+<p>In the examples below, replace <code class="docutils literal notranslate"><span class="pre">roundupuser</span></code>, <code class="docutils literal notranslate"><span class="pre">rounduppw</span></code> and
+<code class="docutils literal notranslate"><span class="pre">roundupdb</span></code> with suitable values.</p>
+<p>This assumes that you are running Postgres on the same machine with
+Roundup. Using a remote database, setting up SSL/TLS and other
+authentication methods is beyond the scope of this
+documentation. However examples are welcome on the wiki or mailing
+list.</p>
+<section id="creating-a-role-user">
+<h3>Creating a Role/User</h3>
+<p>For case 1 (Roundup user creates and uses a database) create a user
+using:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">psql</span> <span class="o">-</span><span class="n">c</span> <span class="s2">&quot;CREATE ROLE roundupuser WITH CREATEDB LOGIN PASSWORD &#39;rounduppw&#39;;&quot;</span> <span class="o">-</span><span class="n">U</span> <span class="n">postgres</span>
+</pre></div>
+</div>
+<p>After running <code class="docutils literal notranslate"><span class="pre">roundup-admin</span> <span class="pre">init</span></code> to create your databases, you can
+remove the CREATEDB permission using:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">psql</span> <span class="o">-</span><span class="n">c</span> <span class="s2">&quot;ALTER ROLE roundupuser NOCREATEDB;&quot;</span>
+</pre></div>
+</div>
+<p>If needed (e.g. you want to deploy a new tracker) you can use <code class="docutils literal notranslate"><span class="pre">ALTER</span>
+<span class="pre">ROLE</span></code> with <code class="docutils literal notranslate"><span class="pre">CREATEDB</span></code> to add the permission back.</p>
+<p>For case 2 (Roundup user uses a schema under a pre-created database)
+you need to create the user:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">psql</span> <span class="o">-</span><span class="n">c</span> <span class="s2">&quot;CREATE ROLE roundupuser LOGIN PASSWORD &#39;rounduppw&#39;;&quot;</span> <span class="o">-</span><span class="n">U</span> <span class="n">postgres</span>
+</pre></div>
+</div>
+<p>This psql command connects as the postgres database superuser. You may
+need to run this under sudo as the postgres user or provide a password
+to become an admin on the postgres db process.</p>
+</section>
+<section id="creating-a-database">
+<h3>Creating a Database</h3>
+<p>For case 1, roundup will create the database on demand using the
+<code class="docutils literal notranslate"><span class="pre">roundup_admin</span> <span class="pre">init</span></code> command. So there is nothing to do here.</p>
+<p>For case 2, run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">psql</span> <span class="o">-</span><span class="n">c</span> <span class="s2">&quot;CREATE DATABASE roundupdb;GRANT CREATE ON DATABASE roundupdb TO roundupuser;&quot;</span> <span class="o">-</span><span class="n">U</span> <span class="n">postgres</span>
+</pre></div>
+</div>
+<p>This creates the database and allows the roundup user to create a new
+schema when running <code class="docutils literal notranslate"><span class="pre">roundup_admin</span> <span class="pre">init</span></code>.</p>
+</section>
+</section>
+<section id="running-the-postgresql-unit-tests">
+<h2>Running the PostgreSQL unit tests</h2>
+<p>The user that you’re running the tests as will need to be able to access
+the postgresql database on the local machine and create and drop
+databases and schemas. See the config values in ‘test/db_test_base.py’
+about which database connection, name and user will be used.</p>
+<p>At this time the following commands will setup the users and required
+databases:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="o">-</span><span class="n">u</span> <span class="n">postgres</span> <span class="n">psql</span> <span class="o">-</span><span class="n">c</span> <span class="s2">&quot;CREATE ROLE rounduptest WITH CREATEDB LOGIN PASSWORD &#39;rounduptest&#39;;&quot;</span> <span class="o">-</span><span class="n">U</span> <span class="n">postgres</span>
+
+<span class="n">sudo</span> <span class="o">-</span><span class="n">u</span> <span class="n">postgres</span> <span class="n">psql</span> <span class="o">-</span><span class="n">c</span> <span class="s2">&quot;CREATE ROLE rounduptest_schema LOGIN PASSWORD &#39;rounduptest&#39;;&quot;</span> <span class="o">-</span><span class="n">U</span> <span class="n">postgres</span>
+<span class="n">sudo</span> <span class="o">-</span><span class="n">u</span> <span class="n">postgres</span> <span class="n">psql</span> <span class="o">-</span><span class="n">c</span> <span class="s2">&quot;CREATE DATABASE rounduptest_schema;GRANT CREATE ON DATABASE rounduptest_schema TO rounduptest_schema;&quot;</span> <span class="o">-</span><span class="n">U</span> <span class="n">postgres</span>
+</pre></div>
+</div>
+<p>Note <code class="docutils literal notranslate"><span class="pre">rounduptest</span></code> and <code class="docutils literal notranslate"><span class="pre">rounduptest_schema</span></code> are well known
+accounts, so you should remove/disable the accounts after testing and
+set up a suitable production account. You need to remove any database
+owned by <code class="docutils literal notranslate"><span class="pre">rounduptest</span></code> first. To clean everything up, something like
+this should work:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="o">-</span><span class="n">u</span> <span class="n">postgres</span> <span class="n">psql</span> <span class="o">-</span><span class="n">c</span> <span class="s2">&quot;DROP DATABASE rounduptest;&quot;</span> <span class="o">-</span><span class="n">U</span> <span class="n">postgres</span>
+<span class="n">sudo</span> <span class="o">-</span><span class="n">u</span> <span class="n">postgres</span> <span class="n">psql</span> <span class="o">-</span><span class="n">c</span> <span class="s2">&quot;DROP ROLE rounduptest;&quot;</span> <span class="o">-</span><span class="n">U</span> <span class="n">postgres</span>
+<span class="n">sudo</span> <span class="o">-</span><span class="n">u</span> <span class="n">postgres</span> <span class="n">psql</span> <span class="o">-</span><span class="n">c</span> <span class="s2">&quot;DROP DATABASE rounduptest_schema;&quot;</span> <span class="o">-</span><span class="n">U</span> <span class="n">postgres</span>
+<span class="n">sudo</span> <span class="o">-</span><span class="n">u</span> <span class="n">postgres</span> <span class="n">psql</span> <span class="o">-</span><span class="n">c</span> <span class="s2">&quot;DROP ROLE rounduptest_schema;&quot;</span> <span class="o">-</span><span class="n">U</span> <span class="n">postgres</span>
+</pre></div>
+</div>
+<p>If the <code class="docutils literal notranslate"><span class="pre">rounduptest</span></code> database is left in a broken state
+(e.g. because of a crash during testing) dropping the database and
+restarting the tests should fix it. If you have issues while running
+the schema test, you can drop the <code class="docutils literal notranslate"><span class="pre">rounduptest`</span> <span class="pre">schema</span> <span class="pre">in</span> <span class="pre">the</span>
+<span class="pre">``rounduptest_schema</span></code> database.</p>
+</section>
+<section id="credit">
+<h2>Credit</h2>
+<p>The postgresql backend was originally submitted by Federico Di Gregorio
+&lt;<a class="reference external" href="mailto:fog&#37;&#52;&#48;initd&#46;org">fog<span>&#64;</span>initd<span>&#46;</span>org</a>&gt;</p>
+</section>
+</section>
+
+
+       
+    <div class="related related-bottom">
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="implementation.html" title="Implementation notes"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="mysql.html" title="MySQL Backend"
+             accesskey="P">previous</a></li>
+        <li><a href="index.html">Roundup 2.5.0 documentation</a></li> 
+      </ul>
+    </div>
+    </main>
+    <div class="footer">
+        &copy; Copyright 2009-2025, Richard Jones, Roundup-Team.
+    </div>
+  </body>
+</html>

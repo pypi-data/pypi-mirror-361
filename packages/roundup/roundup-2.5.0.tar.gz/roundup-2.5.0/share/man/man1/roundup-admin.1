@@ -1,0 +1,355 @@
+.TH ROUNDUP-ADMIN 1 "24 January 2003"
+.SH NAME
+roundup-admin \- administrate roundup trackers
+.SH SYNOPSIS
+\fBroundup-admin\fP [\fIoptions\fP] \fI<command>\fP \fI<arguments>\fP
+.SH OPTIONS
+.TP
+\fB-i\fP \fIinstance home\fP
+Specify the issue tracker "home directory" to administer
+.TP
+\fB-u\fP \fIuser\fP[\fB:\fP\fIpassword\fP]
+The user and password to use for commands (partial implemention, see
+Security Notes below).
+.TP
+\fB-h\fP
+Print help text.
+.TP
+\fB-d\fP
+Print full designators (e.g. issue1) not just id numbers (1).
+.TP
+\fB-c\fP
+When outputting lists of data, comma-separate them. Same as
+\fB-S ","\fP.
+.TP
+\fB-S\fP \fIstring\fP
+When outputting lists of data, separate items with given string.
+.TP
+\fB-s\fP
+When outputting lists of data, space-separate them. Same as
+\fB-S " "\fP.
+.TP
+\fB-P pragma=value\fP
+Set a pragma on the command line. Multiple \fB-P\fP options can be
+specified to set multiple pragmas.
+.TP
+\fB-V\fP
+Be verbose when importing data.
+.TP
+\fB-v\fP
+Report Roundup and Python versions and quit.
+.PP
+Only one of \fB-s\fP, \fB-c\fP or \fB-S\fP can be specified.
+.SH COMMANDS
+If no command is provided on the command line, roundup-admin will
+enter an interactive mode. More details about these commands are
+available using the help command.
+
+A designator is a classname and a nodeid concatenated,
+eg. bug1, user10, .... 
+
+Roundup-admin takes a number of commands:
+.TP
+\fBhelp\fP
+prints help (same as \fB-h\fP)
+.TP
+\fBhelp\fP \fI<subcommand>\fP
+Print command-specific help
+.TP
+\fBhelp all\fP
+Print available help for all commands.
+.TP
+\fBcommit\fP
+Commit changes made to the database during an interactive session.
+
+The changes made during an interactive session are not
+automatically written to the database - they must be committed
+using this command.
+
+One-off commands on the command-line are automatically committed if
+they are successful. See also rollback.
+.TP
+\fBcreate\fP \fIclassname property=value ...\fP
+This creates a new entry of the given class using the property
+name=value arguments provided on the command line after the "create"
+command.
+.TP
+\fBdisplay\fP \fIdesignator[,designator]*\fP
+This lists the properties and their associated values for the given
+node. The pragma \fBdisplay_header\fP can be used to add a header
+between designators that includes the active/retired status of
+the item.
+.TP
+\fBexport\fP \fI[[-]class[,class]] export_dir\fP
+Export the database to colon-separated-value files.
+To exclude the files (e.g. for the msg or file class),
+use the exporttables command.
+
+Optionally limit the export to just the named classes
+or exclude the named classes, if the 1st argument starts with '-'.
+
+This action exports the current data from the database into
+colon-separated-value files that are placed in the nominated
+destination directory.
+.TP
+\fBexporttables\fP \fI[[-]class[,class]] export_dir\fP
+Export the database to colon-separated-value files, excluding the
+files below $TRACKER_HOME/db/files/ (which can be archived separately).
+To include the files, use the export command.
+.TP
+\fBfilter\fP \fIclassname propname=value ...\fP
+Find the nodes of the given class with a given property value.
+Multiple values can be specified by separating them with commas.
+If property is a string, all values must match. I.E. it's an
+'and' operation. If the property is a link/multilink any value
+matches. I.E. an 'or' operation.
+.TP
+\fBfind\fP \fIclassname propname=value ...\fP
+Find the nodes of the given class with a given link property value.
+.TP
+\fBgenconfig\fP \fI<filename>\fP
+Generate a new tracker config file (ini style) with default values
+in \fI<filename>\fP. Note that this does not preserve any settings from
+the current tracker. Use updateconfig for that.
+.TP
+\fBget\fP \fIproperty designator[,designator]*\fP
+Get the given property of one or more designator(s).
+
+Retrieves the property value of the nodes specified
+by the designators.
+
+.TP
+\fBhistory\fP \fIdesignator [skipquiet] [raw]\fP
+Lists the journal entries viewable by the user for the
+node identified by the designator. If skipquiet is added, journal
+entries for quiet properties are not shown. Without the raw option
+a more human readable output format is used.
+.TP
+\fBimport\fP \fIimport_dir\fP
+Import a database from the directory containing CSV files,
+two per class to import.
+
+The imported nodes will have the same nodeid as defined in the
+import file, thus replacing any existing content.
+
+The new nodes are added to the existing database - if you want to
+create a new database using the imported data, then create a new
+database (or, tediously, retire all the old data). See also export.
+.TP
+\fBimporttables\fP \fIimport_dir\fP
+Import a database from the directory containing CSV files,
+two per class to import.
+
+The imported nodes will have the same nodeid as defined in the
+import file, thus replacing any existing content.
+
+This only imports database tables. It does not import files/message
+content.  It is used to import data exported by exporttables. See also
+exporttables.
+.TP
+\fBinitialise\fP \fI[adminpw]\fP
+Initialise a new Roundup tracker.
+
+The administrator details will be set at this step.
+.TP
+\fBinstall\fP \fI[template [backend [key=val[,key=val]]]]\fP
+Install a new roundup tracker.
+
+The command will prompt for the tracker home directory
+(if not supplied through TRACKER_HOME or the -i option).
+The template and backend may be specified on the command-line
+as arguments, in that order.
+
+Command line arguments following the backend allows you to
+pass initial values for config options.  For example, passing
+"web_http_auth=no,rdbms_user=dinsdale" will override defaults
+for options http_auth in section [web] and user in section [rdbms].
+Please be careful to not use spaces in this argument! (Enclose
+whole argument in quotes if you need spaces in option value).
+
+The initialise command must be called after this command in order
+to initialise the tracker's database. You may edit the tracker's
+initial database contents before running that command by editing
+the tracker's dbinit.py module init() function.
+
+See also initopts help.
+
+.TP
+\fBlist\fP \fIclassname [property]\fP
+Lists all instances of the given class. If the property is not
+specified, the  "label" property is used. The label property is
+tried in order: the key, "name", "title" and then the first
+property, alphabetically.
+
+With \fB-c\fP, \fB-S\fP or \fB-s\fP print a list of item id's if no
+property specified.  If property specified, print list of that
+property for every class instance.
+
+The pragma \fBshow_retired\fP can be used to print only retired items
+or to print retired and active items. The default is to print only
+active items.
+.TP
+\fBmigrate\fP
+Update a tracker's database to be compatible with the Roundup
+codebase.
+
+You should run the "migrate" command for your tracker once you've
+installed the latest codebase. 
+
+Do this before you use the web, command-line or mail interface and
+before any users access the tracker.
+
+This command will respond with either "Tracker updated" (if you've
+not previously run it on an RDBMS backend) or "No migration action
+required" (if you have run it, or have used another interface to the
+tracker, or possibly because you are using anydbm).
+
+It's safe to run this even if it's not required, so just get into
+the habit.
+.TP
+\fBpack\fP \fIperiod | date\fP
+Remove journal entries older than a period of time specified or
+before a certain date.
+.TP
+\fBperftest\fP \fI[mode] [arguments]*\fP
+Run performance test. For example test the effect
+of changing password hashing parameters.
+.TP
+\fBpragma\fP \fIsetting=value\fP|\fBlist\fP
+Set internal settings to a value. E.G.
+
+     pragma verbose=True
+     pragma verbose=yes
+     pragma verbose=on
+     pragma verbose=1
+
+will turn on verbose mode for roundup-admin.
+
+     pragma list
+
+will show all settings and their current values. If verbose
+is enabled hidden settings and descriptions will be shown.
+.TP
+\fBreindex\fP \fI[classname|classname:#-#|designator]*\fP This will
+re-generate the search indexes for a tracker. You can specify a
+specific item (or items) (e.g. issue23), range(s) of items
+(e.g. issue:1-1000), class(es) (e.g. issue) or reindex all items in
+the database if no arguments are supplied.
+.TP
+\fBrestore\fP \fIdesignator[,designator]*\fP
+Restore the retired node specified by designator.
+
+The given nodes will become available for users again.
+.TP
+\fBretire\fP \fIdesignator[,designator]*\fP
+This action indicates that a particular node is not to be retrieved
+by the list or find commands, and its key value may be re-used. See
+also restore.
+.TP
+\fBrollback\fP
+Undo all changes that are pending commit to the database.
+
+The changes made during an interactive session are not
+automatically written to the database - they must be committed
+manually. This command undoes all those changes, so a commit
+immediately after would make no changes to the database.
+.TP
+\fBsecurity\fP \fI[Role name]\fP
+Display the Permissions available to one or all Roles.
+.TP
+\fBset\fP \fIitems property=value property=value ...\fP
+Set the given properties of one or more items(s).
+
+The items are specified as a class or as a comma-separated
+list of item designators (ie "designator[,designator,...]").
+
+This command sets the properties to the values for all designators
+given. If the value is missing (ie. "property=") then the property
+is un-set. If the property is a multilink, you specify the linked
+ids for the multilink as comma-separated numbers (ie "1,2,3").
+.TP
+\fBspecification\fP \fIclassname\fP
+Show the properties for a classname.
+.TP
+\fBtemplates\fP \fI[trace_search]]\fP
+Lists the names, location and description of all known templates.
+.TP
+\fBtable\fP \fIclassname [property[,property]*]\fP
+Lists all instances of the given class. If the properties are not
+specified, all properties are displayed. By default, the column
+widths are the width of the largest value.
+
+The pragma \fBshow_retired\fP can be used to print only retired items
+or to print retired and active items. The default is to print only
+active items.
+.TP
+\fBupdateconfig\fP \fI<filename>\fP
+This is used when updating software. It merges the \fBconfig.ini\fP
+from the tracker with new settings from the new software. The
+merged/updated config file is written to \fI<filename>\fP.
+.PP
+Commands may be abbreviated as long as the abbreviation
+matches only one command, e.g. l == li == lis == list.
+
+.SH READLINE SUPPORT
+
+You can edit the command line and interact with history in
+roundup-admin's interactive mode. On Linux like systems, GNU Readline
+is required. On Mac's libedit can be used as well. On Windows
+pyreadline3 is required. See:
+https://docs.python.org/3/library/readline.html for details on
+readline.
+
+Roundup-admin will save the history between roundup-admin
+sessions. The commands are saved to the \fB.roundup_admin_history\fP
+file in the user's home directory.  You can set the pragma
+\fBhistory_length\fP on the roundup-admin command line to change the
+amount of available and stored history for the session.
+
+If you are using GNU readline, you can persistently change the history
+size by adding: \fBset history-size 100\fP to the init file
+\fB.roundup_admin_rlrc\fP located in the user's home directory.
+
+Mac users using libedit should be able to persistently save history
+and set the history size by adding \fBhistory size 100\fP.
+
+Users of pyreadline3 can use: \fBhistory_length(100)\fP.
+
+.SH SECURITY NOTES
+
+The \fB-u user\fP setting does not currently operate like a
+user logging in via the web. The user running roundup-admin
+must have read access to the tracker home directory. As a
+result the user has access to the files and the database
+info contained in config.ini.
+
+Using \fB-u user\fP sets the actor/user parameter in the
+journal. Changes that are made are attributed to that
+user. The password is ignored if provided. Any existing
+username has full access to the data just like the admin
+user. This is an area for further development so that
+roundup-admin could be used with sudo to provide secure
+command line access to a tracker.
+
+.SH ENVIRONMENT VARIABLES
+
+.TP
+\fBROUNDUP_LOGIN\fP
+Provides an alternate way to set the user.
+
+.SH FURTHER HELP
+ roundup-admin -h
+ roundup-admin help                       -- this help
+ roundup-admin help <command>             -- command-specific help
+ roundup-admin help all                   -- all available help
+
+
+.SH SEE ALSO
+roundup-demo(1), roundup-mailgw(1), roundup-server(1)
+
+.SH AUTHOR
+This manpage was written by Bastian Kleineidam
+<calvin@debian.org> for the Debian distribution of roundup.
+
+The main author of roundup is Richard Jones
+<richard@users.sourceforge.net>.

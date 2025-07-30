@@ -1,0 +1,308 @@
+
+<!DOCTYPE html>
+
+
+
+
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Old Security Mechanisms Notes &mdash; Roundup 2.5.0 documentation</title>
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+          URL_ROOT:    './',
+          VERSION:     '2.5.0',
+          COLLAPSE_MODINDEX: false,
+          FILE_SUFFIX: '.html'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script type="text/javascript" src="_static/searchtools.js"></script>
+    <script type="text/javascript" src="_static/sphinx_highlight.js"></script>
+    <script type="text/javascript" src="_static/tabs.js"></script>
+    
+    <link rel="stylesheet" href="_static/NO_basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
+    <!-- https://github.com/sphinx-doc/sphinx/issues/11699 means a
+         duplicate viewport tag -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta content="Security mechanism implementation document for historical purposes." name="description" />
+
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="Roundup 2.5.0 documentation" href="index.html" />
+    <link rel="next" title="Pydocs from code" href="pydoc.html" />
+    <link rel="prev" title="Implementation notes" href="implementation.html" /> 
+  </head>
+  <body>
+    <div class="header"><div class="label">Roundup</div>
+        <script id="documentation_options" data-url_root=""
+	      src="_static/documentation_options.js">
+        </script>
+
+        <div id="searchbox" style="display: none">
+          <form class="search" action="search.html" method="get">
+            <input type="text" name="q" size="18" />
+            <input type="submit" value="Search" />
+            <input type="hidden" name="check_keywords" value="yes" />
+            <input type="hidden" name="area" value="default" />
+          </form>
+        </div>
+        <script type="text/javascript">$('#searchbox').show(0);</script>
+    </div>
+    <div class="navigation">
+      <div class="menu">
+       
+    <h3><a href="index.html">Table Of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Old Security Mechanisms Notes</a><ul>
+<li><a class="reference internal" href="#current-situation">Current situation</a></li>
+<li><a class="reference internal" href="#issues">Issues</a></li>
+<li><a class="reference internal" href="#possible-approaches">Possible approaches</a><ul>
+<li><a class="reference internal" href="#hyperdb-level-control">Hyperdb-level control</a></li>
+<li><a class="reference internal" href="#user-interface-control">User-interface control</a></li>
+<li><a class="reference internal" href="#logical-control">Logical control</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#action">Action</a></li>
+</ul>
+</li>
+</ul>
+
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="implementation.html"
+                          title="previous chapter">Implementation notes</a></p>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="pydoc.html"
+                          title="next chapter">Pydocs from code</a></p>
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/security-history.txt"
+             rel="nofollow">Show Source</a></li>
+    </ul>
+  <div id="searchbox" style="display: none">
+    <h3>Quick search</h3>
+      <form class="search" action="search.html" method="get">
+        <input type="text" name="q" size="18" />
+        <input type="submit" value="Go" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+      <p style="font-size: 90%">Enter search terms or a module, class or function name.</p>
+  </div>
+  <script type="text/javascript">$('#searchbox').show(0);</script>
+      </div>
+    </div>
+    <main id="main" role="main" class="content">
+       
+    <div class="related related-top">
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="pydoc.html" title="Pydocs from code"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="implementation.html" title="Implementation notes"
+             accesskey="P">previous</a></li>
+        <li><a href="index.html">Roundup 2.5.0 documentation</a></li> 
+      </ul>
+    </div>
+       
+  <section id="old-security-mechanisms-notes">
+<h1>Old Security Mechanisms Notes</h1>
+<section id="current-situation">
+<h2>Current situation</h2>
+<p>Current logical controls:</p>
+<dl class="simple">
+<dt>ANONYMOUS_ACCESS = ‘deny’</dt><dd><p>Deny or allow anonymous access to the web interface</p>
+</dd>
+<dt>ANONYMOUS_REGISTER = ‘deny’</dt><dd><p>Deny or allow anonymous users to register through the web interface</p>
+</dd>
+<dt>ANONYMOUS_REGISTER_MAIL = ‘deny’</dt><dd><p>Deny or allow anonymous users to register through the mail interface</p>
+</dd>
+</dl>
+<p>Current user interface authentication and controls:</p>
+<ul class="simple">
+<li><p>command-line tool access controlled with passwords, but no logical controls</p></li>
+<li><p>CGI access is by username and password and has some logical controls</p></li>
+<li><p>mailgw access is through identification using sender email address, with
+limited functionality available</p></li>
+</ul>
+<p>The web interface implements has specific logical controls,
+preventing non-admin users from accessing:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>other user’s details pages</p></li>
+<li><p>listing the base classes (not issues or their user page)</p></li>
+<li><p>editing base classes</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="issues">
+<h2>Issues</h2>
+<ol class="arabic simple">
+<li><p>The current implementation is ad-hoc, and not complete for all use cases.</p></li>
+<li><p>Currently it is not possible to allow submission of issues through email
+but restrict those users from accessing the web interface.</p></li>
+<li><p>Only one user may perform admin functions.</p></li>
+<li><p>There is no verification of users in the mail gateway by any means other
+than the From address. Support for strong identification through digital
+signatures should be added.</p></li>
+<li><p>The command-line tool has no logical controls.</p></li>
+<li><p>The anonymous control needs revising - there should only be one way to be
+an anonymous user, not two (currently there is user==None and
+user==’anonymous’).</p></li>
+</ol>
+</section>
+<section id="possible-approaches">
+<h2>Possible approaches</h2>
+<p>Security controls in Roundup could be approached in three ways:</p>
+<ol class="arabic simple">
+<li><p>at the hyperdb level, with read/write/modify permissions on classes, items
+and item properties for all or specific transitions.</p></li>
+<li><p>at the user interface level, with access permissions on CGI interface
+methods, mailgw methods, roundup-admin methods, and so on.</p></li>
+<li><p>at a logical permission level, checked as needed.</p></li>
+</ol>
+<p>In all cases, the security built into roundup assumes restricted access to the
+hyperdatabase itself, through operating-system controls such as user or group
+permissions.</p>
+<section id="hyperdb-level-control">
+<h3>Hyperdb-level control</h3>
+<p>Control is implemented at the Class.get, Class.set and Class.create level. All
+other methods must access items through these methods. Since all accesses go
+through the database, we can implement deny by default.</p>
+<p>Pros:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>easier to implement as it only affects one module</p></li>
+<li><p>smaller number of permissions to worry about</p></li>
+</ul>
+</div></blockquote>
+<p>Cons:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>harder to determine the relationship between user interaction and hyperdb
+permission.</p></li>
+<li><p>a lot of work to define</p></li>
+<li><p>must special-case to handle by-item permissions (editing user details,
+having private messages)</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="user-interface-control">
+<h3>User-interface control</h3>
+<p>The user interfaces would have an extra layer between that which
+parses the request to determine action and the action method. This layer
+controls access. Since it is possible to require methods be registered
+with the security mechanisms to be accessed by the user, deny by default
+is possible.</p>
+<p>Pros:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>much more obvious at the user level what the controls are</p></li>
+</ul>
+</div></blockquote>
+<p>Cons:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>much more work to implement</p></li>
+<li><p>most user interfaces have multiple uses which can’t be covered by a
+single permission</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="logical-control">
+<h3>Logical control</h3>
+<p>At each point that requires an action to be performed, the security mechanisms
+are asked if the current user has permission. Since code must call the
+check function to raise a denial, there is no possibility to have automatic
+default of deny in this situation.</p>
+<p>Pros:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>quite obvious what is going on</p></li>
+<li><p>is very similar to the current system</p></li>
+</ul>
+</div></blockquote>
+<p>Cons:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>large number of possible permissions that may be defined, possibly
+mirroring actual user interface controls.</p></li>
+<li><p>access to the hyperdb must be strictly controlled through program code
+that implements the logical controls.</p></li>
+</ul>
+</div></blockquote>
+</section>
+</section>
+<section id="action">
+<h2>Action</h2>
+<p>The CGI interface must be changed to:</p>
+<ul class="simple">
+<li><p>authenticate over a secure connection</p></li>
+<li><p>use unique tokens as a result of authentication, rather than pass the user’s
+real credentials (username/password) around for each request (this means
+sessions and hence a session database)</p></li>
+<li><p>use the new logical control mechanisms</p>
+<ul>
+<li><p>implement the permission module</p></li>
+<li><p>implement a Role editing interface for users</p></li>
+<li><p>implement htmltemplate tests on permissions</p></li>
+<li><p>switch all code over from using config vars for permission checks to using
+permissions</p></li>
+<li><p>change all explicit admin user checks for Role checks</p></li>
+<li><p>include config vars for initial Roles for anonymous web, new web and new
+email users</p></li>
+</ul>
+</li>
+</ul>
+<p>The mail gateway must be changed to:</p>
+<ul class="simple">
+<li><p>use digital signatures</p></li>
+<li><p>use the new logical control mechanisms</p>
+<ul>
+<li><p>switch all code over from using config vars for permission checks to using
+permissions</p></li>
+</ul>
+</li>
+</ul>
+<p>The command-line tool must be changed to:</p>
+<ul class="simple">
+<li><p>use the new logical control mechanisms (only allowing write
+access by admin users, and read-only by everyone else)</p></li>
+</ul>
+</section>
+</section>
+
+
+       
+    <div class="related related-bottom">
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="pydoc.html" title="Pydocs from code"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="implementation.html" title="Implementation notes"
+             accesskey="P">previous</a></li>
+        <li><a href="index.html">Roundup 2.5.0 documentation</a></li> 
+      </ul>
+    </div>
+    </main>
+    <div class="footer">
+        &copy; Copyright 2009-2025, Richard Jones, Roundup-Team.
+    </div>
+  </body>
+</html>

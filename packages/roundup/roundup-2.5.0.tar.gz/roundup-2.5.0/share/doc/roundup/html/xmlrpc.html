@@ -1,0 +1,394 @@
+
+<!DOCTYPE html>
+
+
+
+
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>XML-RPC access to Roundup &mdash; Roundup 2.5.0 documentation</title>
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+          URL_ROOT:    './',
+          VERSION:     '2.5.0',
+          COLLAPSE_MODINDEX: false,
+          FILE_SUFFIX: '.html'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script type="text/javascript" src="_static/searchtools.js"></script>
+    <script type="text/javascript" src="_static/sphinx_highlight.js"></script>
+    <script type="text/javascript" src="_static/tabs.js"></script>
+    
+    <link rel="stylesheet" href="_static/NO_basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
+    <!-- https://github.com/sphinx-doc/sphinx/issues/11699 means a
+         duplicate viewport tag -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta content="Documentation on the XMLRPC interface to the Roundup Issue Tracker. Includes sample clients." name="description" />
+
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="Roundup 2.5.0 documentation" href="index.html" />
+    <link rel="next" title="Roundup Reference" href="reference.html" />
+    <link rel="prev" title="REST API for Roundup" href="rest.html" /> 
+  </head>
+  <body>
+    <div class="header"><div class="label">Roundup</div>
+        <script id="documentation_options" data-url_root=""
+	      src="_static/documentation_options.js">
+        </script>
+
+        <div id="searchbox" style="display: none">
+          <form class="search" action="search.html" method="get">
+            <input type="text" name="q" size="18" />
+            <input type="submit" value="Search" />
+            <input type="hidden" name="check_keywords" value="yes" />
+            <input type="hidden" name="area" value="default" />
+          </form>
+        </div>
+        <script type="text/javascript">$('#searchbox').show(0);</script>
+    </div>
+    <div class="navigation">
+      <div class="menu">
+       
+    <h3><a href="index.html">Table Of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">XML-RPC access to Roundup</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#enabling-xml-rpc">Enabling XML-RPC</a><ul>
+<li><a class="reference internal" href="#through-roundup">Through Roundup</a></li>
+<li><a class="reference internal" href="#standalone-roundup-xmlrpc-server">Standalone roundup-xmlrpc-server</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#security-consideration">Security Consideration</a><ul>
+<li><a class="reference internal" href="#rate-limiting-failed-logins">Rate Limiting Failed Logins</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#client-api">Client API</a></li>
+<li><a class="reference internal" href="#sample-python-client">Sample Python Client</a></li>
+<li><a class="reference internal" href="#advanced-python-client-adding-anti-csrf-headers">Advanced Python Client Adding anti-csrf Headers</a></li>
+</ul>
+</li>
+</ul>
+
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="rest.html"
+                          title="previous chapter">REST API for Roundup</a></p>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="reference.html"
+                          title="next chapter">Roundup Reference</a></p>
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/xmlrpc.txt"
+             rel="nofollow">Show Source</a></li>
+    </ul>
+  <div id="searchbox" style="display: none">
+    <h3>Quick search</h3>
+      <form class="search" action="search.html" method="get">
+        <input type="text" name="q" size="18" />
+        <input type="submit" value="Go" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+      <p style="font-size: 90%">Enter search terms or a module, class or function name.</p>
+  </div>
+  <script type="text/javascript">$('#searchbox').show(0);</script>
+      </div>
+    </div>
+    <main id="main" role="main" class="content">
+       
+    <div class="related related-top">
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="reference.html" title="Roundup Reference"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="rest.html" title="REST API for Roundup"
+             accesskey="P">previous</a></li>
+        <li><a href="index.html">Roundup 2.5.0 documentation</a></li> 
+      </ul>
+    </div>
+       
+  <section id="xml-rpc-access-to-roundup">
+<span id="index-0"></span><h1>XML-RPC access to Roundup</h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#introduction" id="id1">Introduction</a></p></li>
+<li><p><a class="reference internal" href="#enabling-xml-rpc" id="id2">Enabling XML-RPC</a></p>
+<ul>
+<li><p><a class="reference internal" href="#through-roundup" id="id3">Through Roundup</a></p></li>
+<li><p><a class="reference internal" href="#standalone-roundup-xmlrpc-server" id="id4">Standalone roundup-xmlrpc-server</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#security-consideration" id="id5">Security Consideration</a></p>
+<ul>
+<li><p><a class="reference internal" href="#rate-limiting-failed-logins" id="id6">Rate Limiting Failed Logins</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#client-api" id="id7">Client API</a></p></li>
+<li><p><a class="reference internal" href="#sample-python-client" id="id8">Sample Python Client</a></p></li>
+<li><p><a class="reference internal" href="#advanced-python-client-adding-anti-csrf-headers" id="id9">Advanced Python Client Adding anti-csrf Headers</a></p></li>
+</ul>
+</nav>
+<section id="introduction">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Introduction</a></h2>
+<p>Version 1.4 of Roundup includes an XML-RPC frontend for remote access. The
+XML-RPC interface allows a limited subset of commands similar to those found in
+local <cite>roundup-admin</cite> tool.</p>
+<p>By default XML-RPC is accessible from <code class="docutils literal notranslate"><span class="pre">/xmlrpc</span></code> endpoint:</p>
+<blockquote>
+<div><p><a class="reference external" href="http://username:password&#64;localhost:8000/xmlrpc">http://username:password&#64;localhost:8000/xmlrpc</a></p>
+</div></blockquote>
+<p>For demo tracker the URL would be:</p>
+<blockquote>
+<div><p><a class="reference external" href="http://localhost:8917/demo/xmlrpc">http://localhost:8917/demo/xmlrpc</a></p>
+</div></blockquote>
+</section>
+<section id="enabling-xml-rpc">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Enabling XML-RPC</a></h2>
+<p>There are two ways to run the XML-RPC interface:</p>
+<blockquote>
+<div><p>through roundup itself</p>
+<p>stand alone roundup-xmlrpc-server</p>
+</div></blockquote>
+<section id="through-roundup">
+<h3><a class="toc-backref" href="#id3" role="doc-backlink">Through Roundup</a></h3>
+<p>The XML-RPC service is available from the roundup HTTP server under
+/xmlrpc.</p>
+<p>To enable this set <code class="docutils literal notranslate"><span class="pre">enable_xmlrpc</span></code> to <code class="docutils literal notranslate"><span class="pre">yes</span></code> in the <code class="docutils literal notranslate"><span class="pre">[web]</span></code>
+section of the <code class="docutils literal notranslate"><span class="pre">config.ini</span></code> file in your tracker.</p>
+<p>Each user that needs access must include the “Xmlrpc Access” role. To
+add this new permission to the “User” role you should change your
+schema.py to add:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">security</span><span class="o">.</span><span class="n">addPermissionToRole</span><span class="p">(</span><span class="s1">&#39;User&#39;</span><span class="p">,</span> <span class="s1">&#39;Xmlrpc Access&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This is usually included near where other permissions like “Web Access”
+or “Email Access” are assigned.</p>
+</section>
+<section id="standalone-roundup-xmlrpc-server">
+<h3><a class="toc-backref" href="#id4" role="doc-backlink">Standalone roundup-xmlrpc-server</a></h3>
+<p>Using Roundup to access the xmlrpc interface is preferred. Roundup
+provides better control over who can use the interface.</p>
+<p>The Roundup XML-RPC standalone server must be started before remote
+clients can access the tracker via XML-RPC. <code class="docutils literal notranslate"><span class="pre">roundup-xmlrpc-server</span></code>
+is installed in the scripts directory alongside <code class="docutils literal notranslate"><span class="pre">roundup-server</span></code> and
+<code class="docutils literal notranslate"><span class="pre">roundup-admin</span></code>. When invoked, the location of the tracker instance
+must be specified.</p>
+<blockquote>
+<div><p>roundup-xmlrpc-server -i <code class="docutils literal notranslate"><span class="pre">/path/to/tracker</span></code></p>
+</div></blockquote>
+<p>The default port is <code class="docutils literal notranslate"><span class="pre">8000</span></code>. An alternative port can be specified with the
+<code class="docutils literal notranslate"><span class="pre">--port</span></code> switch.</p>
+</section>
+</section>
+<section id="security-consideration">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Security Consideration</a></h2>
+<p>Both the standalone and embedded roundup XML endpoints used the
+default python XML parser. This parser is know to have security
+issues. For details see: <a class="reference external" href="https://pypi.org/project/defusedxml/">https://pypi.org/project/defusedxml/</a>.
+You may wish to use the rest interface which doesn’t have the same
+issues. If you install defusedxml, it will be automatically used to add
+some additional protection.</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>The current standalone <code class="docutils literal notranslate"><span class="pre">roundup-xmlrpc-server</span></code> implementation
+does not support SSL. This means that usernames and passwords will
+be passed in cleartext unless the server is proxied behind
+another server (such as Apache or lighttpd) that provides SSL.</p>
+</div>
+<section id="rate-limiting-failed-logins">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">Rate Limiting Failed Logins</a></h3>
+<p>See the <a class="reference external" href="rest.html#rate-limiting-api-failed-logins">rest documentation</a> for rate limiting failed
+logins on the API. There is no login rate limiting for the standalone
+roundup-xmlrpc-server. Login rate limiting is only for the <code class="docutils literal notranslate"><span class="pre">/xmlrpc</span></code>
+endpoint when the Roundup server is used.</p>
+<p>The XML-RPC uses the same method as the REST API.
+Rate limiting is shared between the XMLRPC and REST APIs.</p>
+</section>
+</section>
+<section id="client-api">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">Client API</a></h2>
+<p>The server currently implements seven methods/commands. Each method
+requires that the user provide a username and password in the HTTP
+authorization header in order to authenticate the request against the
+tracker.</p>
+<table class="valign-top docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Command</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>schema</p></td>
+<td><p>Fetch tracker schema.</p></td>
+</tr>
+<tr class="row-odd"><td><p>list</p></td>
+<td><p>arguments: <em>classname, [property_name]</em></p>
+<p>List all elements of a given <code class="docutils literal notranslate"><span class="pre">classname</span></code>. If <code class="docutils literal notranslate"><span class="pre">property_name</span></code>
+is specified, that is the property that will be displayed for each
+element. If <code class="docutils literal notranslate"><span class="pre">property_name</span></code> is not specified the default label
+property will be used.</p>
+</td>
+</tr>
+<tr class="row-even"><td><p>display</p></td>
+<td><p>arguments: <em>designator, [property_1, …, property_N]</em></p>
+<p>Display a single item in the tracker as specified by <code class="docutils literal notranslate"><span class="pre">designator</span></code>
+(e.g. issue20 or user5). The default is to display all properties
+for the item. Alternatively, a list of properties to display can
+be specified.</p>
+</td>
+</tr>
+<tr class="row-odd"><td><p>create</p></td>
+<td><p>arguments: <em>classname, arg_1 … arg_N</em></p>
+<p>Create a new instance of <code class="docutils literal notranslate"><span class="pre">classname</span></code> with <code class="docutils literal notranslate"><span class="pre">arg_1</span></code> through
+<code class="docutils literal notranslate"><span class="pre">arg_N</span></code> as the values of the new instance. The arguments are
+name=value pairs (e.g. <code class="docutils literal notranslate"><span class="pre">status='3'</span></code>).</p>
+</td>
+</tr>
+<tr class="row-even"><td><p>set</p></td>
+<td><p>arguments: <em>designator, arg_1 … arg_N</em></p>
+<p>Set the values of an existing item in the tracker as specified by
+<code class="docutils literal notranslate"><span class="pre">designator</span></code>. The new values are specified in <code class="docutils literal notranslate"><span class="pre">arg_1</span></code> through
+<code class="docutils literal notranslate"><span class="pre">arg_N</span></code>. The arguments are name=value pairs (e.g. <code class="docutils literal notranslate"><span class="pre">status='3'</span></code>).</p>
+</td>
+</tr>
+<tr class="row-odd"><td><p>lookup</p></td>
+<td><p>arguments: <em>classname, key_value</em></p>
+<p>looks up the key_value for the given class. The class needs to
+have a key and the user needs search permission on the key
+attribute and id for the given classname.</p>
+</td>
+</tr>
+<tr class="row-even"><td><p>filter</p></td>
+<td><p>arguments: <em>classname, list or None, attributes</em></p>
+<p><code class="docutils literal notranslate"><span class="pre">list</span></code> is a list of ids to filter. It can be set to None to
+run filter over all values (requires <code class="docutils literal notranslate"><span class="pre">allow_none=True</span></code> when
+instantiating the ServerProxy). The <code class="docutils literal notranslate"><span class="pre">attributes</span></code> are given
+as a dictionary of name value pairs to search for. See also
+<a class="reference internal" href="user_guide.html#query-tracker"><span class="std std-ref">Entering values in your Tracker</span></a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="sample-python-client">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">Sample Python Client</a></h2>
+<p>This client will work if you turn off the x-requested-with header and
+the only CSRF header check you require is the HTTP host header:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">xmlrpclib</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">roundup_server</span> <span class="o">=</span> <span class="n">xmlrpclib</span><span class="o">.</span><span class="n">ServerProxy</span><span class="p">(</span><span class="s1">&#39;http://admin:admin@localhost:8917/demo/xmlrpc&#39;</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">roundup_server</span><span class="o">.</span><span class="n">schema</span><span class="p">()</span>
+<span class="go">{&#39;user&#39;: [[&#39;username&#39;, &#39;&lt;roundup.hyperdb.String&gt;&#39;], ...], &#39;issue&#39;: [...]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">roundup_server</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">)</span>
+<span class="go">[&#39;admin&#39;, &#39;anonymous&#39;, &#39;demo&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">roundup_server</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="s1">&#39;issue&#39;</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">)</span>
+<span class="go">[&#39;1&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">roundup_server</span><span class="o">.</span><span class="n">display</span><span class="p">(</span><span class="s1">&#39;issue1&#39;</span><span class="p">)</span>
+<span class="go">{&#39;assignedto&#39; : None, &#39;files&#39; : [], &#39;title&#39; = &#39;yes, ..... }</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">roundup_server</span><span class="o">.</span><span class="n">display</span><span class="p">(</span><span class="s1">&#39;issue1&#39;</span><span class="p">,</span> <span class="s1">&#39;priority&#39;</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">)</span>
+<span class="go">{&#39;priority&#39; : &#39;1&#39;, &#39;status&#39; : &#39;2&#39;}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">roundup_server</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;issue1&#39;</span><span class="p">,</span> <span class="s1">&#39;status=3&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">roundup_server</span><span class="o">.</span><span class="n">display</span><span class="p">(</span><span class="s1">&#39;issue1&#39;</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">)</span>
+<span class="go">{&#39;status&#39; : &#39;3&#39; }</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">roundup_server</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;issue&#39;</span><span class="p">,</span> <span class="s2">&quot;title=&#39;another bug&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;status=2&quot;</span><span class="p">)</span>
+<span class="go">&#39;2&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">roundup_server</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">,</span><span class="kc">None</span><span class="p">,{</span><span class="s1">&#39;username&#39;</span><span class="p">:</span><span class="s1">&#39;adm&#39;</span><span class="p">})</span>
+<span class="go">[&#39;1&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">roundup_server</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">,[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">],{</span><span class="s1">&#39;username&#39;</span><span class="p">:</span><span class="s1">&#39;adm&#39;</span><span class="p">})</span>
+<span class="go">[&#39;1&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">roundup_server</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">,[</span><span class="s1">&#39;2&#39;</span><span class="p">],{</span><span class="s1">&#39;username&#39;</span><span class="p">:</span><span class="s1">&#39;adm&#39;</span><span class="p">})</span>
+<span class="go">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">roundup_server</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">,[],{</span><span class="s1">&#39;username&#39;</span><span class="p">:</span><span class="s1">&#39;adm&#39;</span><span class="p">})</span>
+<span class="go">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">roundup_server</span><span class="o">.</span><span class="n">lookup</span><span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">,</span><span class="s1">&#39;admin&#39;</span><span class="p">)</span>
+<span class="go">&#39;1&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="advanced-python-client-adding-anti-csrf-headers">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">Advanced Python Client Adding anti-csrf Headers</a></h2>
+<p>The one below adds Referer and X-Requested-With headers so it can pass
+stronger CSRF detection methods. It also generates a fault message
+from the server and reports it. Note if you are using http rather than
+https, replace xmlrpclib.SafeTransport with xmlrpclib.Transport:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">xmlrpc</span> <span class="kn">import</span> <span class="n">client</span> <span class="k">as</span> <span class="n">xmlrpclib</span>  <span class="c1"># python 3</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">xmlrpclib</span>  <span class="c1"># python 2</span>
+
+<span class="n">hostname</span><span class="o">=</span><span class="s2">&quot;localhost&quot;</span>
+<span class="n">path</span><span class="o">=</span><span class="s2">&quot;/demo&quot;</span>
+<span class="n">user_pw</span><span class="o">=</span><span class="s2">&quot;admin:admin&quot;</span>
+
+<span class="k">class</span> <span class="nc">SpecialTransport</span><span class="p">(</span><span class="n">xmlrpclib</span><span class="o">.</span><span class="n">SafeTransport</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">send_content</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection</span><span class="p">,</span> <span class="n">request_body</span><span class="p">):</span>
+
+        <span class="n">connection</span><span class="o">.</span><span class="n">putheader</span><span class="p">(</span><span class="s2">&quot;Referer&quot;</span><span class="p">,</span> <span class="s2">&quot;https://</span><span class="si">%s%s</span><span class="s2">/&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">hostname</span><span class="p">,</span> <span class="n">path</span><span class="p">))</span>
+        <span class="n">connection</span><span class="o">.</span><span class="n">putheader</span><span class="p">(</span><span class="s2">&quot;Origin&quot;</span><span class="p">,</span> <span class="s2">&quot;https://</span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">hostname</span><span class="p">)</span>
+        <span class="n">connection</span><span class="o">.</span><span class="n">putheader</span><span class="p">(</span><span class="s2">&quot;X-Requested-With&quot;</span><span class="p">,</span> <span class="s2">&quot;XMLHttpRequest&quot;</span><span class="p">)</span>
+
+        <span class="n">connection</span><span class="o">.</span><span class="n">putheader</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;text/xml&quot;</span><span class="p">)</span>
+        <span class="n">connection</span><span class="o">.</span><span class="n">putheader</span><span class="p">(</span><span class="s2">&quot;Content-Length&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">request_body</span><span class="p">)))</span>
+        <span class="n">connection</span><span class="o">.</span><span class="n">endheaders</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">request_body</span><span class="p">:</span>
+            <span class="n">connection</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">request_body</span><span class="p">)</span>
+
+<span class="n">roundup_server</span> <span class="o">=</span> <span class="n">xmlrpclib</span><span class="o">.</span><span class="n">ServerProxy</span><span class="p">(</span>
+    <span class="s1">&#39;https://</span><span class="si">%s</span><span class="s1">@</span><span class="si">%s%s</span><span class="s1">/xmlrpc&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">user_pw</span><span class="p">,</span><span class="n">hostname</span><span class="p">,</span><span class="n">path</span><span class="p">),</span>
+    <span class="n">transport</span><span class="o">=</span><span class="n">SpecialTransport</span><span class="p">(),</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">allow_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">roundup_server</span><span class="o">.</span><span class="n">schema</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">roundup_server</span><span class="o">.</span><span class="n">display</span><span class="p">(</span><span class="s1">&#39;user2&#39;</span><span class="p">,</span> <span class="s1">&#39;username&#39;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">roundup_server</span><span class="o">.</span><span class="n">display</span><span class="p">(</span><span class="s1">&#39;issue1&#39;</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">roundup_server</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">,[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;3&#39;</span><span class="p">],{</span><span class="s1">&#39;username&#39;</span><span class="p">:</span><span class="s1">&#39;demo&#39;</span><span class="p">}))</span>
+
+<span class="c1"># this will fail with a fault</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">roundup_server</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s1">&#39;usr&#39;</span><span class="p">,[</span><span class="s1">&#39;0&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;3&#39;</span><span class="p">],{</span><span class="s1">&#39;username&#39;</span><span class="p">:</span><span class="s1">&#39;demo&#39;</span><span class="p">}))</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">msg</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>modify this script replacing the hostname, path and user_pw with those
+for your tracker.</p>
+</section>
+</section>
+
+
+       
+    <div class="related related-bottom">
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="reference.html" title="Roundup Reference"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="rest.html" title="REST API for Roundup"
+             accesskey="P">previous</a></li>
+        <li><a href="index.html">Roundup 2.5.0 documentation</a></li> 
+      </ul>
+    </div>
+    </main>
+    <div class="footer">
+        &copy; Copyright 2009-2025, Richard Jones, Roundup-Team.
+    </div>
+  </body>
+</html>

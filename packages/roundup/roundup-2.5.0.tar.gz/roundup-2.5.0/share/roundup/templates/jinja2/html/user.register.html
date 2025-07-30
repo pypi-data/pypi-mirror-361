@@ -1,0 +1,94 @@
+{% extends 'layout/page.html' %}
+
+{% block head_title %}
+  {% trans %}Registration{% endtrans %} - {{ config.TRACKER_NAME }}
+{% endblock %}
+
+{% block page_header %}
+  {% trans %}Registration{% endtrans %} - {{ config.TRACKER_NAME }}
+{% endblock %}
+
+{% block content %}
+
+  <form method="POST"
+        name ="itemSynopsis"
+        enctype ="multipart/form-data"
+        action ='{{ context.designator() }}'>
+    <input type="hidden" name="opaqueregister"
+           value="{{ utils.timestamp() }}" >
+    <table>
+      <tr>
+        <th>{% trans %}Name{% endtrans %}</th>
+        <td>
+          <input type='text' name="realname">
+        </td>
+      </tr>
+      <tr>
+        <th>{% trans %}Login Name{% endtrans %}</th>
+        <td>
+          <input type='text' name='username' required>
+        </td>
+      </tr>
+      <tr>
+        <th>{% trans %}Login Password{% endtrans %}</th>
+        <td>
+          <input spellcheck='false' type='password' name='password' required>
+        </td>
+      </tr>
+      <tr>
+        <th>{% trans %}Confirm Password{% endtrans %}</th>
+        <td>
+          <input spellcheck='false' type='password' name='@confirm@password'>
+        </td>
+      </tr>
+      {% if request.user.hasPermission('Web Roles') %}
+        <tr>
+          <th>{% trans %}Roles <br>(comma separated){% endtrans %}</th>
+          <td>
+            <input type='text' name='roles' value='{{ context.roles.plain()|u }}'>
+          </td>
+        </tr>
+      {% endif %}
+      <tr>
+        <th>{% trans %}Phone{% endtrans %}</th>
+        <td>
+          <input type='text' name='phone'>
+        </td>
+      </tr>
+      <tr>
+        <th>{% trans %}Organisation{% endtrans %}</th>
+        <td>
+          <input type='text' name='organisation'>
+        </td>
+      </tr>
+      <tr>
+        <th>{% trans %}Timezone{% endtrans %}</th>
+        <td>
+          <input type='text' name='timezone'>
+        </td>
+      </tr>
+      <tr>
+        <th>{% trans %}Email{% endtrans %}</th>
+        <td>
+          <input type='text' name='address' required>
+        </td>
+      </tr>
+      <tr>
+        <th>{% trans %}Alternate email address <br>One address per line{% endtrans %}</th>
+        <td>
+          {{ context.alternate_addresses.multiline()|u|safe }}
+        </td>
+      </tr>
+      <tr class='form-actions'>
+        <td>
+        <input type="hidden" name="@template" value="register">
+        <input name="@csrf" type="hidden"
+               value="{{ utils.anti_csrf_nonce() }}">
+        <input type="hidden" name="@action" value="register">
+        <input class="btn btn-primary" type="submit" name="submit" value="{% trans %}Register{% endtrans %}">
+        </td>
+      </tr>
+    </table>
+  </form>
+
+{% endblock %}

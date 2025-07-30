@@ -1,0 +1,167 @@
+
+<!DOCTYPE html>
+
+
+
+
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Implementation notes &mdash; Roundup 2.5.0 documentation</title>
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+          URL_ROOT:    './',
+          VERSION:     '2.5.0',
+          COLLAPSE_MODINDEX: false,
+          FILE_SUFFIX: '.html'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script type="text/javascript" src="_static/searchtools.js"></script>
+    <script type="text/javascript" src="_static/sphinx_highlight.js"></script>
+    <script type="text/javascript" src="_static/tabs.js"></script>
+    
+    <link rel="stylesheet" href="_static/NO_basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
+    <!-- https://github.com/sphinx-doc/sphinx/issues/11699 means a
+         duplicate viewport tag -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta content="Additional implementation notes for the Roundup Issue Tracker. Supplement for docstrings in the Roundup package." name="description" />
+
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="Roundup 2.5.0 documentation" href="index.html" />
+    <link rel="next" title="Old Security Mechanisms Notes" href="security-history.html" />
+    <link rel="prev" title="PostgreSQL/psycopg Backend" href="postgresql.html" /> 
+  </head>
+  <body>
+    <div class="header"><div class="label">Roundup</div>
+        <script id="documentation_options" data-url_root=""
+	      src="_static/documentation_options.js">
+        </script>
+
+        <div id="searchbox" style="display: none">
+          <form class="search" action="search.html" method="get">
+            <input type="text" name="q" size="18" />
+            <input type="submit" value="Search" />
+            <input type="hidden" name="check_keywords" value="yes" />
+            <input type="hidden" name="area" value="default" />
+          </form>
+        </div>
+        <script type="text/javascript">$('#searchbox').show(0);</script>
+    </div>
+    <div class="navigation">
+      <div class="menu">
+       
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="postgresql.html"
+                          title="previous chapter">PostgreSQL/psycopg Backend</a></p>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="security-history.html"
+                          title="next chapter">Old Security Mechanisms Notes</a></p>
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/implementation.txt"
+             rel="nofollow">Show Source</a></li>
+    </ul>
+  <div id="searchbox" style="display: none">
+    <h3>Quick search</h3>
+      <form class="search" action="search.html" method="get">
+        <input type="text" name="q" size="18" />
+        <input type="submit" value="Go" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+      <p style="font-size: 90%">Enter search terms or a module, class or function name.</p>
+  </div>
+  <script type="text/javascript">$('#searchbox').show(0);</script>
+      </div>
+    </div>
+    <main id="main" role="main" class="content">
+       
+    <div class="related related-top">
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="security-history.html" title="Old Security Mechanisms Notes"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="postgresql.html" title="PostgreSQL/psycopg Backend"
+             accesskey="P">previous</a></li>
+        <li><a href="index.html">Roundup 2.5.0 documentation</a></li> 
+      </ul>
+    </div>
+       
+  <section id="implementation-notes">
+<h1>Implementation notes</h1>
+<p>[see also the roundup package docstring]</p>
+<p>There have been some modifications to the spec. I’ve marked these in the
+source with ‘XXX’ comments when I remember to.</p>
+<dl>
+<dt>In short:</dt><dd><p>Class.find() - may match multiple properties, uses keyword args.</p>
+<dl class="simple">
+<dt>Class.filter() - isn’t in the spec and it’s very useful to have at the</dt><dd><p>Class level.</p>
+</dd>
+<dt>CGI interface index view specifier layout part - lose the ‘+’ from the</dt><dd><p>sorting arguments (it’s a reserved URL character ;). Just made no
+prefix mean ascending and ‘-’ prefix descending.</p>
+</dd>
+<dt>ItemClass - renamed to IssueClass to better match it only having one</dt><dd><p>hypderdb class “issue”. Allowing &gt; 1 hyperdb class breaks the
+“superseder” multilink (since it can only link to one thing, and
+we’d want bugs to link to support and vice-versa).</p>
+</dd>
+<dt>template - the call=”link()” is handled by special-case mechanisms in</dt><dd><p>my top-level CGI handler. In a nutshell, the handler looks for a
+method on itself called ‘index%s’ or ‘item%s’ where %s is a class.
+Most items pass on to the templating mechanism, but the file class
+_always_ does downloading. It’ll probably stay this way too…</p>
+</dd>
+<dt>template - call=”link(property)” may be used to link “the current item”</dt><dd><p>(from an index) - the link text is the property specified.</p>
+</dd>
+<dt>template - added functions that I found very useful: List, History and</dt><dd><p>Submit.</p>
+</dd>
+<dt>template - items must specify the message lists, history, etc. Having</dt><dd><p>them by default was sometimes not wanted.</p>
+</dd>
+<dt>template - index view determines its default columns from the</dt><dd><p>template’s <code class="docutils literal notranslate"><span class="pre">tal:condition=&quot;request/show/&lt;property&gt;&quot;</span></code> directives.</p>
+</dd>
+</dl>
+<p>template - menu() and field() look awfully similar now …. ;)</p>
+<dl class="simple">
+<dt>roundup_admin.py - the command-line tool has a lot more commands at its</dt><dd><p>disposal</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<hr class="docutils" />
+<p>Back to <a class="reference external" href="../docs.html">Table of Contents</a></p>
+</section>
+
+
+       
+    <div class="related related-bottom">
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="security-history.html" title="Old Security Mechanisms Notes"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="postgresql.html" title="PostgreSQL/psycopg Backend"
+             accesskey="P">previous</a></li>
+        <li><a href="index.html">Roundup 2.5.0 documentation</a></li> 
+      </ul>
+    </div>
+    </main>
+    <div class="footer">
+        &copy; Copyright 2009-2025, Richard Jones, Roundup-Team.
+    </div>
+  </body>
+</html>

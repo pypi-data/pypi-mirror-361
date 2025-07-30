@@ -1,0 +1,51 @@
+{% macro field_large(text, id, name, required=False) %}
+  <div class="col col-lg-12 row">
+    <dt class="col col-4 col-md-3 col-lg-2">
+      <label class="col-form-label" for="{{ id }}">{{ i18n.gettext(text)|u|safe }}</label>
+    </dt>
+    <dd class="col col-8 col-md-9 col-lg-10">
+      {{ context[name].field(class='form-control', id=id, **({'required': ''} if required else {}))|u|safe }}
+    </dd>
+  </div>
+{% endmacro -%}
+{% macro field_small(text, id, name, required=False) %}
+  <div class="col row mr-1">
+    <dt class="col col-4 col-md-3 col-lg-4">
+      <label class="col-form-label" for="{{ id }}">{{ i18n.gettext(text)|u|safe }}</label>
+      </dt>
+    <dd class="col col-8 col-md-9 col-lg-8">
+      {{ context[name].field(class='form-control', id=id, **({'required': ''} if required else {}))|u|safe }}
+    </dd>
+  </div>
+{% endmacro -%}
+{% macro file(text, id, name) %}
+  <div class="col row mr-1">
+    <dt class="col col-4 col-md-3 col-lg-4">
+      <label class="col-form-label" for="{{ id }}">{{ i18n.gettext(text)|u|safe }}</label>
+    </dt>
+    <dd class="col col-8 col-md-9 col-lg-8">
+      <input class="form-control btn btn-sm btn-outline-secondary" name="{{ name }}" id="{{ id }}" type="file" {%- if required %}required="required"{% endif %} />
+    </dd>
+  </div>
+{% endmacro -%}
+{% macro option(text, id, required=False) %}
+  <div class="col row mr-1">
+    <dt class="col col-4 col-md-3 col-lg-4">
+      <label class="col-form-label" for="{{ id }}">{{ i18n.gettext(text)|u|safe }}</label>
+    </dt>
+    <dd class="col col-8 col-md-9 col-lg-8">
+	{% set kwargs = { 'required' : 'required' } %}
+      {{ context[id].menu(html_kwargs=dict([('class', 'custom-select form-control'), ('id', id)] + ([('required', 'required')] if required else [])))|u|safe }}
+    </dd>
+  </div>
+{% endmacro -%}
+{% macro textarea(text, id, name, required=False) %}
+  <div class="col col-lg-12 row">
+    <dt class="col col-4 col-md-3 col-lg-2">
+      <label class="col-form-label" for="{{ id }}">{{ i18n.gettext(text)|u|safe }}</label>
+    </dt>
+    <dd class="col col-8 col-md-9 col-lg-10">
+      <textarea class="form-control" name="{{ name }}" id="{{ id }}" rows="5">{{ request.form.getvalue(name, '')|u }}</textarea>
+    </dd>
+  </div>
+{% endmacro -%}

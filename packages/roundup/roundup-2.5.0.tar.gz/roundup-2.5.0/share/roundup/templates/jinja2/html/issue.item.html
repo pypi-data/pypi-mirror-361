@@ -1,0 +1,117 @@
+{% extends 'layout/page.html' %}
+
+{% block head_title %}
+  {% if context.id %}
+    Issue {{ context.id }}: {{ context.title.plain()|u }} - {{ config.TRACKER_NAME }}
+  {% else %}
+    New Issue - {{ config.TRACKER_NAME }}
+  {% endif %}
+{% endblock %}
+
+{% block page_header %}
+  {% if not (context.id or context.is_edit_ok()) %}
+    New Issue
+  {% elif not context.id and context.is_edit_ok() %}
+    New Issue Editing
+  {% else %}
+    Issue {{ context.id }}
+  {% endif %}
+{% endblock %}
+
+{% block extracss %}
+  {% if context.is_edit_ok() %}
+    <link rel="stylesheet" type="text/css" href="@@file/simplemde.min.css">
+  {% endif %}
+{% endblock %}
+
+{% block extrajs %}
+  {% if context.is_edit_ok() %}
+    <script src='@@file/simplemde.min.js'></script>
+    <script type="text/javascript">
+    (function () {
+      var node = $('#change_note')[0];
+      var initSimpleMde = function () {
+        node.parentNode.appendChild($('<input/>', { type: 'hidden', name: 'msg-1@type', value: 'text/markdown'})[0]);
+        var simplemde = new SimpleMDE({ element: node, status: false,
+      styleSelectedText: false, renderingConfig: {singleLineBreaks: {{ config.MARKDOWN_BREAK_ON_NEWLINE and 'true' or 'false' }} }});
+        simplemde.render();
+      };
+      {% if context.id %}
+      if (node.value) {
+        initSimpleMde();
+      } else {
+        node.addEventListener('focus', initSimpleMde);
+      }
+      {% else %}
+      initSimpleMde();
+      {% endif %}
+    }) ();
+    </script>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% include 'layout/permission.html' %}
+
+  {% if context.is_view_ok() %}
+    {% if context.is_edit_ok() %}
+      {% include 'issue.item.edit.html' %}
+    {% else %}
+      {% include 'issue.item.readonly.html' %}
+    {% endif %}
+  {% endif %}
+
+  {% if context.id %}
+    <p>
+      Created on <b>{{ context.creation.plain()|u }}</b>
+      by <b>{{ context.creator.plain()|u }}</b>,
+      last changed <b>{{ context.activity.reldate()|u }}</b>
+      by <b>{{ context.actor.plain()|u }}</b>.
+    </p>
+  {% endif %}
+
+  {% if context.files %}
+    {% include 'file.index.html' %}
+  {% endif %}
+
+  {% if context.messages %}
+    <h4>Messages</h4>
+    {% for msg in context.messages.reverse() %}
+      <div class="row row-cols-1 row-cols-md-4">
+        <div class="col col-md-auto">
+          <a href='msg{{ msg.id }}'>msg{{msg.id}} (view)</a>
+        </div>
+        <div class="col col-md-auto">
+          Author: {{ msg.author.plain()|u }}
+        </div>
+        <div class="col col-md-auto">
+          Date: {{ msg.date.plain()|u }}
+        </div>
+        <div class="col col-md-auto">
+          {% if context.is_edit_ok() %}
+            <form method="POST" action='issue{{ context.id }}' class='form-inline'>
+              <input type="hidden" name="@remove@messages" value='{{ msg.id }}'>
+              <input name="@csrf" type="hidden"
+                     value="{{ utils.anti_csrf_nonce() }}">
+              <input type="hidden" name="@action" value="edit">
+              <input class="btn btn-danger btn-sm" type="submit" value="{% trans %}Remove{% endtrans %}">
+            </form>
+          {% endif %}
+        </div>
+      </div>
+      <div>
+      {% if msg.type == 'text/markdown' %}
+        <div class="msg">{{ msg.content.markdown()|u|safe }}</div>
+      {% elif msg.type == 'text/x-rst' %}
+        <div class="msg">{{ msg.content.rst()|u|safe }}</div>
+      {% else %}
+        <pre class="msg">{{ msg.content.hyperlinked()|u|safe }}</pre>
+      {% endif %}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <div class='vspace-five'></div>
+
+  {{ context.history()|u|safe }}
+{% endblock %}

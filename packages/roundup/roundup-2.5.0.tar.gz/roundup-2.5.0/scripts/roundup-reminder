@@ -1,0 +1,181 @@
+#! /usr/bin/env python
+# Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com/)
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+#   The above copyright notice and this permission notice shall be included in
+#   all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+'''
+Simple script that emails all users of a tracker with the issues that
+are currently assigned to them.
+
+TODO: introduce some structure ;)
+TODO: possibly make this more general and configurable...
+'''
+
+from __future__ import print_function
+
+import sys
+from email.mime.multipart import MIMEMultipart
+from email.utils import make_msgid
+
+from roundup import date, instance
+from roundup.mailer import Mailer
+
+# open the instance
+if len(sys.argv) != 2:
+    print('You need to specify an instance home dir')
+    sys.exit()
+
+instance_home = sys.argv[1]
+instance = instance.open(instance_home)
+db = instance.open('admin')
+
+resolved_id = db.status.lookup('resolved')
+
+class Reverse:
+    """Class reversing sort order."""
+
+    def __init__(self, val):
+        self.val = val
+
+    def __lt__(self, other):
+        return other.val < self.val
+    def __le__(self, other):
+        return other.val <= self.val
+    def __eq__(self, other):
+        return other.val == self.val
+    def __ne__(self, other):
+        return other.val != self.val
+    def __gt__(self, other):
+        return other.val > self.val
+    def __ge__(self, other):
+        return other.val >= self.val
+
+def listKey(x):
+    "key for tuples such that order is positive on [0] and negative on [1]"
+    return (x[0], Reverse(x[1]))
+    return 0
+
+# loop through all the users
+for user_id in db.user.list():
+    # make sure we care about this user
+    name = db.user.get(user_id, 'realname')
+    if name is None:
+        name = db.user.get(user_id, 'username')
+    address = db.user.get(user_id, 'address')
+    if address is None:
+        continue
+
+    # extract this user's issues
+    issues = []
+    for issue_id in db.issue.find(assignedto=user_id):
+        if db.issue.get(issue_id, 'status') == resolved_id:
+            continue
+        order = db.priority.get(db.issue.get(issue_id, 'priority'), 'order')
+        issues.append((order, db.issue.get(issue_id, 'activity'),
+            db.issue.get(issue_id, 'creation'), issue_id))
+
+    # sort the issues by timeliness and creation date
+    issues.sort(key=listKey)
+    if not issues:
+        continue
+
+    # generate the email message
+    mailer = Mailer(db.config)
+    message = MIMEMultipart('alternative')
+    mailer.set_message_attributes(
+        message,
+        [address],
+        'Your active %s issues'%db.config.TRACKER_NAME)
+    message['Reply-To'] = '%s <%s>'%(db.config.TRACKER_NAME,
+                                     db.config.ADMIN_EMAIL)
+    message['Message-Id'] = make_msgid()
+
+    # do the plain text bit
+    text_lines = []
+    text_lines.append('Created     ID   Activity  Title')
+    text_lines.append('='*75)
+    #             '2 months    213  immediate cc_daemon barfage
+    old_priority = None
+    for _priority_order, activity_date, creation_date, issue_id in issues:
+        priority = db.issue.get(issue_id, 'priority')
+        if (priority != old_priority):
+            old_priority = priority
+            text_lines.append('     ' + db.priority.get(priority,'name'))
+        # pretty creation
+        creation = (creation_date - date.Date('.')).pretty()
+        activity = (activity_date - date.Date('.')).pretty()
+        title = db.issue.get(issue_id, 'title')
+        if len(title) > 42:
+            title = title[:38] + ' ...'
+        text_lines.append('%-11s %-4s %-9s %-42s'%(creation, issue_id,
+            activity, title))
+
+    # some help to finish off
+    text_lines.append('''
+To view or respond to any of the issues listed above, visit the URL
+
+   %s
+
+and click on "My Issues". Do NOT respond to this message.
+'''%db.config.TRACKER_WEB)
+    text = '\n'.join(text_lines) + '\n'
+    part = mailer.get_text_message()
+    part.set_payload(text, part.get_charset())
+    message.attach(part)
+
+
+    # now the HTML one
+    html_lines = []
+    colours = {
+        'immediate': ' bgcolor="#ffcdcd"',
+        'day': ' bgcolor="#ffdecd"',
+        'week': ' bgcolor="#ffeecd"',
+        'month': ' bgcolor="#ffffcd"',
+        'whenever': ' bgcolor="#ffffff"',
+    }
+    html_lines.append('''<table border>
+<tr><th>Created</th> <th>ID</th> <th>Activity</th> <th>Title</th></tr>
+''')
+    old_priority = None
+    for _priority_order, activity_date, creation_date, issue_id in issues:
+        priority = db.issue.get(issue_id,'priority')
+        if (priority != old_priority):
+           old_priority = priority
+           html_lines.append('<tr><td>-></td><td>-></td><td>-></td><td><b>%s</b></td></tr>'%db.priority.get(priority,'name'))
+        creation = (creation_date - date.Date('.')).pretty()
+        title = db.issue.get(issue_id, 'title')
+        issue_id = '<a href="%sissue%s">%s</a>'%(db.config.TRACKER_WEB,
+            issue_id, issue_id)
+        activity = (activity_date - date.Date('.')).pretty()
+        html_lines.append('''<tr><td>%s</td><td>%s</td><td>%s</td>
+    <td>%s</td></tr>'''%(creation, issue_id, activity, title))
+    html_lines.append('</table>')
+
+    html_lines.append('''<p>To view or respond to any of the issues listed
+        above, simply click on the issue ID. Do <b>not</b> respond to
+        this message.</p>''')
+    html = '\n'.join(html_lines) + '\n'
+    part = mailer.get_text_message('utf-8', 'html')
+    part.set_payload(html, part.get_charset())
+    message.attach(part)
+
+    # all done, send!
+    mailer.smtp_send([address], message.as_string())
+
+# vim: set filetype=python ts=4 sw=4 et si

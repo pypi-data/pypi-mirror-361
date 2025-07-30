@@ -1,0 +1,249 @@
+#! /bin/sh
+
+# When container starts verify that the trackers are configured.
+# If they are, start the server otherwise run roundup-admin
+# for installation and initialization.
+
+# "$@" should be one of the recognized keywords or arguments for
+# roundup-server including one or more tracker tracker=directory pairs.
+
+# exit on errors; POSIX (e.g. dash as on ubuntu) doesn't support
+# pipefail. So setting it will fail. Allow that to happen then
+# set exit on error so the script will still run.
+set -o pipefail
+# not supported by POSIX shell, but then neither is pipefail.
+trap "echo 'Exiting on pipefail'" ERR
+
+set -e
+
+if [ -n "$SHELL_DEBUG" ]; then
+    set -xv
+fi
+
+trap exit INT
+
+do_exit=0
+
+if test -t 0 -a -t 1; then  # see if stdin/out are associated with a tty
+    might_be_interactive="true"
+else
+    might_be_interactive="false"
+fi
+
+printf "Starting Roundup with arguments: $@"
+
+for tracker_spec in "$@"; do
+    # IFS== set a=b doesn't just assign $1 and $2 in busybox ash
+    # it also clobbers '$@'. 'printf mumble | read' starts read in a
+    # subshell so vars are not available in parent.
+    IFS="=" read -r tracker directory <<- EOE
+	$tracker_spec
+	EOE
+    # ^ is a tab for use with <<-
+
+    if [ -z "$directory" ]; then
+	# $tracker_spec was not in the form of a=b, check to see
+	# if it's a request to start in demo/shell mode:
+	case "$tracker" in
+	    demo)
+		# if grep does not find 2.2.0 it exits non-zero and
+		# because of "-eo pipefail" the script exits. So || true
+		# so pipeline exits true.
+		version=$(roundup-admin -v | grep '2\.2\.0' || true)
+		if [ -n "$version" ]; then
+		    printf "\nRoundup version: %s does not support docker demo mode\n" "$version"
+		    printf "Try building with a version newer than 2.2.0.\n"
+		    printf "For example:\n"
+		    printf " docker build --build-arg=\"source=pypi~=2.3.0a1\" ...\n"
+		    exit 3
+		fi
+
+		if [ -z "$PORT_8080" ]; then
+		  PORT_8080=8917
+		  printf "  If docker reports a bind error, you can set the\n"
+		  printf "  Docker environment variable PORT_8080 to\n"
+		  printf "  fix it.\n\n"
+		  printf "  Add -e PORT_8080=port_number to the docker run\n"
+		  printf "  command. The port_number must match the first\n"
+		  printf "  value to -p which must be an unused port\n"
+		  printf "  on your server.\n\n"
+		fi
+		template=classic
+	        backend=sqlite
+
+		shift
+
+		demoArgs=$#
+
+		for arg in "$@"; do
+		    # all keywords are unique, so iterate over all and
+		    # assign as appropriate
+		    case "$arg" in
+			classic|devel|jinja2|minimal|responsive)
+			    template="$arg";;
+
+			anydbm|sqlite)
+			    backend="$arg";;
+			postgres|mysql)
+			    printf "demo mode only supports sqlite or anydbm backends, not %s. Exiting." "$1"
+			    exit 1;;
+			nuke)
+			    nuke="$arg";;
+		    *) printf "Unknown argument %s.\n" "$1"
+		       printf "Usage: demo [template] [db]\n"
+		       printf "  template: one of "
+		       printf "classic devel jinja2 minimal responsive\n"
+		       printf "  db: one of: sqlite anydbm\n"
+		       printf "default: classic sqlite\n"
+		       printf "Exiting\n"
+		       exit 1
+		    esac
+		    shift
+		done
+
+		# run demo make sure to set bind address -B to 0.0.0.0
+		# otherwise we can never make it out of the docker container.
+		# use -p to force port to match the exported docker port.
+		if [ -f tracker/demo/config.ini ] && [ -z "$nuke" ]; then
+		    if [ "$demoArgs" -ne 0 ]; then
+			printf "Error: backend and template arguments to demo "
+			printf "are invalid if a tracker\nis configured and "
+			printf "'nuke' is not specified.\nExiting.\n"
+			exit 1
+		    fi
+		    printf "Restarting existing tracker.\n"
+		    # Restart an existing demo tracker.
+		    exec roundup-demo \
+			 -B 0.0.0.0 \
+			 -p 8080 \
+			 tracker/demo
+                else
+		    # Create new or nuke/create existing tracker.
+		    # Set parameters required to create tracker.
+		    # Inherit the url port spec from the environment
+		    # variable PORT_8080 using default value or value 
+		    # specified on the docker run command line.
+		    printf "Creating new tracker.\n"
+		    exec roundup-demo \
+			 -B 0.0.0.0 \
+			 -p 8080 \
+			 -b "$backend" \
+			 --urlport "$PORT_8080" \
+			 -t "$template" \
+			 tracker/demo \
+			 $nuke
+		fi
+		;;
+	    shell)
+		if [ "$might_be_interactive" = "false" ]; then
+		    printf \
+		       "Error: must use -it on docker command line to invoke shell\n"
+		    exit 3
+		fi
+		exec /bin/sh;;
+	    admin)
+	       shift
+	       exec roundup-admin "$@";;
+
+            help)
+		sed -e 's/^\t\t//' <<EOH
+		Example Usage:
+		   docker run --rm -it -p 127.0.0.1:8917:8080 \\
+		          -v $PWD:/usr/src/app/tracker \\              
+		          --name roundup_demo docker/image ...
+
+		where ... is:
+
+		   help - this output
+
+		   demo ... - run a demo tracker with optional arguments
+		           tracker home is in '/usr/src/app/tracker/demo'
+		           directory.
+
+		   admin ... - start roundup-admin shell or execute following
+		           arguments. Use '-i tracker/demo' to set tracker
+		           home.
+
+		   shell - start a unix shell for advanced config
+
+		   roundup-server(1) arguments - at minimum one or more
+		          tracker=tracker_home/directory
+                      specifications. See documentation for details.
+
+		   if no arguments are supplied, it will start the guided
+		      install sequence. See documentation for details.
+
+		demo Mode Arguments:
+
+		   one optional template name:
+		       classic, devel, jinja2, minimal, responsive
+
+		   one optional database backend:
+		       sqlite, anydbm
+
+		   the term 'nuke' to destroy demo tracker and start over
+
+		Other docker CLI Arguments:
+		
+		--env SHELL_DEBUG=1  - enable debug output from startup script
+
+EOH
+		exit 0
+		;;
+	    *)
+		# we just continue. Allow setting CMD to:
+		#    -i index_template issue=tracker
+		# for example.
+		continue
+	esac
+    fi
+
+    # we have a tracker=directory spec. Validate it and see if we need to
+    # install or initialize it.
+
+    # something is specified or built wrong. Don't start.
+    if [ ! -d "$directory" ]; then
+        printf "Unable to find directory %s for tracker %s. Exiting.\n" \
+	            "$directory" "$tracker"
+	exit 1
+    fi
+
+    # verify that config.ini has been edited with a web spec.
+    # user must at minimum define web in config.ini.
+    if ! grep '^\s*web\s*=\s*' "$directory/config.ini" > /dev/null 2>&1
+    then
+	if [ -e "$directory/config.ini" ]; then
+	    printf "Please edit %s/config.ini and set the required
+parameters.\n" "$directory"
+	    printf "The web setting appears to be missing.\n"
+	    exit 3
+	fi
+
+        printf "Installing %s tracker in %s\n" "$tracker" "$directory"
+        roundup-admin -i "$directory" install
+        do_exit=1
+    fi
+
+    # we have a valid config.ini so init database if not done
+    # if we get errors, the db directory should be missing
+    # and we print an error.
+    if [ $do_exit = 0 ] && ! [ -e "$directory/db" ]; then
+	printf "Initializing tracker %s\n" "$tracker"
+        if ! roundup-admin -i "$directory" init; then
+           # something went wrong.
+	   # verify it looks like a tracker directory
+	   # then remove the database directory
+	   test -e "$directory/TEMPLATE-INFO.txt" && \
+           rm -rf "$directory/db"
+	fi
+	do_exit=1
+    fi
+done   # for "$@"
+
+# if any config.ini needs editing don't start up.
+if [ $do_exit = 0 ]; then
+   # make roundup-server process pid 1 with exec
+   exec roundup-server -n 0.0.0.0 "$@"
+fi
+
+exit 0

@@ -1,0 +1,422 @@
+Metadata-Version: 2.1
+Name: roundup
+Version: 2.5.0
+Summary: A simple-to-use and -install issue-tracking system with command-line, web and e-mail interfaces. Highly customisable.
+Home-page: https://www.roundup-tracker.org
+Download-URL: https://pypi.org/project/roundup
+Author: Richard Jones
+Author-email: richard@users.sourceforge.net
+Maintainer: Ralf Schlatterbeck
+Maintainer-email: rsc@runtux.com
+License: OSI Approved: MIT License, Zope Public License, Python Software Foundation License
+Project-URL: Documentation, https://roundup-tracker.org/docs.html
+Project-URL: Changelog, https://sourceforge.net/p/roundup/code/ci/tip/tree/CHANGES.txt
+Project-URL: Contact, https://roundup-tracker.org/contact.html
+Project-URL: IRC, https://webchat.oftc.net/?randomnick=1&channels=roundup&prompt=1
+Project-URL: Issues, https://issues.roundup-tracker.org/
+Project-URL: Licenses, https://roundup-tracker.org/docs/license.html
+Project-URL: Wiki, https://wiki.roundup-tracker.org/
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Console
+Classifier: Environment :: Web Environment
+Classifier: Intended Audience :: Customer Service
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved
+Classifier: License :: OSI Approved :: MIT License
+Classifier: License :: OSI Approved :: Zope Public License
+Classifier: License :: OSI Approved :: Python Software Foundation License
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: POSIX
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Topic :: Communications :: Email
+Classifier: Topic :: Office/Business
+Classifier: Topic :: Software Development :: Bug Tracking
+Classifier: Topic :: Internet :: WWW/HTTP :: WSGI :: Application
+Requires-Python: >=3.7
+Description-Content-Type: text/x-rst
+License-File: COPYING.txt
+Provides-Extra: charting
+Requires-Dist: pygal; extra == "charting"
+Provides-Extra: jinja2
+Requires-Dist: jinja2; extra == "jinja2"
+Provides-Extra: extras
+Requires-Dist: brotli; extra == "extras"
+Requires-Dist: pytz; extra == "extras"
+Provides-Extra: test
+Requires-Dist: pytest>7.0.0; extra == "test"
+
+I'm proud to release version 2.5.0 of the Roundup issue
+tracker.  This release is a bugfix and feature release, so
+make sure to read `docs/upgrading.txt
+<https://www.roundup-tracker.org/docs/upgrading.html>`_ to
+bring your tracker up to date.
+
+The 42 changes, as usual, include some new features and many
+bug fixes.
+
+Version 2.5.0 does not support Python 2. The minimum Python
+version is 3.7.
+
+Note that you should run ``roundup-admin ... migrate`` to
+update the database schema version. Do this before you use
+the web, command-line or mail interface and before any users
+access the tracker.
+
+You can install it with::
+
+   pip install roundup
+
+(preferably in a virtual environment). To download it, use::
+
+   pip download roundup
+
+then unpack and test/install from the tarball.
+
+Among the significant enhancements in version 2.5.0 compared to
+the 2.4.0 release are:
+
+* **XSS vulnerability with devel and responsive templates fixed**
+
+  Just before release an XSS security issue with trackers based on
+  the devel or responsive templates was discovered. The updating
+  directions include instructions on fixing this issue with the
+  html templates.
+
+* **The property/field advanced search expression feature has been
+  enhanced and documented.**
+
+  Search expressions are usually built using the
+  expression editor on the search page. They can be built manually
+  by modifying the search URL but the RPN search expression format
+  was undocumented. Errors in expressions could return results that
+  didn't match the user's intent. This release documents the RPN
+  expression syntax, adds basic expression error detection, and
+  improves error reporting.
+
+* **The default hash method for password storage is more secure.**
+
+  We use PBKDF2 with SHA512 (was SHA1). With this change you can
+  lower the value of password_pbkdf2_default_rounds in your
+  tracker's config.ini. Check the upgrading documentation for more
+  info. (Note this may cause longer authentication times, the
+  upgrade doc describes how to downgrade the hash method if required.)
+
+* **Roundup's session token is now prefixed with the magic
+  ``__Secure__`` tag when using HTTPS.**
+
+  This adds another layer of protection in addition to the
+  existing ``Secure`` property that comes with the session cookie.
+
+* **Data authorization can be done at the database level speeding up
+  display of index pages.**
+
+  Roundup verifies the user's authorization for the data fetched
+  from the database after retrieving data from the database. A new
+  optional ``filter`` argument has been added to Permission
+  objects. When the administrator supplies a filter function, it
+  can boost performance with SQL server databases by pushing
+  selection criteria to the database. By offloading some
+  permission checks to the database, less data is retrieved from
+  the database. This leads to quicker display of index pages with
+  reduced CPU and network traffic.
+
+* **The REST endpoint can supply binary data (images, pdf, ...) to
+  its clients.**
+
+  Requesting binary data from a REST endpoint has been a
+  hassle. Since JSON can't handle binary data, images (and other
+  binary data) need to be encoded. This makes them significantly
+  larger. The workaround was to use a non-REST endpoint for fetching
+  non-text attachments. This update lets the REST endpoint return
+  raw message or file content data. You can utilize the
+  ``binary_content`` endpoint along with an appropriate ``Accept``
+  header (e.g. ``image/jpeg``) in your request.
+
+* **Extract translatable strings from your tracker easily.**
+
+  The ``roundup-gettext`` tool has been enhanced to extract
+  translatable strings from detectors and extensions. This will
+  simplify the process of translating your trackers.
+
+Other miscellaneous fixes include:
+
+* Fix a crash bug on Windows with Python 3.13.
+
+* Update documentation on required REST headers, along with other
+  documentation updates.
+
+* Improve handling of an error condition generated when an invalid
+  REST response format is requested. For example if XML output is
+  requested, but dicttoxml is not installed, we now return an
+  error without doing any work.
+
+* Fix an incorrect error report when a PUT REST request sets
+  the user's email address to its current value.
+
+* Add support for the ``defusedxml`` Python module to enhance
+  security when using XML.
+
+* Introduce the templating function:
+  ``utils.set_http_response(integer)`` to set the HTTP return code
+  directly from your template. This allows the template logic to
+  return a 404 or other code when the user invokes a template
+  incorrectly.
+
+* Add a new ``registerUtilMethod('name', my_function)``. which
+  makes it easier to define and use complex templating utilities.
+  It passes a default argument that allows access to the client
+  instance, translation functions, and other templating utility
+  functions. Previously you had to pass the arguments explicitly
+  when calling the utility from the template.
+
+* Add the ability to generate native HTML date and
+  number/integer inputs. Check the upgrading document for caveats.
+  This feature is disabled by default.
+
+* Re-enable support for GPG/PGP signed emails, which requires
+  installation from the test PyPi repository.
+
+The file CHANGES.txt has a detailed list of feature
+additions and bug fixes for each release. The most recent
+changes from there are at the end of this announcement. Also
+see the information in doc/upgrading.txt.
+
+If you find bugs, please report them to issues AT
+roundup-tracker.org or create an account at
+https://issues.roundup-tracker.org and open a new ticket. If
+you have patches to fix the issues they can be attached to
+the email or uploaded to the tracker.
+
+Upgrading
+=========
+
+If you're upgrading from an older version of Roundup you
+*must* follow all the "Software Upgrade" guidelines given in
+the doc/upgrading.txt documentation.
+
+Note that you should run ``roundup-admin ... migrate`` for
+all your trackers to update the database schema version. Do
+this before you use the web, command-line or mail interface
+and before any users access the tracker.
+
+Roundup requires Python 3 newer than or equal to version 3.7 for
+correct operation. (Python 3.4 or 3.5, or 3.6 may work, but are not
+tested.) Note that Roundup 2.4.0 was the last release to support
+Python 2. You should deploy new trackers with Python 3 and plan on
+upgrading older trackers from Python 2 to Python 3. See the upgrade
+guide.
+
+To give Roundup a try, just download (directions above),
+unpack and run::
+
+    python demo.py
+
+then open the url printed by the demo app.
+
+Release info and download page:
+
+     https://pypi.org/project/roundup/
+
+Source and documentation is available at the website:
+
+     https://www.roundup-tracker.org/
+
+Mailing lists - the place to ask questions:
+
+     https://sourceforge.net/p/roundup/mailman/
+
+
+About Roundup
+=============
+
+Roundup is a simple-to-use and install issue-tracking system
+with command-line, web and e-mail interfaces. It is based on
+the winning design from Ka-Ping Yee in the Software
+Carpentry "Track" design competition.
+
+Roundup manages a number of issues (with flexible properties
+such as "description", "priority", and so on) and provides
+the ability to:
+
+(a) submit new issues,
+(b) find and edit existing issues, and
+(c) discuss issues with other participants.
+
+The system facilitates communication among the participants
+by managing discussions and notifying interested parties
+when issues are edited. One of the major design goals for
+Roundup that it be simple to get going. Roundup is therefore
+usable "out of the box" with any Python 3.7+
+installation. It doesn't even need to be "installed" to be
+operational, though an install script is provided.
+
+It comes with five basic issue tracker templates
+
+* a classic bug/feature tracker
+* a more extensive devel tracker for bug/features etc.
+* a responsive version of the devel tracker
+* a jinja2 version of the devel template (work in progress)
+* a minimal skeleton
+
+and supports four database back-ends (anydbm, sqlite, mysql
+and postgresql).
+
+Recent Changes
+==============
+
+From 2.4.0 to 2.5.0
+
+Fixed:
+
+- issue2551343 - Remove support for PySQLite. It is unmaintained
+  and sqlite3 is used which is the default for a Python
+  distribution.  (John Rouillard)
+- replace use of os.listdir with os.scandir. Performance
+  improvement.  Using with Python 2 requires 'pip install
+  scandir'. (John Rouillard)
+- issue2551131 - Return accept-patch if patch body not accepted
+  (415 code). Accept-Patch returned with acceptable values. (John
+  Rouillard)
+- issue2551074 - In "responsive" template: click on hide comment leads
+  to a red error msg. (Report by Ludwig Reiter; fix John Rouillard)
+- issue2550698 - added documentation on filtering using RPN property
+  expressions. (John Rouillard)
+- issue2551372 - Better document necessary headers for REST and fix
+  logging to log missing Origin header (Ralf Schlatterbeck with
+  suggestions on documentation by John Rouillard)
+- issue2551289 - Invalid REST Accept header with post/put performs
+  change before returning 406. Error before making any changes to the
+  db if we can't respond with requested format. (John Rouillard)
+- issue2551356 - Add etag header when If-Modified-Since GET request
+  returns not-modified (304). Breaking change to function signature
+  for client.py-Client::_serve_file(). (John Rouillard)
+- issue2551381 - roundup-server parses URI's with multiple '?"
+  incorrectly. (John Rouillard)
+- issue2551382 - invalid @verbose, @page_* values in rest uri's
+  generate 409 not 400 error. (John Rouillard)
+- fix issues with rest doc and use of PUT on a property item. Response
+  is similar to use of PUT on the item, not a GET on the
+  item. Discovered while fuzz testing. (John Rouillard)
+- issue2551383 - Setting same address via REST PUT command results in
+  an error. Now the userauditor does not trigger an error if a user
+  sets the primary address to the existing value. (John Rouillard)
+- issue2551253 - Modify password PBKDF2 method to use SHA512. The
+  default password hashing algorithm has been upgraded to
+  PBKDF2-SHA512 from PBKDF2-SHA1. The default pbkdf2 rounds in the
+  config file has been changed to 250000. The admin should change it
+  manually if it is at 2 million. PBKDF2-SHA512 (PBKDF2S5) has been
+  available since release 2.3, but it required a manual step to make
+  it the default. (John Rouillard)
+- fixed a crash with roundup-admin perftest password when rounds not set
+  on command line. (John Rouillard)
+- issue2551374 - Add error handling for filter expressions. Filter
+  expression errors are now reported. (John Rouillard)
+- issue2551384: Modify flow in client.py's REST handler to verify
+  authorization earlier. The validation order for REST requests
+  has been changed. Checking user authorization to use the REST
+  interface is done before validating the Origin header. As a
+  result, incorrectly formatted CORS preflight requests
+  (e.g. missing Origin header) can now return HTTP status 403 as
+  well as status 400. (John Rouillard)
+- issue2551387 - TypeError: not indexable. Fix crash due to
+  uninitialized list element on a (Mini)FieldStorage when unexpected
+  input is posted via wsgi. (Reported and debugged by Christof
+  Meerwald; fix John Rouillard)
+- close http socket and send a 408 status when a timeout exception
+  is handed in roundup-server. This prevents another exception
+  caused by using a timed out socket. (John Rouillard)
+- issue2551391, partial fix for issue1513369. input fields were
+  not getting id's assigned. Fixed automatic id assignment to
+  input fields. Thinko in the code. (John Rouillard)
+- issue1895197 - translated help texts in admin.py not displayed
+  correctly. (Initial patch tobias-herp, John Rouillard)
+- issue2551238 - roundup-server should exit with error if -d
+  <pidfile> is used without -l <logfile>. Added code to report
+  the issue. Added issue with relative paths for log file whn
+  using -L and -d with roundup-server. (John Rouillard)
+- Allow the specification of a "form" parameter for Date fields to make
+  the popup calendar work when the enclosing form has a name different
+  from "itemSynopsis". (Ralf Schlatterbeck)
+- issue2551376: Fix tracebacks in item templates (Ralf Schlatterbeck)
+- issue2551396: Use of os.path.stat.ST_MTIME in python 3.13 crashes
+  roundup on windows. Replaced with equivalent stat.ST_MTIME. (Randy
+  on IRC, fix: John Rouillard and R. David Murray (bitdancer))
+- issue2551323: remove functions used for XHTML template
+  support. XHTML was deprecated in Roundup 2.3.0 and an invalid value
+  in 2.4.0. (John Rouillard)
+- issue2551406: 'Templating Error: too many values to unpack' crash
+  fixed. (reported by and patch Christof Meerwald, commit/test John
+  Rouillard)
+- fix potential HTTP Response Splitting issue in
+  roundup-server. Discovered by CodeQL in CI. (John Rouillard)
+
+Features:
+
+- issue2551287 - Enhance roundup_gettext.py to extract strings from
+  detectors/extensions. If the polib module is available,
+  roundup-gettext will extract translatable strings from the tracker's
+  Python code. If polib is missing, it will print a warning. (Patch
+  Marcus Priesch, cleanup to remove python 2 issues, John Rouillard.)
+- issue2551315 - Document use of
+  RestfulInstance.max_response_row_size to limit data returned
+  from rest request. (John Rouillard)
+- issue2551330 - Add an optional 'filter' function to the Permission
+  objects and the addPermission method. This is used to optimize search
+  performance by not checking items returned from a database query
+  one-by-one (using the check function) but instead offload the
+  permission checks to the database. For SQL backends this performs the
+  filtering in the database.  (Ralf Schlatterbeck)
+- issue2551370 - mark roundup session cookie with __Secure-
+  prefix. (John Rouillard)
+- add -P flag to roundup-server to log client address from
+  X-Forwarded-For reverse proxy header rather than connecting
+  address. This logs the actual client address when
+  roundup-server is run behind a reverse proxy. It also appends a
+  + sign to the logged address/name. (John Rouillard)
+- issue2551068 - Provide way to retrieve file/msg data via rest
+  endpoint. Raw file/msg data can be retrieved using the
+  /binary_content attribute and an Accept header to select the mime
+  type for the data (e.g. image/png for a png file). The existing html
+  interface method still works and is supported, but is legacy. (John
+  Rouillard) 
+- added fuzz testing for some code. Found issue2551382 and
+  others. (John Rouillard)
+- issue2551116 - Replace xmlrpclib (xmlrpc.client) with defusedxml.
+  Added support for defusedxml to better secure the xmlrpc
+  endpoint. (John Rouillard)
+- Added new instance.registerUtilMethod() method to make using complex
+  templating easier as it provides a default Client instance to the
+  templating method. (John Rouillard)
+- Added new templating utils.set_http_response(integer) method to
+  allow reporting an error to the user from a template. (John
+  Rouillard)
+- issue2551390 - Replace text input/calendar popup with native
+  date input. Also add double-click and exit keyboard handlers to
+  allow copy/paste/editing the text version of the date. Configurable
+  via the use_browser_date_input setting in the [web] section of
+  config.ini. By default browser native dates are turned off.
+  (John Rouillard, Ralf Schlatterbeck)
+- Use native number type input for Number() and Integer()
+  properties. Integer() uses step=1 as well. Configurable via the
+  use_browser_number_input setting in the [web] section of config.ini.
+  Set off by default. See
+  https://issues.roundup-tracker.org/issue2551398 for discussion of
+  issues with native number inputs.  (John Rouillard, Ralf
+  Schlatterbeck)
+- issue2551231 - template.py-HTMLClass::classhelp doesn't merge
+  user defined classes. It now merges them in. (John Rouillard)
+- re-enable support for GPG/PGP encrypted emails using new python gpg
+  package on the test pypi instance. (Paul Schwabauer)

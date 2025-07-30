@@ -1,0 +1,33 @@
+{% import 'layout/edit.tmpl' as edit with context %}
+<form method="POST"
+      {% if context.id -%}
+        action="issue{{ context.id }}"
+      {% else -%}
+        action="issue"
+      {% endif -%}
+      name="itemSynopsis"
+      enctype="multipart/form-data"
+      class="col-xl-6" 
+  >
+  <fieldset>
+    <dl class="row row-cols-1 row-cols-lg-2 no-gutters">
+      {{ edit.field_large('Title', 'title', 'title', required=True) }}
+      {{ edit.option('Priority', 'priority', required=True) }}
+      {{ edit.option('Status', 'status') }}
+      {{ edit.field_small('Superseder', 'superseder', 'superseder') }}
+      {{ edit.field_small('Nosy list', 'nosylist', 'nosy') }}
+      {{ edit.option('Assigned to', 'assignedto') }}
+      {{ edit.field_small('Keywords', 'keyword', 'keyword') }}
+      {{ edit.textarea('Change note', 'change_note', '@note') }}
+      {{ edit.file('File', 'file_upload', '@file') }}
+    </dl>
+  </fieldset>
+  <div class="form-actions">
+    {{ context.submit(html_kwargs={"class": "btn btn-primary"})|u|safe }}
+    {% if context.id %}
+      <a class="btn btn-outline-primary" href="{{ context.copy_url() }}">{% trans %}Make a copy{% endtrans %}</a>
+    {% endif %}
+  </div>
+  <input type="hidden" name="@template" value="item">
+  <input type="hidden" name="@required" value="title,priority">
+</form>

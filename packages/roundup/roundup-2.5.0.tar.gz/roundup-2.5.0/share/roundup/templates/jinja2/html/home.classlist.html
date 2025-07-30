@@ -1,0 +1,30 @@
+{% extends 'layout/page.html' %}
+
+{% block head_title %}
+  {% trans %}List of classes{% endtrans %}
+{% endblock %}
+
+{% block page_header %}
+  {% trans %}List of classes{% endtrans %}
+{% endblock %}
+
+{% block content %}
+
+  <div>
+    {% for cl in db.classes() %}
+      <div class='span4'>
+        <h4>
+          <a href='{{cl.classname}}'>{{ cl.classname.capitalize() }}</a>
+        </h4>
+
+        {% for prop in cl.properties() %}
+          <p>
+            <b>{{ prop._name }}</b> -&nbsp;
+            {{ prop._prop }}
+          </p>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+
+{% endblock %}

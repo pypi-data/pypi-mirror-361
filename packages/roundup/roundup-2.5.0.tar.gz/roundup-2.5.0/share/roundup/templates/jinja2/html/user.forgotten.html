@@ -1,0 +1,43 @@
+{% extends 'layout/page.html' %}
+
+{% block head_title %}
+  {% trans %}Password reset request{% endtrans %} - {{ config.TRACKER_NAME }}
+{% endblock %}
+
+{% block page_header %}
+  {% trans %}Password reset request{% endtrans %}
+{% endblock %}
+
+{% block content %}
+
+  <p>
+    {% trans %}If you know the email address you registered with, enter it below.{% endtrans %}
+  </p>
+
+  <form method="POST" action='{{ context.designator() }}'>
+    <div>
+      <label>{% trans %}Email Address{% endtrans %}:</label>
+      <input type='text' name="address">
+      <input name="@csrf" type="hidden"
+             value="{{ utils.anti_csrf_nonce() }}">
+      <input type="hidden" name="@action" value="passrst">
+      <input type="hidden" name="@template" value="forgotten">
+      <input type="submit" value="{% trans %}Password reset{% endtrans %}" class='btn btn-primary'>
+    </div>
+
+    <div class="vspace-two">
+      <p>{% trans %}Or, if you know your username, then enter it below{% endtrans %}.</p>
+      <label>{% trans %}Username{% endtrans %}:</label>
+      <input type='text' name="username">
+      <input type="submit" value="{% trans %}Password reset{% endtrans %}" class='btn btn-info'>
+    </div>
+  </form>
+
+  <div class="vspace-two">
+    <p>
+      {% trans %}A confirmation email will be sent to you -
+      please follow the instructions within it to complete the reset process.{% endtrans %}
+    </p>
+  </div>
+
+{% endblock %}

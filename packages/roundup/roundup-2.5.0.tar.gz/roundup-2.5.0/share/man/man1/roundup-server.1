@@ -1,0 +1,153 @@
+.TH ROUNDUP-SERVER 1 "27 July 2004"
+.SH NAME
+roundup-server \- start roundup web server
+.SH SYNOPSIS
+\fBroundup-server\fP [\fIoptions\fP] [\fBname=\fP\fItracker home\fP]*
+.SH OPTIONS
+.TP
+\fB-C\fP \fIfile\fP or \fB--config\fP \fIfile\fP
+Use options read from the configuration file (see below).
+.TP
+\fB-n\fP \fIhostname\fP
+Sets the host name or IP address to listen on. Default is localhost
+(127.0.0.1). Use 0.0.0.0 to listen on all interfaces on the system.
+.TP
+\fB-p\fP \fIport\fP
+Sets the port to listen on (default: 8080).
+.TP
+\fB-d\fP \fIPIDfile\fP
+Run the server in the background and write the server's PID to the
+file indicated by PIDfile. The -l (or -L) option \fBmust\fP be
+specified if -d is used.
+.TP
+\fB-D\fP
+Run the server in the foreground even if -d is used.
+.TP
+\fB-t\fP \fBfork|thread|debug|none\fP
+Control multi-process mode. \fBdebug\fP and \fBnone\fP are always
+available. If an invalid mode is specified the server starts in
+\fBnone\fP (also called single) mode. Default fork.
+.TP
+\fB-m\fP \fImax_children\fP
+Set the maximum number of child processes (servers). This value
+may need to be increased on a heavily loaded site.  Default 40.
+.TP
+\fB-l\fP \fIfile\fP
+Sets a filename to log to (instead of stdout). This is required if the -d
+option is used.
+.TP
+\fB-P\fP
+If a reverse proxy is used in front of the roundup-server, the server
+will log the ip address of the proxy, not the client browser. Using -P
+logs the left most entry in the X-Forwarded-For http header as the
+IP address of the client. This address will be logged or resolved to a
+hostname (with \fB-N\fP) and a '+' character will be appended.
+\fB-P\fP should only be used when the
+roundup server is accessible only from trusted proxy hosts. See:
+https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For
+for details and warnings about using the X-Forwarded-For header.
+.TP
+\fB-L\fP
+Have the server log using the Python logger with key roundup.http.
+.TP
+\fB-i\fP \fIfile\fP
+Sets a filename to use as a template for generating the tracker index page.
+The variable "trackers" is available to the template and is a dict of all
+configured trackers. If you connect to the root of the server (without
+a tracker name), the default index page is shown. Using \fB-i\fP
+allows you to customize the index page.
+.TP
+\fB-I\fP \fIheader1[,header2,...]\fP
+Pass the header(s) and their values to the backend. This allow-list
+of header variables can be used by custom code in the tracker or with
+a tracker's \fBhttp_auth_header\fP configuration option to allows a
+front end server to authenticate a user and pass the user identity to
+roundup.
+.TP
+\fB-s\fP
+Enables use of SSL. In most cases, you will want to run a real web server
+(Apache, Nginx) as a proxy to roundup-server running without SSL.
+The real web server can filter/rate limit/firewall requests to
+roundup-server.
+.TP
+\fB-e\fP \fIfile\fP
+Sets a filename containing the PEM file to use for SSL. The PEM file
+must include both the private key and certificate with appropriate
+header/trailer markers:
+
+.EX
+-----BEGIN PRIVATE KEY-----
+-----END PRIVATE KEY-----
+.EE
+
+and
+
+.EX
+-----BEGIN CERTIFICATE-----
+-----END CERTIFICATE-----
+.EE
+
+If no file is specified, a temporary self-signed
+certificate will be used.
+.TP
+\fB-N\fP
+Log client machine names instead of IP addresses (much slower).
+.TP
+\fB-V\fP \fIHTTPVER\fP
+By default roundup-server uses HTTP/1.1 to enable keepalives for faster
+response. HTTPVER can be set to \fBHTTP/1.0\fP to disable keepalives.
+.TP
+\fB-u\fP \fIUID\fP
+Runs the Roundup web server as this UID.
+.TP
+\fB-g\fP \fIGID\fP
+Runs the Roundup web server as this GID.
+.TP
+\fB-v\fP or \fB--version\fP
+Print version and exit.
+.TP
+\fB-h\fP or \fB--help\fP
+Print help and exit.
+.TP
+\fB--save-config\fP
+Create configuration file and exit. The old config.ini will be saved to
+config.bak. Note that this command doesn't attempt to load or verify
+an existing config.ini. Running this in a tracker home directory will
+move the existing config.ini to config.bak and replace it with the
+roundup-server's config.ini. This will make the tracker in the
+directory fail to start until the original config.ini is restored.
+.TP
+\fBname=\fP\fItracker home\fP
+Sets the tracker home(s) to use. The \fBname\fP variable is how the tracker is
+identified in the URL (it's the first part of the URL path). The \fItracker
+home\fP variable is the directory that was identified when you did
+"roundup-admin init". You may specify any number of these name=home pairs on
+the command-line. For convenience, you may edit the TRACKER_HOMES variable in
+the roundup-server file instead.  Make sure the name part doesn't include any
+url-unsafe characters like spaces, as these confuse the cookie handling in
+browsers like IE.
+.PP
+If you connect to the root directory (I.E. you do not include the
+\fBname\fP component in the URL, the server will display an index page
+of trackers served by roundup-server if more than one tracker is
+defined. If only one tracker is defined it will redirect to the tracker.
+.SH EXAMPLES
+.TP
+.B roundup-server -p 9000 bugs=/var/tracker reqs=/home/roundup/group1
+Start the server on port \fB9000\fP serving two trackers; one under
+\fB/bugs\fP and one under \fB/reqs\fP.
+.PP
+If you connect to the server at the root level (http://host:9000/) it
+will display a list of the available trackers.
+
+.SH CONFIGURATION FILE
+See the "admin_guide" in the Roundup "doc" directory.
+.SH SEE ALSO
+roundup-admin(1), roundup-demo(1), roundup-mailgw(1)
+
+.SH AUTHOR
+This manpage was written by Bastian Kleineidam
+<calvin@debian.org> for the Debian distribution of roundup.
+
+The main author of roundup is Richard Jones
+<richard@users.sourceforge.net>.

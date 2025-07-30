@@ -1,0 +1,189 @@
+
+<!DOCTYPE html>
+
+
+
+
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Roundup Tracker Templates &mdash; Roundup 2.5.0 documentation</title>
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+          URL_ROOT:    './',
+          VERSION:     '2.5.0',
+          COLLAPSE_MODINDEX: false,
+          FILE_SUFFIX: '.html'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script type="text/javascript" src="_static/searchtools.js"></script>
+    <script type="text/javascript" src="_static/sphinx_highlight.js"></script>
+    <script type="text/javascript" src="_static/tabs.js"></script>
+    
+    <link rel="stylesheet" href="_static/NO_basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
+    <!-- https://github.com/sphinx-doc/sphinx/issues/11699 means a
+         duplicate viewport tag -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+      <meta name="description"
+        content="Page tracker_templates in documentation on the Roundup issue tracker, version 2.5.0.">
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="Roundup 2.5.0 documentation" href="index.html" />
+    <link rel="next" title="Roundup: an Issue-Tracking System for Knowledge Workers" href="overview.html" />
+    <link rel="prev" title="Upgrading versions before 1.5.0" href="upgrading-history.html" /> 
+  </head>
+  <body>
+    <div class="header"><div class="label">Roundup</div>
+        <script id="documentation_options" data-url_root=""
+	      src="_static/documentation_options.js">
+        </script>
+
+        <div id="searchbox" style="display: none">
+          <form class="search" action="search.html" method="get">
+            <input type="text" name="q" size="18" />
+            <input type="submit" value="Search" />
+            <input type="hidden" name="check_keywords" value="yes" />
+            <input type="hidden" name="area" value="default" />
+          </form>
+        </div>
+        <script type="text/javascript">$('#searchbox').show(0);</script>
+    </div>
+    <div class="navigation">
+      <div class="menu">
+       
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="upgrading-history.html"
+                          title="previous chapter">Upgrading versions before 1.5.0</a></p>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="overview.html"
+                          title="next chapter">Roundup: an Issue-Tracking System for Knowledge Workers</a></p>
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/tracker_templates.txt"
+             rel="nofollow">Show Source</a></li>
+    </ul>
+  <div id="searchbox" style="display: none">
+    <h3>Quick search</h3>
+      <form class="search" action="search.html" method="get">
+        <input type="text" name="q" size="18" />
+        <input type="submit" value="Go" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+      <p style="font-size: 90%">Enter search terms or a module, class or function name.</p>
+  </div>
+  <script type="text/javascript">$('#searchbox').show(0);</script>
+      </div>
+    </div>
+    <main id="main" role="main" class="content">
+       
+    <div class="related related-top">
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="overview.html" title="Roundup: an Issue-Tracking System for Knowledge Workers"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="upgrading-history.html" title="Upgrading versions before 1.5.0"
+             accesskey="P">previous</a></li>
+        <li><a href="index.html">Roundup 2.5.0 documentation</a></li> 
+      </ul>
+    </div>
+       
+  <section id="roundup-tracker-templates">
+<h1>Roundup Tracker Templates</h1>
+<p>The templates distributed with Roundup are stored in the “share” directory
+nominated by Python. On Unix this is typically
+<code class="docutils literal notranslate"><span class="pre">/usr/share/roundup/templates/</span></code> (or <code class="docutils literal notranslate"><span class="pre">/usr/local/share...</span></code>) and
+on Windows this is <code class="docutils literal notranslate"><span class="pre">c:\python38\share\roundup\templates\</span></code>.</p>
+<p>The template loading looks in four places to find the templates:</p>
+<ol class="arabic simple">
+<li><p><em>share</em> - eg. <code class="docutils literal notranslate"><span class="pre">&lt;prefix&gt;/share/roundup/templates/*</span></code>.
+This should be the standard place to find them when Roundup is
+installed running setup.py from source.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">install_dir</span></code>/../&lt;prefix&gt;/share/….``, where prefix is the
+Python’s <code class="docutils literal notranslate"><span class="pre">sys.prefix</span></code>. <code class="docutils literal notranslate"><span class="pre">sys.base_prefix</span></code> or
+<cite>sys.base_prefix/local`</cite>. This finds templates (and locales)
+installed by pip. E.G. in a virtualenv located at (<code class="docutils literal notranslate"><span class="pre">sys.prefix</span></code>):
+<code class="docutils literal notranslate"><span class="pre">/tools/roundup</span></code>, roundup would be at:
+<code class="docutils literal notranslate"><span class="pre">/tools/roundup/lib/python3.7/site-packages/roundup</span></code>. The
+templates would be at:
+<code class="docutils literal notranslate"><span class="pre">/tools/roundup/lib/python3.7/site-packages/tools/roundup/share/roundup/templates/</span></code>. (Replace 3.7 with the Python version you are running.)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;roundup.admin.__file__&gt;/../../share/roundup/templates/*</span></code>.
+This will be used if Roundup’s run in the distro (aka. source)
+directory.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;current</span> <span class="pre">working</span> <span class="pre">dir&gt;/*</span></code>.
+This is for when someone unpacks a 3rd-party template.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;current</span> <span class="pre">working</span> <span class="pre">dir&gt;</span></code>.
+This is for someone who “cd”s to the 3rd-party template dir.</p></li>
+</ol>
+<p>Templates contain:</p>
+<ul>
+<li><p>modules <code class="docutils literal notranslate"><span class="pre">schema.py</span></code> and <code class="docutils literal notranslate"><span class="pre">initial_data.py</span></code></p></li>
+<li><p>directories <code class="docutils literal notranslate"><span class="pre">html</span></code>, <code class="docutils literal notranslate"><span class="pre">detectors</span></code> and <code class="docutils literal notranslate"><span class="pre">extensions</span></code>
+(with appropriate contents)</p></li>
+<li><p>optional directory <code class="docutils literal notranslate"><span class="pre">lib</span></code> which contains modules used by the other
+tracker components</p></li>
+<li><p>optional <code class="docutils literal notranslate"><span class="pre">config_ini.ini</span></code> file. It is structured like a tracker’s
+<code class="docutils literal notranslate"><span class="pre">config.ini</span></code> but contains only headers (e.g. <code class="docutils literal notranslate"><span class="pre">[main]</span></code>) and
+<em>required</em> parameters that are different from defaults. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">main</span><span class="p">]</span>
+<span class="n">template_engine</span> <span class="o">=</span> <span class="n">jinja2</span>
+
+<span class="n">static_files</span> <span class="o">=</span> <span class="n">static</span>
+</pre></div>
+</div>
+<p>These settings override the default values in the tracker’s
+<code class="docutils literal notranslate"><span class="pre">config.ini</span></code> when using roundup-admin to install a template.</p>
+</li>
+<li><p>template “marker” file <code class="docutils literal notranslate"><span class="pre">TEMPLATE-INFO.txt</span></code>, which contains
+the name of the template, a description of the template
+and its intended audience.</p>
+<p>An example TEMPLATE-INFO.txt:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Name: classic
+Description: This is a generic issue tracker that may be used to
+             track bugs, feature requests, project issues or any
+             number of other types of issues. Most users of
+             Roundup will find that this template suits them,
+             with perhaps a few customisations.
+Intended-For: All first-time Roundup users
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+
+
+       
+    <div class="related related-bottom">
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="overview.html" title="Roundup: an Issue-Tracking System for Knowledge Workers"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="upgrading-history.html" title="Upgrading versions before 1.5.0"
+             accesskey="P">previous</a></li>
+        <li><a href="index.html">Roundup 2.5.0 documentation</a></li> 
+      </ul>
+    </div>
+    </main>
+    <div class="footer">
+        &copy; Copyright 2009-2025, Richard Jones, Roundup-Team.
+    </div>
+  </body>
+</html>

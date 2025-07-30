@@ -1,0 +1,2471 @@
+.. meta::
+    :description:
+        Documentation on the RESTful interface to the Roundup Issue
+        Tracker. Enable REST access, endpoints, methods,
+        authentication, discovery.
+
+.. index:: pair: api; Representational state transfer
+   pair: api; rest
+
+====================
+REST API for Roundup
+====================
+
+.. contents::
+   :local:
+   :depth: 3
+
+Introduction
+============
+
+After the 1.6.0 Release, a REST-API developed in 2015 during a
+Google Summer of Code (GSOC) by Chau Nguyen, supervised by Ezio
+Melotti was integrated. The code was updated by Ralf Schlatterbeck and
+John Rouillard to address some limitations and incorporate essential
+features for a single page web application, such as etag support,
+pagination, and field embedding, among others.
+
+Enabling the REST API
+=====================
+
+The REST API can be disabled in the ``[web]`` section of ``config.ini``
+via the variable ``enable_rest`` which is ``yes`` by default.
+
+Users have to be authorized to use the rest api. The user must have
+"Rest Access" permission. To add this to the "User" role change
+schema.py to add::
+
+    db.security.addPermissionToRole('User', 'Rest Access')
+
+This is usually included near where other permissions like "Web Access"
+or "Email Access" are assigned.
+
+You could also create a new role "rest" and assign the "Rest Access"
+permission to that role and then just add the "rest" role to
+those users who should have access.
+
+The REST api is reached via the ``/rest/`` endpoint of the tracker
+URL. Partial URLs paths below (not starting with https) will have
+/rest removed for brevity.
+
+Make sure that the ``secret_key`` option is defined in the
+``[web]`` section of your tracker's ``config.ini``. Following the
+`upgrading directions`_ using ``roundup-admin ... updateconfig
+...`` will generate the ``secret_key`` comments and setting. Then
+you can merge this into your ``config.ini``.  If you are
+installing a new tracker with ``roundup-admin ... install`` the
+``secret_key`` value is automatically set to some random value.
+
+If ``secret_key`` is not set, the etag value returned by a REST call
+will changed on every call even though the item has not changed. This
+means users will be unable to submit changes using the rest
+interface. (Note, if you run roundup in a persistent mode: server,
+wsgi, mod_python, the etag will change on every restart if not
+explicitly set.)
+
+.. _upgrading directions: upgrading.html
+
+Preventing CSRF Attacks
+-----------------------
+
+Clients should set the header ``X-REQUESTED-WITH`` to any value and the
+tracker's config.ini should have ``csrf_enforce_header_x-requested-with
+= yes`` or ``required``.
+
+If you want to allow Roundup's api to be accessed by an application
+that is not hosted at the same origin as Roundup, you must permit
+the origin using the ``allowed_api_origins`` setting in
+``config.ini``.
+
+If you access the REST interface with a method other than ``GET``, you
+must also supply an origin header with a value that is either the
+default origin (the URL of the tracker without the path component set in
+the config file as ``web`` in section ``[tracker]``) or one that is
+permitted by ``allowed_api_origins``.
+
+Rate Limiting API Failed Logins
+-------------------------------
+
+To make brute force password guessing harder, the REST API has an
+invalid login rate limiter. This feature restricts the number of
+failed login attempts made with an invalid user or
+password. Successful login attempts are limited by the normal API rate
+limiter. The rate limiter is a GCRA leaky bucket variant, which is
+shared by all API (REST/XMLRPC) endpoints. However it is important to
+note that the rate limiter for the HTML/web interface is not shared by
+the API failed login rate limiter.
+
+It is configured through the settings in config.ini. By setting the
+value of ``api_failed_login_limit`` to a non-zero value, the limiter
+is enabled.  Setting it to 0 will disables the limiter (although this
+is not recommended).  If a user fails to log in more than
+``api_failed_login_limit`` times in
+``api_failed_login_interval_in_sec`` seconds, a 429 HTTP error will be
+returned. The error message also tells the user how long to wait
+before trying to log in again.
+
+When a 429 error is returned, the associated account will be
+temporarily locked until sufficient time has elapsed to generate an
+additional login token. This time period is determined by the values
+of the ``api_failed_login_interval_in_sec`` and ``api_failed_login_limit``
+parameters. Any login attempts made during this lockout period will be
+unsuccessful, even if the correct password is provided. This
+effectively prevents brute force attacks from attempting more than one
+password every
+``api_failed_login_interval_in_sec/api_failed_login_limit`` seconds on average.
+
+The system's default settings permit a maximum of four login attempts,
+after which the user will experience a delay of 2.5 minutes (150
+seconds). Currently, there is no established procedure for resetting
+the rate limiter.
+
+Rate Limiting the API
+---------------------
+
+Roundup includes Rate Limiting for the API, which is distinct from
+rate limiting login attempts on the web interface.
+
+This feature can be enabled by setting the ``api_calls_per_interval``
+and ``api_interval_in_sec`` configuration parameters in the ``[web]``
+section of the ``config.ini`` file. Details for these settings are
+documented in the same file.
+
+If ``api_calls_per_interval = 60`` and ``api_interval_in_sec = 60``
+the user can make 60 calls in a minute. They can use them all up in the
+first second and then get one call back every second. With
+``api_calls_per_interval = 60`` and ``api_interval_in_sec = 3600`` (1
+hour) they can use all 60 calls in the first second and they get one
+additional call every 10 seconds. ``api_calls_per_interval`` is the
+burst rate that you are willing to allow within ``api_interval_in_sec``
+seconds. The average rate of use is the ratio of
+``api_calls_per_interval/api_interval_in_sec``. So you can have many
+values that permit one call per second on average: 1/1, 60/60,
+3600/3600, but they all have a different maximum burst rates: 1/sec,
+60/sec and 3600/sec.
+
+In practice, a single page app may require 20 or 30 API calls to
+populate the page with data, followed by a few seconds of waiting for
+the user to select an issue. When displaying the issue, another 20 or
+more calls may be needed to populate status dropdowns, retrieve the
+first 10 messages in the issue, and so on. Therefore, controlling both
+the burst rate and the average rate is a tuning exercise that is left
+to the tracker admin.
+
+It is worth noting that the rate limit feature may be slightly lossy,
+meaning that under heavy load, it may miscount and allow more than the
+burst count. On slower hardware, errors of up to 10% have been
+observed. Using redis, PostgreSQL, or MySQL for storing ephemeral data
+minimizes the loss.
+
+Limit Size of Returned Data
+---------------------------
+
+When selecting from the database, you can limit the number of rows
+returned by adding the following to `interfaces.py`_::
+
+  from roundup.rest import RestfulInstance
+  RestfulInstance.max_response_row_size = 26
+
+This will limit the setting of ``@page_size`` to 25 (one less than the
+value). If the url includes a ``@page_size`` pagination value greater
+than or equal to the ``max_response_row_size`` you will receive an
+error like::
+
+  {
+      "error": {
+	  "status": 400,
+	  "msg": "Page size 30 must be less than admin limit on query
+      result size: 26."
+      }
+  }
+
+The default value is 10 million and one rows.
+
+Client API
+==========
+
+The top-level REST url ``/rest/`` will display the current version of
+the REST API (Version 1 as of this writing) and some links to relevant
+endpoints of the API. In the following the ``/rest`` prefix is omitted
+from relative REST-API links for brevity.
+
+Headers
+-------
+
+If rate limiting is enabled there are 3 "standard" headers:
+
+   **X-RateLimit-Limit**:  Calls allowed per period.
+
+   **X-RateLimit-Remaining**: Calls available to be completed in this window.
+
+   **X-RateLimit-Reset**: window ends in this many seconds. (Note,
+   not an epoch timestamp). After this time, all
+   X-RateLimit-Limit calls are available again.
+
+and one helpful header to report the period that is missing
+from other lists of rate limit headers:
+
+   **X-RateLimit-Limit-Period**: Defines period in seconds for X-RateLimit-Limit.
+
+Also if the user has exceeded the rate limit, this header is added:
+
+   **Retry-After**: The number of second to wait until 1 api call will succeed.
+
+If the client has requested a deprecated API endpoint, the header:
+
+   **Sunset**: an http date after which the end point will not be
+   available. This is not returned by current code, but can be used
+   when `Programming the REST API`_. It should be used as a hint that
+   the REST endpoint will be going away. See
+   https://www.rfc-editor.org/rfc/rfc8594 for details on this header and
+   the sunset link type.
+
+Hyperdb Stats
+-------------
+
+Adding ``@stats=true`` as a GET query parameter or POST data item will
+augment the response with an ``@stats`` dictionary. Any value other
+than ``true`` (any case) will disable the ``@stats`` dictionary. When
+stats are enabled the response includes an ``@stats`` member and looks
+like::
+
+  { "data": {
+      ...
+      "@stats": {
+            "cache_hits": 3,
+            "cache_misses": 1,
+            "get_items": 0.0009722709655761719,
+            "filtering": 0,
+            "elapsed": 0.04731464385986328
+      }
+    }
+  }
+
+These are the same values returned in the html interface by setting
+the ``CGI_SHOW_TIMING`` environment variable. By default performance
+stats are not shown. The fields are subject to change. An
+understanding of the code is recommended if you are going to use this
+info.
+
+Versioning
+----------
+
+Currently there is only one version of the API. Versions are simple
+integers. The current version is ``1``. Version selection is
+implemented in the server using one of four methods (in priority
+order, highest first):
+
+   1. Explicit version param in accept header:
+      ``application/json; version=1``
+
+   2. Version suffix in vendor accept header:
+      ``application/vnd.json.test-v1+json``
+
+   3. Adding ``@apiver: 1`` in the input data wrapper (for POST, PUT)
+
+   4. Adding version specifier in query string: ``@apiver=1`` (for GET).
+
+The highest priority version method will be used if multiple
+methods are used.
+
+If an explicit version is not provided, the server default is used.
+The server default is reported by querying the ``/rest/`` endpoint as
+described above.
+
+Input Formats
+-------------
+
+For a GET or OPTIONS request, the Content-Type header should
+not be sent.
+
+Otherwise Content-Type is allowed to be ``application/json`` or
+``application/x-www-form-urlencoded``. Any other value returns error
+code 415.
+
+CORS preflight requests
+~~~~~~~~~~~~~~~~~~~~~~~
+
+CORS preflight requests are done using the OPTIONS method. They
+require that REST be enabled. These requests do not make any changes
+or get any information from the database. As a result they are
+available to the anonymous user and any authenticated user. The user
+does not need to have ``Rest Access`` permissions. Also these requests
+bypass CSRF checks except for the Origin header check which is always
+run for preflight requests.
+
+You can permit only allowed ORIGINS by setting ``allowed_api_origins``
+in ``config.ini`` to the list of origins permitted to access your
+api. By default only your tracker's origin is allowed. If a preflight
+request fails, the api request will be stopped by the browser.
+
+The following CORS preflight headers are usually added automatically by
+the browser and must all be present:
+
+* ``Access-Control-Request-Headers``
+* ``Access-Control-Request-Method``
+* ``Origin``
+
+The headers of the 204 response depend on the
+``allowed_api_origins`` setting. If a ``*`` is included as the
+first element, any client can read the data but they can not
+provide authentication. This limits the available data to what
+the anonymous user can see in the web interface.
+
+All 204 responses will include the headers:
+
+* ``Access-Control-Allow-Origin``
+* ``Access-Control-Allow-Headers``
+* ``Access-Control-Allow-Methods``
+* ``Access-Control-Max-Age: 86400``
+
+If the client's ORIGIN header matches an entry besides ``*`` in the
+``allowed_api_origins`` it will also include:
+
+* ``Access-Control-Allow-Credentials: true``
+
+permitting the client to log in and perform authenticated operations.
+
+If the endpoint accepts the PATCH verb the header ``Accept-Patch`` with
+valid mime types (usually `application/x-www-form-urlencoded,
+multipart/form-data`) will be included.
+
+It will also include rate limit headers since the request is included
+in the rate limit for the URL.  The results from the CORS preflight
+should be cached for a day so preflight requests are not expected to
+cause a problem. If it is an issue, you can see
+`Creating Custom Rate Limits`_
+and craft a rate limiter that ignores anonymous OPTIONS requests.
+
+Response Formats
+----------------
+
+The default response format is json.
+
+If you add the ``dicttoxml2.py`` module you can request XML formatted
+data using the header ``Accept: application/xml`` in your
+request. Both output formats are similar in structure.
+
+``dicttoxml2.py`` should be installed in the Python install directory,
+or the file can be added to the Roundup installation directory along
+side ``rest.py``. It can also be enabled on a per tracker basis by
+adding ``dicttoxml2.py`` to the lib directory in your tracker home (you
+may need to create the directory). Then this can be added to
+`interfaces.py`_ to enable xml::
+
+   from roundup import rest
+   from dicttoxml import dicttoxml as dtox # from tracker_root/lib directory
+
+   rest.dicttoxml = dtox
+
+.. _interfaces.py: reference.html#interfaces-py-hooking-into-the-core-of-roundup
+
+The rest interface accepts the http accept header and can include
+``q`` values to specify the preferred mechanism. This is the preferred
+way to specify alternate acceptable response formats.
+
+To make testing from the browser easier, you can also append the
+extension ``.json`` or ``.xml`` to the path component of the url. This
+will force json or xml (if supported) output. If you use an extension
+it takes priority over any accept headers. Note the extension does not
+work for the ``/rest`` or ``/rest/data`` paths. In these cases it
+returns a 404 error. Adding the header ``Accept: application/xml``
+allows these paths to return xml data.
+
+The rest interface returns status 406 if you use an unrecognized
+extension.  You will also get a 406 status if none of the entries in
+the accept header are available or if the accept header is invalid.
+
+Note: ``dicttoxml2.py`` is an updated version of ``dicttoxml.py`` and
+should be used for Roundup running on Python 3.7 or newer.
+
+Also the ``/binary_content`` attribute endpoint can be used to
+retrieve raw file data in many formats.
+
+General Guidelines
+------------------
+
+Performing a ``GET`` on an item or property of an item will return an
+ETag header or an @etag property. This needs to be submitted with
+``DELETE``, ``PUT`` and ``PATCH`` operations on the item using an
+``If-Match`` header or an ``"@etag`` property in the data payload if
+the method supports a payload. The ETag header value will include a
+suffix (starting with '-') indicating the Content-Encoding used to
+respond to the request. If the response was uncompressed, there will
+be no suffix. The ``@etag`` property never includes the suffix. Any
+ETag value suffixed or not can be sent in an ``If-Match`` header as
+the suffix is ignored during comparison.
+
+The exact details of returned data is determined by the value of the
+``@verbose`` query parameter.  The various supported values and their
+effects are described in the following sections.
+
+All output is wrapped in an envelope called ``data``. The output
+format is described in `Response Formats`_ above.
+
+When using collection endpoints (think list of issues, users ...), the
+``data`` envelope contains metadata (e.g. total number of items) as
+well as a ``collections`` list of objects::
+
+  { "data": {
+      "meta data field1": "value",
+      "meta data field2": "value",
+      "collection": [
+            { "link": "url to item",
+              "id": "internal identifier for item" },
+            { "link": "url to second item",
+              "id": "id item 2" },
+      ... ]
+      "@links": {
+         "relation": [
+                  { "rel": "relation/subrelation",
+                    "uri": "uri to use to implement relation" },
+                  ...
+                  ],
+         "relation2": [ {...} ], ...
+      }
+    }
+  }
+
+available meta data is described in the documentation for the
+collections endpoint.
+
+The ``link`` fields implement `HATEOS`_ by supplying a url for the
+resource represented by that object. The "link" parameter with the
+value of a url is a special case of the @links parameter.
+
+.. _HATEOS: https://en.wikipedia.org/wiki/HATEOAS
+
+In the @links object, each relationship is a list of full link json
+objects.  These include rel (relationship) and uri properties. In the
+future this may be extended to include other data like content-type.
+However including a full @links object for every item includes a lot
+of overhead since in most cases only the self relationship needs to be
+represented.
+
+Because every object, link and multilink ends up getting a url, the
+shorter 'link' representation is used for this special case. The
+``link`` property expresses the ``self`` relationship and its value is
+the uri property of the full link object. In collections, properties
+from each item can be embedded in the returned data (see ``@fields``
+below). This can not be done if the property is called link as that
+conflicts with the self url.
+
+When using an item endpoint (think an individual issue), metadata is
+included in the ``data`` envelope. Inside of the envelope, the
+``attributes`` object contains the data for the field/properties of
+the issue. Example::
+
+  { "data": {
+      "meta data field1": "value",
+      "type": "type of item, issue, user ..."
+      "link": "link to retrieve item",
+      "attributes": {
+          "title": "title of issue",
+          "nosy": [
+                    { "link": "url for user4",
+                      "id": "4" }
+          ],
+
+      ... }
+    }
+  }
+
+Using a property endpoint (e.g. title or nosy list for an issue) the
+``data`` wrapper has a ``data`` subfield that represents the value of
+the property. This ``data`` subfield may be a simple string (all types
+except multilink) or a list of strings (multilink
+properties). Example::
+
+  { "data": {
+        "type": "description of class",
+        "@etag": "\"f15e6942f00a41960de45f9413684591\"",
+        "link": "link to retrieve property",
+        "id": "id for object with this property",
+        "data": "value of property"
+    }
+  }
+
+
+Special Endpoints
+-----------------
+
+There are a few special endpoints that provide some additional data.
+Tracker administrators can add new endpoints. See
+"Programming the REST API"_ below.
+
+/summary
+~~~~~~~~
+
+A Summary page can be reached via ``/summary`` via the ``GET`` method.
+This is currently hard-coded for the standard tracker schema shipped
+with roundup and will display a summary of open issues.
+
+/data
+~~~~~
+
+This is the primary entry point for data from the tracker.
+
+The ``/data`` link will display a set of classes of the tracker. All
+classes can be reached via ``/data/<classname>`` where ``<classname>``
+is replace with the name of the class to query, e.g. ``/data/issue``.
+Individual items of a class (e.g. a single issue) can be queried by
+giving the issue-id, e.g., ``/data/issue/42``. Individual properties of
+an item can be queried by appending the property, e.g.,
+``/data/issue/42/title``.
+
+
+All the links mentioned in the following support the http method ``GET``.
+Results of a ``GET`` request will always return the results as a
+dictionary with the entry ``data`` referring to the returned data.
+
+Details are in the sections below.
+
+/data/\ *class* Collection
+--------------------------
+
+When you use the ``GET`` method on a class (like ``/data/issue``), the
+``data`` will include the number of available items in
+``@total_size``. If the size exceeds the administrative limit (which
+is 10 million by default), ``@total_size`` will be set to ``-1``. To
+navigate to the last page of results, you can use the ``next`` links
+or increment ``@page_index`` until the result does not include a
+``next`` ``@link`` or ``@total_size`` is not ``-1``. The value of the
+HTTP header ``X-Count-Total`` is the same as ``@total_size``.
+
+A ``collection`` list contains the id and link to the
+respective item.  For example a get on https://.../rest/data/issue
+returns::
+
+    {
+        "data": {
+            "collection": [
+                {
+                    "id": "1",
+                    "link": "https://.../rest/data/issue/1"
+                },
+                {
+                    "id": "100",
+                    "link": "https://.../rest/data/issue/100"
+                }
+        ...
+            ],
+            "@total_size": 171
+        }
+    }
+
+Collection endpoints support a number of features as seen in the next
+sections.
+
+Having an empty ``collection`` does not mean next next link will not
+return more data. The row limit is applied when the query is made to
+the database. The result set is then filtered, removing rows that the
+user does not have permission to access. So it is possible to have no
+data items on a page because the user does not have access to them. If
+you use ``@page_size`` near the administrative limit, you may receive
+fewer rows than requested. However, this does not mean you are out of
+data.
+
+All clients must be programmed to expect pagination decorations in the
+response. See the section on pagination below for details.
+
+Searching
+~~~~~~~~~
+
+Searching is done by adding roundup field names and values as query
+parameters. Using: https://.../rest/data/issue you can search using:
+
+.. list-table:: Query Parameters Examples
+  :header-rows: 1
+  :widths: 20 20 80
+  :class: valign-top
+
+  * - Query parameter
+    - Field type
+    - Explanation
+  * - ``title=foo``
+    - String
+    - perform a substring search and find any issue with the word foo
+      in the title.
+  * - ``status=2``
+    - Link
+    - find any issue whose status link is set to the id 2.
+  * - ``status=open``
+    - Link
+    - find any issue where the name of the status is open.
+      Note this is not a string match so using status=ope will fail.
+  * - ``nosy=1``
+    - MultiLink
+    - find any issue where the multilink nosy includes the id 1.
+  * - ``nosy=admin``
+    - MultiLink
+    - find any issue where the multilink nosy includes the user admin.
+      Note this is not a string match so using nosy=admi will fail.
+  * - ``booleanfield=1`` - also values: true, TRUE, yes, YES etc. Other
+      values match false.
+    - Boolean
+    - find an issue with the boolean field set to true.
+
+As seen above, Links and Multilinks can be specified numerically or
+symbolically, e.g., searching for issues in status ``closed`` can be
+achieved by searching for ``status=closed`` or ``status=3`` (provided
+the ``closed`` status has ID 3). Note that even though the symbolic
+name is a string, in this case it is also a key value. As a result it
+only does an exact match.
+
+Searching for strings (e.g. the issue title, or a keyword name)
+performs a case-insensitive substring search. Searching for
+``title=Something`` (or in long form title~=Something) will find all
+issues with "Something" or "someThing", etc. in the title.
+
+Changing the search to ``title:=Something`` (note the ``:``) performs an
+exact case-sensitive string match for exactly one word ``Something``
+with a capital ``S``. Another example is:
+``title:=test+that+nosy+actually+works.`` where the + signs are spaces
+in the string. Replacing ``+`` with the `URL encoding`_ for space
+``%20`` will also work. Note that you must match the spaces when
+performing exact matches. So ``title:=test++that+nosy+actually+works.``
+matches the word ``test`` with two spaces between ``test`` and
+``that`` in the title.
+
+To make this clear, searching
+``https://.../rest/data/issue?keyword=Foo`` will not work unless there
+is a keyword with a (case sensitive) name field of ``Foo`` which is
+the key field of the keyword. However searching the text property
+``name`` using ``https://.../rest/data/keyword?name=Foo`` (note
+searching keyword class not issue class) will return matches for
+``Foo``, ``foobar``, ``foo taz`` etc.
+
+In all cases the field ``@total_size`` is reported which is the total
+number of items available if you were to retrieve all of them. See
+more details in the parent section about ``@total_size`` and when it
+can return ``-1``.
+
+Other data types: Date, Interval, Integer, Number need examples and may
+need work to allow range searches. Full text search (e.g. over the
+body of a msg) is a work in progress.
+
+.. _URL Encoding: https://en.wikipedia.org/wiki/Percent-encoding
+
+Transitive Searching
+^^^^^^^^^^^^^^^^^^^^
+
+In addition to searching an issue by its properties, you can search
+for issues where linked items have a certain property. For example
+using ``/issues?messages.author=1`` will find all issues that include
+(link to) a message created by the admin user. This can also be done
+using: ``/issues?messages.author=admin``. Note that this requires
+search permission for messages.author, user.id, and users.username (to
+perform search with ``admin``. If these search permissions are not
+present, the search will silently drop the attribute.
+
+Similarly you can find all issues where the nosy list includes James
+Bond with: ``issue?nosy.realname=james+bond``. The alternate way to
+perform this is to query the user class for the realname:
+``user?realname=james+bond`` and retrieve the id. Then you can execute
+a second rest call ``issue?nosy=7`` to retrieve issues with id 7.
+
+Make sure that search access to the class/properties are granted to the
+user. Note that users can search a field even if they can't view
+it. However they may be able to use searches to discover the value of
+the field even if they can't view it.
+
+Sorting
+~~~~~~~
+
+Collection endpoints support sorting. This is controlled by specifying a
+``@sort`` parameter with a list of properties of the searched class.
+Optionally properties can include a sign ('+' or '-') to specify
+ascending or descending sort, respectively. If no sign is given,
+ascending sort is selected for this property. The following example
+would sort by status (in ascending order of the status.order property)
+and then by id of an issue::
+
+    @sort=status,-id
+
+Grouping
+~~~~~~~~
+
+Collection endpoints support grouping. This is controlled by
+specifying a ``@group`` parameter with a list of properties of
+the searched class.  Optionally properties can include a sign
+('+' or '-') to specify the groups are sorted in ascending or
+descending order, respectively. If no sign is given, the groups
+are returned in ascending order. The following example would
+return the issues grouped by status (in order from
+unread->reolved) then within each status, by priority in
+descending order (wish -> critical)::
+
+    @group=status,-priority
+
+Adding ``@fields=status,priority`` to the query will allow you to see
+the status and priority values change so you can identify the items in
+each group.
+
+If combined with ``@sort=-id`` within each group he items would be
+sorted in descending order by id.
+
+This is useful for select elements that use optgroup.
+
+Pagination
+~~~~~~~~~~
+
+Collection endpoints support pagination. This is controlled by query
+parameters ``@page_size`` and ``@page_index`` (Note the use of the
+leading ``@`` to make the parameters distinguishable from field names.)
+
+.. list-table:: Query Parameters Examples
+  :header-rows: 1
+  :widths: 20 80
+  :class: valign-top
+
+  * - Query parameter
+    - Explanation
+  * -  ``@page_size``
+    - specifies how many items are displayed at once. If no
+      ``@page_size`` is specified, all matching items are returned.
+  * - ``@page_index``
+    - (which defaults to 1 if not given) specifies which page number
+      of ``@page_size`` items is displayed.
+
+Also when pagination is enabled the returned data include pagination
+links along side the collection data. This looks like::
+
+  { "data":
+    {
+       "collection": { ... },
+       "@total_size": 222,
+       "@links": {
+           "self": [
+               {
+                   "uri":
+           "https://.../rest/data/issue?@page_index=1&@fields=status&@page_size=5",
+                   "rel": "self"
+               }
+           ],
+           "next": [
+               {
+                   "uri":
+           "https://.../rest/data/issue?@page_index=2&@fields=status&@page_size=5",
+                   "rel": "next"
+               }
+           ]
+         }
+      }
+  }
+
+The ``@links`` parameter is a dictionary indexed by
+relationships. Each relationship is a list of one or more full link
+json objects. Above we have link relations to move to the next
+page. If we weren't at the first page, there would be a ``prev``
+relation to move to the previous page. Also we have a self relation
+(which is missing the @page_index, hence we are at page 1) that can be
+used to get the same page again.
+
+Note that the server may choose to limit the number of returned
+entries in the collection as a DOS prevention measure. As a result
+clients must be prepared to handle the incomplete response and request
+the next URL to retrieve all of the entries.
+
+Field embedding and verbose output
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In collections, you can specify what fields should be embedded in the
+returned data. There are some shortcuts provided using the
+``@verbose`` parameter. All the examples in this section are for a GET
+operation on ``https://.../rest/data/issue``.
+
+.. list-table:: Query Parameters Examples
+  :header-rows: 1
+  :widths: 20 80
+  :class: valign-top
+
+  * - Query parameter
+    - Explanation
+  * - ``@verbose=0``
+    - each item in the collection has its "id" property displayed
+      and a link with the URL to retrieve the item.
+  * - ``@verbose=1``
+    - for collections this output is the same as ``@verbose=0``. This
+      is the default.
+  * - ``@verbose=2``
+    - each item in the collection includes the "label" property in
+      addition to "id" property and a link for the item.
+      This is useful as documented below in `Searches and selection`_.
+  * - ``@verbose=3``
+    - will display the content property of messages and files. Note
+      warnings about this below. Using this for collections is
+      discouraged as it is slow and produces a lot of data.
+  * - ``@fields=status,title``
+    - will return the ``status``  and ``title`` fields for the
+      displayed issues. It is added to the fields returned by the
+      @verbose parameter. Protected properties
+      can be included in the list and will be returned.
+
+In addition collections support the ``@fields`` parameter which is a
+colon or comma separated list of fields to embed in the response. For
+example ``https://.../rest/data/issue?@verbose=2`` is the same as:
+``https://.../rest/data/issue?@fields=title`` since the label property
+for an issue is its title.
+The @fields option supports transitive properties, e.g.
+``status.name``. The transitive property may not include multilinks in
+the path except for the last component. So ``messages.author`` is not
+allowed because ``messages`` is a multilink while ``messages`` alone
+would be allowed.  You can use both ``@verbose`` and
+``@fields`` to get additional info. For example
+``https://.../rest/data/issue?@verbose=2&@fields=status`` returns::
+
+
+  {
+      "data": {
+          "collection": [
+              {
+                  "link": "https://.../rest/data/issue/1",
+                  "title": "Welcome to the tracker START HERE",
+                  "id": "1",
+                  "status": {
+                      "link": "https://.../rest/data/status/1",
+                      "id": "1",
+                      "name": "new"
+                  }
+              },
+    ...
+  }
+
+the format of the status field (included because of
+``@fields=status``) includes the label for the status. This is due to
+inclusion of ``@verbose=2``. Without verbose you would see::
+
+  {
+      "data": {
+          "collection": [
+              {
+                  "link": "https://.../rest/data/issue/1",
+                  "id": "1",
+                  "status": {
+                      "link": "https://.../rest/data/status/1",
+                      "id": "1"
+                  }
+              },
+     ...
+  }
+
+Note that the ``link`` field that is returned doesn't exist in the
+database. It is a construct of the rest interface. This means that you
+can not set ``@fields=link`` and get the link property included in the
+output.
+
+Also using ``@fields=@etag`` will not work to retrieve the etag for
+items in the collection.
+
+See the `Searches and selection`_ section for the use cases supported
+by these features.
+
+Getting Message and Files Content
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can retreive a message with a url like
+``https://.../demo/rest/data/msg/11``. This returns something like::
+
+  {
+     "data": {
+        "id": "11",
+        "type": "msg",
+        "link": "https://.../demo/rest/data/msg/11",
+        "attributes": {
+            "author": {
+                "id": "5",
+                "link": "https://.../demo/rest/data/user/5"
+            },
+            "content": {
+                "link": "https://.../demo/msg11/"
+            },
+            "date": "2017-10-30.00:53:15",
+            "files": [],
+            "inreplyto": null,
+            "messageid": "<1509324807.14.0.296813919751.issue3@localhost>",
+            "messagetype": {
+                "id": "1",
+                "link": "https://.../demo/rest/data/msgtype/1"
+            },
+            "recipients": [
+                {
+                    "id": "1",
+                    "link": "https://.../demo/rest/data/user/1"
+                },
+                {
+                    "id": "3",
+                    "link": "https://.../demo/rest/data/user/3"
+                },
+                {
+                    "id": "4",
+                    "link": "https://.../demo/rest/data/user/4"
+                }
+            ],
+            "subject": null,
+            "summary": "of has to who. or of account give because the",
+        },
+        "@etag": "\"584f82231079e349031bbb853747df1c\""
+     }
+  }
+
+With Roundup 2.5 you can retrieve the data directly from the rest
+interface using the ``Accept`` header value to select a structured (json
+or optional xml) representation (as above) or a stream with just the
+content data.
+
+Using the wildcard type ``*/*`` in the ``Accept`` header with the url
+``.../binary_content`` will return the raw data and the recorded mime
+type of the the data as the ``Content-Type``. Using ``*/*`` with
+another end point will return ``json`` data. An ``Accept`` value of
+``application/octet-stream`` matches any mime type and retrieves the
+raw data as ``Content-Type: application/octet-stream``.
+
+To access the contents of a PNG image file (in file23), you use the
+following link:
+``https://.../demo/rest/data/file/23/binary_content``. To find out the
+mime type, you can check this URL:
+``https://.../demo/rest/data/file/23/type``.
+
+By setting the header to ``Accept: application/octet-stream; q=1.0,
+application/json; q=0.5``, you will receive the binary PNG file with
+the header ``Content-Type: application/octet-stream``. If you switch
+the ``q`` values, you will receive the encoded JSON version::
+
+  {
+    "data": {
+        "id": "23",
+        "type": "<class 'bytes'>",
+        "link": "https://.../demo/rest/data/file/23/binary_content",
+        "data": "b'\\x89PNG\\r\\n\\x1a\\n\\x00[...]0\\x00\\x00\\x00IEND\\xaeB`\\x82'",
+        "@etag": "\"db6adc1b09d95b0388d79c7905bc7982\""
+    }
+  }
+
+with ``Content-Type: application/json`` and a (4x larger) json encoded
+representation of the binary data.
+
+If you want it returned with a ``Content-Type: image/png`` header,
+you can use ``image/png`` or ``*/*`` in the Accept header.
+
+For message files, you can use
+``https://.../demo/rest/data/msg/23/binary_content`` with ``Accept:
+application/octet-stream; q=0.5, application/json; q=0.4, image/png;
+q=0.495, text/*``. It will return the plain text of the message.
+
+Most message files are not stored with a mime type. Getting
+``https://.../demo/rest/data/msg/23/type`` returns::
+
+  {
+    "data": {
+        "id": "23",
+        "type": "<class 'NoneType'>",
+        "link": "https://.../demo/rest/data/msg/23/type",
+        "data": null,
+        "@etag": "\"ba98927a8bb4c56f6cfc31a36f94ad16\""
+    }
+  }
+
+The data attribute will usually be null/empty. As a result, mime type
+matching for an item without a mime type is forgiving.
+
+Messages are meant to be human readable, so the mime type ``text/*``
+can be used to access any text style mime type (``text/plain``,
+``text/x-rst``, ``text/markdown``, ``text/html``, ...) or an empty
+mime type. If the item's type is not empty, it will be used as the
+Content-Type (similar to ``*/*``). Otherwise ``text/*`` will be the
+Content-Type. If your tracker supports markup languages
+(e.g. markdown), you should set the mime type (e.g. ``text/markdown``)
+when storing your message.
+
+Note that the header ``X-Content-Type-Options: nosniff`` is returned
+with a non javascript or xml binary_content response to prevent the
+browser from trying to interpret the returned data.
+
+Legacy Method (HTML interface)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+With the addition of file binary content streaming in the rest
+interface to Roundup 2.5.0, this method (using the html interface) is
+considered legacy but still works.
+
+To retreive the content, you can use the content link property:
+``https://.../demo/msg11/``. The trailing / is required. Without the
+/, you get a web page that includes metadata about the message. With
+the slash you get a text/plain (in most cases) data stream.
+
+Also you can use the url: ``https://.../demo/rest/data/msg/11?@verbose=3``
+and the content property (if the data is utf-8 compatible) now looks
+like::
+
+   ...
+   "author": {
+               "id": "5",
+               "link": "https://.../demo/rest/data/user/5"
+             },
+   "content": "of has to who pleasure. or of account give because the
+       reprehenderit\neu to quisquam velit, passage,
+       was or toil BC quis denouncing quia\nexercise,
+       veritatis et used voluptas I elit, a The...",
+   "date": "2017-10-30.00:53:15",
+   ...
+
+Lines are wrapped for display, content value is one really long
+line. If the data is not utf-8 compatible, you will get a link.
+
+Retrieving the contents of a file is similar. Performing a
+get on ``https://.../demo/rest/data/file/11`` returns::
+
+  {
+     "data": {
+        "id": "11",
+        "type": "file",
+        "link": "https://.../demo/rest/data/file/11",
+        "attributes": {
+            "acl": null,
+            "content": {
+                "link": "https://.../demo/file11/"
+            },
+            "name": "afile",
+            "status": {
+                "id": "1",
+                "link": "https://.../demo/rest/data/filestatus/1"
+            },
+            "type": "image/vnd.microsoft.icon"
+        },
+        "@etag": "\"74276f75ef71a30a0cce62dc6a8aa1bb\""
+     }
+  }
+
+To download the file contents for this example you would
+perform an http GET using: ``https://.../demo/file11/``. The trailing
+/ is required. You will receive a response of type
+application/octet-stream.
+
+If you perform a get on
+``https://.../demo/rest/data/file/11?@verbose=3`` the content field
+above is displayed as (wrapped for display)::
+
+  "content": "file11 is not text, retrieve using binary_content
+              property. mdsum: bd990c0f8833dd991daf610b81b62316",
+
+You can use the `binary_content property`_ described below to
+retrieve an encoded copy of the data.
+
+Other query params
+~~~~~~~~~~~~~~~~~~
+
+This table lists other supported parameters:
+
+.. list-table:: Query Parameters Examples
+  :header-rows: 1
+  :widths: 20 80
+  :class: valign-top
+
+  * - Query parameter
+    - Explanation
+  * - ``@pretty=false``
+    - by default json data is pretty printed to make it readable to
+      humans. This eases testing and with compression enabled the
+      extra whitespace doesn't bloat the returned payload excessively.
+      You can disable pretty printing by using this query parameter.
+      Note the default is true, so @pretty=true is not supported at
+      this time.
+
+Using the POST method
+~~~~~~~~~~~~~~~~~~~~~
+
+Only class links support the ``POST`` method for creation of new items
+of a class, e.g., a new issue via the ``/data/issue`` link. The post
+gets a dictionary of keys/values for the new item. It returns the same
+parameters as the GET method after successful creation.
+
+If you perform a get on an item with ``@verbose=0``, it is in the
+correct form to use as the payload of a post.
+
+
+Safely Re-sending POST
+^^^^^^^^^^^^^^^^^^^^^^
+
+POST is used to create new object in a class. E.G. a new issue.  One
+problem is that a POST may time out. Because it is not idempotent like
+a PUT or DELETE, retrying the interrupted POST may result in the
+creation of a duplicate issue.
+
+To solve this problem, a two step process inspired by the POE - Post
+Once Exactly spec:
+https://datatracker.ietf.org/doc/html/draft-nottingham-http-poe-00 is provided.
+
+This mechanism returns a single use URL. POSTing to the URL creates
+a new object in the class.
+
+First we get the URL. Here is an example using curl::
+
+  curl -u demo:demo -s -X POST -H "Referer: https://.../demo/" \
+      -H "X-requested-with: rest" \
+      -H "Content-Type: application/json" \
+      --data '' \
+      https://.../demo/rest/data/issue/@poe
+
+This will return a json payload like::
+
+  {
+    "data": {
+        "expires": 1555266310.4457426,
+        "link": "https://.../demo/rest/data/issue/@poe/vizl713xHtIzANRW9jPb3bWXePRzmehdmSXzEta1"
+    }
+  }
+
+The value of expires is a Unix timestamp in seconds. In this case it
+has the default lifetime of 30 minutes after the current time. Using
+the link more than 30 minutes into the future will cause a 400 error.
+
+Within 30 minutes, the link can be used to post an issue with the same
+payload that would normally be sent to:
+``https://.../demo/rest/data/issue``.
+
+For example::
+
+   curl -u demo:demo -s -X POST \
+     -H "Referer: https://.../demo/" \
+     -H "X-requested-with: rest" \
+     -H "Content-Type: application/json"  \
+     --data-binary '{ "title": "a problem" }' \
+     https://.../demo/rest/data/issue/@poe/vizl713xHtIzANRW9jPb3bWXePRzmehdmSXzEta1
+
+returns::
+
+  {
+    "data": {
+        "link": "https://.../demo/rest/data/issue/2280",
+        "id": "2280"
+    }
+  }
+
+Once the @poe link is used and creates an issue, it becomes invalid
+and can't be used again.  Posting to it after the issue, or other
+object, is created, results in a 400 error [#poe_retry]_.
+
+Note that POE links are restricted to the class that was used to
+get the link. So you can only create an issue using the link returned
+from ``rest/data/issue/@poe``. You can create a generic POE link by adding
+the "generic" field to the post payload::
+
+  curl -u demo:demo -s -X POST -H "Referer: https://.../demo/" \
+      -H "X-requested-with: rest" \
+      --data 'lifetime=900&generic=1' \
+      https://.../demo/rest/data/issue/@poe
+
+This will return a link under: ``https://.../demo/rest/data/issue/@poe``::
+
+  {
+    "data": {
+        "expires": 1555268640.9606116,
+        "link":
+    "https://.../demo/rest/data/issue/@poe/slPrzmEq6Q9BTjvcKhfxMNZL4uHXjbHCidY1ludZ"
+    }
+  }
+
+You could use the link and change 'issue' to 'user' and it would work
+to create a user. Creating generic POE tokens is *not* recommended,
+but is available if a use case requires it.
+
+This example also changes the lifetime of the POE url.  This link has
+a lifetime of 15 minutes (900 seconds). Using it after 16 minutes will
+result in a 400 error. A lifetime up to 3600 seconds (1 hour) can be
+specified.
+
+POE url's are an optional mechanism. If:
+
+* you do not expect your client to retry a failed post,
+* a failed post is unlikely (e.g. you are running over a local lan),
+* there is a human using the client and who can intervene if a post
+  fails
+
+you can use the url ``https://.../demo/data/<class>``. However if you
+are using this mechanism to automate creation of objects and will
+automatically retry a post until it succeeds, please use the POE
+mechanism.
+
+.. [#poe_retry] As a future enhancement, performing a POST to the POE
+        link soon after it has been used to create an object will
+        change. It will not return a 400 error. It will will trigger a
+        301 redirect to the url for the created object. After some
+        period of time (maybe a week) the POE link will be removed and
+        return a 400 error. This is meant to allow the client (a time
+        limited way) to retrieve the created resource if the
+        response was lost.
+
+Other Supported Methods for Collections
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Supports the ``OPTIONS`` method for determining which methods are
+allowed on a given endpoint.
+
+Does not support PUT, DELETE or PATCH.
+
+/data/user/roles endpoint
+-------------------------
+
+The list of valid roles for a user is not an actual class in the
+hyperdb.  This endpoint returns a list of all defined roles if the
+user has the ``Admin`` role. Otherwise it returns a 403 - not
+authorized error.  The output from this endpoint looks like::
+
+  {
+      "data": {
+	  "collection": [
+	      {
+		  "id": "user",
+		  "name": "user"
+	      },
+	      {
+		  "id": "admin",
+		  "name": "admin"
+	      },
+	      {
+		  "id": "anonymous",
+		  "name": "anonymous"
+	      }
+	  ]
+      }
+  }
+
+to mimic a class collection.
+
+Unlike a real class collection endpoint, ``@total_size`` is not
+returned. Also it does not support and ignores any query options like:
+filtering, ``@sort``, ``@group``, ``@verbose`` etc. Note that the ``id``
+property is not numeric.
+
+This endpoint was introduced in release 2.4.0 to support a roles
+select/dropdown in the web component classhelper. This lets the web
+component helper implement the same function in the classic user class
+classhelper.
+
+/data/\ *class*/\ *id* item
+---------------------------
+
+When you use the ``GET`` method on an item
+(e.g. ``/data/issue/42``), a ``link`` attribute contains the link to
+the item, ``id`` contains the id, ``type`` contains the class name
+(e.g. ``issue`` in the example) and an ``etag`` property can be used
+to detect modifications since the last query.
+
+Individual properties of the item are returned in an ``attributes``
+dictionary. The properties returned depend on the permissions of the
+account used for the query.
+
+By default all (visible to the current user) attributes/properties are
+returned. You can limit this by using the ``@fields`` query parameter
+similar to how it is used in collections. This way you can only return
+the fields you are interested in reducing network load as well as
+memory and parsing time on the client side. Or you can add additional
+transitive properties.  By default protected
+properties (read only in the database) are not listed. This
+makes it easier to submit the attributes from a
+``@verbose=0`` query using PUT. To include protected properties
+in the output of a GET add the query parameter
+``@protected=true`` to the query and attributes like: actor,
+created, creator and activity will be include in the result.
+
+Link and Multilink properties are displayed as a dictionary with a
+``link`` and an ``id`` property by default. This is controlled by the
+``@verbose`` attribute which is set to 1 by default. If set to 0, only
+the id is shown for Link and Multilink attributes. In this form, the
+data can be modified and sent back using ``PUT`` to change the item.
+If set to 2, the label property (usually ``name`` e.g. for status) is
+also put into the dictionary.  Content properties of message and file
+object are by default also shown as a dictionary with a sole link
+attribute. The link is the download link for the file or message. If
+@verbose is >= 3, the content property is shown in json as a (possibly
+very long) string. Currently the json serializer cannot handle files
+not properly utf-8 encoded, so specifying @verbose=3 for files is
+currently discouraged.
+
+An example of returned values::
+
+  {
+      "data": {
+          "type": "issue",
+          "@etag": "\"f15e6942f00a41960de45f9413684591\"",
+          "link": "https://.../rest/data/issue/23",
+          "attributes": {
+              "keyword": [],
+              "messages": [
+                  {
+                      "link": "https://.../rest/data/msg/375",
+                      "id": "375"
+                  },
+                  {
+                      "link": "https://.../rest/data/msg/376",
+                      "id": "376"
+                  },
+                  ...
+              ],
+              "files": [],
+              "status": {
+                  "link": "https://.../rest/data/status/2",
+                  "id": "2"
+              },
+              "title": "This is a title title",
+              "superseder": [],
+              "nosy": [
+                  {
+                      "link": "https://.../rest/data/user/4",
+                      "id": "4"
+                  },
+                  {
+                      "link": "https://.../rest/data/user/5",
+                      "id": "5"
+                  }
+              ],
+              "assignedto": null,
+          },
+          "id": "23"
+      }
+  }
+
+Retrieve item using key value
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If the class has a key attribute, e.g. the 'status' class in the
+classic tracker, it can be used to retrieve the item.
+
+You can get an individual status by specifying the key-attribute value
+e.g. ``/data/status/name=closed``. Note that ``name`` in this example
+must be the key-attribute of the class.  A short-form (which might not
+be supported in future version of the API) is to specify only the
+value, e.g. ``/data/status/closed``.  This short-form only works when
+you're sure that the key of the class is not numeric. E.G. if the name
+was "7", /data/status/7 would return the status with id 7 not the
+status with name "7". To get the status with name 7, you must use
+the long form /data/status/name=7
+
+The long-form (with ``=``) is different from a query-parameter like
+``/data/status?name=closed`` which would find all stati (statuses)
+that have ``closed`` as a substring.
+
+Dealing with Messages and Files
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Using the requests library you can upload a file using::
+
+     d = dict (name = filename, content = content, type = content_type)
+     j = self.post ('file', data = d)
+
+Instead of specifying json = dictionary we specify data = dictionary
+as shown above. (We believe) this encodes the contents using
+application/x-www-form-urlencoded which is not optimal for large files
+due to the encoding overhead.
+
+The requests library can use multipart/form-data which is more
+efficient for large files. To do this specify both, files= *and* data=
+parameters, e.g.::
+
+  # A binary string that can't be decoded as unicode
+  url = 'https://.../demo/rest/data/'
+  content = open ('random-junk', 'rb').read ()
+  fname   = 'a-bigger-testfile'
+  d = dict(name = fname, type='application/octet-stream')
+  c = dict (content = content)
+  r = session.post (url + 'file', files = c, data = d)
+
+Curl can be used to post a file using multipart/form-data with::
+
+   curl -u demo:demo -s -X POST -H "Referer: https://.../demo/" \
+      -H "X-requested-with: rest" \
+      -F "name=afile" -F "type=image/vnd.microsoft.icon" \
+      -F "content=@doc/roundup-favicon.ico" \
+      https://.../demo/rest/data/file
+
+the file is located at doc/roundup-favicon.ico. These calls will
+return something like::
+
+  {
+      "data": {
+          "id": "12",
+          "link": "https://.../demo/rest/data/file/12"
+       }
+  }
+
+
+Other Supported Methods for Items
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The method ``PUT`` is allowed on individual items, e.g.
+``/data/issue/42`` On success it returns a data structure similar to
+the respective ``GET`` method. However it is only concerned with the
+changes that have occurred. Since it is not a full ``GET`` request, it
+doesn't include an etag or unchanged attributes. Note that for ``PUT``
+an Etag has to be supplied, either in the request header or as an
+@etag parameter. An example::
+
+  curl -u admin:admin -X PUT \
+     --header 'Referer: https://example.com/demo/' \
+     --header 'X-Requested-With: rest' \
+     --header "Content-Type: application/json" \
+     --header "Accept: application/json" \
+     --header 'If-Match: "dd41f02d6f8b4c34b439fc712b522fb3"' \
+     --data '{ "nosy": [ "1", "5" ] }' \
+     "https://example.com/demo/rest/data/issue/23"
+
+  {
+      "data": {
+          "attribute": {
+              "nosy": [
+                  "1",
+                  "5"
+              ]
+          },
+          "type": "issue",
+          "link": "https://example.com/demo/rest/data/issue/23",
+          "id": "23"
+      }
+  }
+
+If the above command is repeated with the data attribute::
+
+     --data '{ "nosy": [ "1", "5" ], "title": "This is now my title" }'
+
+this is returned::
+
+  {
+      "data": {
+          "attribute": {
+              "title": "This is now my title"
+          },
+          "type": "issue",
+          "link":
+      "https://.../demo/rest/data/issue/23",
+          "id": "23"
+      }
+  }
+
+Note that nosy is not in the attributes returned. It is the same as
+before, so no change has happened and it is not reported.
+Changing both nosy and title::
+
+  curl -u admin:admin -X PUT \
+    --header 'Referer: https://.../' \
+    --header 'X-Requested-With: rest' \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --header 'If-Match: "8209add59a79713d64f4d1a072aef740"' \
+    --data '{ "nosy": [ "4", "5" ], "title": "This is now my new title"  }' \
+   "https://.../demo/rest/data/issue/23"
+
+which returns both title and nosy attributes::
+
+    {
+        "data": {
+            "attribute": {
+                "title": "This is now my new title",
+                "nosy": [
+                    "4",
+                    "5"
+                ]
+            },
+            "type": "issue",
+            "link":
+            "https://.../demo/rest/data/issue/23",
+            "id": "23"
+        }
+    }
+
+Note that mixing url query parameters with payload submission doesn't
+work. So using::
+
+  https://.../rest/data/issue/23?@pretty=false
+
+doesn't have the desired effect. However it can be put in the data
+payload::
+
+ curl -u admin:admin ...
+   --data '{ "nosy": [ "4", "5" ], "title": "...", "@pretty": "false"  }'
+
+produces::
+
+   {"data": {"attribute": {...}, "type": "issue",
+     "link": "https://...", "id": "23"}}
+
+the lines are wrapped for display purposes, in real life it's one long
+line.
+
+The method ``DELETE`` is allowed on items, e.g., ``/data/issue/42``
+and will retire (mark as deleted) the respective item. On success it
+will only return a status code. The item is still available if
+accessed directly by its item url. The item will not show up in
+searches where it would have been matched if not retired.
+
+Finally the ``PATCH`` method can be applied to individual items, e.g.,
+``/data/issue/42``. This method gets an operator ``@op=<method>``
+where ``<method>`` is one of ``add``, ``replace``, ``remove``. For
+items, an additional operator ``action`` is supported. If no operator
+is specified, the default is ``replace``. The first three operators
+are self explanatory. For an ``action`` operator an ``@action_name``
+and optional ``@action_argsXXX`` parameters have to be
+supplied. Currently there are only two actions, neither has args,
+namely ``retire`` and ``restore``. The ``retire`` action on an item is
+the same as a ``DELETE`` method, it retires the item. The ``restore``
+action is the inverse of ``retire``, the item is again visible.  On
+success the returned value is the same as the respective ``GET``
+method. An example to add a user to the nosy list of an item is::
+
+  curl -u admin:admin -p -X PATCH \
+     --header "Content-Type: application/x-www-form-urlencoded" \
+     --header "Accept: application/json" \
+     --header 'If-Match: "c6e2d81019acff1da7a2da45f93939bd"' \
+     --data-urlencode '@op=add' \
+     --data 'nosy=3' \
+     "https://.../rest/data/issue/23"
+
+which returns::
+
+  {
+      "data": {
+          "attribute": {
+              "nosy": [
+                  "3",
+                  "4"
+              ]
+          },
+          "type": "issue",
+          "link": "https://.../rest/data/issue/23",
+          "id": "23"
+      }
+  }
+
+Note that the changed values are returned so you can update
+internal state in your app with the new data.
+
+The ``GET`` method on an item (e.g. ``/data/issue/43``) returns an
+ETag in the http header *and* the ``@etag`` value in the json
+payload. When modifying a property via ``PUT`` or ``PATCH`` or
+``DELETE`` the etag value for the item must be supplied using an
+``If-Match`` header. If you are using ``PUT`` or ``PATCH`` an
+``@etag`` value can be supplied in the payload in place of the
+``If-Match`` header.
+
+/data/\ *class*/\ *id*/\ *property* field
+-----------------------------------------
+
+A ``GET`` method on a property (e.g. ``/data/issue/42/title``) returns the
+link, an ``@etag``, the type of the property (e.g. "<type str>") the id
+of the item and the content of the property in ``data``.
+
+For example::
+
+  {
+      "data": {
+          "link": "https://.../rest/data/issue/22/title",
+          "data": "I need Broken PC",
+          "type": "<class 'str'>",
+          "id": "22",
+          "@etag": "\"370510512b2d8fc3f98aac3d762cc7b1\""
+      }
+  }
+
+
+All endpoints support an ``OPTIONS`` method for determining which
+methods are allowed on a given endpoint.
+
+Message and File Content
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Messages and files have content properties. If the data is utf-8
+compatible (e.g. an email message) you can retrieve it with
+rest/data/msg/11/content to obtain::
+
+  {
+    "data": {
+    "id": "11",
+    "type": "<class 'str'>",
+    "link": "https://.../demo/rest/data/msg/11/content",
+    "data": "of has to who pleasure. or of account give because the
+              reprehenderit\neu to quisquam velit, passage, was or...",
+            "@etag": "\"584f82231079e349031bbb853747df1c\""
+    }
+  }
+
+(the content property is wrapped for display, it is one long line.)
+
+.. _binary_content property:
+
+If the data is not representable in utf-8, you need to use the
+binary_content
+property. E.G. ``https://.../demo/rest/data/file/11/binary_content``
+returns::
+
+  {
+     "data": {
+        "id": "11",
+        "type": "<class 'bytes'>",
+        "link": "https://.../demo/rest/data/file/11/binary_content",
+        "data": "b'\\x00\\x00\\x01\\x00\\x01...\\xec?\\x00\\x00'",
+        "@etag": "\"74276f75ef71a30a0cce62dc6a8aa1bb\""
+     }
+  }
+
+(data field elided for display). You can also receive the file content
+as a data stream rather than encoded. See `Getting Message and Files
+Content`_.
+
+The data is a json encoded hexidecimal representation of the data.
+
+
+Other Supported Methods for fields
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The method ``PUT`` is allowed on a property e.g.,
+``/data/issue/42/title``. On success it returns the same parameters as
+the respective ``PUT`` method on the item. For example::
+
+  {
+    "data": {
+        "id": "42",
+        "type": "issue",
+        "link": "https://.../demo/rest/data/issue/42",
+        "attribute": {
+            "title": "this is a new title"
+        }
+    }
+  }
+
+If the new value for the title was the same as on the server, the
+attribute property would be empty since the value was not changed.
+Note that for ``PUT`` an Etag has to be
+supplied, either in the request header or as an @etag parameter.
+Example using multipart/form-data rather than json::
+
+  curl -vs -u provisional:provisional -X PUT \
+   --header "Accept: application/json" \
+   --data "data=Provisional" \
+   --header "If-Match: 079eba599152f3eed00567e23258fecf" \
+   --data-urlencode "@etag=079eba599152f3eed00567e23258fecf" \
+    "https://.../rest/data/user/5/realname"
+
+This example updates a leadtime field that is declared as an interval
+type::
+
+  curl -vs -u demo:demo -X PUT \
+    --header "Accept: application/json" \
+    --header 'Content-Type: application/json' \
+    --header "Referer: https://.../" \
+    --header "x-requested-with: rest" \
+    --header 'If-Match: "e2e6cc43c3475a4a3d9e5343617c11c3"' \
+    --data '{"leadtime": "2d" }'  \
+    "https://.../rest/data/issue/10"
+
+It is also possible to call ``DELETE`` on a
+property of an item, e.g., ``/data/issue/42/nosy`` to delete the nosy
+list. The same effect can be achieved with a ``PUT`` request and an
+empty new value. This may fail if the property is required.
+
+The ``PATCH`` method can be applied to properties, e.g.,
+``/data/issue/42/title``.  This method gets an operator
+``@op=<method>`` where ``<method>`` is one of ``add``, ``replace``,
+``remove``. If no operator is specified, the default is ``replace``
+which is the same as performing a PUT on the field url. ``add`` and
+``remove`` allow adding and removing values from MultiLink
+properties. This is easier than having to rewrite the entire value for
+the field using the ``replace`` operator or doing a PUT to the field.
+On success the returned value is the same as the respective ``GET``
+method.
+
+The ``GET`` method on an item (e.g. ``/data/issue/43``) returns an
+ETag in the http header *and* the ``@etag`` value in the json
+payload. When modifying a property via ``PUT`` or ``PATCH`` or
+``DELETE`` the etag value for the item must be supplied using an
+``If-Match`` header. If you are using ``PUT`` or ``PATCH`` an
+``@etag`` value can be supplied in the payload in place of the
+``If-Match`` header.
+
+Tunneling Methods via POST
+--------------------------
+
+If you are working through a proxy and unable to use http methods like
+PUT, PATCH, or DELETE, you can use POST to perform the action. To tunnel
+an action through POST, send the ``X-HTTP-METHOD-OVERRIDE`` header
+with a value of DELETE or other capitalized HTTP verb. The body of the
+POST should be what you would send if you were using the method
+without tunneling.
+
+Examples and Use Cases
+======================
+
+sample python client
+--------------------
+
+The client uses the python ``requests`` library for easier interaction
+with a REST API supporting JSON encoding::
+
+
+        >>> import requests
+        >>> u = 'http://user:password@tracker.example.com/demo/rest/data/'
+        >>> s = requests.session()
+        >>> session.auth = ('admin', 'admin')
+        >>> r = s.get(u + 'issue/42/title')
+        >>> if r.status_code != 200:
+        ...     print("Failed: %s: %s" % (r.status_code, r.reason))
+        ...     exit(1)
+        >>> print (r.json() ['data']['data']
+        TEST Title
+        >>> h = {'X-Requested-With': 'rest', 'Referer': 'http://tracker.example.com/demo/'}
+        >>> r = s.post (u + 'issue', data = dict (title = 'TEST Issue'), headers=h)
+        >>> if not 200 <= r.status_code <= 201:
+        ...     print("Failed: %s: %s" % (r.status_code, r.reason))
+        ...     exit(1)
+        >>> print(r.json())
+
+Retire/Restore::
+        >>> r = s.delete (u + 'issue/42')
+        >>> print (r.json())
+        >>> r = s.get (u + 'issue/42')
+        >>> etag = r.headers['ETag']
+        >>> print("ETag: %s" % etag)
+        >>> etag = r.json()['data']['@etag']
+        >>> print("@etag: %s" % etag)
+        >>> h = {'If-Match': etag,
+        ...   'X-Requested-With': 'rest',
+        ...   'Referer': 'http://tracker.example.com/demo/'}
+        >>> d = {'@op:'action', '@action_name':'retire'}
+        >>> r = s.patch(u + 'issue/42', data = d, headers = h)
+        >>> print(r.json())
+        >>> d = {'@op:'action', '@action_name':'restore'}
+        >>> r = s.patch(u + 'issue/42', data = d, headers = h)
+        >>> print(r.json())
+
+Note the addition of headers for: x-requested-with and referer. This
+allows the request to pass the CSRF protection mechanism. You may need
+to add an Origin header if this check is enabled in your tracker's
+config.ini (look for csrf_enforce_header_origin). (Note the Origin
+header check may have to be disabled if an application is making a
+CORS request to the Roundup server. If you have this issue, please
+contact the Roundup team using the mailing lists as this is a bug.)
+
+A similar curl based retire example is to use::
+
+       curl -s -u admin:admin \
+        -H "Referer: https://tracker.example.com/demo/" \
+        -H "X-requested-with: rest"  \
+        -H "Content-Type: application/json" \
+        https://tracker.example.com/demo/rest/data/status/1
+
+to get the etag manually. Then insert the etag in the If-Match header
+for this retire example::
+
+     curl -s -u admin:admin \
+        -H "Referer: https://tracker.example.com/demo/" \
+        -H "X-requested-with: rest"  \
+        -H "Content-Type: application/json" \
+        -H 'If-Match: "a502faf4d6b8e3897c4ecd66b5597571"' \
+        --data-raw '{ "@op":"action", "@action_name": "retire" }'\
+        -X PATCH \
+        https://tracker.example.com/demo/rest/data/status/1
+
+and restore::
+
+     curl -s -u admin:admin \
+        -H "Referer: https://tracker.example.com/demo/" \
+        -H "X-requested-with: rest"  \
+        -H "Content-Type: application/json" \
+        -H 'If-Match: "a502faf4d6b8e3897c4ecd66b5597571"' \
+        --data-raw '{ "@op":"action", "@action_name": "restore" }'\
+        -X PATCH \
+        https://tracker.example.com/demo/rest/data/status/1
+
+
+Searches and selection
+----------------------
+
+One difficult interface issue is selection of items from a long list.
+Using multi-item selects requires loading a lot of data (e.g. consider
+a selection tool to select one or more issues as in the classic
+superseder field).
+
+This can be made easier using javascript selection tools like select2,
+selectize.js, chosen etc. These tools can query a remote data provider
+to get a list of items for the user to select from.
+
+Consider a multi-select box for the superseder property.  Using
+selectize.js (and jquery) code similar to::
+
+    $('#superseder').selectize({
+        valueField: 'id',
+        labelField: 'title',
+        searchField: 'title', ...
+        load: function(query, callback) {
+                if (!query.length) return callback();
+                $.ajax({
+                        url: '.../rest/data/issue?@verbose=2&title='
+                            + encodeURIComponent(query),
+                        type: 'GET',
+                        error: function() {callback();},
+                        success: function(res) {
+                          callback(res.data.collection);}
+
+Sets up a box that a user can type the word "request" into. Then
+selectize.js will use that word to generate an ajax request with the
+url: ``.../rest/data/issue?@verbose=2&title=request``
+
+This will return data like::
+
+  {
+    "data": {
+    "@total_size": 440,
+    "collection": [
+      {
+          "link": ".../rest/data/issue/8",
+          "id": "8",
+          "title": "Request for Power plugs"
+      },
+      {
+          "link": ".../rest/data/issue/27",
+          "id": "27",
+          "title": "Request for foo"
+      },
+  ...
+
+selectize.js will look at these objects (as passed to
+callback(res.data.collection)) and create a select list from the each
+object showing the user the labelField (title) for each object and
+associating each title with the corresponding valueField (id). The
+example above has 440 issues returned from a total of 2000
+issues. Only 440 had the word "request" somewhere in the title greatly
+reducing the amount of data that needed to be transferred.
+
+Similar code can be set up to search a large list of keywords using::
+
+  .../rest/data/keyword?@verbose=2&name=some
+
+which would return: "some keyword" "awesome" "somebody" making
+selections for links and multilinks much easier.
+
+A get on a collection endpoint can include other properties. Why do we
+want this?  Selectize.js can set up option groups (optgroups) in the
+select pulldown. So by including status in the returned data using
+a url like ``https://.../rest/data/issue?@verbose=2&@fields=status``
+we get::
+
+   {
+     "link": "https://.../rest/data/issue/1001",
+     "title": "Request for Broken PC",
+     "id": "1001",
+     "status": {
+        "link": "https://.../rest/data/status/6",
+        "id": "6",
+        "name": "resolved"
+      }
+   }
+
+a select widget like::
+
+  === New ===
+  A request
+  === Open ===
+  Request for bar
+  Request for foo
+
+etc. can be generated. Also depending on the javascript library, other
+fields can be used for subsearch and sorting.
+
+
+Programming the REST API
+========================
+
+You can extend the rest api for a tracker. This describes how to add
+new rest end points. At some point it will also describe the rest.py
+structure and implementation.
+
+Adding new rest endpoints
+-------------------------
+
+Add or edit the file `interfaces.py`_ at the root of the tracker
+directory.
+
+In that file add::
+
+    from roundup.rest import Routing, RestfulInstance, _data_decorator
+    from roundup.exceptions import Unauthorised
+
+    class RestfulInstance:
+
+        @Routing.route("/summary2")
+        @_data_decorator
+        def summary2(self, input):
+            result = { "hello": "world" }
+            return 200, result
+
+will make a new endpoint .../rest/summary2 that you can test with::
+
+    $ curl -X GET .../rest/summary2
+    {
+        "data": {
+            "hello": "world"
+        }
+    }
+
+Similarly appending this to interfaces.py after summary2::
+
+    # handle more endpoints
+        @Routing.route("/data/<:class_name>/@schema", 'GET')
+        def get_element_schema(self, class_name, input):
+            result = { "schema": {} }
+            uid = self.db.getuid ()
+            if not self.db.security.hasPermission('View', uid, class_name) :
+                raise Unauthorised('Permission to view %s denied' % class_name)
+
+            class_obj = self.db.getclass(class_name)
+            props = class_obj.getprops(protected=False)
+            schema = result['schema']
+
+            for prop in props:
+                schema[prop] = { "type": repr(class_obj.properties[prop]) }
+
+            return result
+
+..
+  the # comment in the example is needed to preserve indention under Class.
+
+returns some data about the class::
+
+    $ curl -X GET .../rest/data/issue/@schema
+    {
+        "schema": {
+            "keyword": {
+                "type": "<roundup.hyperdb.Multilink to \"keyword\">"
+            },
+            "title": {
+                "type": "<roundup.hyperdb.String>"
+            },
+            "files": {
+                "type": "<roundup.hyperdb.Multilink to \"file\">"
+            },
+            "status": {
+                "type": "<roundup.hyperdb.Link to \"status\">"
+            }, ...
+        }
+    }
+
+
+Adding other endpoints (e.g. to allow an OPTIONS query against
+``/data/issue/@schema``) is left as an exercise for the reader.
+
+Redefine/move rest endpoints
+----------------------------
+
+In addition to adding new endpoints, you can redefine existing
+endpoints. Adding this as described above::
+
+    @Routing.route("/summary")
+    @_data_decorator
+    def summary2(self, input):
+        result = { "hello": "world" }
+        return 200, result
+
+will return::
+
+  {
+    "data": {
+            "hello": "world"
+            }
+  }
+
+
+In addition to overriding existing endpoints, you can move existing
+endpoints to new locations. Adding::
+
+    @Routing.route("/data2/<:classname>")
+    def get_collection2(self, classname, input):
+        """ Remap existing function in rest.py to a new endpoint
+
+            Existing function is decorated with:
+
+                  @Routing.route("/data/<:classname>")
+                  @_data_decorator
+
+            so we need to drop @_data_decorator from this function since
+            we can't apply @_data_decorator twice.
+        """
+        return self.get_collection(classname, input)
+
+will make the response at /rest/data2/<class> be the same as what is
+normally at /rest/data/<class>.
+
+
+Controlling Access to Backend Data
+----------------------------------
+
+Roundup's schema is the primary access control mechanism. Roles and
+Permissions provide the ability to carefully control what data can be
+seen.
+
+However the templating system can access the hyperdb directly which
+allows filtering to happen with admin privs escaping the standard
+permissions scheme. For example access to a user's roles should be
+limited to the user (read only) and an admin.  If you have customised
+your schema to implement `Restricting the list of
+users that are assignable to a task
+<customizing.html#restricting-the-list-of-users-that-are-assignable-to-a-task>`__
+so that only users with a
+Developer role are allowed to be assigned to an issue, a rest end
+point must be added to provide a view that exposes users with this
+permission.
+
+Using the normal ``/data/user?roles=Developer`` will return all the
+users in the system unless you are an admin user because most users
+can't see the roles. Building on the `Adding new rest endpoints`_
+section this code adds a new endpoint ``/data/@permission/Developer``
+that returns a list of users with the developer role::
+
+    from roundup.rest import Routing, RestfulInstance
+    from roundup.anypy.cgi_ import MiniFieldStorage
+
+    class RestfulInstance(object):
+
+        @Routing.route("/data/@permission/Developer")
+        def get_role_Developer(self, input):
+            '''An endpoint to return a list of users with Developer
+               role who can be assigned to an issue.
+
+               It ignores attempt to search by any property except
+               username and realname. It also ignores the whole @fields
+               specification if it specifies a property the user
+               can't view. Other @ query params (e.g. @page... and
+               @verbose) are supported.
+
+               It assumes admin access rights so that the roles property
+               of the user can be searched. This is needed if the roles
+               property is not searchable/viewable by normal users. A user
+               who can search roles can identify users with the admin
+               role. So it does not respond the same as a rest/data/users
+               search by a non-admin user.
+            '''
+            # get real user id
+            realuid=self.db.getuid()
+
+            def allowed_field(fs):
+                if fs.name in ['username', 'realname' ]:
+                    # only allow search matches for these fields
+                    return True
+                elif fs.name in [ '@fields' ]:
+                    for prop in fs.value.split(','):
+                        # if any property is unviewable to user, remove
+                        # @field entry. If they can't see it for the admin
+                        # user, don't let them see it for any user.
+                        if not self.db.security.hasPermission(
+                                'View', realuid, 'user', property=prop,
+                                itemid='1'):
+                            return False
+                    return True
+                elif fs.name.startswith("@"):
+                    # allow @page..., @verbose etc.
+                    return True
+
+                # deny all other url parmeters
+                return False
+
+            # Cleanup input.list to prevent user from probing roles
+            # or viewing things the user should not be able to view.
+            input.list[:] = [ fs for fs in input.list
+                              if allowed_field(fs) ]
+
+            # Add the role filter required to implement the permission
+            # search
+            input.list.append(MiniFieldStorage("roles", "Developer"))
+
+            # change user to acquire permission to search roles
+            self.db.setCurrentUser('admin')
+
+            # Once we have cleaned up the request, pass it to
+            # get_collection as though /rest/data/users?... has been called
+            # to get @verbose and other args supported.
+            return self.get_collection('user', input)
+
+Calling this with::
+
+   curl 'http://example.com/demo/rest/data/@permission/Developer?@fields=realname&roles=Users&@verbose=2'
+
+produces output similar to::
+
+    {
+        "data": {
+            "collection": [
+                {
+                    "username": "agent",
+                    "link": http://example.com/demo/rest/data/user/4",
+                    "realname": "James Bond",
+                    "id": "4"
+                }
+            ],
+            "@total_size": 1
+        }
+    }
+
+assuming user 4 is the only user with the Developer role. Note that
+the url passes the ``roles=User`` filter option which is silently
+ignored.
+
+Changing Access Roles with JSON Web Tokens
+------------------------------------------
+
+As discussed above Roundup's schema is the access control mechanism.
+However you may want to integrate a third party system with roundup.
+E.G. suppose you use a time tracking service that takes an issue id
+and keeps a running count of how much time was spent on it. Then with
+a single button push it can add the recorded time to the roundup
+issue.
+
+You probably don't want to give this third party service your roundup
+username and credentials. Especially if your roundup instance is under
+your company's single sign on infrastructure.
+
+So what we need is a way for this third party service to impersonate
+you and have access to create a roundup timelog entry (see
+`<customizing.html#adding-a-time-log-to-your-issues>`_). Then add it
+to the associated issue. This should happen without sharing passwords
+and without allowing the third party service to see the issue (except the
+``times`` property), user, or other information in the tracker.
+
+Enter the use of a JSON web token. Roundup has rudimentary ability to
+manage JWTs and use them for authentication and authorization.
+
+There are 5 steps to set this up:
+
+1. install pyjwt library using pip or pip3. If roundup can't find the
+   jwt module you will see the error ``Support for jwt disabled.``
+2. create a new role that allows Create access to timelog and edit/view
+   access to an issues' ``times`` property.
+3. add support for issuing (and validating) JWTs to the rest interface.
+   This uses the `Adding new rest endpoints`_ mechanism.
+4. configure roundup's config.ini [web] jwt_secret with at least 32
+   random characters of data. (You will get a message
+   ``Support for jwt disabled by admin.`` if it's not long
+   enough.) If you have openssl installed, you can use the output
+   of ``openssl rand -base64 32``.
+5. add an auditor to make sure that users with this role are appending
+   timelog links to the ``times`` property of the issue.
+
+Create role
+~~~~~~~~~~~
+
+Adding this snippet of code to the tracker's ``schema.py`` should
+create a role with the proper authorization::
+
+   db.security.addRole(name="User:timelog",
+         description="allow a user to create and append timelogs")
+
+   db.security.addPermissionToRole('User:timelog', 'Rest Access')
+
+   perm = db.security.addPermission(name='Create', klass='timelog',
+            description="Allow timelog creation", props_only=False)
+   db.security.addPermissionToRole("User:timelog", perm)
+
+   perm = db.security.addPermission(name='View', klass='issue',
+            properties=('id', 'times'),
+            description="Allow retrieving issue etag or timelog issue",
+            props_only=False)
+   db.security.addPermissionToRole("User:timelog", perm)
+
+   perm = db.security.addPermission(name='Edit', klass='issue',
+            properties=('id', 'times'),
+            description="Allow editing timelog for issue",
+            props_only=False)
+   db.security.addPermissionToRole("User:timelog", perm)
+
+The role is named to work with the /rest/jwt/issue rest endpoint
+defined below. Starting the role name with ``User:`` allows the jwt
+issue code to create a token with this role if the user requesting the
+role has the User role.
+
+The role *must* have access to the issue ``id`` to retrieve the etag for
+the issue.  The etag is passed in the ``If-Match`` HTTP header when you
+make a call to patch or update the ``times`` property of the issue.
+
+If you use a PATCH rest call with "@op=add" to append the new timelog,
+you don't need View access to the ``times`` property. If you replace the
+``times`` value, you need to read the current value of ``times`` (using
+View permission), append the newly created timelog id to the (array)
+value, and replace the ``times`` value.
+
+Note that the json returned after the operation will include the new
+value of the ``times`` value so your code can verify that it worked.
+This leaks info about the previous id's in the field.
+
+Create rest endpoints
+~~~~~~~~~~~~~~~~~~~~~
+
+Here is code to add to your tracker's ``interfaces.py`` (note code has
+only been tested with python3)::
+
+    from roundup.rest import Routing, RestfulInstance, _data_decorator
+
+    class RestfulInstance(object):
+        @Routing.route("/jwt/issue", 'POST')
+        @_data_decorator
+        def generate_jwt(self, input):
+        """Create a JSON Web Token (jwt)
+        """
+            import datetime
+            import jwt
+            from roundup.anypy.datetime_ import utcnow
+            from roundup.anypy.strings import b2s
+
+            # require basic auth to generate a token
+            # At some point we can support a refresh token.
+            # maybe a jwt with the "refresh": True claim generated
+            # using: "refresh": True in the json request payload.
+
+            denialmsg='Token creation requires login with basic auth.'
+            if 'HTTP_AUTHORIZATION' in self.client.env:
+                try:
+                    auth = self.client.env['HTTP_AUTHORIZATION']
+                    scheme, challenge = auth.split(' ', 1)
+                except (ValueError, AttributeError):
+                    # bad format for header
+                    raise Unauthorised(denialmsg)
+                if scheme.lower() != 'basic':
+                    raise Unauthorised(denialmsg)
+            else:
+                raise Unauthorised(denialmsg)
+
+            # verify we have input data.
+            if not input:
+                raise UsageError("Missing data payload. "
+                             "Verify Content-Type is sent")
+
+            # If we reach this point we have validated that the user has
+            # logged in with a password using basic auth.
+            all_roles = list(self.db.security.role.items())
+            rolenames = []
+            for role in all_roles:
+                rolenames.append(role[0])
+
+            user_roles = list(self.db.user.get_roles(self.db.getuid()))
+
+            claim= { 'sub': self.db.getuid(),
+                     'iss': self.db.config.TRACKER_WEB,
+                     'aud': self.db.config.TRACKER_WEB,
+                     'iat': utcnow(),
+                   }
+
+            lifetime = 0
+            if 'lifetime' in input:
+                if input['lifetime'].value != 'unlimited':
+                    try:
+                        lifetime = datetime.timedelta(seconds=int(input['lifetime'].value))
+                    except ValueError:
+                        raise UsageError("Value 'lifetime' must be 'unlimited' or an integer to specify" +
+                                         " lifetime in seconds. Got %s."%input['lifetime'].value)
+            else:
+                lifetime = datetime.timedelta(seconds=86400) # 1 day by default
+
+            if lifetime: # if lifetime = 0 make unlimited by omitting exp claim
+                claim['exp'] = utcnow() + lifetime
+
+            newroles = []
+            if 'roles' in input:
+                for role in [ r.lower() for r in input['roles'].value ]:
+                    if role not in rolenames:
+                        raise UsageError("Role %s is not valid."%role)
+                    if role in user_roles:
+                        newroles.append(role)
+                        continue
+                    parentrole = role.split(':', 1)[0]
+                    if parentrole in user_roles:
+                        newroles.append(role)
+                        continue
+
+                    raise UsageError("Role %s is not permitted."%role)
+
+                claim['roles'] = newroles
+            else:
+                claim['roles'] = user_roles
+
+            # Sign with newest/first secret.
+            secret = self.db.config.WEB_JWT_SECRET[0]
+            myjwt = jwt.encode(claim, secret, algorithm='HS256')
+
+            # if jwt.__version__ >= 2.0.0 jwt.encode() returns string
+            # not byte. So do not use b2s() with newer versions of pyjwt.
+            result = {"jwt": b2s(myjwt),
+                     }
+
+            return 200, result
+
+        @Routing.route("/jwt/validate", 'GET')
+        @_data_decorator
+        def validate_jwt(self,input):
+            import jwt
+            if not 'jwt' in input:
+                raise UsageError("jwt key must be specified")
+
+            myjwt = input['jwt'].value
+
+            secret = self.db.config.WEB_JWT_SECRET[0]
+
+            # only return decoded result if the newest signing key
+            # is used. Have older keys report an invalid signature.
+            try:
+                result = jwt.decode(myjwt, secret,
+                                    algorithms=['HS256'],
+                                    audience=self.db.config.TRACKER_WEB,
+                                    issuer=self.db.config.TRACKER_WEB,
+                )
+            except jwt.exceptions.InvalidTokenError as err:
+                return 401, str(err)
+
+            return 200, result
+
+**Note this is sample code. Use at your own risk.** It breaks a few
+rules about JWTs (e.g. it allows you to make unlimited lifetime
+JWTs). If you subscribe to the concept of JWT refresh tokens, this code
+will have to be changed as it will only generate JWTs with
+username/password authentication.
+
+Currently use of JWTs an experiment. If this appeals to you consider
+providing patches to existing code to:
+
+1. create long lived refresh tokens
+2. record all refresh tokens created by a user
+3. using the record to allow refresh tokens to be revoked and
+   ignored by the roundup core
+4. provide a UI page for managing/revoking refresh tokens
+5. provide a rest api for revoking refresh tokens
+
+These end points can be used like::
+
+   curl -u demo -s -X POST -H "Referer: https://.../demo/" \
+      -H "X-requested-with: rest" \
+      -H "Content-Type: application/json" \
+      --data '{"lifetime": "3600", "roles": [ "user:timelog" ] }' \
+   https://.../demo/rest/JWT/issue
+
+(note roles is a json array/list of strings not a string) to get::
+
+  {
+    "data": {
+            "JWT":  "eyJ0eXAiOiJK......XxMDb-Q3oCnMpyhxPXMAk"
+        }
+  }
+
+The JWT is shortened in the example since it's large. You can validate
+a JWT to see if it's still valid using::
+
+
+  curl -s -H "Referer: https://.../demo/" \
+  -H "X-requested-with: rest" \
+      https://.../demo/rest/JWT/validate?JWT=eyJ0eXAiOiJK...XxMDb-Q3oCnMpyhxPXMAk
+
+(note no login is required) which returns::
+
+  {
+    "data": {
+       "user": "3",
+       "roles": [
+            "user:timelog"
+        ],
+       "iss": "https://.../demo/",
+       "aud": "https://.../demo/",
+       "iat": 1569542404,
+       "exp": 1569546004
+     }
+  }
+
+
+There is an issue for `thoughts on JWT credentials`_ that you can view
+for ideas or add your own.
+
+.. _thoughts on JWT credentials: https://issues.roundup-tracker.org/issue2551064
+
+Final steps
+~~~~~~~~~~~
+
+See the `upgrading directions`_ on how to use the ``updateconfig``
+command to generate an updated copy of config.ini using
+roundup-admin. Then set the ``JWT_secret`` to at least 32 characters
+(more is better up to 512 bits). The output of
+``openssl rand -base64 32`` will fulfill the minimum requirements.
+
+Writing an auditor that uses "db.user.get_roles" to see if the user
+making the change has the ``user:timelog`` role, and then comparing
+the original ``times`` list to the new list to verify that it is being
+added to and not changed otherwise is left as an exercise for the
+reader. (If you develop one, please contribute via the tracker:
+https://issues.roundup-tracker.org/.)
+
+Lastly you can create a JWT using the end point above and make a rest
+call to create a new timelog entry and another call to update the
+issues times property.  If you have other ideas on how JWTs can be
+used, please share on the roundup mailing lists. See:
+https://sourceforge.net/p/roundup/mailman/ for directions on
+subscribing and for archives of the lists.
+
+
+Creating Custom Rate Limits
+---------------------------
+
+You can replace the default rate limiter that is configured using
+the tracker's ``config.ini``. You can return different rate
+limits based on the user, time of day, phase of moon, request
+method (via self.client.request.command) etc.
+
+Assume you add two integer valued properties to the user
+object. Let's call them ``rate_limit_interval`` and
+``rate_limit_calls``. Add code similar to this to interfaces.py
+to override the default rate limiter code::
+
+    from roundup.rest import RestfulInstance, RateLimit
+    from datetime import timedelta
+
+    def grl(self):
+        calls = self.db.config.WEB_API_CALLS_PER_INTERVAL
+        interval = self.db.config.WEB_API_INTERVAL_IN_SEC
+
+        if calls and interval: # use to disable all rate limits
+
+            uid = self.db.getuid()
+            class_obj = self.db.getclass('user')
+            node = class_obj.getnode(uid)
+
+            # set value to 0 to use WEB_API_CALLS_PER_INTERVAL
+            user_calls = node.__getattr__('rate_limit_calls')
+            # set to 0 to use WEB_API_INTERVAL_IN_SEC
+            user_interval = node.__getattr__('rate_limit_interval')
+
+            return RateLimit(user_calls or calls,
+                   timedelta(seconds=(user_interval or interval)))
+        else:
+            # disable rate limiting if either parameter is 0
+            return None
+
+    RestfulInstance.getRateLimit = grl
+
+this should replace the default getRateLimit with the new grl
+function.  This new function uses values for the number of calls
+and period that are specific to a user.  If either is set to 0,
+the defaults from ``config.ini`` file are used.
+
+Test Examples
+~~~~~~~~~~~~~
+
+Rate limit tests::
+
+   seq 1 300 | xargs -P 20 -n 1 curl --head -u user:password -si \
+        https://.../rest/data/status/new | grep Remaining
+
+will show you the number of remaining requests to the REST interface
+for the user identified by password.
+
+
+Notes V2 API
+~~~~~~~~~~~~
+
+These may never be implemented but, some nits to consider.
+
+The shape of a GET and PUT/PATCH responses are different. "attributes"
+is used for GET and "attribute" is used with PATCH/PUT. A PATCH or a
+PUT can update multiple properties when used with an item endpoint.
+"attribute" kind of makes sense when used with a property endpoint
+but.... Maybe standardize on one shape so the client doesn't have to
+special case?

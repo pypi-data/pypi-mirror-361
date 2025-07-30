@@ -1,0 +1,2735 @@
+
+<!DOCTYPE html>
+
+
+
+
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Administration Guide &mdash; Roundup 2.5.0 documentation</title>
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+          URL_ROOT:    './',
+          VERSION:     '2.5.0',
+          COLLAPSE_MODINDEX: false,
+          FILE_SUFFIX: '.html'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script type="text/javascript" src="_static/searchtools.js"></script>
+    <script type="text/javascript" src="_static/sphinx_highlight.js"></script>
+    <script type="text/javascript" src="_static/tabs.js"></script>
+    
+    <link rel="stylesheet" href="_static/NO_basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
+    <!-- https://github.com/sphinx-doc/sphinx/issues/11699 means a
+         duplicate viewport tag -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta content="How to administer, backup, upgrade a Roundup installation. System and user security, configuring web compression, documentation on using roundup-server and running roundup-admin." name="description" />
+
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="Roundup 2.5.0 documentation" href="index.html" />
+    <link rel="next" title="Roundup Manual Pages" href="man_pages.html" />
+    <link rel="prev" title="Roundup Glossary" href="glossary.html" /> 
+  </head>
+  <body>
+    <div class="header"><div class="label">Roundup</div>
+        <script id="documentation_options" data-url_root=""
+	      src="_static/documentation_options.js">
+        </script>
+
+        <div id="searchbox" style="display: none">
+          <form class="search" action="search.html" method="get">
+            <input type="text" name="q" size="18" />
+            <input type="submit" value="Search" />
+            <input type="hidden" name="check_keywords" value="yes" />
+            <input type="hidden" name="area" value="default" />
+          </form>
+        </div>
+        <script type="text/javascript">$('#searchbox').show(0);</script>
+    </div>
+    <div class="navigation">
+      <div class="menu">
+       
+    <h3><a href="index.html">Table Of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Administration Guide</a><ul>
+<li><a class="reference internal" href="#what-does-roundup-install">What does Roundup install?</a></li>
+<li><a class="reference internal" href="#configuring-roundup-s-logging-of-messages-for-sysadmins">Configuring Roundup’s Logging of Messages For Sysadmins</a></li>
+<li><a class="reference internal" href="#configuring-roundup-server">Configuring roundup-server</a></li>
+<li><a class="reference internal" href="#configuring-compression">Configuring Compression</a></li>
+<li><a class="reference internal" href="#controlling-browser-handling-of-attached-files">Controlling Browser Handling of Attached Files</a></li>
+<li><a class="reference internal" href="#configuring-rest-maximum-result-limit">Configuring REST Maximum Result Limit</a></li>
+<li><a class="reference internal" href="#adding-a-web-content-security-policy-csp">Adding a Web Content Security Policy (CSP)</a><ul>
+<li><a class="reference internal" href="#fixed-csp">Fixed CSP</a></li>
+<li><a class="reference internal" href="#dynamic-csp">Dynamic CSP</a></li>
+<li><a class="reference internal" href="#remediating-unsafe-inline">Remediating <code class="docutils literal notranslate"><span class="pre">unsafe-inline</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#classhelper-web-component">Classhelper Web Component</a><ul>
+<li><a class="reference internal" href="#file-installation">File Installation</a></li>
+<li><a class="reference internal" href="#wrapping-the-classic-classhelper">Wrapping the Classic Classhelper</a></li>
+<li><a class="reference internal" href="#loading-the-roundup-classhelper-script">Loading the &lt;roundup-classhelper&gt; Script</a></li>
+<li><a class="reference internal" href="#roundup-classhelper-configuration">&lt;roundup-classhelper&gt; configuration</a></li>
+<li><a class="reference internal" href="#roundup-classhelper-styling">&lt;roundup-classhelper&gt; styling</a></li>
+<li><a class="reference internal" href="#translations">Translations</a></li>
+<li><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
+<li><a class="reference internal" href="#advanced-configuration">Advanced Configuration</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#configuring-native-fts-full-text-search">Configuring native-fts Full Text Search</a><ul>
+<li><a class="reference internal" href="#sqlite-details">SQLite details</a></li>
+<li><a class="reference internal" href="#postgresql-info">PostgreSQL info</a></li>
+<li><a class="reference internal" href="#cleaning-up-old-native-indexes">Cleaning up old native indexes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#configuring-session-databases">Configuring Session Databases</a><ul>
+<li><a class="reference internal" href="#using-redis-for-session-databases">Using Redis for Session Databases</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#users-and-security">Users and Security</a><ul>
+<li><a class="reference internal" href="#configuring-authentication-header-variable">Configuring Authentication Header/Variable</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#securing-secrets">Securing Secrets</a></li>
+<li><a class="reference internal" href="#tasks">Tasks</a><ul>
+<li><a class="reference internal" href="#tracker-backup">Tracker Backup</a></li>
+<li><a class="reference internal" href="#software-upgrade">Software Upgrade</a></li>
+<li><a class="reference internal" href="#migrating-backends">Migrating Backends</a></li>
+<li><a class="reference internal" href="#moving-a-tracker">Moving a Tracker</a></li>
+<li><a class="reference internal" href="#migrating-from-other-software">Migrating From Other Software</a></li>
+<li><a class="reference internal" href="#adding-a-user-from-the-command-line">Adding A User From The Command-Line</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#running-the-servers">Running the Servers</a><ul>
+<li><a class="reference internal" href="#unix">Unix</a></li>
+<li><a class="reference internal" href="#windows">Windows</a><ul>
+<li><a class="reference internal" href="#running-the-mail-gateway-script">Running the Mail Gateway Script</a></li>
+<li><a class="reference internal" href="#mail-gateway-script-command-line">Mail gateway script command line</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#using-roundup-admin">Using roundup-admin</a><ul>
+<li><a class="reference internal" href="#using-interactively">Using Interactively</a></li>
+<li><a class="reference internal" href="#using-with-the-shell">Using with the shell</a></li>
+<li><a class="reference internal" href="#a-note-on-import-and-export">A Note on Import and Export</a></li>
+<li><a class="reference internal" href="#interactive-help">Interactive Help</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="glossary.html"
+                          title="previous chapter">Roundup Glossary</a></p>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="man_pages.html"
+                          title="next chapter">Roundup Manual Pages</a></p>
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/admin_guide.txt"
+             rel="nofollow">Show Source</a></li>
+    </ul>
+  <div id="searchbox" style="display: none">
+    <h3>Quick search</h3>
+      <form class="search" action="search.html" method="get">
+        <input type="text" name="q" size="18" />
+        <input type="submit" value="Go" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+      <p style="font-size: 90%">Enter search terms or a module, class or function name.</p>
+  </div>
+  <script type="text/javascript">$('#searchbox').show(0);</script>
+      </div>
+    </div>
+    <main id="main" role="main" class="content">
+       
+    <div class="related related-top">
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="man_pages.html" title="Roundup Manual Pages"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="glossary.html" title="Roundup Glossary"
+             accesskey="P">previous</a></li>
+        <li><a href="index.html">Roundup 2.5.0 documentation</a></li> 
+      </ul>
+    </div>
+       
+  <section id="administration-guide">
+<h1>Administration Guide</h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#what-does-roundup-install" id="id5">What does Roundup install?</a></p></li>
+<li><p><a class="reference internal" href="#configuring-roundup-s-logging-of-messages-for-sysadmins" id="id6">Configuring Roundup’s Logging of Messages For Sysadmins</a></p></li>
+<li><p><a class="reference internal" href="#configuring-roundup-server" id="id7">Configuring roundup-server</a></p></li>
+<li><p><a class="reference internal" href="#configuring-compression" id="id8">Configuring Compression</a></p></li>
+<li><p><a class="reference internal" href="#controlling-browser-handling-of-attached-files" id="id9">Controlling Browser Handling of Attached Files</a></p></li>
+<li><p><a class="reference internal" href="#configuring-rest-maximum-result-limit" id="id10">Configuring REST Maximum Result Limit</a></p></li>
+<li><p><a class="reference internal" href="#adding-a-web-content-security-policy-csp" id="id11">Adding a Web Content Security Policy (CSP)</a></p>
+<ul>
+<li><p><a class="reference internal" href="#fixed-csp" id="id12">Fixed CSP</a></p></li>
+<li><p><a class="reference internal" href="#dynamic-csp" id="id13">Dynamic CSP</a></p></li>
+<li><p><a class="reference internal" href="#remediating-unsafe-inline" id="id14">Remediating <code class="docutils literal notranslate"><span class="pre">unsafe-inline</span></code></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#classhelper-web-component" id="id15">Classhelper Web Component</a></p>
+<ul>
+<li><p><a class="reference internal" href="#file-installation" id="id16">File Installation</a></p></li>
+<li><p><a class="reference internal" href="#wrapping-the-classic-classhelper" id="id17">Wrapping the Classic Classhelper</a></p></li>
+<li><p><a class="reference internal" href="#loading-the-roundup-classhelper-script" id="id18">Loading the &lt;roundup-classhelper&gt; Script</a></p></li>
+<li><p><a class="reference internal" href="#roundup-classhelper-configuration" id="id19">&lt;roundup-classhelper&gt; configuration</a></p></li>
+<li><p><a class="reference internal" href="#roundup-classhelper-styling" id="id20">&lt;roundup-classhelper&gt; styling</a></p></li>
+<li><p><a class="reference internal" href="#translations" id="id21">Translations</a></p></li>
+<li><p><a class="reference internal" href="#troubleshooting" id="id22">Troubleshooting</a></p></li>
+<li><p><a class="reference internal" href="#advanced-configuration" id="id23">Advanced Configuration</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#configuring-native-fts-full-text-search" id="id24">Configuring native-fts Full Text Search</a></p>
+<ul>
+<li><p><a class="reference internal" href="#sqlite-details" id="id25">SQLite details</a></p></li>
+<li><p><a class="reference internal" href="#postgresql-info" id="id26">PostgreSQL info</a></p></li>
+<li><p><a class="reference internal" href="#cleaning-up-old-native-indexes" id="id27">Cleaning up old native indexes</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#configuring-session-databases" id="id28">Configuring Session Databases</a></p>
+<ul>
+<li><p><a class="reference internal" href="#using-redis-for-session-databases" id="id29">Using Redis for Session Databases</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#users-and-security" id="id30">Users and Security</a></p>
+<ul>
+<li><p><a class="reference internal" href="#configuring-authentication-header-variable" id="id31">Configuring Authentication Header/Variable</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#securing-secrets" id="id32">Securing Secrets</a></p></li>
+<li><p><a class="reference internal" href="#tasks" id="id33">Tasks</a></p>
+<ul>
+<li><p><a class="reference internal" href="#tracker-backup" id="id34">Tracker Backup</a></p></li>
+<li><p><a class="reference internal" href="#software-upgrade" id="id35">Software Upgrade</a></p></li>
+<li><p><a class="reference internal" href="#migrating-backends" id="id36">Migrating Backends</a></p></li>
+<li><p><a class="reference internal" href="#moving-a-tracker" id="id37">Moving a Tracker</a></p></li>
+<li><p><a class="reference internal" href="#migrating-from-other-software" id="id38">Migrating From Other Software</a></p></li>
+<li><p><a class="reference internal" href="#adding-a-user-from-the-command-line" id="id39">Adding A User From The Command-Line</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#running-the-servers" id="id40">Running the Servers</a></p>
+<ul>
+<li><p><a class="reference internal" href="#unix" id="id41">Unix</a></p></li>
+<li><p><a class="reference internal" href="#windows" id="id42">Windows</a></p>
+<ul>
+<li><p><a class="reference internal" href="#running-the-mail-gateway-script" id="id43">Running the Mail Gateway Script</a></p></li>
+<li><p><a class="reference internal" href="#mail-gateway-script-command-line" id="id44">Mail gateway script command line</a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#using-roundup-admin" id="id45">Using roundup-admin</a></p>
+<ul>
+<li><p><a class="reference internal" href="#using-interactively" id="id46">Using Interactively</a></p></li>
+<li><p><a class="reference internal" href="#using-with-the-shell" id="id47">Using with the shell</a></p></li>
+<li><p><a class="reference internal" href="#a-note-on-import-and-export" id="id48">A Note on Import and Export</a></p></li>
+<li><p><a class="reference internal" href="#interactive-help" id="id49">Interactive Help</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<section id="what-does-roundup-install">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">What does Roundup install?</a></h2>
+<p>There’s two “installations” that we talk about when using Roundup:</p>
+<ol class="arabic">
+<li><p>The installation of the software and its support files. This uses the
+standard Python mechanism called “setuptools” and thus Roundup’s core code,
+executable scripts and support data files are installed in Python’s
+directories. On Windows, this is typically:</p>
+<dl class="simple">
+<dt>Scripts</dt><dd><p><code class="docutils literal notranslate"><span class="pre">&lt;python</span> <span class="pre">dir&gt;\scripts\...</span></code></p>
+</dd>
+<dt>Core code</dt><dd><p><code class="docutils literal notranslate"><span class="pre">&lt;python</span> <span class="pre">dir&gt;\lib\site-packages\roundup\...</span></code></p>
+</dd>
+<dt>Support files</dt><dd><p><code class="docutils literal notranslate"><span class="pre">&lt;python</span> <span class="pre">dir&gt;\share\roundup\...</span></code></p>
+</dd>
+</dl>
+<p>and on Unix-like systems (eg. Linux):</p>
+<dl class="simple">
+<dt>Scripts</dt><dd><p><code class="docutils literal notranslate"><span class="pre">&lt;python</span> <span class="pre">root&gt;/bin/...</span></code></p>
+</dd>
+<dt>Core code</dt><dd><p><code class="docutils literal notranslate"><span class="pre">&lt;python</span> <span class="pre">root&gt;/lib-&lt;python</span> <span class="pre">version&gt;/site-packages/roundup/...</span></code></p>
+</dd>
+<dt>Support files</dt><dd><p><code class="docutils literal notranslate"><span class="pre">&lt;python</span> <span class="pre">root&gt;/share/roundup/...</span></code></p>
+</dd>
+</dl>
+</li>
+<li><p>The installation of a specific tracker. When invoking the roundup-admin
+“inst” (and “init”) commands, you’re creating a new Roundup tracker. This
+installs configuration files, HTML templates, detector code and a new
+database. You have complete control over where this stuff goes through
+both choosing your “tracker home” and the <code class="docutils literal notranslate"><span class="pre">main</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">database</span></code> variable
+in the tracker’s config.ini.</p></li>
+</ol>
+</section>
+<section id="configuring-roundup-s-logging-of-messages-for-sysadmins">
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">Configuring Roundup’s Logging of Messages For Sysadmins</a></h2>
+<p>You may configure where Roundup logs messages in your tracker’s config.ini
+file. Roundup will use the standard Python (2.3+) logging implementation.</p>
+<dl class="simple">
+<dt>Configuration for standard “logging” module:</dt><dd><ul class="simple">
+<li><p>tracker configuration file specifies the location of a logging
+configration file as <code class="docutils literal notranslate"><span class="pre">logging</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">config</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">roundup-server</span></code> specifies the location of a logging configuration
+file on the command line</p></li>
+</ul>
+</dd>
+<dt>Configuration for “BasicLogging” implementation:</dt><dd><ul class="simple">
+<li><p>tracker configuration file specifies the location of a log file
+<code class="docutils literal notranslate"><span class="pre">logging</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">filename</span></code></p></li>
+<li><p>tracker configuration file specifies the level to log to as
+<code class="docutils literal notranslate"><span class="pre">logging</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">level</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">roundup-server</span></code> specifies the location of a log file on the command
+line</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">roundup-server</span></code> specifies the level to log to on the command line</p></li>
+</ul>
+</dd>
+</dl>
+<p>(<code class="docutils literal notranslate"><span class="pre">roundup-mailgw</span></code> always logs to the tracker’s log file)</p>
+<p>In both cases, if no logfile is specified then logging will simply be sent
+to sys.stderr with only logging of ERROR messages.</p>
+</section>
+<section id="configuring-roundup-server">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">Configuring roundup-server</a></h2>
+<p>The basic configuration file is as follows (taken from the
+<code class="docutils literal notranslate"><span class="pre">roundup-server.ini.example</span></code> file in the “doc” directory):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">main</span><span class="p">]</span>
+
+<span class="c1"># Host name of the Roundup web server instance.</span>
+<span class="c1"># If left unconfigured (no &#39;host&#39; setting) the default</span>
+<span class="c1"># will be used.</span>
+<span class="c1"># If empty, listen on all network interfaces.</span>
+<span class="c1"># If you want to explicitly listen on all</span>
+<span class="c1"># network interfaces, the address 0.0.0.0 is a more</span>
+<span class="c1"># explicit way to achieve this, the use of an empty</span>
+<span class="c1"># string for this purpose is deprecated and will go away</span>
+<span class="c1"># in a future release.</span>
+<span class="c1"># Default: localhost</span>
+<span class="n">host</span> <span class="o">=</span> <span class="n">localhost</span>
+
+<span class="c1"># Port to listen on.</span>
+<span class="c1"># Default: 8080</span>
+<span class="n">port</span> <span class="o">=</span> <span class="mi">8017</span>
+
+<span class="c1"># Path to favicon.ico image file.  If unset, built-in favicon.ico is used.</span>
+<span class="c1"># The path may be either absolute or relative</span>
+<span class="c1"># to the directory containing this config file.</span>
+<span class="c1"># Default: favicon.ico</span>
+<span class="n">favicon</span> <span class="o">=</span> <span class="n">favicon</span><span class="o">.</span><span class="n">ico</span>
+
+<span class="c1"># User ID as which the server will answer requests.</span>
+<span class="c1"># In order to use this option, the server must be run initially as root.</span>
+<span class="c1"># Availability: Unix.</span>
+<span class="c1"># Default:</span>
+<span class="n">user</span> <span class="o">=</span> <span class="n">roundup</span>
+
+<span class="c1"># Group ID as which the server will answer requests.</span>
+<span class="c1"># In order to use this option, the server must be run initially as root.</span>
+<span class="c1"># Availability: Unix.</span>
+<span class="c1"># Default:</span>
+<span class="n">group</span> <span class="o">=</span>
+
+<span class="c1"># Maximum number of children to spawn using fork multiprocess mode.</span>
+<span class="c1"># Default: 40</span>
+<span class="n">max_children</span> <span class="o">=</span> <span class="mi">40</span>
+
+<span class="c1"># don&#39;t fork (this overrides the pidfile mechanism)&#39;</span>
+<span class="c1"># Allowed values: yes, no</span>
+<span class="c1"># Default: no</span>
+<span class="n">nodaemon</span> <span class="o">=</span> <span class="n">no</span>
+
+<span class="c1"># Log client machine names instead of IP addresses (much slower)</span>
+<span class="c1"># Allowed values: yes, no</span>
+<span class="c1"># Default: no</span>
+<span class="n">log_hostnames</span> <span class="o">=</span> <span class="n">no</span>
+
+<span class="c1"># Have http(s) request logging done via python logger module.</span>
+<span class="c1"># If set to yes the python logging module is used with qualname</span>
+<span class="c1"># &#39;roundup.http&#39;. Otherwise logging is done to stderr or the file</span>
+<span class="c1"># specified using the -l/logfile option.</span>
+<span class="c1"># Allowed values: yes, no</span>
+<span class="c1"># Default: no</span>
+<span class="n">loghttpvialogger</span> <span class="o">=</span> <span class="n">no</span>
+
+<span class="c1"># File to which the server records the process id of the daemon.</span>
+<span class="c1"># If this option is not set, the server will run in foreground</span>
+<span class="c1">#</span>
+<span class="c1"># The path may be either absolute or relative</span>
+<span class="c1"># to the directory containing this config file.</span>
+<span class="c1"># Default:</span>
+<span class="n">pidfile</span> <span class="o">=</span>
+
+<span class="c1"># Log file path.  If unset, log to stderr.</span>
+<span class="c1"># The path may be either absolute or relative</span>
+<span class="c1"># to the directory containing this config file.</span>
+<span class="c1"># Default:</span>
+<span class="n">logfile</span> <span class="o">=</span>
+
+<span class="c1"># Set processing of each request in separate subprocess.</span>
+<span class="c1"># Allowed values: debug, none, thread, fork.</span>
+<span class="c1"># Default: fork</span>
+<span class="n">multiprocess</span> <span class="o">=</span> <span class="n">fork</span>
+
+<span class="c1"># Tracker index template. If unset, built-in will be used.</span>
+<span class="c1"># The path may be either absolute or relative</span>
+<span class="c1"># to the directory containing this config file.</span>
+<span class="c1"># Default:</span>
+<span class="n">template</span> <span class="o">=</span>
+
+<span class="c1"># Enable SSL support (requires pyopenssl)</span>
+<span class="c1"># Allowed values: yes, no</span>
+<span class="c1"># Default: no</span>
+<span class="n">ssl</span> <span class="o">=</span> <span class="n">no</span>
+
+<span class="c1"># PEM file used for SSL. A temporary self-signed certificate</span>
+<span class="c1"># will be used if left blank.</span>
+<span class="c1"># The path may be either absolute or relative</span>
+<span class="c1"># to the directory containing this config file.</span>
+<span class="c1"># Default:</span>
+<span class="n">pem</span> <span class="o">=</span>
+
+<span class="c1"># Comma separated list of extra headers that should</span>
+<span class="c1"># be copied into the CGI environment.</span>
+<span class="c1"># E.G. if you want to access the REMOTE_USER and</span>
+<span class="c1"># X-Proxy-User headers in the back end,</span>
+<span class="c1"># set to the value REMOTE_USER,X-Proxy-User.</span>
+<span class="c1"># Allowed values: comma-separated list of words</span>
+<span class="c1"># Default:</span>
+<span class="n">include_headers</span> <span class="o">=</span>
+
+<span class="c1"># Change to HTTP/1.0 if needed. This disables keepalive.</span>
+<span class="c1"># Default: HTTP/1.1</span>
+<span class="n">http_version</span> <span class="o">=</span> <span class="n">HTTP</span><span class="o">/</span><span class="mf">1.1</span>
+
+<span class="c1"># Roundup trackers to serve.</span>
+<span class="c1"># Each option in this section defines single Roundup tracker.</span>
+<span class="c1"># Option name identifies the tracker and will appear in the URL.</span>
+<span class="c1"># Option value is tracker home directory path.</span>
+<span class="c1"># The path may be either absolute or relative</span>
+<span class="c1"># to the directory containing this config file.</span>
+<span class="p">[</span><span class="n">trackers</span><span class="p">]</span>
+
+<span class="n">demo</span> <span class="o">=</span> <span class="o">/</span><span class="n">trackers</span><span class="o">/</span><span class="n">demo</span>
+<span class="n">sysadmin</span> <span class="o">=</span> <span class="o">/</span><span class="n">trackers</span><span class="o">/</span><span class="n">sysadmin</span>
+</pre></div>
+</div>
+<p>Additional notes for each keyword:</p>
+<dl>
+<dt><strong>template</strong></dt><dd><p>Specifies a template used for displaying the tracker index when
+multiple trackers are being used. It is processed by TAL and
+the variable “trackers” is available to the template and is a
+dict of all configured trackers.</p>
+</dd>
+<dt><strong>ssl</strong></dt><dd><p>Enables use of SSL to secure the connection to the
+roundup-server. In most cases, you will want to run a
+real web server (Apache, Nginx) as a proxy to
+roundup-server running without SSL.  The real web server
+can filter/rate limit/firewall requests to roundup-server.
+If you enable this, ensure that your tracker’s config.ini specifies
+an <em>https</em> URL. See roundup-server.1 man page for
+additional information.</p>
+</dd>
+<dt><strong>pem</strong></dt><dd><p>If specified, the SSL PEM file containing the private key and certificate.
+The file must include both the private key and certificate with appropriate
+headers (e.g. <code class="docutils literal notranslate"><span class="pre">-----BEGIN</span> <span class="pre">PRIVATE</span> <span class="pre">KEY-----</span></code>,
+<code class="docutils literal notranslate"><span class="pre">-----END</span> <span class="pre">PRIVATE</span> <span class="pre">KEY-----</span></code> and
+<code class="docutils literal notranslate"><span class="pre">-----BEGIN</span> <span class="pre">CERTIFICATE-----</span></code>,
+<code class="docutils literal notranslate"><span class="pre">-----END</span> <span class="pre">CERTIFICATE-----</span></code>.
+If not specified, roundup will generate a temporary, self-signed certificate
+for use.</p>
+</dd>
+<dt><strong>loghttpvialogger</strong> section</dt><dd><p>If you:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>have <strong>loghttpvialogger</strong> enabled</p></li>
+<li><p>use <strong>pidfile</strong></p></li>
+<li><p>use a logging config file in the tracker’s config.ini</p></li>
+</ul>
+</div></blockquote>
+<p>it is essential to specify absolute paths for log files in the
+tracker’s logging.config file.  The use of pidfile causes the
+server to switch to the root directory (‘/’). As a result
+relative paths in the logging ini configuration file (as
+opposed to the tracker’s config.ini) will be written to the
+system’s root directory. The access error will cause the server
+to exit.</p>
+</dd>
+<dt><strong>trackers</strong> section</dt><dd><p>Each line denotes a mapping from a URL component to a tracker home.
+Make sure the name part doesn’t include any url-unsafe characters like
+spaces. Stick to alphanumeric characters and you’ll be ok.</p>
+</dd>
+</dl>
+<p>To generate a config.ini in the current directory from the
+roundup-server command line use:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">roundup_server</span> <span class="o">-</span><span class="n">p</span> <span class="mi">8017</span>  <span class="o">-</span><span class="n">u</span> <span class="n">roundup</span> <span class="o">--</span><span class="n">save</span><span class="o">-</span><span class="n">config</span>  <span class="n">demo</span><span class="o">=/</span><span class="n">trackers</span><span class="o">/</span><span class="n">demo</span> \
+   <span class="n">sysadmin</span><span class="o">=/</span><span class="n">trackers</span><span class="o">/</span><span class="n">sysadmin</span>
+</pre></div>
+</div>
+<p>Note it will save an old config.ini file to config.bak and create a
+new config.ini. The file is recreated from scratch ignoring the
+contents of the current config.ini. You may need to merge the backup
+and config files. save-config doesn’t attempt to load or verify an
+existing config.ini. Running this in a tracker home directory will
+move the exsiting config.ini to config.bak and replace it with the
+roundup-server’s config.ini. This will make the tracker in the
+directory fail to start util the original config.ini is restored.</p>
+</section>
+<section id="configuring-compression">
+<span id="id1"></span><h2><a class="toc-backref" href="#id8" role="doc-backlink">Configuring Compression</a></h2>
+<p>Roundup will compress HTTP responses to clients on the fly. Dynamic,
+on the fly, compression is enabled by default, to disable it set:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">web</span><span class="p">]</span>
+<span class="o">...</span>
+<span class="n">dynamic_compression</span> <span class="o">=</span> <span class="n">No</span>
+</pre></div>
+</div>
+<p>in the tracker’s <code class="docutils literal notranslate"><span class="pre">config.ini</span></code>. You should disable compression if
+your proxy (e.g. nginx or apache) or wsgi server (uwsgi) is configured
+to compress responses on the fly. The python standard library includes
+gzip support. For brotli or zstd you will need to install packages. See
+the <a class="reference external" href="installation.html">installation documentation</a> for details.</p>
+<p id="index-0">Some assets will not be compressed on the fly. Assets with mime types
+of “image/png” or “image/jpeg” will not be compressed. You
+can add mime types to the list by using <code class="docutils literal notranslate"><span class="pre">interfaces.py</span></code> as discussed
+in the <a class="reference external" href="customizing.html">customisation documentation</a>. As an example adding:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">roundup.cgi.client</span> <span class="kn">import</span> <span class="n">Client</span>
+
+<span class="n">Client</span><span class="o">.</span><span class="n">precompressed_mime_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;application/zip`)</span>
+</pre></div>
+</div>
+<p>to <code class="docutils literal notranslate"><span class="pre">interfaces.py</span></code> will prevent zip files from being compressed.</p>
+<p>Any content less than 100 bytes in size will not be compressed (e.g
+errors messages, short json responses).</p>
+<p>Zstd will be used if the client can understand it, followed by brotli
+then gzip encoding. Currently the preference order is hard coded into
+the server and not parsed using <code class="docutils literal notranslate"><span class="pre">q</span></code> values from the client’s
+Accept-Encoding header. This is an area for improvement.</p>
+<p>In addition to dynamic compression, static files/assets accessed using
+<code class="docutils literal notranslate"><span class="pre">&#64;&#64;file</span></code> can be pre-compressed. This reduces CPU load on the server
+and reduces the time required to respond to the client. By default
+searching for pre-compressed files is disabled. To enable it set:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">web</span><span class="p">]</span>
+<span class="o">...</span>
+<span class="n">use_precompressed_files</span> <span class="o">=</span> <span class="n">Yes</span>
+</pre></div>
+</div>
+<p>in the tracker’s <code class="docutils literal notranslate"><span class="pre">config.ini</span></code> file. Then you can create a
+precompressed file and it will be served if the client is able to
+accept it. For a file <code class="docutils literal notranslate"><span class="pre">.../&#64;&#64;file/library.js</span></code> you can create:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tracker_home</span><span class="o">/</span><span class="n">html</span><span class="o">/</span><span class="n">library</span><span class="o">.</span><span class="n">js</span><span class="o">.</span><span class="n">gzip</span>
+<span class="n">tracker_home</span><span class="o">/</span><span class="n">html</span><span class="o">/</span><span class="n">library</span><span class="o">.</span><span class="n">js</span><span class="o">.</span><span class="n">br</span>
+<span class="n">tracker_home</span><span class="o">/</span><span class="n">html</span><span class="o">/</span><span class="n">library</span><span class="o">.</span><span class="n">js</span><span class="o">.</span><span class="n">zstd</span>
+</pre></div>
+</div>
+<p>which should be created by using (respectively):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gzip</span> <span class="o">--</span><span class="n">keep</span> <span class="o">--</span><span class="n">suffix</span> <span class="o">.</span><span class="n">gzip</span> <span class="n">library</span><span class="o">.</span><span class="n">js</span>
+<span class="n">brotli</span> <span class="n">library</span><span class="o">.</span><span class="n">js</span>
+<span class="n">zstd</span> <span class="n">library</span><span class="o">.</span><span class="n">js</span> <span class="o">&amp;&amp;</span> <span class="n">mv</span> <span class="n">library</span><span class="o">.</span><span class="n">js</span><span class="o">.</span><span class="n">zst</span> <span class="n">library</span><span class="o">.</span><span class="n">js</span><span class="o">.</span><span class="n">zstd</span>
+</pre></div>
+</div>
+<p>see the man pages for options that control compression level. Note
+that some levels require additional memory on the client side, so you
+may not always want to use the highest compression available.</p>
+<p>A pre-compressed file will not be used if its modified date is earlier
+than the uncompressed file. For example, if <code class="docutils literal notranslate"><span class="pre">library.js.gzip</span></code> is
+older (has earlier modification date) than <code class="docutils literal notranslate"><span class="pre">library.js</span></code>,
+<code class="docutils literal notranslate"><span class="pre">library.js.gzip</span></code> will be ignored. <code class="docutils literal notranslate"><span class="pre">library.js</span></code> will be
+served instead.  <code class="docutils literal notranslate"><span class="pre">library.js</span></code> will be dynamically compressed on the
+fly and a warning message will be logged.</p>
+<p>Precompressed files override dynamic compression. For example, assume
+the client can accept brotli and gzip. If there are no precompressed
+files, the data will be compressed dynamically (on the fly) using
+brotli. If there is a precompressed gzip file present the client will
+get the gzip version and not a brotli compressed version. This
+mechanism allows the admin to allow use of brotli and zstd for
+dynamic content, but not for static content.</p>
+<span class="target" id="browser-handling-attached-files"></span></section>
+<section id="controlling-browser-handling-of-attached-files">
+<span id="index-1"></span><h2><a class="toc-backref" href="#id9" role="doc-backlink">Controlling Browser Handling of Attached Files</a></h2>
+<p>You may be aware of the <code class="docutils literal notranslate"><span class="pre">allow_html_file</span></code> <a class="reference external" href="reference.html#config-ini-section-web">config.ini setting</a>. When set to yes, it permits
+html files to be attached and displayed in the browser as html
+files. The underlying mechanism used to enable/disable attaching HTML
+is exposed using <code class="docutils literal notranslate"><span class="pre">interfaces.py</span></code>.</p>
+<p>Similar to <code class="docutils literal notranslate"><span class="pre">Client.precompressed_mime_types</span></code> above, there is a
+<code class="docutils literal notranslate"><span class="pre">Client.mime_type_allowlist</span></code>. If a mime type is present in this
+list, an attachment with this mime type is served to the browser. If
+the mime type is not present, the mime type is set to
+<code class="docutils literal notranslate"><span class="pre">application/octet-stream</span></code> which causes the browser to download the
+attachment to a file.</p>
+<p>In release 2.4.0, the mime type <code class="docutils literal notranslate"><span class="pre">application/pdf</span></code> was removed from
+the precompressed_mime_types list. This prevents the browser from
+executing scripts that may be included in the PDF file. If you trust
+the individuals uploading PDF files to your tracker and wish to allow
+viewing PDF files from your tracker, you can do so by editing your
+tracker’s “interfaces.py” file. Adding:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">roundup.cgi.client</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="n">Client</span><span class="o">.</span><span class="n">mime_type_allowlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;application/pdf&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>will permit the PDF files to be viewed in the browser rather than
+downloaded to a file.</p>
+<p>Similarly, you can remove a mime type (e.g. audio/oog) using:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">roundup.cgi.client</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="n">Client</span><span class="o">.</span><span class="n">mime_type_allowlist</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;audio/oog&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>which will force the browser to save the attachment to a file rather
+than playing the audio file.</p>
+</section>
+<section id="configuring-rest-maximum-result-limit">
+<span id="index-2"></span><h2><a class="toc-backref" href="#id10" role="doc-backlink">Configuring REST Maximum Result Limit</a></h2>
+<p>To prevent denial of service (DOS) and limit user wait time for an
+unbounded request, the REST endpoint has a maximum limit on the number
+of rows that can be returned. By default, this is set to 10 million.
+This setting applies to all users of the REST interface. If you want
+to change this limit, you can add the following code to the
+<code class="docutils literal notranslate"><span class="pre">interfaces.py</span></code> file in your tracker:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># change max response rows</span>
+<span class="kn">from</span> <span class="nn">roundup.rest</span> <span class="kn">import</span> <span class="n">RestfulInstance</span>
+<span class="n">RestfulInstance</span><span class="o">.</span><span class="n">max_response_row_size</span> <span class="o">=</span> <span class="mi">26</span>
+</pre></div>
+</div>
+<p>This code will set the maximum number of rows to 25 (one less than the
+value). Note that this setting is rarely used and is not available in
+the tracker’s <code class="docutils literal notranslate"><span class="pre">config.ini</span></code> file. Setting it through this mechanism
+allows you to enter a string or number that may break Roundup, such as
+“asdf” or 0. In general, it is recommended to keep the limit at its
+default value. However, this option is available for cases when a
+request requires more than 10 million rows and pagination using
+<code class="docutils literal notranslate"><span class="pre">&#64;page_index</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;page_size=9999999</span></code> is not possible.</p>
+</section>
+<section id="adding-a-web-content-security-policy-csp">
+<h2><a class="toc-backref" href="#id11" role="doc-backlink">Adding a Web Content Security Policy (CSP)</a></h2>
+<p>A Content Security Policy (<a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP">CSP</a>) adds a layer of security to
+Roundup’s web interface. It makes it more difficult for an
+attacker to compromise Roundup.  By default Roundup does not add
+a CSP. If you need to implement a CSP, this section will help you
+understand how to add one and document the current level of
+support for CSP in Roundup.</p>
+<p>Roundup’s web interface has remained mostly unchanged since it
+was created over a decade ago. Current releases have been slowly
+modernizing the HTML to improve security. There are still some
+improvements that need to happen before the tightest CSP
+configurations can be used.</p>
+<p>Writing a CSP is complex.  This section just touches on how to
+create and install a CSP to improve security. Some of it might
+break functionality.</p>
+<p>There are two ways to add a CSP:</p>
+<ol class="arabic simple">
+<li><p>a fixed CSP added by a server</p></li>
+<li><p>a dynamic CSP added by Roundup</p></li>
+</ol>
+<section id="fixed-csp">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">Fixed CSP</a></h3>
+<p>If you are using a web server (Apache, Nginx) to run Roundup, you can
+add a <code class="docutils literal notranslate"><span class="pre">Content-Security-Policy</span></code> header using that server. WSGI
+servers like uWSGI can also be configured to add headers.  An example
+header would look like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Content</span><span class="o">-</span><span class="n">Security</span><span class="o">-</span><span class="n">Policy</span><span class="p">:</span> <span class="n">default</span><span class="o">-</span><span class="n">src</span> <span class="s1">&#39;self&#39;</span> <span class="s1">&#39;unsafe-inline&#39;</span> <span class="s1">&#39;strict-dynamic&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>One thing that may need to be included is the <code class="docutils literal notranslate"><span class="pre">unsafe-inline</span></code>.
+The default templates use <code class="docutils literal notranslate"><span class="pre">onload</span></code>, <code class="docutils literal notranslate"><span class="pre">onchange</span></code>, <code class="docutils literal notranslate"><span class="pre">onsubmit</span></code>,
+and <code class="docutils literal notranslate"><span class="pre">onclick</span></code> JavaScript handlers. Without <code class="docutils literal notranslate"><span class="pre">unsafe-inline</span></code>
+these won’t work and popup helpers will not work. Sadly the use
+of <code class="docutils literal notranslate"><span class="pre">unsafe-inline</span></code> is a pretty big hole in this CSP.  You can
+set the hashes for all the JavaScript handlers in the CSP. Then
+replace <code class="docutils literal notranslate"><span class="pre">unsafe-inline</span></code> with <code class="docutils literal notranslate"><span class="pre">unsafe-hashes</span></code> to help close
+this hole, but has its own issues. See <a class="reference internal" href="#id3">remediating
+unsafe-inline</a> for another way to mitigate this.</p>
+<p>The inclusion of <code class="docutils literal notranslate"><span class="pre">strict-dynamic</span></code> allows trusted JavaScript
+files that are downloaded from Roundup to make changes to the web
+interface. These changes are also trusted code that will be run
+when invoked.</p>
+<p>More secure CSPs can also be created. However because of the ability
+to customise the web interface, it is difficult to provide guidance.</p>
+</section>
+<section id="dynamic-csp">
+<span id="id2"></span><h3><a class="toc-backref" href="#id13" role="doc-backlink">Dynamic CSP</a></h3>
+<p>Roundup creates a cryptographic nonce for every client request. The
+nonce is the value of the <code class="docutils literal notranslate"><span class="pre">client.client_nonce</span></code> property.</p>
+<p>By changing the templates to use the nonce, we can better secure the
+Roundup instance. However the nonce has to be set in the CSP returned
+by Roundup.</p>
+<p>One way to do this is to add a templating utility to the extensions
+directory that generates the CSP on the fly. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">default_security_headers</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;Content-Security-Policy&#39;</span><span class="p">:</span> <span class="p">(</span>
+        <span class="s2">&quot;default-src &#39;self&#39;; &quot;</span>
+        <span class="s2">&quot;base-uri &#39;self&#39;; &quot;</span>
+        <span class="s2">&quot;script-src https: &#39;nonce-</span><span class="si">{nonce}</span><span class="s2">&#39; &#39;strict-dynamic&#39;; &quot;</span>
+        <span class="s2">&quot;style-src &#39;self&#39; &#39;nonce-</span><span class="si">{nonce}</span><span class="s2">&#39;; &quot;</span>
+        <span class="s2">&quot;img-src &#39;self&#39; data:; &quot;</span>
+        <span class="s2">&quot;frame-ancestors &#39;self&#39;; &quot;</span>
+        <span class="s2">&quot;object-src &#39;self&#39; &#39;nonce-</span><span class="si">{nonce}</span><span class="s2">&#39;; &quot;</span>
+    <span class="p">),</span>
+<span class="p">}</span>
+
+
+<span class="k">def</span> <span class="nf">AddHtmlHeaders</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">header_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39; Generate https headers from dict use default security headers</span>
+
+<span class="sd">        Setting the header with a value of None will not inject the</span>
+<span class="sd">        header and can override the default set.</span>
+
+<span class="sd">        Header values will be formatted with a dictionary including a</span>
+<span class="sd">        nonce. Use to set a nonce for inline scripts.</span>
+
+<span class="sd">        self is an instance of the TemplatingUtilities class, so</span>
+<span class="sd">        you have access to self.client as well as any functions added</span>
+<span class="sd">        using registerUtil.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">client_nonce</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># logger.warning(&quot;client_nonce is None&quot;)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">client_nonce</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">session_api</span><span class="o">.</span><span class="n">_gen_sid</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="c1"># self.client.client_nonce doesn&#39;t exist, create it</span>
+        <span class="c1"># logger.warning(&quot;client_nonce does not exist, creating&quot;)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">client_nonce</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">session_api</span><span class="o">.</span><span class="n">_gen_sid</span><span class="p">()</span>
+
+    <span class="n">headers</span> <span class="o">=</span> <span class="n">default_security_headers</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">header_dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">header_dict</span><span class="p">)</span>
+
+    <span class="n">client_headers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">additional_headers</span>
+
+    <span class="k">for</span> <span class="n">header</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">headers</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">client_headers</span><span class="p">[</span><span class="n">header</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">nonce</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">client_nonce</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="n">instance</span><span class="p">):</span>
+    <span class="c1"># Note the use of the new (in version 2.5) registerUtilMethod</span>
+    <span class="n">instance</span><span class="o">.</span><span class="n">registerUtilMethod</span><span class="p">(</span><span class="s1">&#39;AddHtmlHeaders&#39;</span><span class="p">,</span> <span class="n">AddHtmlHeaders</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Adding the following to <code class="docutils literal notranslate"><span class="pre">page.html</span></code> right after the opening
+<code class="docutils literal notranslate"><span class="pre">&lt;html....`&gt;</span></code> tag:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">tal</span><span class="p">:</span><span class="n">code</span> <span class="n">tal</span><span class="p">:</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;python:utils.AddHtmlHeaders()&quot;</span> <span class="o">/&gt;</span>
+</pre></div>
+</div>
+<p>will invoke <code class="docutils literal notranslate"><span class="pre">AddHtmlHeaders()</span></code> to add the CSP header with the nonce.</p>
+<p>With this set of CSP headers, all style, script and object tags will
+need a <code class="docutils literal notranslate"><span class="pre">nonce</span></code> attribute. This can be added by changing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">script</span> <span class="n">src</span><span class="o">=</span><span class="s2">&quot;javascript.js&quot;</span><span class="o">&gt;&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">script</span>
+    <span class="n">tal</span><span class="p">:</span><span class="n">attributes</span><span class="o">=</span><span class="s2">&quot;nonce request/client/client_nonce&quot;</span>
+    <span class="n">src</span><span class="o">=</span><span class="s2">&quot;javascript.js&quot;</span><span class="o">&gt;&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>for each script, object or style tag.</p>
+<p>If you are using a version of Roundup before version 2.5, you need to
+replace <code class="docutils literal notranslate"><span class="pre">instance.registerUtilMethod</span></code> with
+<code class="docutils literal notranslate"><span class="pre">instance.registerUtil</span></code>. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="n">instance</span><span class="p">):</span>
+    <span class="n">instance</span><span class="o">.</span><span class="n">registerUtil</span><span class="p">(</span><span class="s1">&#39;AddHtmlHeaders&#39;</span><span class="p">,</span> <span class="n">AddHtmlHeaders</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The AddHtmlHeaders function needs to be changed so that <code class="docutils literal notranslate"><span class="pre">self.client</span></code>
+is replaced by <code class="docutils literal notranslate"><span class="pre">client</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># replace self parameter with client</span>
+<span class="k">def</span> <span class="nf">AddHtmlHeaders</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">header_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39; Generate https headers from dict use default security headers</span>
+
+<span class="sd">        Setting the header with a value of None will not inject the</span>
+<span class="sd">        header and can override the default set.</span>
+
+<span class="sd">        Header values will be formatted with a dictionary including a</span>
+<span class="sd">        nonce. Use to set a nonce for inline scripts.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="c1">### Then change all references to self.client to client</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">client</span><span class="o">.</span><span class="n">client_nonce</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># note self.client -&gt; client</span>
+            <span class="c1"># logger.warning(&quot;client_nonce is None&quot;)</span>
+            <span class="n">client</span><span class="o">.</span><span class="n">client_nonce</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">session_api</span><span class="o">.</span><span class="n">_gen_sid</span><span class="p">()</span>
+
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p>Lastly the client must be passed explicitly when calling
+AddHtmlHeaders. The call looks like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">tal</span><span class="p">:</span><span class="n">code</span> <span class="n">tal</span><span class="p">:</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;python:utils.AddHtmlHeaders(request.client)&quot;</span> <span class="o">/&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="remediating-unsafe-inline">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">Remediating <code class="docutils literal notranslate"><span class="pre">unsafe-inline</span></code></a></h3>
+<p id="id3">Using a trusted script to set event handlers to replace the <code class="docutils literal notranslate"><span class="pre">onX</span></code>
+handlers allows removal of the <code class="docutils literal notranslate"><span class="pre">unsafe-inline</span></code> handlers.  If you
+remove <code class="docutils literal notranslate"><span class="pre">unsafe-inline</span></code> the <code class="docutils literal notranslate"><span class="pre">onX</span></code> handlers will not run. However
+you can use the label provided by the <code class="docutils literal notranslate"><span class="pre">onX</span></code> attribute to securely
+enable a callback function.</p>
+<p>This method is a work in progress. As an example proof of concept,
+adding this “decorator” script at the end of page.html:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">script</span> <span class="n">tal</span><span class="p">:</span><span class="n">attributes</span><span class="o">=</span><span class="s2">&quot;nonce request/client/client_nonce&quot;</span><span class="o">&gt;</span>
+ <span class="o">/*</span> <span class="nb">set</span> <span class="n">submit</span> <span class="n">event</span> <span class="n">listener</span> <span class="n">on</span> <span class="n">forms</span> <span class="n">that</span> <span class="n">have</span> <span class="n">an</span>
+ <span class="n">onsubmit</span> <span class="p">(</span><span class="n">case</span> <span class="n">insensitive</span><span class="p">)</span> <span class="n">attribute</span> <span class="o">*/</span>
+ <span class="n">forms</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">querySelectorAll</span><span class="p">(</span><span class="n">form</span><span class="p">[</span><span class="n">onsubmit</span><span class="p">])</span>
+ <span class="k">for</span> <span class="p">(</span><span class="n">let</span> <span class="n">form</span> <span class="n">of</span> <span class="n">f</span><span class="p">)</span> <span class="p">{</span>
+     <span class="n">form</span><span class="o">.</span><span class="n">addEventListener</span><span class="p">(</span><span class="s1">&#39;submit&#39;</span><span class="p">,</span>
+                           <span class="p">()</span> <span class="o">=&gt;</span> <span class="n">submit_once</span><span class="p">());</span>
+  <span class="p">};</span>
+<span class="o">&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>will set callback for the submit even on any form that has an onsubmit
+attribute to <code class="docutils literal notranslate"><span class="pre">submit_once()</span></code>. <code class="docutils literal notranslate"><span class="pre">submit_once</span></code> is defined in Roundup’s
+base_javascript and is generated with a proper nonce.</p>
+<p>By including the nonce in the dynamic CSP, we can use our trusted
+“decorator” script to add event listeners. These listeners will call
+the trusted function in base_javascript to replace the ignored <code class="docutils literal notranslate"><span class="pre">onX</span></code>
+handlers.</p>
+</section>
+</section>
+<section id="classhelper-web-component">
+<h2><a class="toc-backref" href="#id15" role="doc-backlink">Classhelper Web Component</a></h2>
+<p>Version 2.4.0 provides a new classhelper popup written as a web
+component. By installing 3 files and editing the tracker’s templates
+you can enable the new component.</p>
+<p>The <a class="reference external" href="https://github.com/UMB-CS-682-Team-03/tracker">development of this component was done by team-03</a> of the
+Spring 2024 CS682 graduate software engineering SDL capstone
+class at the University of Massachusetts - Boston. Their
+documentation is copied/adapted below.</p>
+<section id="file-installation">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">File Installation</a></h3>
+<p>There are three files to install in your tracker. You can
+copy them from the template directory for the classic
+tracker. The location of the template file can be obtained
+by running: <code class="docutils literal notranslate"><span class="pre">roundup-admin</span> <span class="pre">templates</span></code> and looking for the
+path value of the classic template. If the path value is
+<code class="docutils literal notranslate"><span class="pre">/path/to/template</span></code>, copy:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">template</span><span class="o">/</span><span class="n">html</span><span class="o">/</span><span class="n">classhelper</span><span class="o">.</span><span class="n">js</span>
+<span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">template</span><span class="o">/</span><span class="n">html</span><span class="o">/</span><span class="n">classhelper</span><span class="o">.</span><span class="n">css</span>
+<span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">template</span><span class="o">/</span><span class="n">html</span><span class="o">/</span><span class="n">_generic</span><span class="o">.</span><span class="n">translation</span>
+</pre></div>
+</div>
+<p>to your tracker’s html directory.</p>
+</section>
+<section id="wrapping-the-classic-classhelper">
+<h3><a class="toc-backref" href="#id17" role="doc-backlink">Wrapping the Classic Classhelper</a></h3>
+<p>To allow your users to select items in the web interface
+using the new classhelper, you should edit the template files
+in the <code class="docutils literal notranslate"><span class="pre">html/</span></code> subdirectory of your tracker. Where you see
+code like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">th</span> <span class="n">i18n</span><span class="p">:</span><span class="n">translate</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="o">&gt;</span><span class="n">Superseder</span><span class="o">&lt;/</span><span class="n">th</span><span class="o">&gt;</span>
+ <span class="o">&lt;</span><span class="n">td</span><span class="o">&gt;</span>
+   <span class="o">&lt;</span><span class="n">span</span> <span class="n">tal</span><span class="p">:</span><span class="n">replace</span><span class="o">=</span><span class="s2">&quot;structure</span>
+         <span class="n">python</span><span class="p">:</span><span class="n">context</span><span class="o">.</span><span class="n">superseder</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">showid</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span><span class="s2">&quot; /&gt;</span>
+   <span class="o">&lt;</span><span class="n">span</span> <span class="n">tal</span><span class="p">:</span><span class="n">condition</span><span class="o">=</span><span class="s2">&quot;context/is_edit_ok&quot;</span>
+         <span class="n">tal</span><span class="p">:</span><span class="n">replace</span><span class="o">=</span><span class="s2">&quot;structure</span>
+                      <span class="n">python</span><span class="p">:</span><span class="n">db</span><span class="o">.</span><span class="n">issue</span><span class="o">.</span><span class="n">classhelp</span><span class="p">(</span><span class="s1">&#39;id,title&#39;</span><span class="p">,</span>
+                      <span class="nb">property</span><span class="o">=</span><span class="s1">&#39;superseder&#39;</span><span class="p">,</span> <span class="n">pagesize</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="s2">&quot; /&gt;</span>
+    <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+<span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>change it to wrap the classhelp span like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">th</span> <span class="n">i18n</span><span class="p">:</span><span class="n">translate</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="o">&gt;</span><span class="n">Superseder</span><span class="o">&lt;/</span><span class="n">th</span><span class="o">&gt;</span>
+ <span class="o">&lt;</span><span class="n">td</span><span class="o">&gt;</span>
+   <span class="o">&lt;</span><span class="n">span</span> <span class="n">tal</span><span class="p">:</span><span class="n">replace</span><span class="o">=</span><span class="s2">&quot;structure</span>
+         <span class="n">python</span><span class="p">:</span><span class="n">context</span><span class="o">.</span><span class="n">superseder</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">showid</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span><span class="s2">&quot; /&gt;</span>
+   <span class="o">&lt;</span><span class="n">roundup</span><span class="o">-</span><span class="n">classhelper</span>
+     <span class="n">data</span><span class="o">-</span><span class="n">popup</span><span class="o">-</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Superseder Classhelper - </span><span class="si">{itemDesignator}</span><span class="s2">&quot;</span>
+     <span class="n">data</span><span class="o">-</span><span class="n">search</span><span class="o">-</span><span class="k">with</span><span class="o">=</span><span class="s2">&quot;title,status,keyword[]-name&quot;</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">span</span> <span class="n">tal</span><span class="p">:</span><span class="n">condition</span><span class="o">=</span><span class="s2">&quot;context/is_edit_ok&quot;</span>
+           <span class="n">tal</span><span class="p">:</span><span class="n">replace</span><span class="o">=</span><span class="s2">&quot;structure</span>
+                        <span class="n">python</span><span class="p">:</span><span class="n">db</span><span class="o">.</span><span class="n">issue</span><span class="o">.</span><span class="n">classhelp</span><span class="p">(</span><span class="s1">&#39;id,title&#39;</span><span class="p">,</span>
+                        <span class="nb">property</span><span class="o">=</span><span class="s1">&#39;superseder&#39;</span><span class="p">,</span> <span class="n">pagesize</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="s2">&quot; /&gt;</span>
+   <span class="o">&lt;/</span><span class="n">roundup</span><span class="o">-</span><span class="n">classhelper</span><span class="o">&gt;</span>
+    <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+<span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>which displays a three part classhelper.</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>the search pane includes a text search box for the <cite>title</cite>
+and <cite>status</cite> properties and a dropdown for the keyword property,
+sorted by name in descending order.</p></li>
+<li><p>the selection pane will show 100 search results per page.
+It also allows the user to move to the next or previous result
+page.</p></li>
+<li><p>the accumulator at the bottom shows all the selected items. It
+also has buttons to accept the items or cancel the
+classhelper, leaving the original page unchanged.</p></li>
+</ol>
+</div></blockquote>
+<p>Note that the user class is a little different because users without
+an Admin role can’t search for a user by Role. So we hide the Role
+search element for non admin users. Starting with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">th</span> <span class="n">i18n</span><span class="p">:</span><span class="n">translate</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="o">&gt;</span><span class="n">Nosy</span> <span class="n">List</span><span class="o">&lt;/</span><span class="n">th</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">td</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">span</span> <span class="n">tal</span><span class="p">:</span><span class="n">replace</span><span class="o">=</span><span class="s2">&quot;structure context/nosy/field&quot;</span> <span class="o">/&gt;</span>
+  <span class="o">&lt;</span><span class="n">span</span> <span class="n">tal</span><span class="p">:</span><span class="n">condition</span><span class="o">=</span><span class="s2">&quot;context/is_edit_ok&quot;</span> <span class="n">tal</span><span class="p">:</span><span class="n">replace</span><span class="o">=</span><span class="s2">&quot;structure</span>
+        <span class="n">python</span><span class="p">:</span><span class="n">db</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">classhelp</span><span class="p">(</span><span class="s1">&#39;username,realname,address&#39;</span><span class="p">,</span>
+        <span class="nb">property</span><span class="o">=</span><span class="s1">&#39;nosy&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s1">&#39;600&#39;</span><span class="s2">&quot; /&gt;</span>
+<span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>wrap the classhelp span with <code class="docutils literal notranslate"><span class="pre">&lt;roundup-classhelper&gt;</span></code> like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">th</span> <span class="n">i18n</span><span class="p">:</span><span class="n">translate</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="o">&gt;</span><span class="n">Nosy</span> <span class="n">List</span><span class="o">&lt;/</span><span class="n">th</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">td</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">span</span> <span class="n">tal</span><span class="p">:</span><span class="n">replace</span><span class="o">=</span><span class="s2">&quot;structure context/nosy/field&quot;</span> <span class="o">/&gt;</span>
+  <span class="o">&lt;</span><span class="n">roundup</span><span class="o">-</span><span class="n">classhelper</span> <span class="n">tal</span><span class="p">:</span><span class="n">define</span><span class="o">=</span><span class="s2">&quot;search string:name,phone,roles[]&quot;</span>
+                       <span class="n">tal</span><span class="p">:</span><span class="n">attributes</span><span class="o">=</span><span class="s2">&quot;data-search-with python:search</span>
+                       <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">hasRole</span><span class="p">(</span><span class="s1">&#39;Admin&#39;</span><span class="p">)</span> <span class="k">else</span>
+                       <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">search</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="s2">&quot;&gt;</span>
+    <span class="o">&lt;</span><span class="n">span</span> <span class="n">tal</span><span class="p">:</span><span class="n">condition</span><span class="o">=</span><span class="s2">&quot;context/is_edit_ok&quot;</span> <span class="n">tal</span><span class="p">:</span><span class="n">replace</span><span class="o">=</span><span class="s2">&quot;structure</span>
+          <span class="n">python</span><span class="p">:</span><span class="n">db</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">classhelp</span><span class="p">(</span><span class="s1">&#39;username,realname,address&#39;</span><span class="p">,</span>
+          <span class="nb">property</span><span class="o">=</span><span class="s1">&#39;nosy&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s1">&#39;600&#39;</span><span class="s2">&quot; /&gt;</span>
+  <span class="o">&lt;/</span><span class="n">roundup</span><span class="o">-</span><span class="n">classhelper</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">','.join(search.split(',')[:-1])</span></code> removes the last element of
+the search string (<code class="docutils literal notranslate"><span class="pre">roles[]</span></code>) if the user does not have the Admin
+role.</p>
+</section>
+<section id="loading-the-roundup-classhelper-script">
+<h3><a class="toc-backref" href="#id18" role="doc-backlink">Loading the &lt;roundup-classhelper&gt; Script</a></h3>
+<p>To make the <code class="docutils literal notranslate"><span class="pre">&lt;roundup-classhelper&gt;</span></code> wrappers work, you
+have to load the classhelper.js script. Add the following
+html script tag in the head section of page.html:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">script</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span> <span class="n">src</span><span class="o">=</span><span class="s2">&quot;@@file/classhelper.js&quot;</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>You can place it anywhere before <code class="docutils literal notranslate"><span class="pre">&lt;/head&gt;</span></code>. This will make
+it available on all pages.</p>
+<p>The script will also work if it is loaded at the end of the
+body. It can also be added to the <code class="docutils literal notranslate"><span class="pre">more-javascript</span></code> slot
+in one of the templates (see <code class="docutils literal notranslate"><span class="pre">user.item.html</span></code> for an
+example) if you don’t want the overhead of loading the script
+on every page.</p>
+<p>You may want to minimize and precompress the file. Using
+dynamic compression, the file is 10k when compressed with
+gzip (8k with brotli). If you minimize the file first with
+<a class="reference external" href="https://pypi.org/project/rjsmin/">rjsmin</a> and then
+compress it, it’s about 6k. See the information about using
+precompressed files in the <a class="reference internal" href="#configuring-compression"><span class="std std-ref">section on compression</span></a>.</p>
+</section>
+<section id="roundup-classhelper-configuration">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">&lt;roundup-classhelper&gt; configuration</a></h3>
+<p>There are two attributes used to configure the classhelper.</p>
+<dl>
+<dt>data-popup-title:</dt><dd><ul class="simple">
+<li><p>this attribute is optional. A reasonable default is
+provided if it is missing.</p></li>
+<li><p>Adding <code class="docutils literal notranslate"><span class="pre">data-popup-title</span></code> changes the title of the popup
+window with the value of the attribute.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">{itemDesignator}</span></code> can be used inside the attribute value
+to replace it with the current classhelper usage context.
+E.G. <code class="docutils literal notranslate"><span class="pre">data-popup-title=&quot;Nosy</span> <span class="pre">List</span> <span class="pre">Classhelper</span> <span class="pre">-</span> <span class="pre">{itemDesignator}&quot;</span></code>
+will display the popup window title as <code class="docutils literal notranslate"><span class="pre">Nosy</span> <span class="pre">List</span> <span class="pre">Classhelper</span> <span class="pre">-</span> <span class="pre">issue24</span></code></p></li>
+</ul>
+</dd>
+<dt>data-search-with:</dt><dd><ul>
+<li><p>this attribute is optional. If it is not set, a search
+panel is not created to allow the user to search within
+the class.</p></li>
+<li><p>Adding <code class="docutils literal notranslate"><span class="pre">data-search-with</span></code> specifies the fields that can
+be used for searching. For example when invoking the
+classhelper for the issue class, using
+<code class="docutils literal notranslate"><span class="pre">data-search-with=&quot;title,status,keyword&quot;</span></code> wil enable
+three search fields.</p></li>
+<li><p>The search can be customized using the following syntax:</p>
+<ul>
+<li><p>Adding <code class="docutils literal notranslate"><span class="pre">[]</span></code> at then end of a field (<code class="docutils literal notranslate"><span class="pre">&quot;status[]&quot;</span></code>)
+will displays a dropdown for the “status” field
+listing all the values the user can access. E.G.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">roundup</span><span class="o">-</span><span class="n">classhelper</span>
+    <span class="n">data</span><span class="o">-</span><span class="n">search</span><span class="o">-</span><span class="k">with</span><span class="o">=</span><span class="s2">&quot;title,status[],keyword[]&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">span</span> <span class="n">tal</span><span class="p">:</span><span class="n">condition</span><span class="o">=</span><span class="s2">&quot;context/is_edit_ok&quot;</span>
+    <span class="n">tal</span><span class="p">:</span><span class="n">replace</span><span class="o">=</span><span class="s2">&quot;structure</span>
+    <span class="n">python</span><span class="p">:</span><span class="n">db</span><span class="o">.</span><span class="n">issue</span><span class="o">.</span><span class="n">classhelp</span><span class="p">(</span><span class="s1">&#39;id,title&#39;</span><span class="p">,</span>
+    <span class="nb">property</span><span class="o">=</span><span class="s1">&#39;superseder&#39;</span><span class="p">,</span> <span class="n">pagesize</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="s2">&quot; /&gt;</span>
+<span class="o">&lt;/</span><span class="n">roundup</span><span class="o">-</span><span class="n">classhelper</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>will create a search pane with a text search for title
+and dropdowns for status and keyword.</p>
+</li>
+<li><p>Adding a sort key after the <code class="docutils literal notranslate"><span class="pre">[]</span></code> allows you to
+select the order of the elements in the dropdown. For
+example <code class="docutils literal notranslate"><span class="pre">keyword[]+name</span></code> sorts the keyword
+dropdown in ascending order by name. While
+<code class="docutils literal notranslate"><span class="pre">keyword[]-name</span></code> sorts the keyword dropdown in
+descending order by name. If the sort order is not
+specified, the default order for the class is used.</p></li>
+</ul>
+</li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="roundup-classhelper-styling">
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">&lt;roundup-classhelper&gt; styling</a></h3>
+<p>The roundup-classhelper component uses minimal styling so it
+can blend in with most trackers. If you want to change the
+styling, you can modify the classhelper.css file in the html
+directory. Even though roundup-classhelper is a web
+component, it doesn’t use the shadow DOM. If you don’t know
+what this means, it just means that it’s easy to style.</p>
+<p>Getting the web component to load changes to the css file is
+a bit tricky. The browser caches the old file and you have
+to resort to tricks to make it get a new copy of the file.</p>
+<p>One way to do this is to open to the <code class="docutils literal notranslate"><span class="pre">classhelper.css</span></code>
+file in your browser and force refresh it. To do this:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Open the home page for your Roundup issue tracker in a
+web browser.</p></li>
+<li><p>In the address bar, append <code class="docutils literal notranslate"><span class="pre">&#64;&#64;file/classhelper.css</span></code>
+to the end of your Roundup URL. For example, if your
+Roundup URL is <code class="docutils literal notranslate"><span class="pre">https://example.com/tracker/</span></code>, the
+URL you should visit would be
+<code class="docutils literal notranslate"><span class="pre">https://example.com/tracker/&#64;&#64;file/classhelper.css</span></code>.</p></li>
+<li><p>This will open the <code class="docutils literal notranslate"><span class="pre">classhelper.css</span></code> file in your browser.</p></li>
+<li><p>Press <code class="docutils literal notranslate"><span class="pre">Ctrl+Shift+R</span></code> (on Windows and Linux) or
+<code class="docutils literal notranslate"><span class="pre">Cmd+Shift+R</span></code> (on macOS). This triggers a hard
+refresh of the page, which forces the browser to
+reload the file and associated resources from the
+server.</p></li>
+</ol>
+</div></blockquote>
+<p>This should resolve any issues caused by cached or outdated
+files. It is possible that you have to open devtools and set
+the disable cache option in the network panel in extreme
+cases.</p>
+<p>Also during development, you might want to <a class="reference external" href="customizing.html#changing-cache-control-headers">set a very low
+cache time</a> for
+classhelper.css using something like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Client</span><span class="o">.</span><span class="n">Cache_Control</span><span class="p">[</span><span class="s1">&#39;classhelper.css&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;public, max-age=10&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="translations">
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">Translations</a></h3>
+<p>To set up translations for the &lt;roundup-classhelper&gt;
+component, follow these steps.</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p>Create a <code class="docutils literal notranslate"><span class="pre">messages.pot</span></code> file by running
+<code class="docutils literal notranslate"><span class="pre">roundup-gettext</span> <span class="pre">&lt;tracker_home_directory&gt;</span></code>. This
+creates <code class="docutils literal notranslate"><span class="pre">locale/messages.pot</span></code> in your tracker’s home
+directory. It extracts all translatable strings from
+your tracker. We will use it as a base template for the
+new strings you want to translate.</p></li>
+<li><p>See if you already have a <code class="docutils literal notranslate"><span class="pre">.po</span></code> translation file for
+your language in the tracker’s locale/ directory. If you
+don’t, copy <code class="docutils literal notranslate"><span class="pre">messages.pot</span></code> to a .po file for the
+language you want to translate. For example German
+would be at <code class="docutils literal notranslate"><span class="pre">de.po</span></code> English would be at <code class="docutils literal notranslate"><span class="pre">en.po</span></code>
+(for example if you want to change the <code class="docutils literal notranslate"><span class="pre">apply</span></code> button
+to say <code class="docutils literal notranslate"><span class="pre">Do</span> <span class="pre">It</span></code>.</p></li>
+<li><p>Edit the new .po file. After the header, add the
+translation entries for the &lt;roundup-classhelper&gt;
+component. For example <cite>next</cite> and <cite>submit</cite> are
+displayed in English when the rest of the interface is
+in German. Add:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">msgid</span> <span class="s2">&quot;submit&quot;</span>
+<span class="n">msgstr</span> <span class="s2">&quot;gehen&quot;</span>
+
+<span class="n">msgid</span> <span class="s2">&quot;next&quot;</span>
+<span class="n">msgstr</span> <span class="s2">&quot;nächste&quot;</span>
+
+<span class="n">msgid</span> <span class="s2">&quot;name&quot;</span>
+<span class="n">msgstr</span> <span class="s2">&quot;name&quot;</span>
+</pre></div>
+</div>
+<p>Note: the value for <cite>msgid</cite> is case sensitive. You can
+see the msgid for static strings by looking for
+<code class="docutils literal notranslate"><span class="pre">CLASSHELPER_TRANSLATION_KEYWORDS</span></code> in classhelper.js.</p>
+</li>
+<li><p>Save the .po file.</p></li>
+<li><p>Restart your Roundup instance.</p></li>
+</ol>
+</div></blockquote>
+<p>This should display the missing translations, for more
+details refer to the <a class="reference external" href="developers.html#extracting-translatable-messages">translation (i18n) section of the
+developers documentation</a>.</p>
+<p>The default title used for read only popups can be changed by using
+the translation mechanism. Use the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">msgid</span> <span class="s2">&quot;Info on </span><span class="si">{className}</span><span class="s2"> - </span><span class="si">{itemDesignator}</span><span class="s2"> - Classhelper&quot;</span>
+<span class="n">msgstr</span> <span class="s2">&quot;</span><span class="si">{itemDesignator}</span><span class="s2"> - info on </span><span class="si">{className}</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>in <code class="docutils literal notranslate"><span class="pre">en.po</span></code> to reformat the title for the English language. Note that
+<code class="docutils literal notranslate"><span class="pre">{classname}</span></code> is only supported in the default title.</p>
+<p>In addition to the default template you can translate a title set
+using <code class="docutils literal notranslate"><span class="pre">data-popup-title</span></code> by matching the template as the msgid.
+Using an example above:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">msgid</span> <span class="s2">&quot;Nosy List Classhelper - </span><span class="si">{itemDesignator}</span><span class="s2">&quot;</span>
+<span class="n">msgstr</span> <span class="s2">&quot;Nosy List Klassenhelfer - </span><span class="si">{itemDesignator}</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>placed in <code class="docutils literal notranslate"><span class="pre">de.po</span></code> will translate the title into German.</p>
+</section>
+<section id="troubleshooting">
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">Troubleshooting</a></h3>
+<p>The roundup-classhelper will fallback to using the classic
+classhelper if:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>the user doesn’t have REST access</p></li>
+<li><p>the browser doesn’t support web components</p></li>
+</ul>
+</div></blockquote>
+<p>It will display an alert modal dialog to the user before triggering
+the classic classhelper as a fallback. A detailed error will be
+printed to the browser console. The console is visible in devtools and
+can be opened by pressing the <code class="docutils literal notranslate"><span class="pre">F12</span></code> key.</p>
+<p>You can disable the classhelper on a per URL basis by adding
+<code class="docutils literal notranslate"><span class="pre">#classhelper-wc-toggle</span></code> to the end of the URL. This will prevent
+the web component from starting up.</p>
+<p>Also you can set <code class="docutils literal notranslate"><span class="pre">DISABLE_CLASSHELP</span> <span class="pre">=</span> <span class="pre">true</span></code> at the top of
+classhelper.js to disable the classhelper without having to make any
+changes to your templates.</p>
+</section>
+<section id="advanced-configuration">
+<h3><a class="toc-backref" href="#id23" role="doc-backlink">Advanced Configuration</a></h3>
+<p>The classhelper.js file has a few tweakable options for use
+by advanced users. The endpoint for the roles list requires
+the user to have Admin rights. You can add your own roles
+endpoint with a different authorization mechanism.  The
+following code can be added to your tracker’s interfaces.py.
+You can create this file if it doesn’t exist. This code
+creates a new REST endpoint at <code class="docutils literal notranslate"><span class="pre">/rest/roles</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">roundup.rest</span> <span class="kn">import</span> <span class="n">Routing</span><span class="p">,</span> <span class="n">RestfulInstance</span><span class="p">,</span> <span class="n">_data_decorator</span>
+
+<span class="k">class</span> <span class="nc">RestfulInstance</span><span class="p">:</span>
+
+        <span class="nd">@Routing</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/roles&quot;</span><span class="p">,</span> <span class="s1">&#39;GET&#39;</span><span class="p">)</span>
+        <span class="nd">@_data_decorator</span>
+        <span class="k">def</span> <span class="nf">get_roles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Return all defined roles. The User class property</span>
+<span class="sd">               roles is a string but simulate it as a MultiLink</span>
+<span class="sd">               to an actual Roles class.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="mi">200</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;collection&quot;</span><span class="p">:</span>
+                <span class="p">[{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">rolename</span><span class="p">,</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">rolename</span><span class="p">}</span>
+                    <span class="k">for</span> <span class="n">rolename</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">security</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">keys</span><span class="p">())]}</span>
+</pre></div>
+</div>
+<p>See the <a class="reference external" href="rest.html">REST documentation</a> for details on
+using <code class="docutils literal notranslate"><span class="pre">interfaces.py</span></code> to add new REST endpoints.</p>
+<p>The code above allows any user with REST access to see all
+the roles defined in the tracker.</p>
+<p>To make classhelper.js use this new endpoint, look for:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">const</span> <span class="n">ALTERNATIVE_DROPDOWN_PATHNAMES</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s2">&quot;roles&quot;</span><span class="p">:</span> <span class="s2">&quot;/rest/data/user/roles&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>and change it to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">const</span> <span class="n">ALTERNATIVE_DROPDOWN_PATHNAMES</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s2">&quot;roles&quot;</span><span class="p">:</span> <span class="s2">&quot;/rest/roles&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Users may have to perform a hard reload to cache this change
+on their system.</p>
+</section>
+</section>
+<section id="configuring-native-fts-full-text-search">
+<h2><a class="toc-backref" href="#id24" role="doc-backlink">Configuring native-fts Full Text Search</a></h2>
+<p>Roundup release 2.2.0 supports database-native full text search.
+SQLite (minimum version 3.9.0) with FTS5 and PostgreSQL (minimum
+version 11.0) with websearch_to_tsvector are supported.</p>
+<p>To enable this method, change the <code class="docutils literal notranslate"><span class="pre">indexer</span></code> setting in the tracker’s
+config.ini to <code class="docutils literal notranslate"><span class="pre">native-fts</span></code>. Then reindex using <code class="docutils literal notranslate"><span class="pre">roundup-admin</span> <span class="pre">-i</span>
+<span class="pre">tracker_home</span> <span class="pre">reindex</span></code>.  The amount of time it takes to reindex
+depends on the amount of data in your tracker, the speed of your
+disks, etc. It can take hours.</p>
+<section id="sqlite-details">
+<h3><a class="toc-backref" href="#id25" role="doc-backlink">SQLite details</a></h3>
+<p>The SQLite native-fts changes the full text search query a little bit.
+For the other search methods, the search terms are split on white
+space and each item in the index: a field (e.g. title), message
+content and file content is searched for all the terms. If any term is
+missing that item is ignored. Once the items are found they are mapped
+to an issue and the normal issue index is displayed.</p>
+<p>When using FTS5, the search terms can use the full text search query
+language described at:
+<a class="reference external" href="https://www.sqlite.org/fts5.html#full_text_query_syntax">https://www.sqlite.org/fts5.html#full_text_query_syntax</a>. This
+supports:</p>
+<ul class="simple">
+<li><p>plain word search (joined by ‘and’, similar to other search methods)</p></li>
+<li><p>phrase search with terms enclosed in quotes (<code class="docutils literal notranslate"><span class="pre">&quot;</span></code>)</p></li>
+<li><p>proximity search with varying distances using <code class="docutils literal notranslate"><span class="pre">NEAR()</span></code></p></li>
+<li><p>boolean operations by grouping with parentheses and using <code class="docutils literal notranslate"><span class="pre">AND</span></code>
+and <code class="docutils literal notranslate"><span class="pre">OR</span></code></p></li>
+<li><p>exclusion using <code class="docutils literal notranslate"><span class="pre">NOT</span></code></p></li>
+<li><p>prefix searching by prefixing the term with``^``</p></li>
+</ul>
+<p>All of the data that is indexed is in a single column, so when column
+specifiers are used they usually result in an error which is detected
+and an enhanced error message is produced.</p>
+<p>Unlike the native, xapian and whoosh indexers there is no
+limit to the length of terms that are indexed. Also
+stopwords are indexed but ignored when searching if they are
+the only word in the search. So a search for “the” will
+return no results but “the book” will return
+results. Pre-filtering the stopwords when indexing would
+break proximity and phrase searching. This may be helpful or
+problematic for your particular tracker.</p>
+<p>To support the most languages available, the unicode61 tokenizer is
+used without porter stemming. Using the <code class="docutils literal notranslate"><span class="pre">indexer_language</span></code> setting
+to enable stemming for <code class="docutils literal notranslate"><span class="pre">english</span></code> is not available in this
+implementation.  Also ranking information is not used in this
+implementation. These are areas for improvement.</p>
+</section>
+<section id="postgresql-info">
+<h3><a class="toc-backref" href="#id26" role="doc-backlink">PostgreSQL info</a></h3>
+<p>The PostgreSQL native-fts changes the full text search query a little
+bit. When using PostgreSQL full text search, two different query
+languages are supported.</p>
+<ol class="arabic simple">
+<li><p>websearch - described at the end of
+<a class="reference external" href="https://www.postgresql.org/docs/current/textsearch-controls.html#TEXTSEARCH-PARSING-QUERIES">Parsing Queries</a> under websearch_to_tsquery. This is the default.</p></li>
+<li><p>tsquery - described at the beginning of <a class="reference external" href="https://www.postgresql.org/docs/current/textsearch-controls.html#TEXTSEARCH-PARSING-QUERIES">Parsing Queries</a> with
+to_tsquery. It is enabled by starting the search phrase with <code class="docutils literal notranslate"><span class="pre">ts:</span></code>.</p></li>
+</ol>
+<p>Websearch provides a more natural style of search and supports:</p>
+<ul class="simple">
+<li><p>plain word search (stemmed in most cases)</p></li>
+<li><p>phrase search with terms enclosed in quotes (<code class="docutils literal notranslate"><span class="pre">&quot;</span></code>)</p></li>
+<li><p>exclusion by prefixing a term/phrase with <code class="docutils literal notranslate"><span class="pre">-</span></code></p></li>
+<li><p>alternative/or searching with <code class="docutils literal notranslate"><span class="pre">or</span></code> between terms</p></li>
+<li><p>ignores non-word characters including punctuation</p></li>
+</ul>
+<p>Tsquery supports:</p>
+<ul class="simple">
+<li><p>a strict query syntax</p></li>
+<li><p>plain word search</p></li>
+<li><p>phrase search with the <code class="docutils literal notranslate"><span class="pre">&lt;-&gt;</span></code> operator or enclosing the phrase in
+<code class="docutils literal notranslate"><span class="pre">'</span></code> single quotes (note this will use a stemmer on the terms
+in the phrase).</p></li>
+<li><p>proximity search with varying distances using <code class="docutils literal notranslate"><span class="pre">&lt;N&gt;</span></code></p></li>
+<li><p>boolean operations by grouping with parentheses and using <code class="docutils literal notranslate"><span class="pre">&amp;</span></code>
+and <code class="docutils literal notranslate"><span class="pre">|</span></code></p></li>
+<li><p>exclusion using <code class="docutils literal notranslate"><span class="pre">!</span></code></p></li>
+<li><p>prefix searching using <code class="docutils literal notranslate"><span class="pre">:*</span></code> at the end of the prefix</p></li>
+</ul>
+<p>All of the data that is indexed is in a single column and input
+weighing is not used.</p>
+<p>Depending on the FTS configuration (determined by the
+<code class="docutils literal notranslate"><span class="pre">indexer_language</span></code> setting), stopwords are supported.  PostgreSQL
+takes the stopwords into account when calculating the data needed for
+proximity/near searches. Like SQLite FTS, there is no limit to the
+length of terms that are indexed. Again this may be helpful or
+problematic for your particular tracker.</p>
+<p>The config.ini <code class="docutils literal notranslate"><span class="pre">indexer_language</span></code> setting is used to define the
+configuration used for indexing. For example with the default
+<code class="docutils literal notranslate"><span class="pre">english</span></code> setting a snowball stemmer (english_stem) is used. So
+words like ‘drive’ and ‘driving’ and ‘drive-in’ will all match a
+search for ‘drive’ but will not match ‘driver’.</p>
+<p>The indexer_language is used as the configuration name for every call
+to the text search functions (to_tsvector, to_tsquery). Changing this
+requires reindexing.</p>
+<p>The <a class="reference external" href="https://www.postgresql.org/docs/current/textsearch-psql.html">configuration list can be obtained using using psql’s</a>
+<code class="docutils literal notranslate"><span class="pre">\dF</span></code> command.</p>
+<p>Roundup includes a hardcoded list for all languages supported by
+PostgreSQL 14.1. The list includes 5 custom “languages”
+<code class="docutils literal notranslate"><span class="pre">custom1</span></code> … <code class="docutils literal notranslate"><span class="pre">custom5</span></code> to allow you to set up your <a class="reference external" href="https://www.postgresql.org/docs/current/textsearch-configuration.html">own textsearch
+configuration</a> using one of the custom names.  Depending on your
+PostgreSQL version, we may allow an invalid language to be configured.
+You will see an error about <code class="docutils literal notranslate"><span class="pre">text</span> <span class="pre">search</span> <span class="pre">configuration</span> <span class="pre">...</span> <span class="pre">does</span> <span class="pre">not</span>
+<span class="pre">exist</span></code>.</p>
+<p>It may be possible to append to this list using the tracker’s
+interfaces.py. For details, see <code class="docutils literal notranslate"><span class="pre">test/test_indexer.py</span></code> in the
+roundup distribution and search for <code class="docutils literal notranslate"><span class="pre">valid_langs</span></code>. If you succeed
+please email roundup-users AT lists.sourceforge.net with a description
+of your success.</p>
+<p>After changing the configuration language, you must reindex the
+tracker since the index must match the configuration language used for
+querying.</p>
+<p>Also there are various <a class="reference external" href="https://www.postgresql.org/docs/14/textsearch-dictionaries.html">dictionaries</a> that allow you to:</p>
+<ul class="simple">
+<li><p>add stopwords</p></li>
+<li><p>override stemming for a term</p></li>
+<li><p>add synonyms (e.g. a search for “pg” can also match ‘psql’
+“postgresql”)</p></li>
+<li><p>add terms that expand/contract the search space (Thesaurus
+dictionary)</p></li>
+<li><p>additional transforms</p></li>
+</ul>
+<p>Use of these is beyond this documentation. Please visit the
+appropriate PostgreSQL documents. The following my also be helpful:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://rachbelaid.com/postgres-full-text-search-is-good-enough/">https://rachbelaid.com/postgres-full-text-search-is-good-enough/</a></p></li>
+</ul>
+<p>Ranking information is not used in this implementation. Also stop
+words set in config.ini are ignored. These are areas for improvement.</p>
+</section>
+<section id="cleaning-up-old-native-indexes">
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">Cleaning up old native indexes</a></h3>
+<p>If you are happy with the database fts indexing, you can save some space by
+removing the data from the native text indexing tables. This requires
+using the <code class="docutils literal notranslate"><span class="pre">sqlite3</span></code> or <code class="docutils literal notranslate"><span class="pre">psql</span></code> commands to execute SQL to delete the
+rows in the <code class="docutils literal notranslate"><span class="pre">__textids</span></code> and <code class="docutils literal notranslate"><span class="pre">__words</span></code> tables. You can do this with
+the following SQL commands:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">delete</span> <span class="kn">from</span> <span class="nn">__words</span><span class="p">;</span>
+<span class="n">delete</span> <span class="kn">from</span> <span class="nn">__textids</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Note this deletes data from the tables and does <em>not</em> delete
+the table. This allows you to revert to Roundup’s native
+full text indexing on SQLite or Postgres. If you were to
+delete the tables, Roundup will not recreate the
+tables. Under PostgreSQL, you can use the <code class="docutils literal notranslate"><span class="pre">truncate</span>
+<span class="pre">&lt;tablename&gt;</span></code> command if you wish.</p>
+</section>
+</section>
+<section id="configuring-session-databases">
+<h2><a class="toc-backref" href="#id28" role="doc-backlink">Configuring Session Databases</a></h2>
+<p>The session and OTK (one time key) databases
+store information about the operation of Roundup.
+This ephemeral data:</p>
+<ul class="simple">
+<li><p>web login session keys,</p></li>
+<li><p>CSRF tokens,</p></li>
+<li><p>email password recovery one time keys,</p></li>
+<li><p>rate limiting data,</p></li>
+<li><p>…</p></li>
+</ul>
+<p>can be a performance bottleneck. It usually happens with
+anydbm or SQLite backends. PostgreSQL and MySQL are
+sufficiently powerful that they can handle the higher
+transaction rates.</p>
+<p>If you are using sqlite, you can choose to use the anydbm
+database for session data. By default it will use additional
+sqlite databases for storing the session and otk data.</p>
+<p>The following table shows which primary databases support
+different session database backends:</p>
+<table class="captionbelow docutils align-default" id="id4">
+<caption><span class="caption-text">D - default if unconfigured, + - compatible choice</span></caption>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+<th class="head" colspan="5"><p>session db</p></th>
+</tr>
+<tr class="row-even"><th class="head"><p>primary db</p></th>
+<th class="head"><p>anydbm</p></th>
+<th class="head"><p>sqlite</p></th>
+<th class="head"><p>redis</p></th>
+<th class="head"><p>mysql</p></th>
+<th class="head"><p>postgresql</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-odd"><td><p>anydbm</p></td>
+<td><p>D</p></td>
+<td></td>
+<td><p>+</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>sqlite</p></td>
+<td><p>+</p></td>
+<td><p>D</p></td>
+<td><p>+</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>mysql</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>D</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>postgresql</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>D</p></td>
+</tr>
+</tbody>
+</table>
+<p>The <code class="docutils literal notranslate"><span class="pre">backend</span></code> setting is in the tracker’s <code class="docutils literal notranslate"><span class="pre">config.ini</span></code>
+file under the <code class="docutils literal notranslate"><span class="pre">sessiondb</span></code> section.</p>
+<section id="using-redis-for-session-databases">
+<h3><a class="toc-backref" href="#id29" role="doc-backlink">Using Redis for Session Databases</a></h3>
+<p>Redis is an in memory key/value data structure store.</p>
+<p>You need to install the <a class="reference external" href="https://pypi.org/project/redis/">redis-py</a> module from pypi. Then
+install Redis using your package manager or by downloading
+it from the <a class="reference external" href="https://redis.io">Redis</a> website.</p>
+<p>You need to secure your redis instance. The data that
+Roundup stores includes session cookies and other
+authentication tokens. At minimum you should require a
+password to connect to your redis database. Set
+<code class="docutils literal notranslate"><span class="pre">requirepass</span></code> in <code class="docutils literal notranslate"><span class="pre">redis.conf</span></code>. Then change the
+<code class="docutils literal notranslate"><span class="pre">redis_url</span></code> in <code class="docutils literal notranslate"><span class="pre">config.ini</span></code> to use the password.</p>
+<p>For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">redis</span><span class="p">:</span><span class="o">//</span><span class="p">:</span><span class="n">mypassword</span><span class="nd">@localhost</span><span class="p">:</span><span class="mi">7200</span><span class="o">/</span><span class="mi">10</span>
+</pre></div>
+</div>
+<p>will connect to the redis instance running on localhost at
+port 7200 using the password <code class="docutils literal notranslate"><span class="pre">mypassword</span></code> to open database
+10. The <code class="docutils literal notranslate"><span class="pre">redis_url</span></code> setting can load a file to better
+secure the url. If you are using redis 6.0 or newer, you can
+specify a username/password and access control lists to
+improve the security of your data. Another good alternative
+is to talk to redis using a Unix domain socket.</p>
+<p>If you are connecting to redis across the network rather
+than on localhost, you should configure ssl/tls and use the
+<code class="docutils literal notranslate"><span class="pre">rediss</span></code> scheme in the url along with the query
+parameters:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssl_cert_reqs</span><span class="o">=</span><span class="n">required</span><span class="o">&amp;</span><span class="n">ssl_ca_certs</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">custom</span><span class="o">/</span><span class="n">ca</span><span class="o">-</span><span class="n">cert</span>
+</pre></div>
+</div>
+<p>where you specify the file that can be used to validate the
+SSL certificate. <a class="reference external" href="https://redis.io/docs/latest/operate/oss_and_stack/management/security/">Securing Redis</a> has more details.</p>
+</section>
+</section>
+<section id="users-and-security">
+<h2><a class="toc-backref" href="#id30" role="doc-backlink">Users and Security</a></h2>
+<p>Roundup holds its own user database which primarily contains a username,
+password and email address for the user. Roundup <em>must</em> have its own user
+listing, in order to maintain internal consistency of its data. It is a
+relatively simple exercise to update this listing on a regular basis, or on
+demand, so that it matches an external listing (eg.
+<a class="reference internal" href="customizing.html#external-authentication"><span class="std std-ref">unix passwd file</span></a>,
+<a class="reference external" href="https://wiki.roundup-tracker.org/LDAPLogin">LDAP</a>, etc.)</p>
+<p>Roundup identifies users in a number of ways:</p>
+<ol class="arabic simple">
+<li><p>Through the web, users may be identified by either HTTP Basic
+Authentication or cookie authentication. If you are running the web
+server (roundup-server) through another HTTP server (eg. apache or IIS)
+then that server may require HTTP Basic Authentication, and it will pass
+the <code class="docutils literal notranslate"><span class="pre">REMOTE_USER</span></code> variable (or variable defined using
+http_auth_header) through to Roundup. If this variable is not
+present, then Roundup defaults to using its own cookie-based login
+mechanism.</p></li>
+<li><p>In email messages handled by roundup-mailgw, users are identified by the
+From address in the message.</p></li>
+</ol>
+<p>In both cases, Roundup’s behaviour when dealing with unknown users is
+controlled by Permissions defined in the “SECURITY SETTINGS” section of the
+tracker’s <code class="docutils literal notranslate"><span class="pre">schema.py</span></code> module:</p>
+<dl class="simple">
+<dt>Web Access and Register</dt><dd><p>If granted to the Anonymous Role, then anonymous users will be able to
+register through the web.</p>
+</dd>
+<dt>Email Access and Register</dt><dd><p>If granted to the Anonymous Role, then email messages from unknown users
+will result in those users being registered with the tracker.</p>
+</dd>
+</dl>
+<p>More information about how to customise your tracker’s security settings
+may be found in the <a class="reference external" href="reference.html">reference documentation</a>.</p>
+<section id="configuring-authentication-header-variable">
+<h3><a class="toc-backref" href="#id31" role="doc-backlink">Configuring Authentication Header/Variable</a></h3>
+<p>The front end server running Roundup can perform the user
+authentication. It pass the authenticated username to the backend in a
+variable. By default roundup looks for the <code class="docutils literal notranslate"><span class="pre">REMOTE_USER</span></code> variable
+This can be changed by setting the parameter <code class="docutils literal notranslate"><span class="pre">http_auth_header</span></code> in the
+<code class="docutils literal notranslate"><span class="pre">[web]</span></code> section of the tracker’s <code class="docutils literal notranslate"><span class="pre">config.ini</span></code> file. If the value
+is unset (the default) the REMOTE_USER variable is used.</p>
+<p>If you are running roundup using <code class="docutils literal notranslate"><span class="pre">roundup-server</span></code> behind a proxy
+that authenticates the user you need to configure <code class="docutils literal notranslate"><span class="pre">roundup-server</span></code> to
+pass the proper header to the tracker. By default <code class="docutils literal notranslate"><span class="pre">roundup-server</span></code>
+looks for the <code class="docutils literal notranslate"><span class="pre">REMOTE_USER</span></code> header for the authenticated user.  You
+can copy an arbitrary header variable to the tracker using the <code class="docutils literal notranslate"><span class="pre">-I</span></code>
+option to roundup-server (or the equivalent option in the
+roundup-server config file).</p>
+<p>For example to use the <code class="docutils literal notranslate"><span class="pre">uid_variable</span></code> header, two configuration
+changes are needed: First configure <code class="docutils literal notranslate"><span class="pre">roundup-server</span></code> to pass the
+header to the tracker using:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">roundup</span><span class="o">-</span><span class="n">server</span> <span class="o">-</span><span class="n">I</span> <span class="n">uid_variable</span> <span class="o">....</span>
+</pre></div>
+</div>
+<p>note that the header is passed exactly as supplied by the upstream
+server. It is <strong>not</strong> prefixed with <code class="docutils literal notranslate"><span class="pre">HTTP_</span></code> like other headers since
+you are explicitly allowing the header. Multiple comma separated
+headers can be passed to the <code class="docutils literal notranslate"><span class="pre">-I</span></code> option. These could be used in a
+detector or other tracker extensions, but only one header can be used
+by the tracker as an authentication header.</p>
+<p>To make the tracker honor the new variable, change the tracker’s
+<code class="docutils literal notranslate"><span class="pre">config.ini</span></code> to read:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">web</span><span class="p">]</span>
+<span class="o">...</span>
+<span class="n">http_auth_header</span> <span class="o">=</span> <span class="n">uid_variable</span>
+</pre></div>
+</div>
+<p>At the time this is written, support is experimental. If you use it
+you should notify the roundup maintainers using the roundup-users
+mailing list.</p>
+</section>
+</section>
+<section id="securing-secrets">
+<h2><a class="toc-backref" href="#id32" role="doc-backlink">Securing Secrets</a></h2>
+<p>Roundup can read secrets from a file that is referenced from any
+of the config.ini files. If you use Docker, you can bind mount
+the files from a secure location, or store them in a subdirectory
+of the tracker home.</p>
+<p>You can also use a secrets management tool like Docker Swarm’s
+secrets management. This example config.ini configuration gets
+the database password from a file populated by Swarm secrets:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">rdbms</span><span class="p">]</span>
+<span class="c1"># Database user password.</span>
+<span class="c1"># A string that starts with &#39;file://&#39; is interpreted as a file</span>
+<span class="c1"># path relative to the tracker home. Using &#39;file:///&#39; defines</span>
+<span class="c1"># an absolute path. The first line of the file will be used as</span>
+<span class="c1"># the value. Any string that does not start with &#39;file://&#39; is</span>
+<span class="c1"># used as is. It removes any whitespace at the end of the</span>
+<span class="c1"># line, so a newline can be put in the file.</span>
+<span class="c1">#</span>
+<span class="c1"># Default: roundup</span>
+<span class="n">password</span> <span class="o">=</span> <span class="n">file</span><span class="p">:</span><span class="o">///</span><span class="n">run</span><span class="o">/</span><span class="n">secrets</span><span class="o">/</span><span class="n">db_password</span>
+</pre></div>
+</div>
+<p>assuming that Docker Swarm secrets has the key <code class="docutils literal notranslate"><span class="pre">db_password</span></code>
+and the <code class="docutils literal notranslate"><span class="pre">--secret</span> <span class="pre">db_password</span></code> option is used when starting the
+Roundup service.</p>
+<p>Because environment variables can be inadvertently exposed in
+logs or process listings, Roundup does not currently support
+loading secrets from environment variables.</p>
+</section>
+<section id="tasks">
+<h2><a class="toc-backref" href="#id33" role="doc-backlink">Tasks</a></h2>
+<p>Maintenance of Roundup can involve one of the following:</p>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#tracker-backup">tracker backup</a></p></li>
+<li><p><a class="reference internal" href="#software-upgrade">software upgrade</a></p></li>
+<li><p><a class="reference internal" href="#migrating-backends">migrating backends</a></p></li>
+<li><p><a class="reference internal" href="#moving-a-tracker">moving a tracker</a></p></li>
+<li><p><a class="reference internal" href="#migrating-from-other-software">migrating from other software</a></p></li>
+<li><p><a class="reference internal" href="#adding-a-user-from-the-command-line">adding a user from the command-line</a></p></li>
+</ol>
+<section id="tracker-backup">
+<h3><a class="toc-backref" href="#id34" role="doc-backlink">Tracker Backup</a></h3>
+<p>The roundup-admin import and export commands are <strong>not</strong> recommended for
+performing backup.</p>
+<p>Optionally stop the web and email frontends and to copy the contents of the
+tracker home directory to some other place using standard backup tools.
+This means using
+<em>pg_dump</em> to take a snapshot of your Postgres backend database, for example.
+A simple copy of the tracker home (and files storage area if you’ve configured
+it to be elsewhere) will then complete the backup.</p>
+</section>
+<section id="software-upgrade">
+<h3><a class="toc-backref" href="#id35" role="doc-backlink">Software Upgrade</a></h3>
+<p>Always <a class="reference external" href="#tracker-backup">make a backup</a> of your tracker before upgrading software.
+Steps you may take:</p>
+<ol class="arabic">
+<li><p>Install pytest and ensure that the unit tests run on your system
+(using your preferred python version):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip2</span> <span class="n">install</span> <span class="n">pytest</span>
+<span class="n">python2</span> <span class="o">-</span><span class="n">m</span> <span class="n">pytest</span> <span class="n">test</span><span class="o">/</span>
+
+
+<span class="n">pip3</span> <span class="n">install</span> <span class="n">pytest</span>
+<span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">pytest</span> <span class="n">test</span><span class="o">/</span>
+</pre></div>
+</div>
+</li>
+<li><p>If you’re using an RDBMS backend, make a backup of its contents now.</p></li>
+<li><p>Make a backup of the tracker home itself.</p></li>
+<li><p>Stop the tracker web, email frontends and any scheduled
+(cron) jobs that access the tracker.</p></li>
+<li><p>Install the new version of the software in a new virtual
+environment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">venv</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">env</span>
+<span class="o">.</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">env</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+<span class="n">python3</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">roundup</span>
+</pre></div>
+</div>
+</li>
+<li><p>Follow the steps in the <a class="reference external" href="upgrading.html">upgrading documentation</a> for all the
+versions between your original version and the new version.</p>
+<p>Usually you should run <cite>roundup_admin -i &lt;tracker_home&gt; migrate</cite>
+on your tracker(s) before you allow users to start accessing the tracker.</p>
+<p>It’s safe to run this even if it’s not required, so just get into the
+habit.</p>
+</li>
+<li><p>Restart your tracker web and email frontends.</p></li>
+</ol>
+<p>If something bad happens, you may reinstate your backup of the tracker and
+reinstall the older version of the sofware using the same install command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span>
+</pre></div>
+</div>
+</section>
+<section id="migrating-backends">
+<span id="index-3"></span><h3><a class="toc-backref" href="#id36" role="doc-backlink">Migrating Backends</a></h3>
+<ol class="arabic">
+<li><p>Stop the existing tracker web and email frontends (preventing changes).</p></li>
+<li><p>Use the roundup-admin tool “export” command to export the contents of
+your tracker to disk. (If you are running on windows see
+<a class="reference external" href="https://issues.roundup-tracker.org/issue1441336">issue1441336</a>
+on how to use the command line rather than interactive mode to
+export data.)</p></li>
+<li><p>Copy the tracker home to a new directory.</p></li>
+<li><p>Delete the “db” directory from the new directory.</p></li>
+<li><p>Set the value of the <code class="docutils literal notranslate"><span class="pre">backend</span></code> key under the <code class="docutils literal notranslate"><span class="pre">[database]</span></code>
+section of the tracker’s <code class="docutils literal notranslate"><span class="pre">config.ini</span></code> file.</p></li>
+<li><p>Use the roundup-admin “import” command to import the previous export with
+the new tracker home. If non-interactively:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">roundup</span><span class="o">-</span><span class="n">admin</span> <span class="o">-</span><span class="n">i</span> <span class="o">&lt;</span><span class="n">tracker</span> <span class="n">home</span><span class="o">&gt;</span> <span class="kn">import</span> <span class="o">&lt;</span><span class="n">tracker</span> <span class="n">export</span> <span class="nb">dir</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>If interactively, enter ‘commit’ before exiting.</p>
+</li>
+<li><p>Test each of the admin tool, web interface and mail gateway using the new
+backend.</p></li>
+<li><p>Move the old tracker home out of the way (rename to “tracker.old”) and
+move the new tracker home into its place.</p></li>
+<li><p>Restart web and email frontends.</p></li>
+</ol>
+<p>If you are importing into PostgreSQL, it autocommits the data every
+10000 objects/rows by default. This can slow down importing, but it
+prevents an out of memory error caused by using a savepoint for each
+object. You can control the commit frequency by using:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pragma</span> <span class="n">savepoint_limit</span><span class="o">=</span><span class="mi">20000</span>
+</pre></div>
+</div>
+<p>to set a higher or lower number in roundup-admin. In this example a
+commit will be done every 20,000 objects/rows. The pragma can also be
+set on the roundup-admin command line as described below.</p>
+</section>
+<section id="moving-a-tracker">
+<h3><a class="toc-backref" href="#id37" role="doc-backlink">Moving a Tracker</a></h3>
+<p>If you’re moving the tracker to a similar machine, you should:</p>
+<ol class="arabic simple">
+<li><p>install Roundup on the new machine and test that it works there,</p></li>
+<li><p>stop the existing tracker web and email frontends (preventing changes),</p></li>
+<li><p>copy the tracker home directory over to the new machine, and</p></li>
+<li><p>start the tracker web and email frontends on the new machine.</p></li>
+</ol>
+<p>Most of the backends are actually portable across platforms (ie. from Unix to
+Windows to Mac). If this isn’t the case (ie. the tracker doesn’t work when
+moved using the above steps) then you’ll need to:</p>
+<ol class="arabic simple">
+<li><p>install Roundup on the new machine and test that it works there,</p></li>
+<li><p>stop the existing tracker web and email frontends (preventing changes),</p></li>
+<li><p>use the roundup-admin tool “export” command to export the contents of
+the existing tracker,</p></li>
+<li><p>copy the export to the new machine,</p></li>
+<li><p>use the roundup-admin “import” command to import the tracker on the new
+machine, and</p></li>
+<li><p>start the tracker web and email frontends on the new machine.</p></li>
+</ol>
+</section>
+<section id="migrating-from-other-software">
+<span id="index-4"></span><h3><a class="toc-backref" href="#id38" role="doc-backlink">Migrating From Other Software</a></h3>
+<p>You have a couple of choices. You can either use a CSV import into Roundup,
+or you can write a simple Python script which uses the Roundup API
+directly. The latter is almost always simpler – see the “scripts”
+directory in the Roundup source for some example uses of the API.</p>
+<p>“roundup-admin import” will import data into your tracker from a
+directory containing files with the following format:</p>
+<ul>
+<li><p>one colon-separated-values file per Class with columns for each property,
+named &lt;classname&gt;.csv</p></li>
+<li><p>one colon-separated-values file per Class with journal information,
+named &lt;classname&gt;-journals.csv (this is required, even if it’s empty)</p></li>
+<li><p>if the Class is a FileClass, you may have the “content” property
+stored in separate files from the csv files. This goes in a directory
+structure:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">classname</span><span class="o">&gt;-</span><span class="n">files</span><span class="o">/&lt;</span><span class="n">N</span><span class="o">&gt;/&lt;</span><span class="n">designator</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">&lt;designator&gt;</span></code> is the item’s <code class="docutils literal notranslate"><span class="pre">&lt;classname&gt;&lt;id&gt;</span></code> combination.
+The <code class="docutils literal notranslate"><span class="pre">&lt;N&gt;</span></code> value is <code class="docutils literal notranslate"><span class="pre">int(&lt;id&gt;</span> <span class="pre">/</span> <span class="pre">1000)</span></code>.</p>
+</li>
+</ul>
+</section>
+<section id="adding-a-user-from-the-command-line">
+<span id="index-5"></span><h3><a class="toc-backref" href="#id39" role="doc-backlink">Adding A User From The Command-Line</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">roundup-admin</span></code> program can create any data you wish to in the
+database. To create a new user, use:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">roundup</span><span class="o">-</span><span class="n">admin</span> <span class="n">create</span> <span class="n">user</span>
+</pre></div>
+</div>
+<p>To figure out what good values might be for some of the fields (eg. Roles)
+you can just display another user:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">roundup</span><span class="o">-</span><span class="n">admin</span> <span class="nb">list</span> <span class="n">user</span>
+</pre></div>
+</div>
+<p>(or if you know their username, and it happens to be “richard”):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">roundup</span><span class="o">-</span><span class="n">admin</span> <span class="nb">filter</span> <span class="n">user</span> <span class="n">username</span><span class="o">=</span><span class="n">richard</span>
+</pre></div>
+</div>
+<p>then using the user id (e.g. 5) you get from one of the above
+commands, you may display the user’s details:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">roundup</span><span class="o">-</span><span class="n">admin</span> <span class="n">display</span> <span class="o">&lt;</span><span class="n">designator</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>where designator is <code class="docutils literal notranslate"><span class="pre">user5</span></code>.</p>
+</section>
+</section>
+<section id="running-the-servers">
+<h2><a class="toc-backref" href="#id40" role="doc-backlink">Running the Servers</a></h2>
+<section id="unix">
+<h3><a class="toc-backref" href="#id41" role="doc-backlink">Unix</a></h3>
+<p>On Unix systems, use the scripts/server-ctl script to control the
+roundup-server server. Copy it somewhere and edit the variables at the top
+to reflect your specific installation.</p>
+<p>If you use systemd look at scripts/systemd.gunicorn. It is configured
+for a wsgi deployment using gunicorn, but may be a good starting
+point for your setup.</p>
+</section>
+<section id="windows">
+<h3><a class="toc-backref" href="#id42" role="doc-backlink">Windows</a></h3>
+<p>On Windows, the roundup-server program runs as a Windows Service, and
+therefore may be controlled through the Services control panel. Note
+that you <strong>must</strong> install the pywin32 package to allow roundup to
+run as a service. The roundup-server program may also control the
+service directly:</p>
+<dl class="simple">
+<dt><strong>install the service</strong></dt><dd><p><code class="docutils literal notranslate"><span class="pre">roundup-server</span> <span class="pre">-C</span> <span class="pre">/path/to/my/roundup-server.ini</span> <span class="pre">-c</span> <span class="pre">install</span></code></p>
+</dd>
+<dt><strong>start the service</strong></dt><dd><p><code class="docutils literal notranslate"><span class="pre">roundup-server</span> <span class="pre">-c</span> <span class="pre">start</span></code></p>
+</dd>
+<dt><strong>stop the service</strong></dt><dd><p><code class="docutils literal notranslate"><span class="pre">roundup-server</span> <span class="pre">-c</span> <span class="pre">stop</span></code></p>
+</dd>
+</dl>
+<p>To bring up the services panel:</p>
+<dl class="simple">
+<dt>Windows 2000 and later</dt><dd><p>Start/Control Panel/Administrative Tools/Services</p>
+</dd>
+<dt>Windows NT4</dt><dd><p>Start/Control Panel/Services</p>
+</dd>
+</dl>
+<p>You will need a server configuration file (as described in
+<a class="reference internal" href="#configuring-roundup-server">Configuring roundup-server</a>) for specifying tracker homes
+and other roundup-server configuration. Specify the name of
+this file using the <code class="docutils literal notranslate"><span class="pre">-C</span></code> switch when installing the service.</p>
+<section id="running-the-mail-gateway-script">
+<h4><a class="toc-backref" href="#id43" role="doc-backlink">Running the Mail Gateway Script</a></h4>
+<p>The mail gateway script should be scheduled to run regularly on your
+Windows server. Normally this will result in a window popping up. The
+solution to this is to:</p>
+<ol class="arabic simple">
+<li><p>Create a new local account on the Roundup server</p></li>
+<li><p>Set the scheduled task to run in the context of this user instead
+of your normal login</p></li>
+</ol>
+</section>
+<section id="mail-gateway-script-command-line">
+<h4><a class="toc-backref" href="#id44" role="doc-backlink">Mail gateway script command line</a></h4>
+<p>Usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">roundup_mailgw</span><span class="o">.</span><span class="n">py</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">c</span> <span class="n">DEFAULT_CLASS</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">I</span> <span class="n">OAUTH_CLIENT_ID</span><span class="p">]</span>
+                         <span class="p">[</span><span class="o">-</span><span class="n">O</span> <span class="n">OAUTH_DIRECTORY</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">S</span> <span class="n">SET_VALUE</span><span class="p">]</span>
+                         <span class="p">[</span><span class="o">-</span><span class="n">T</span> <span class="n">OAUTH_TOKEN_ENDPOINT</span><span class="p">]</span>
+                         <span class="p">[</span><span class="n">args</span> <span class="o">...</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>The roundup mail gateway may be called in one of three ways:</p>
+<ul class="simple">
+<li><p>without arguments. Then the env var ROUNDUP_INSTANCE will be tried.</p></li>
+<li><p>with an instance home as the only argument,</p></li>
+<li><p>with both an instance home and a mail spool file, or</p></li>
+<li><p>with an instance home, a mail source type and its specification.</p></li>
+</ul>
+<p>It also supports optional <code class="docutils literal notranslate"><span class="pre">-S</span></code> (or <code class="docutils literal notranslate"><span class="pre">--set-value</span></code>) arguments that allows you
+to set fields for a class created by the roundup-mailgw. The format for
+this option is [class.]property=value where class can be omitted and
+defaults to msg. The <code class="docutils literal notranslate"><span class="pre">-S</span></code> options uses the same
+property=value[;property=value] notation accepted by the command line
+roundup command or the commands that can be given on the Subject line of
+an email message (if you’re using multiple properties delimited with a
+semicolon the class must be specified only once in the beginning).</p>
+<p>It can let you set the type of the message on a per e-mail address basis
+by calling roundup-mailgw with different email addresses and other
+settings.</p>
+<dl>
+<dt>PIPE:</dt><dd><p>If there is no mail source specified, the mail gateway reads a single
+message from the standard input and submits the message to the
+roundup.mailgw module.</p>
+</dd>
+<dt>UNIX mailbox:</dt><dd><p>In this case, the gateway reads all messages from the UNIX mail spool
+file and submits each in turn to the roundup.mailgw module. The file is
+emptied once all messages have been successfully handled. The file is
+specified as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mailbox</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">mailbox</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<p>In all of the following mail source types, the username and password
+can be stored in a <code class="docutils literal notranslate"><span class="pre">~/.netrc</span></code> file. If done so, only the server name
+needs to be specified on the command-line.
+The username and/or password will be prompted for if not supplied on
+the command-line or in <code class="docutils literal notranslate"><span class="pre">~/.netrc</span></code>.</p>
+<dl>
+<dt>POP:</dt><dd><p>For the mail source “pop”, the gateway reads all messages from the POP
+server specified and submits each in turn to the roundup.mailgw module.
+The server is specified as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pop</span> <span class="n">username</span><span class="p">:</span><span class="n">password</span><span class="nd">@server</span>
+</pre></div>
+</div>
+<p>The username and password may be omitted:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pop</span> <span class="n">username</span><span class="nd">@server</span>
+<span class="n">pop</span> <span class="n">server</span>
+</pre></div>
+</div>
+<p>are both valid.</p>
+</dd>
+<dt>POPS:</dt><dd><p>Connect to a POP server over tls/ssl.
+This supports the same notation as POP:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pops</span> <span class="n">username</span><span class="p">:</span><span class="n">password</span><span class="nd">@server</span>
+</pre></div>
+</div>
+</dd>
+<dt>APOP:</dt><dd><p>Same as POP, but using Authenticated POP:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">apop</span> <span class="n">username</span><span class="p">:</span><span class="n">password</span><span class="nd">@server</span>
+</pre></div>
+</div>
+</dd>
+<dt>IMAP:</dt><dd><p>Connect to an IMAP server. This supports the same notation as that of
+POP mail:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">imap</span> <span class="n">username</span><span class="p">:</span><span class="n">password</span><span class="nd">@server</span>
+</pre></div>
+</div>
+<p>It also allows you to specify a specific mailbox other than INBOX using
+this format:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">imap</span> <span class="n">username</span><span class="p">:</span><span class="n">password</span><span class="nd">@server</span> <span class="n">mailbox</span>
+</pre></div>
+</div>
+</dd>
+<dt>IMAPS:</dt><dd><p>Connect to an IMAP server over tls/ssl.
+This supports the same notation as IMAP:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">imaps</span> <span class="n">username</span><span class="p">:</span><span class="n">password</span><span class="nd">@server</span> <span class="p">[</span><span class="n">mailbox</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd>
+<dt>IMAPS_CRAM:</dt><dd><p>Connect to an IMAP server over tls/ssl using CRAM-MD5 authentication.
+This supports the same notation as IMAP:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">imaps_cram</span> <span class="n">username</span><span class="p">:</span><span class="n">password</span><span class="nd">@server</span> <span class="p">[</span><span class="n">mailbox</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd>
+<dt>IMAPS_OAUTH:</dt><dd><p>Connect to an IMAP server over tls/ssl using OAUTH authentication.
+Note that this does not support a password in imaps URLs.
+Instead it uses only the user and server and a command-line option for
+the directory with the files <code class="docutils literal notranslate"><span class="pre">access_token</span></code>, <code class="docutils literal notranslate"><span class="pre">refresh_token</span></code>,
+<code class="docutils literal notranslate"><span class="pre">client_secret</span></code>, and <code class="docutils literal notranslate"><span class="pre">client_id</span></code>.
+By default this directory is <code class="docutils literal notranslate"><span class="pre">oauth</span></code> in your tracker home directory. The
+access token is tried first and, if expired, the refresh token together
+with the client secret is used to retrieve a new access token. Note that
+both token files need to be <em>writeable</em>, the access token is
+continuously replaced and some cloud providers may also renew the
+refresh token from time to time:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">imaps_oauth</span> <span class="n">username</span><span class="nd">@server</span> <span class="p">[</span><span class="n">mailbox</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>The refresh and access tokens (the latter can be left empty), the
+client id and the client secret need to be retrieved via cloud provider
+specific protocols or websites.</p>
+<p>You need the <a class="reference external" href="https://requests.readthedocs.io/en/latest/">requests</a> library installed to ue the IMAPS_OAUTH method.</p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+<section id="using-roundup-admin">
+<span id="index-6"></span><h2><a class="toc-backref" href="#id45" role="doc-backlink">Using roundup-admin</a></h2>
+<p>Part of the installation includes a man page for roundup-admin.  Ypu
+should be able to read it using <code class="docutils literal notranslate"><span class="pre">man</span> <span class="pre">roundup-admin</span></code>. As shown above,
+it is a generic tool for manipulating the underlying database for you
+tracker.</p>
+<p>Examples above show how to use it to:</p>
+<ul class="simple">
+<li><p>install and initialize a new tracker</p></li>
+<li><p>export/import tracker data for migrating between backends</p></li>
+<li><p>creating a new user from the command line</p></li>
+<li><p>list/find users in the tracker</p></li>
+</ul>
+<p>The basic usage is:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Usage: roundup-admin [options] [&lt;command&gt; &lt;arguments&gt;]
+
+Options:
+ -i instance home  -- specify the issue tracker &quot;home directory&quot; to administer
+ -u                -- the user[:password] to use for commands (default admin)
+ -d                -- print full designators not just class id numbers
+ -c                -- when outputting lists of data, comma-separate them.
+                      Same as &#39;-S &quot;,&quot;&#39;.
+ -S &lt;string&gt;       -- when outputting lists of data, string-separate them
+ -s                -- when outputting lists of data, space-separate them.
+                      Same as &#39;-S &quot; &quot;&#39;.
+ -P pragma=value   -- Set a pragma on command line rather than interactively.
+                      Can be used multiple times.
+ -V                -- be verbose when importing
+ -v                -- report Roundup and Python versions (and quit)
+
+ Only one of -s, -c or -S can be specified.
+
+Help:
+ roundup-admin -h
+ roundup-admin help                       -- this help
+ roundup-admin help &lt;command&gt;             -- command-specific help
+ roundup-admin help all                   -- all available help
+
+Commands:
+ commit
+ create classname property=value ...
+ display designator[,designator]*
+ export [[-]class[,class]] export_dir
+ exporttables [[-]class[,class]] export_dir
+ filter classname propname=value ...
+ find classname propname=value ...
+ genconfig &lt;filename&gt;
+ get property designator[,designator]*
+ help topic
+ history designator [skipquiet] [raw]
+ import import_dir
+ importtables export_dir
+ initialise [adminpw]
+ install [template [backend [key=val[,key=val]]]]
+ list classname [property]
+ migrate
+ pack period | date
+ perftest [mode] [arguments]*
+ pragma setting=value | &#39;list&#39;
+ reindex [classname|classname:#-#|designator]*
+ restore designator[,designator]*
+ retire designator[,designator]*
+ rollback
+ security [Role name]
+ set items property=value [property=value ...]
+ specification classname
+ table classname [property[,property]*]
+ templates [trace_search]
+ updateconfig &lt;filename&gt;
+Commands may be abbreviated as long as the abbreviation
+matches only one command, e.g. l == li == lis == list.
+</pre></div>
+</div>
+<p>One thing to note, The <code class="docutils literal notranslate"><span class="pre">-u</span> <span class="pre">user</span></code> setting does not currently operate
+like a user logging in via the web. The user running roundup-admin
+must have read access to the tracker home directory. As a result the
+user has access to the files and the database info contained in
+config.ini.</p>
+<p>Using <code class="docutils literal notranslate"><span class="pre">-u</span> <span class="pre">user</span></code> sets the actor/user parameter in the
+journal. Changes that are made are attributed to that
+user. The password is ignored if provided. Any existing
+username has full access to the data just like the admin
+user. This is an area for further development so that
+roundup-admin could be used with sudo to provide secure
+command line access to a tracker.</p>
+<p>In general you should forget that there is a -u parameter.</p>
+<p>All commands (except help, genconfig, templates) require a tracker
+specifier. This is just the path to the roundup tracker you’re working
+with. A roundup tracker is where roundup keeps the database and
+configuration file that defines an issue tracker. It may be thought of
+as the issue tracker’s “home directory”. It may be specified in the
+environment variable <code class="docutils literal notranslate"><span class="pre">TRACKER_HOME</span></code> or on the command line as “<code class="docutils literal notranslate"><span class="pre">-i</span>
+<span class="pre">tracker</span></code>”.</p>
+<p>A designator is a classname and an itemid concatenated, eg. bug1,
+user10, … Property values are represented as strings in command
+arguments and in the printed results:</p>
+<ul>
+<li><p>Strings are, well, strings.</p></li>
+<li><p>Password values will display as their encoded value.</p></li>
+<li><p>Date values are printed in the full date format in the local time
+zone, and accepted in the full format or any of the partial formats
+explained below.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Input</span> <span class="n">of</span><span class="o">...</span>        <span class="n">Means</span><span class="o">...</span>
+<span class="s2">&quot;2000-04-17.03:45&quot;</span> <span class="mi">2000</span><span class="o">-</span><span class="mi">04</span><span class="o">-</span><span class="mf">17.03</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mi">00</span>
+<span class="s2">&quot;2000-04-17&quot;</span>       <span class="mi">2000</span><span class="o">-</span><span class="mi">04</span><span class="o">-</span><span class="mf">17.00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+<span class="s2">&quot;01-25&quot;</span>            <span class="n">yyyy</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mf">25.00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+<span class="s2">&quot;08-13.22:13&quot;</span>      <span class="n">yyyy</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mf">13.22</span><span class="p">:</span><span class="mi">13</span><span class="p">:</span><span class="mi">00</span>
+<span class="s2">&quot;11-07.09:32:43&quot;</span>   <span class="n">yyyy</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mf">07.09</span><span class="p">:</span><span class="mi">32</span><span class="p">:</span><span class="mi">43</span>
+<span class="s2">&quot;14:25&quot;</span>            <span class="n">yyyy</span><span class="o">-</span><span class="n">mm</span><span class="o">-</span><span class="n">dd</span><span class="mf">.14</span><span class="p">:</span><span class="mi">25</span><span class="p">:</span><span class="mi">00</span>
+<span class="s2">&quot;8:47:11&quot;</span>          <span class="n">yyyy</span><span class="o">-</span><span class="n">mm</span><span class="o">-</span><span class="n">dd</span><span class="mf">.08</span><span class="p">:</span><span class="mi">47</span><span class="p">:</span><span class="mi">11</span>
+<span class="s2">&quot;2003&quot;</span>             <span class="mi">2003</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mf">01.00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+<span class="s2">&quot;2003-04&quot;</span>          <span class="mi">2003</span><span class="o">-</span><span class="mi">04</span><span class="o">-</span><span class="mf">01.00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+<span class="s2">&quot;.&quot;</span>                <span class="s2">&quot;right now&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Link values are printed as item designators. When given as an
+argument, item designators and key strings are both accepted.</p></li>
+<li><p>Multilink values are printed as lists of item designators joined by
+commas. When given as an argument, item designators and key strings
+are both accepted; an empty string, a single item, or a list of items
+joined by commas is accepted.</p></li>
+</ul>
+<p>When multiple items are specified to the roundup get or roundup set
+commands, the specified properties are retrieved or set on all the
+listed items.  When multiple results are returned by the roundup get or
+roundup find commands, they are printed one per line (default) or joined
+by commas (with the “<code class="docutils literal notranslate"><span class="pre">-c</span></code>” option).</p>
+<p>Where the command changes data, a login name/password is required. The
+login may be specified as either “<code class="docutils literal notranslate"><span class="pre">name</span></code>” or “<code class="docutils literal notranslate"><span class="pre">name:password</span></code>”.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ROUNDUP_LOGIN</span></code> environment variable</p></li>
+<li><p>the “<code class="docutils literal notranslate"><span class="pre">-u</span></code>” command-line option</p></li>
+</ul>
+<p>If either the name or password is not supplied, they are obtained from
+the command-line.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">-u</span> <span class="pre">user</span></code> setting does not currently operate like a
+user logging in via the web. The user running roundup-admin
+must have read access to the tracker home directory. As a
+result the user has access to the files and the database
+info contained in config.ini.</p>
+<p>Using <code class="docutils literal notranslate"><span class="pre">-u</span> <span class="pre">user</span></code> sets the actor/user parameter in the
+journal. Changes that are made are attributed to that
+user. The password is ignored if provided. Any existing
+username has full access to the data just like the admin
+user. This is an area for further development so that
+roundup-admin could be used with sudo to provide secure
+command line access to a tracker.</p>
+<p id="initpw">When you initialise a new tracker instance you are prompted for the
+admin password. If you want to initialise a tracker non-interactively
+you can put the initialise command and password on the command
+line. But this allows others on the host to see the password (using
+the ps command). To initialise a tracker non-interactively without
+exposing the password, create a file (e.g init_tracker) set to mode
+600 (so only the owner can read it) with the contents:</p>
+<blockquote>
+<div><p>initialise admin_password</p>
+</div></blockquote>
+<p>and feed it to roundup-admin on standard input. E.G.</p>
+<blockquote>
+<div><p>cat init_tracker | roundup-admin -i tracker_dir</p>
+</div></blockquote>
+<p>(for more details see <a class="reference external" href="https://issues.roundup-tracker.org/issue2550789">https://issues.roundup-tracker.org/issue2550789</a>.)</p>
+<section id="using-interactively">
+<span id="index-7"></span><h3><a class="toc-backref" href="#id46" role="doc-backlink">Using Interactively</a></h3>
+<p>You can edit the command line using left/right arrow keys to move the
+cursor. Using the up/down arrow keys moves among commands. It will
+save your commands between roundup-admin sessions. This is supported
+on Unix/Linux and Mac’s. On windows you should install the pyreadline3
+package (see <a class="reference external" href="installation.html">installation documentation</a>).</p>
+<p>Using the <code class="docutils literal notranslate"><span class="pre">history_length</span></code> pragma you can set the saved history size
+for just one session.</p>
+<p>You can add initialization commands to <code class="docutils literal notranslate"><span class="pre">~/.roundup_admin_rlrc</span></code>. It
+will be loaded when roundup-admin starts. This is the mechanism to
+persistently set the number of history commands, change editing modes
+(Vi vs. Emacs). Note that redefining the history file will not work.</p>
+<p>If you are using GNU readline, <code class="docutils literal notranslate"><span class="pre">set</span> <span class="pre">history-size</span> <span class="pre">10</span></code>. If your
+installation uses libedit (macs), it should be possible to
+persistently set the history size using <code class="docutils literal notranslate"><span class="pre">history</span> <span class="pre">size</span>
+<span class="pre">10</span></code>. Pyreadline3 can set history length using
+<code class="docutils literal notranslate"><span class="pre">history_length(10)</span></code>. See the documentation for example syntax:
+<a class="reference external" href="https://pythonhosted.org/pyreadline/usage.html#configuration-file">https://pythonhosted.org/pyreadline/usage.html#configuration-file</a>.</p>
+<p>History is saved to the file <code class="docutils literal notranslate"><span class="pre">.roundup_admin_history</span></code> in your home
+directory (for windows usually <code class="docutils literal notranslate"><span class="pre">\Users\&lt;username&gt;</span></code>.</p>
+</section>
+<section id="using-with-the-shell">
+<h3><a class="toc-backref" href="#id47" role="doc-backlink">Using with the shell</a></h3>
+<p>With version 0.6.0 or newer of roundup (which introduced support for
+multiple designators to display and the -d, -S and -s flags):</p>
+<p>To find all messages regarding chatting issues that contain the word
+“spam”, for example, you could execute the following command from the
+directory where the database dumps its files:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>shell% for issue in `roundup-admin -ds find issue status=chatting`; do
+&gt; grep -l spam `roundup-admin -ds &#39; &#39; get messages $issue`
+&gt; done
+msg23
+msg49
+msg50
+msg61
+shell%
+</pre></div>
+</div>
+<p>Or, using the -dc option, this can be written as a single command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>shell% grep -l spam `roundup get messages \
+    \`roundup -dc find issue status=chatting\``
+msg23
+msg49
+msg50
+msg61
+shell%
+</pre></div>
+</div>
+<p>You can also display issue contents:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>shell% roundup-admin display `roundup-admin -dc get messages \
+           issue3,issue1`
+files: []
+inreplyto: None
+recipients: []
+author: 1
+date: 2003-02-16.21:23:03
+messageid: None
+summary: jkdskldjf
+files: []
+inreplyto: None
+recipients: []
+author: 1
+date: 2003-02-15.01:59:11
+messageid: None
+summary: jlkfjadsf
+</pre></div>
+</div>
+<p>or status:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>shell% roundup-admin get name `/tools/roundup/bin/roundup-admin \
+      -dc -i /var/roundup/sysadmin get status issue3,issue1`
+unread
+deferred
+</pre></div>
+</div>
+<p>or status on a single line:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>shell% echo `roundup-admin get name \`/tools/roundup/bin/roundup-admin \
+         -dc -i /var/roundup/sysadmin get status issue3,issue1\``
+unread deferred
+</pre></div>
+</div>
+<p>which is the same as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>shell% roundup-admin -s get name `/tools/roundup/bin/roundup-admin \
+         -dc -i /var/roundup/sysadmin get status issue3,issue1`
+unread deferred
+</pre></div>
+</div>
+<p>Also the tautological:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>shell% roundup-admin get name \
+   `roundup-admin -dc get status \`roundup-admin -dc find issue \
+       status=chatting\``
+chatting
+chatting
+</pre></div>
+</div>
+<p>Remember the roundup commands that accept multiple designators accept
+them ‘,’ separated so using ‘-dc’ is almost always required.</p>
+</section>
+<section id="a-note-on-import-and-export">
+<h3><a class="toc-backref" href="#id48" role="doc-backlink">A Note on Import and Export</a></h3>
+<p>This is a little in the weeds, but I have noticed this and was asked
+about it so I am documenting it for the future.</p>
+<p>Running <code class="docutils literal notranslate"><span class="pre">roundup-admin</span></code> with <code class="docutils literal notranslate"><span class="pre">-V</span></code> to get additional info when
+importing/exporting the tracker generates three types of messages.</p>
+<p>For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ roundup-admin -i tracker -V export ./myExport
+Exporting priority - 5
+Exporting Journal for priority
+Exporting status - 1
+Exporting Journal for status
+[...]
+
+
+$ roundup-admin -i tracker -V import ./myExport
+Importing priority - 7
+setting priority 8
+Importing status - 8
+setting status 9
+[...]
+</pre></div>
+</div>
+<p>Note the numbers for status. Exported ends up at 1, Imported ends up
+at 8 and setting chooses 9. These numbers are derived differently and
+used differently. You can’t directly compare them.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Exporting</span> <span class="pre">issue</span> <span class="pre">-</span> <span class="pre">XXX</span></code>:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">XXX</span></code> is the id number of the node being exported/processed from
+the database. The order is determined by sorting by the key of the
+class (as set by sortkey). If the class key is ‘id’, then it’s a
+string sort so ‘9’ comes before ‘1009’. You might notice if the
+export is slow the numbers jumping around.</p>
+<p>It does not usually end up as the total number of nodes
+exported. However if it crashes, you know what node it was
+processing at the time.</p>
+<p>In the example above, the status node with id 1 was the last one
+when sorted alphabetically by name.</p>
+</div></blockquote>
+<p><code class="docutils literal notranslate"><span class="pre">Importing</span> <span class="pre">&lt;class&gt;</span> <span class="pre">-</span> <span class="pre">XXX</span></code>:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">XXX</span></code> is the number of the node (not the node id) being
+imported/currently processed at line XXX+1 in the file. It is an
+incrementing number starting at 0 and never jumps around. Value 0
+is consumed when reading the header and not displayed. The final
+value is the same as the number of objects and one less then the
+number of lines in the file. If it crashes, you were processing
+the line at XXX+1.</p>
+</div></blockquote>
+<p><code class="docutils literal notranslate"><span class="pre">setting</span> <span class="pre">&lt;class&gt;</span> <span class="pre">XXX</span></code>:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">XXX</span></code> in the setting line should always be one more than the
+number of imported objects. The setting value is the id for the
+next created object of that type. So in theory the Importing
+number should be one less than the setting number.</p>
+<p>However under certain circumstances, Roundup can skip an id
+number. This can lead to a difference of more than 1 between the
+Importing and setting numbers. It’s not a problem. However setting
+can (and must) always be higher than the Importing number.</p>
+</div></blockquote>
+</section>
+<section id="interactive-help">
+<h3><a class="toc-backref" href="#id49" role="doc-backlink">Interactive Help</a></h3>
+<p>The help command produces the following output for all the commands.</p>
+<table>
+
+<tr><td valign=top><strong>commit</strong></td>
+    <td><p><tt></tt></p>
+
+<p>
+Commit changes made to the database during an interactive session.
+</p><p>
+The changes made during an interactive session are not
+automatically written to the database - they must be committed
+using this command.
+</p><p>
+One-off commands on the command-line are automatically committed if
+they are successful.
+</p><p>
+</td></tr>
+
+
+<tr><td valign=top><strong>create</strong></td>
+    <td><p><tt>classname property=value ...</tt></p>
+
+<p>
+Create a new entry of a given class.
+</p><p>
+This creates a new entry of the given class using the property
+name=value arguments provided on the command line after the "create"
+command.
+</p><p>
+</td></tr>
+
+
+<tr><td valign=top><strong>display</strong></td>
+    <td><p><tt>designator[,designator]*</tt></p>
+
+<p>
+Show the property values for the given node(s).
+</p><p>
+A designator is a classname and a nodeid concatenated,
+eg. bug1, user10, ...
+</p><p>
+This lists the properties and their associated values
+for the given node.
+</p><p>
+</td></tr>
+
+
+<tr><td valign=top><strong>export</strong></td>
+    <td><p><tt>[[-]class[,class]] export_dir</tt></p>
+
+<p>
+Export the database and file content.
+</p><p>
+Database content is exported to colon separated files.
+To exclude the files (e.g. for the msg or file class),
+use the exporttables command.
+</p><p>
+Optionally limit the export to just the named classes
+or exclude the named classes, if the 1st argument
+starts with '-'.
+</p><p>
+This action exports the current data from the database into
+colon-separated-value files that are placed in the nominated
+export_dir directory.
+</p><p>
+</td></tr>
+
+
+<tr><td valign=top><strong>exporttables</strong></td>
+    <td><p><tt>[[-]class[,class]] export_dir</tt></p>
+
+<p>
+Export only the database to files, no file content.
+</p><p>
+Database content is exported to colon separated files.
+The files below $TRACKER_HOME/db/files/ (which can be
+archived separately) are not part of the export.
+To include the files, use the export command.
+</p><p>
+Optionally limit the export to just the named classes
+or exclude the named classes, if the 1st argument
+starts with '-'.
+</p><p>
+This action exports the current data from the database into
+colon-separated-value files that are placed in the export_dir
+destination directory.
+</p><p>
+</td></tr>
+
+
+<tr><td valign=top><strong>filter</strong></td>
+    <td><p><tt>classname propname=value ...</tt></p>
+
+<p>
+Find the nodes of the given class with a given property value.
+</p><p>
+Find the nodes of the given class with a given property value.
+Multiple values can be specified by separating them with commas.
+If property is a string, all values must match. I.E. it's an
+'and' operation. If the property is a link/multilink any value
+matches. I.E. an 'or' operation.
+</p><p>
+</td></tr>
+
+
+<tr><td valign=top><strong>find</strong></td>
+    <td><p><tt>classname propname=value ...</tt></p>
+
+<p>
+Find the nodes of the given class with a given link property value.
+</p><p>
+Find the nodes of the given class with a given link property value.
+The value may be either the nodeid of the linked node, or its key
+value.
+</p><p>
+</td></tr>
+
+
+<tr><td valign=top><strong>genconfig</strong></td>
+    <td><p><tt>filename</tt></p>
+
+<p>
+Create a new tracker config file with default values in filename.
+See also updateconfig.
+</p><p>
+</td></tr>
+
+
+<tr><td valign=top><strong>get</strong></td>
+    <td><p><tt>property designator[,designator]*</tt></p>
+
+<p>
+Get the given property of one or more designator(s).
+</p><p>
+A designator is a classname and a nodeid concatenated,
+eg. bug1, user10, ...
+</p><p>
+Retrieves the property value of the nodes specified
+by the designators.
+</p><p>
+</td></tr>
+
+
+<tr><td valign=top><strong>help</strong></td>
+    <td><p><tt>topic</tt></p>
+
+<p>
+Give help about topic.
+</p><p>
+commands  -- list commands
+&lt;command&gt; -- help specific to a command
+initopts  -- init command options
+all       -- all available help
+</p><p>
+</td></tr>
+
+
+<tr><td valign=top><strong>history</strong></td>
+    <td><p><tt>designator [skipquiet] [raw]</tt></p>
+
+<p>
+Show the history entries of a designator.
+</p><p>
+A designator is a classname and a nodeid concatenated,
+eg. bug1, user10, ...
+</p><p>
+Lists the journal entries viewable by the user for the node
+identified by the designator. If skipquiet is added, journal
+entries for quiet properties are not shown. If raw is added,
+the output is the raw representation of the journal entries.
+</p><p>
+</td></tr>
+
+
+<tr><td valign=top><strong>import</strong></td>
+    <td><p><tt>import_dir</tt></p>
+
+<p>
+Import a database and file contents from the directory.
+</p><p>
+The directory should have the same format as one containing
+the output of export. There are two files imported per class.
+The files used in the import are:
+</p><p>
+&lt;class&gt;.csv
+  This must define the same properties as the class
+  (including having a "header" line with those
+  property names.)
+</p><p>
+&lt;class&gt;-journals.csv
+ This defines the journals for the items
+ being imported.
+</p><p>
+The imported nodes will have the same nodeid as defined in the
+import file, thus replacing any existing content.
+</p><p>
+The new nodes are added to the existing database - if you want to
+create a new database using the imported data, then create a new
+database (or, tediously, retire all the old data.)
+</p><p>
+</td></tr>
+
+
+<tr><td valign=top><strong>importtables</strong></td>
+    <td><p><tt>export_dir</tt></p>
+
+<p>
+This imports the database tables exported using exporttables.
+</p><p>
+It does not import the content of files like msgs and files.
+</p><p>
+</td></tr>
+
+
+<tr><td valign=top><strong>initialise</strong></td>
+    <td><p><tt>[adminpw]</tt></p>
+
+<p>
+Initialise a new Roundup tracker.
+</p><p>
+The administrator details will be set at this step.
+</p><p>
+Execute the tracker's initialisation function dbinit.init()
+</p><p>
+</td></tr>
+
+
+<tr><td valign=top><strong>install</strong></td>
+    <td><p><tt>[template [backend [key=val[,key=val]]]]</tt></p>
+
+<p>
+Install a new Roundup tracker.
+</p><p>
+The command will prompt for the tracker home directory
+(if not supplied through TRACKER_HOME or the -i option).
+The template and backend may be specified on the command-line
+as arguments, in that order.
+</p><p>
+Command line arguments following the backend allows you to
+pass initial values for config options.  For example, passing
+"web_http_auth=no,rdbms_user=dinsdale" will override defaults
+for options http_auth in section [web] and user in section [rdbms].
+Please be careful to not use spaces in this argument! (Enclose
+whole argument in quotes if you need spaces in option value).
+</p><p>
+The initialise command must be called after this command in order
+to initialise the tracker's database. You may edit the tracker's
+initial database contents before running that command by editing
+the tracker's dbinit.py module init() function.
+</p><p>
+See also initopts help.
+</p><p>
+</td></tr>
+
+
+<tr><td valign=top><strong>list</strong></td>
+    <td><p><tt>classname [property]</tt></p>
+
+<p>
+List the instances of a class.
+</p><p>
+Lists all instances of the given class. If the property is not
+specified, the  "label" property is used. The label property is
+tried in order: the key, "name", "title" and then the first
+property, alphabetically.
+</p><p>
+With -c, -S or -s print a list of item id's if no property
+specified.  If property specified, print list of that property
+for every class instance.
+</p><p>
+</td></tr>
+
+
+<tr><td valign=top><strong>migrate</strong></td>
+    <td><p><tt></tt></p>
+
+<p>
+Update a tracker's database to be compatible with the Roundup
+codebase.
+</p><p>
+You should run the "migrate" command for your tracker once
+you've installed the latest codebase.
+</p><p>
+Do this before you use the web, command-line or mail interface
+and before any users access the tracker.
+</p><p>
+This command will respond with either "Tracker updated" (if
+you've not previously run it on an RDBMS backend) or "No
+migration action required" (if you have run it, or have used
+another interface to the tracker, or possibly because you are
+using anydbm).
+</p><p>
+It's safe to run this even if it's not required, so just get
+into the habit.
+</p><p>
+</td></tr>
+
+
+<tr><td valign=top><strong>pack</strong></td>
+    <td><p><tt>period | date</tt></p>
+
+<p>
+Remove journal entries older than the date/period.
+</p><p>
+A period is specified using the suffixes "y", "m", and "d". The
+suffix "w" (for "week") means 7 days.
+</p><p>
+<pre>    "3y" means three years</pre>
+<pre>    "2y 1m" means two years and one month</pre>
+<pre>    "1m 25d" means one month and 25 days</pre>
+<pre>    "2w 3d" means two weeks and three days</pre>
+</p><p>
+Date format is "YYYY-MM-DD" eg:
+<pre>    2001-01-01</pre>
+</p><p>
+</p><p>
+</td></tr>
+
+
+<tr><td valign=top><strong>perftest</strong></td>
+    <td><p><tt>[mode] [arguments]*</tt></p>
+
+<p>
+Time operations in Roundup.
+</p><p>
+Supported arguments:
+</p><p>
+<pre>    [password] [rounds=&lt;integer&gt;] [scheme=&lt;scheme&gt;]</pre>
+</p><p>
+'password' is the default mode.  The tracker's config.ini
+setting for 'password_pbkdf2_default_rounds' is the default
+value for 'rounds'. On the command line, 'rounds' can include
+thousands separator of ',' or '.'.  'scheme' is the default
+coded into Roundup. List supported schemes by using 'scheme='.
+</p><p>
+</p><p>
+</td></tr>
+
+
+<tr><td valign=top><strong>pragma</strong></td>
+    <td><p><tt>setting=value | 'list'</tt></p>
+
+<p>
+Set internal admin settings to a value.
+</p><p>
+For example:
+</p><p>
+<pre>    pragma verbose=True</pre>
+<pre>    pragma verbose=yes</pre>
+<pre>    pragma verbose=on</pre>
+<pre>    pragma verbose=1</pre>
+</p><p>
+ will turn on verbose mode for roundup-admin.
+</p><p>
+<pre>    pragma list</pre>
+</p><p>
+ will show all settings and their current values. If verbose
+ is enabled hidden settings and descriptions will be shown.
+</p><p>
+</td></tr>
+
+
+<tr><td valign=top><strong>reindex</strong></td>
+    <td><p><tt>[classname|classname:#-#|designator]*</tt></p>
+
+<p>
+Re-generate a tracker's search indexes.
+</p><p>
+This will re-generate the search indexes for a tracker.
+This will typically happen automatically.
+</p><p>
+You can incrementally reindex using an argument like:
+</p><p>
+<pre>    reindex issue:23-1000</pre>
+</p><p>
+to reindex issue class items 23-1000. Missing items
+are reported but do not stop indexing of the range.
+</p><p>
+</td></tr>
+
+
+<tr><td valign=top><strong>restore</strong></td>
+    <td><p><tt>designator[,designator]*</tt></p>
+
+<p>
+Restore the retired node specified by designator.
+</p><p>
+A designator is a classname and a nodeid concatenated,
+eg. bug1, user10, ...
+</p><p>
+The given nodes will become available for users again.
+</p><p>
+</td></tr>
+
+
+<tr><td valign=top><strong>retire</strong></td>
+    <td><p><tt>designator[,designator]*</tt></p>
+
+<p>
+Retire the node specified by designator.
+</p><p>
+A designator is a classname and a nodeid concatenated,
+eg. bug1, user10, ...
+</p><p>
+This action indicates that a particular node is not to be retrieved
+by the list or find commands, and its key value may be re-used.
+</p><p>
+</td></tr>
+
+
+<tr><td valign=top><strong>rollback</strong></td>
+    <td><p><tt></tt></p>
+
+<p>
+Undo all changes that are pending commit to the database.
+</p><p>
+The changes made during an interactive session are not
+automatically written to the database - they must be committed
+manually. This command undoes all those changes, so a commit
+immediately after would make no changes to the database.
+</p><p>
+</td></tr>
+
+
+<tr><td valign=top><strong>security</strong></td>
+    <td><p><tt>[Role name]</tt></p>
+
+<p>
+Display the Permissions available to one or all Roles.
+</p><p>
+Also validates that any properties defined in a
+permission are valid.
+</p><p>
+Run this after changing your permissions to catch
+typos.
+</p><p>
+</td></tr>
+
+
+<tr><td valign=top><strong>set</strong></td>
+    <td><p><tt>items property=value [property=value ...]</tt></p>
+
+<p>
+Set the given properties of one or more items(s).
+</p><p>
+The items are specified as a class or as a comma-separated
+list of item designators (ie "designator[,designator,...]").
+</p><p>
+A designator is a classname and a nodeid concatenated,
+eg. bug1, user10, ...
+</p><p>
+This command sets the properties to the values for all
+designators given. If a class is used, the property will be
+set for all items in the class. If the value is missing
+(ie. "property=") then the property is un-set. If the property
+is a multilink, you specify the linked ids for the multilink
+as comma-separated numbers (ie "1,2,3").
+</p><p>
+</p><p>
+</td></tr>
+
+
+<tr><td valign=top><strong>specification</strong></td>
+    <td><p><tt>classname</tt></p>
+
+<p>
+Show the properties for a classname.
+</p><p>
+This lists the properties for a given class.
+</p><p>
+</td></tr>
+
+
+<tr><td valign=top><strong>table</strong></td>
+    <td><p><tt>classname [property[,property]*]</tt></p>
+
+<p>
+List the instances of a class in tabular form.
+</p><p>
+Lists all instances of the given class. If the properties are not
+specified, all properties are displayed. By default, the column
+widths are the width of the largest value. The width may be
+explicitly defined by defining the property as "name:width".
+For example::
+</p><p>
+<pre>    roundup&gt; table priority id,name:10</pre>
+<pre>    Id Name</pre>
+<pre>    1  fatal-bug</pre>
+<pre>    2  bug</pre>
+<pre>    3  usability</pre>
+<pre>    4  feature</pre>
+</p><p>
+Also to make the width of the column the width of the label,
+leave a trailing : without a width on the property. For example::
+</p><p>
+<pre>    roundup&gt; table priority id,name:</pre>
+<pre>    Id Name</pre>
+<pre>    1  fata</pre>
+<pre>    2  bug</pre>
+<pre>    3  usab</pre>
+<pre>    4  feat</pre>
+</p><p>
+will result in a the 4 character wide "Name" column.
+</p><p>
+</td></tr>
+
+
+<tr><td valign=top><strong>templates</strong></td>
+    <td><p><tt>[trace_search]</tt></p>
+
+<p>
+List templates and their installed directories.
+</p><p>
+With trace_search also list all directories that are
+searched for templates.
+</p><p>
+</td></tr>
+
+
+<tr><td valign=top><strong>updateconfig</strong></td>
+    <td><p><tt>&lt;filename&gt;</tt></p>
+
+<p>
+Merge existing tracker config with new settings.
+</p><p>
+Output the updated config file to &lt;filename&gt;. Use current
+settings from existing roundup tracker in tracker home.
+</p><p>
+</td></tr>
+
+</table>
+</section>
+</section>
+</section>
+
+
+       
+    <div class="related related-bottom">
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="man_pages.html" title="Roundup Manual Pages"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="glossary.html" title="Roundup Glossary"
+             accesskey="P">previous</a></li>
+        <li><a href="index.html">Roundup 2.5.0 documentation</a></li> 
+      </ul>
+    </div>
+    </main>
+    <div class="footer">
+        &copy; Copyright 2009-2025, Richard Jones, Roundup-Team.
+    </div>
+  </body>
+</html>

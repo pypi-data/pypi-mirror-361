@@ -1,0 +1,119 @@
+.. meta::
+    :description:
+        Definitions of terms used in the Roundup Issue Tracker
+	documentation. Referenced by other documents.
+
+================
+Roundup Glossary
+================
+
+.. glossary::
+   :sorted:
+
+   class
+      a definition of the properties and behavior of a set of items
+
+   classname
+      the name of a class. It must start with a letter, end with a letter
+      or "_", and only have alphanumerics and "_" in the middle.
+
+   db
+      database used to store the data in the tracker. Roundup supports
+      4 databases: dbm (Berkeley DB/BDB), SQLite, PostgreSQL, MySQL/MariaDB.
+
+   definitional class
+      a class that exists to define a discrete set of values. For example
+      status or priority.
+
+   designator
+      a combined :term:`classname` + :term:`itemid` reference to any item
+      in the hyperdb. E.g. ``issue26``. Note that form values can include
+      something that looks like a designator composed of a classname,
+      a dash '-', and a number. E.g. ``file-1``. These are used to create
+      new instances of a class via the web interface.
+
+   detectors
+      There are two types of detectors that execute Python code in
+      response to changes to the database.
+
+      auditors
+	are run before a permanent change is made to the database.
+	They validate that the change is allowed. For example is
+	the current user allowed to change the status field.
+
+      reactors
+	are run after a change has been committed to the
+	database. They are used to perform actions like sending
+	notification messages, updating other tickets etc.
+
+   html directory
+      there is a directory called **html** in tracker homes. This
+      contains html files (called templates) that are processed by the
+      templating processor (TAL or jinja2) for delivery to a web
+      client. However there is also a ``templates`` setting in the
+      tracker's ``config.ini`` file. The default value for this is
+      ``html``. However any directories listed as templates should be
+      considered an ``html directory``
+
+   hyperdb
+      a software layer between the user and the underlying :term:`db`.
+      It is responsible for mutating the underlying db when the schema
+      changes. It also executes the detectors when items in the db change.
+
+   item
+      a collection of data that forms one entry in the hyperdb.
+
+   itemid
+      an integer reference to a particular item of one
+      class. Internally it is stored as a string and not an integer
+      number. This results in a string not numeric sort by id in some
+      circumstances.
+
+   property
+      one element of data that makes up an item. In Roundup, the set 
+      of item properties may be changed as needed - even after the 
+      tracker has been initialized and used in production.
+
+   schema
+      the definition of all the classes and properties that make up a
+      tracker. Contained in the file ``schema.py``. The permissions
+      for the schema items are usually defined in the same file.
+
+   template
+
+      this term has three meanings depending on context.
+
+      1. files that are processed by a templating engine to
+         produce output suitable for machine or human consumption. For
+         example a template could produce a html page that includes the
+         name of the user.
+
+      2. a property of the request object in the templating
+         system. Templates that are used with a specific class (e.g.
+         ``issue.item.html``) will have this entry set to the middle
+         element (``item`` in this example). For templates like
+         ``home.html`` the element will be set to the empty string.
+
+      3. a **Tracker template**. This is a set of files
+	 used to install a new tracker. Tracker templates define a
+	 tracker with a particular look and feel, :term:`schema`,
+	 permissions model, and :term:`detectors`. Roundup ships with
+	 five templates and people on the net `have produced other
+	 templates`_
+
+
+   tracker
+      the schema and hyperdb that forms one issue tracker
+
+   tracker home
+      the physical location on disk of a tracker. It has the
+      ``config.ini``, ``schema.py`` files for the tracker.
+
+
+-----------------
+
+Back to `Table of Contents`_
+
+.. _`have produced other templates`: https://wiki.roundup-tracker.org/TrackerTemplates
+.. _`Table of Contents`: ../docs.html
+

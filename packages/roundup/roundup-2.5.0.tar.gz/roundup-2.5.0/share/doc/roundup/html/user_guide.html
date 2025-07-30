@@ -1,0 +1,1022 @@
+
+<!DOCTYPE html>
+
+
+
+
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>User Guide &mdash; Roundup 2.5.0 documentation</title>
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+          URL_ROOT:    './',
+          VERSION:     '2.5.0',
+          COLLAPSE_MODINDEX: false,
+          FILE_SUFFIX: '.html'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script type="text/javascript" src="_static/searchtools.js"></script>
+    <script type="text/javascript" src="_static/sphinx_highlight.js"></script>
+    <script type="text/javascript" src="_static/tabs.js"></script>
+    
+    <link rel="stylesheet" href="_static/NO_basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
+    <!-- https://github.com/sphinx-doc/sphinx/issues/11699 means a
+         duplicate viewport tag -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta content="Describes how to interact with a tracker based on the Roundup Issue Tracker. Covers web (html), and email interfaces." name="description" />
+
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="Roundup 2.5.0 documentation" href="index.html" />
+    <link rel="next" title="Customising Roundup" href="customizing.html" />
+    <link rel="prev" title="Roundup FAQ" href="FAQ.html" /> 
+  </head>
+  <body>
+    <div class="header"><div class="label">Roundup</div>
+        <script id="documentation_options" data-url_root=""
+	      src="_static/documentation_options.js">
+        </script>
+
+        <div id="searchbox" style="display: none">
+          <form class="search" action="search.html" method="get">
+            <input type="text" name="q" size="18" />
+            <input type="submit" value="Search" />
+            <input type="hidden" name="check_keywords" value="yes" />
+            <input type="hidden" name="area" value="default" />
+          </form>
+        </div>
+        <script type="text/javascript">$('#searchbox').show(0);</script>
+    </div>
+    <div class="navigation">
+      <div class="menu">
+       
+    <h3><a href="index.html">Table Of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">User Guide</a><ul>
+<li><a class="reference internal" href="#your-tracker-in-a-nutshell">Your Tracker in a Nutshell</a><ul>
+<li><a class="reference internal" href="#accessing-the-tracker">Accessing the Tracker</a></li>
+<li><a class="reference internal" href="#issue-life-cycles-in-roundup">Issue life cycles in Roundup</a></li>
+<li><a class="reference internal" href="#entering-values-in-your-tracker">Entering values in your Tracker</a><ul>
+<li><a class="reference internal" href="#string-properties">String Properties</a></li>
+<li><a class="reference internal" href="#number-properties">Number Properties</a></li>
+<li><a class="reference internal" href="#integer-properties">Integer Properties</a></li>
+<li><a class="reference internal" href="#boolean-properties">Boolean properties</a></li>
+<li><a class="reference internal" href="#constrained-link-and-multilink-properties">Constrained (link and multilink) properties</a></li>
+<li><a class="reference internal" href="#date-properties">Date properties</a></li>
+<li><a class="reference internal" href="#interval-properties">Interval properties</a></li>
+<li><a class="reference internal" href="#simple-support-for-collision-detection">Simple support for collision detection</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#web-interface">Web Interface</a><ul>
+<li><a class="reference internal" href="#lists-of-items">Lists of Items</a></li>
+<li><a class="reference internal" href="#display-edit-or-entry-of-an-item">Display, edit or entry of an item</a></li>
+<li><a class="reference internal" href="#searching-page">Searching Page</a><ul>
+<li><a class="reference internal" href="#saving-queries">Saving queries</a></li>
+<li><a class="reference internal" href="#under-the-covers">Under the covers</a></li>
+<li><a class="reference internal" href="#advanced-searching-with-property-expressions">Advanced Searching with Property Expressions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#using-the-classhelper">Using the Classhelper</a></li>
+<li><a class="reference internal" href="#access-controls">Access Controls</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#e-mail-gateway">E-Mail Gateway</a><ul>
+<li><a class="reference internal" href="#subject-line-information">Subject-line information</a><ul>
+<li><a class="reference internal" href="#setting-properties">Setting Properties</a></li>
+<li><a class="reference internal" href="#automatic-properties">Automatic Properties</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#sender-identification">Sender identification</a></li>
+<li><a class="reference internal" href="#e-mail-message-content">E-Mail Message Content</a><ul>
+<li><a class="reference internal" href="#message-summary">Message summary</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#address-handling">Address handling</a><ul>
+<li><a class="reference internal" href="#nosy-list">Nosy List</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="FAQ.html"
+                          title="previous chapter">Roundup FAQ</a></p>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="customizing.html"
+                          title="next chapter">Customising Roundup</a></p>
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/user_guide.txt"
+             rel="nofollow">Show Source</a></li>
+    </ul>
+  <div id="searchbox" style="display: none">
+    <h3>Quick search</h3>
+      <form class="search" action="search.html" method="get">
+        <input type="text" name="q" size="18" />
+        <input type="submit" value="Go" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+      <p style="font-size: 90%">Enter search terms or a module, class or function name.</p>
+  </div>
+  <script type="text/javascript">$('#searchbox').show(0);</script>
+      </div>
+    </div>
+    <main id="main" role="main" class="content">
+       
+    <div class="related related-top">
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="customizing.html" title="Customising Roundup"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="FAQ.html" title="Roundup FAQ"
+             accesskey="P">previous</a></li>
+        <li><a href="index.html">Roundup 2.5.0 documentation</a></li> 
+      </ul>
+    </div>
+       
+  <section id="user-guide">
+<h1>User Guide</h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#your-tracker-in-a-nutshell" id="id1">Your Tracker in a Nutshell</a></p>
+<ul>
+<li><p><a class="reference internal" href="#accessing-the-tracker" id="id2">Accessing the Tracker</a></p></li>
+<li><p><a class="reference internal" href="#issue-life-cycles-in-roundup" id="id3">Issue life cycles in Roundup</a></p></li>
+<li><p><a class="reference internal" href="#entering-values-in-your-tracker" id="id4">Entering values in your Tracker</a></p>
+<ul>
+<li><p><a class="reference internal" href="#string-properties" id="id5">String Properties</a></p></li>
+<li><p><a class="reference internal" href="#number-properties" id="id6">Number Properties</a></p></li>
+<li><p><a class="reference internal" href="#integer-properties" id="id7">Integer Properties</a></p></li>
+<li><p><a class="reference internal" href="#boolean-properties" id="id8">Boolean properties</a></p></li>
+<li><p><a class="reference internal" href="#constrained-link-and-multilink-properties" id="id9">Constrained (link and multilink) properties</a></p></li>
+<li><p><a class="reference internal" href="#date-properties" id="id10">Date properties</a></p></li>
+<li><p><a class="reference internal" href="#interval-properties" id="id11">Interval properties</a></p></li>
+<li><p><a class="reference internal" href="#simple-support-for-collision-detection" id="id12">Simple support for collision detection</a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#web-interface" id="id13">Web Interface</a></p>
+<ul>
+<li><p><a class="reference internal" href="#lists-of-items" id="id14">Lists of Items</a></p></li>
+<li><p><a class="reference internal" href="#display-edit-or-entry-of-an-item" id="id15">Display, edit or entry of an item</a></p></li>
+<li><p><a class="reference internal" href="#searching-page" id="id16">Searching Page</a></p>
+<ul>
+<li><p><a class="reference internal" href="#saving-queries" id="id17">Saving queries</a></p></li>
+<li><p><a class="reference internal" href="#under-the-covers" id="id18">Under the covers</a></p></li>
+<li><p><a class="reference internal" href="#advanced-searching-with-property-expressions" id="id19">Advanced Searching with Property Expressions</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#using-the-classhelper" id="id20">Using the Classhelper</a></p></li>
+<li><p><a class="reference internal" href="#access-controls" id="id21">Access Controls</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#e-mail-gateway" id="id22">E-Mail Gateway</a></p>
+<ul>
+<li><p><a class="reference internal" href="#subject-line-information" id="id23">Subject-line information</a></p>
+<ul>
+<li><p><a class="reference internal" href="#setting-properties" id="id24">Setting Properties</a></p></li>
+<li><p><a class="reference internal" href="#automatic-properties" id="id25">Automatic Properties</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#sender-identification" id="id26">Sender identification</a></p></li>
+<li><p><a class="reference internal" href="#e-mail-message-content" id="id27">E-Mail Message Content</a></p>
+<ul>
+<li><p><a class="reference internal" href="#message-summary" id="id28">Message summary</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#address-handling" id="id29">Address handling</a></p>
+<ul>
+<li><p><a class="reference internal" href="#nosy-list" id="id30">Nosy List</a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>This document will refer to <em>issues</em> as the primary store of
+information in the tracker. This is the default of the classic template,
+but may vary in any given installation.</p>
+</div>
+<section id="your-tracker-in-a-nutshell">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Your Tracker in a Nutshell</a></h2>
+<p>Your tracker holds information about issues in bundles called <em>items</em>.
+An item can be an <em>issue</em> (a bug or feature request) or a <em>user</em>. The
+issue-ness or user-ness is called the item’s <em>class</em>. For bug
+reports and features, the class is “issue”, and for users the class is
+“user”.</p>
+<p>Each item in the tracker possesses an ID number that identifies it
+alongside its item class. The combination of the class and ID number
+into a label identifies a specific issue or user. For instance, user 1
+(who, by the way, always serves as the “admin” user) gets referred to
+as “user1”. Issue number 315 gets denoted as “issue315”. This label
+receives the designation of the item’s :term:designator.</p>
+<p>Roundup never deletes items from the database. Instead, items get
+“retired”. Viewing the item using its ID is still possible - thus,
+“removing” an item does not disrupt references to it. A retired item
+will not appear in the class listing.</p>
+<section id="accessing-the-tracker">
+<h3><a class="toc-backref" href="#id2" role="doc-backlink">Accessing the Tracker</a></h3>
+<p>You may access your tracker in three ways:</p>
+<ol class="arabic simple">
+<li><p>through the <a class="reference internal" href="#web-interface">web interface</a>,</p></li>
+<li><p>through the <a class="reference internal" href="#e-mail-gateway">e-mail gateway</a>, or</p></li>
+<li><p>using the <a class="reference external" href="admin_guide.html#using-roundup-admin">command line tool</a>.</p></li>
+</ol>
+<p>The last is usually only used by administrators. Most users will use the
+web and e-mail interfaces. All three are explained below.</p>
+</section>
+<section id="issue-life-cycles-in-roundup">
+<h3><a class="toc-backref" href="#id3" role="doc-backlink">Issue life cycles in Roundup</a></h3>
+<p>New issues may be submitted via the web or e-mail.</p>
+<p>By default, the issue will have the status “unread”. When the issue
+receives another message, its status will change to “chatting”.</p>
+<p>Often, the “home” page for a tracker display all open issues (closed
+issues have a status of resolved, or done-cbb (cbb - could be
+better)).</p>
+<p>If an issue is closed, and a new message is received then it’ll be
+reopened to the state of “chatting”.</p>
+<p>The full set of <strong>priority</strong> and <strong>status</strong> values are:</p>
+<table class="docutils align-default" id="priority-table">
+<caption><span class="caption-text">Default priorities defined for the classic template.</span></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Priority</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>“critical”</p></td>
+<td><p>panic: work is stopped!</p></td>
+</tr>
+<tr class="row-odd"><td><p>“urgent”</p></td>
+<td><p>important, but not deadly</p></td>
+</tr>
+<tr class="row-even"><td><p>“bug”</p></td>
+<td><p>lost work or incorrect results</p></td>
+</tr>
+<tr class="row-odd"><td><p>“feature”</p></td>
+<td><p>want missing functionality</p></td>
+</tr>
+<tr class="row-even"><td><p>“wish”</p></td>
+<td><p>avoidable bugs, missing conveniences</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default" id="status-table">
+<caption><span class="caption-text">Default statuses defined for the classic template.</span></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Status</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>“unread”</p></td>
+<td><p>submitted but no action yet</p></td>
+</tr>
+<tr class="row-odd"><td><p>“deferred”</p></td>
+<td><p>intentionally set aside</p></td>
+</tr>
+<tr class="row-even"><td><p>“chatting”</p></td>
+<td><p>under review or seeking clarification</p></td>
+</tr>
+<tr class="row-odd"><td><p>“need-eg”</p></td>
+<td><p>need a reproducible example of a bug</p></td>
+</tr>
+<tr class="row-even"><td><p>“in-progress”</p></td>
+<td><p>understood; development in progress</p></td>
+</tr>
+<tr class="row-odd"><td><p>“testing”</p></td>
+<td><p>we think it’s done; others, please test</p></td>
+</tr>
+<tr class="row-even"><td><p>“done-cbb”</p></td>
+<td><p>okay for now, but could be better</p></td>
+</tr>
+<tr class="row-odd"><td><p>“resolved”</p></td>
+<td><p>fix has been released</p></td>
+</tr>
+</tbody>
+</table>
+<p>The tracker you are using may have different priorities and
+statuses. See your tracker admin for local details.</p>
+</section>
+<section id="entering-values-in-your-tracker">
+<span id="query-tracker"></span><h3><a class="toc-backref" href="#id4" role="doc-backlink">Entering values in your Tracker</a></h3>
+<p>All interfaces to your tracker use the same format for entering values.
+This means the web interface for entering a new issue, the web interface
+for searching issues, the e-mail interface and even the command-line
+administration tool.</p>
+<section id="string-properties">
+<h4><a class="toc-backref" href="#id5" role="doc-backlink">String Properties</a></h4>
+<p>These fields just take a plain text value, like <code class="docutils literal notranslate"><span class="pre">It's</span> <span class="pre">broken</span></code>.</p>
+</section>
+<section id="number-properties">
+<h4><a class="toc-backref" href="#id6" role="doc-backlink">Number Properties</a></h4>
+<p>These fields take a real number with decimal point like <code class="docutils literal notranslate"><span class="pre">+12456.78</span></code>,
+<code class="docutils literal notranslate"><span class="pre">-12456.78</span></code> <code class="docutils literal notranslate"><span class="pre">12456.78</span></code>. It supports scientific/exponent notation
+like <code class="docutils literal notranslate"><span class="pre">3.1415E-2</span></code>. Decimal commas (e.g. <code class="docutils literal notranslate"><span class="pre">123456,78</span></code>) or thousand
+separators <code class="docutils literal notranslate"><span class="pre">-12,456.78</span></code> are not supported.</p>
+</section>
+<section id="integer-properties">
+<h4><a class="toc-backref" href="#id7" role="doc-backlink">Integer Properties</a></h4>
+<p>These fields take a whole/integer number without decimal marker like
+<code class="docutils literal notranslate"><span class="pre">123</span></code>, <code class="docutils literal notranslate"><span class="pre">+123</span></code>, <code class="docutils literal notranslate"><span class="pre">-123</span></code>. Exponents are not supported. Your browser
+may show an up/down arrow spinner to change the value.</p>
+</section>
+<section id="boolean-properties">
+<h4><a class="toc-backref" href="#id8" role="doc-backlink">Boolean properties</a></h4>
+<p>These fields take a value which indicates “yes”/”no”, “true”/”false”,
+“1”/”0” or “on”/”off”.</p>
+</section>
+<section id="constrained-link-and-multilink-properties">
+<h4><a class="toc-backref" href="#id9" role="doc-backlink">Constrained (link and multilink) properties</a></h4>
+<p>Fields like “Assigned To” and “Keywords” hold references to items in other
+classes (“user” and “keyword” in those two cases.)</p>
+<p>Sometimes, the selection is done through a menu, like in the “Assigned
+To” field.</p>
+<p>Where the input is not a simple menu selection, we use a comma-separated
+list of values to indicated which values of “user” or “keyword” are
+interesting. The values may be either numeric ids or the names of items.
+The special value “-1” may be used to match items where the property is
+not set. For example, the following searches on the issues:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">assignedto=richard,george</span></code></dt><dd><p>match issues which are assigned to richard or george.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">assignedto=-1</span></code></dt><dd><p>match issues that are not assigned to a user.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">assignedto=2,3,40</span></code></dt><dd><p>match issues that are assigned to users 2, 3 or 40.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">keyword=user</span> <span class="pre">interface</span></code></dt><dd><p>match issues with the keyword “user interface” in their keyword list</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">keyword=web</span> <span class="pre">interface,e-mail</span> <span class="pre">interface</span></code></dt><dd><p>match issues with the keyword “web interface” or “e-mail interface” in
+their keyword list</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">keyword=-1</span></code></dt><dd><p>match issues with no keywords set</p>
+</dd>
+</dl>
+<p>When entering the value for a constrained property you may have a
+helper (also called classhelper) available by clicking on a link
+usually displayed as <code class="docutils literal notranslate"><span class="pre">(list)</span></code>. See the section <a class="reference internal" href="#using-the-classhelper">Using the
+Classhelper</a> for details.</p>
+</section>
+<section id="date-properties">
+<h4><a class="toc-backref" href="#id10" role="doc-backlink">Date properties</a></h4>
+<p>Date properties can be shown using a native HTML date (or
+datetime-local) element by setting <code class="docutils literal notranslate"><span class="pre">use_browser_date_input=yes</span></code> in
+section <code class="docutils literal notranslate"><span class="pre">[web]</span></code> in <code class="docutils literal notranslate"><span class="pre">config.ini</span></code>. This provides a calendar button for
+choosing the date. The date is shown in the normal format for your
+location.</p>
+<p>Native date inputs do not allow the use of partial forms as
+defined below.  For this reason, you may edit a date/time
+stamp directly.</p>
+<p>Date-and-time stamps are specified with the date in
+international standard format (<code class="docutils literal notranslate"><span class="pre">yyyy-mm-dd</span></code>) joined to the time
+(<code class="docutils literal notranslate"><span class="pre">hh:mm:ss</span></code>) by a period <code class="docutils literal notranslate"><span class="pre">.</span></code>.  Dates in this form can be easily
+compared and are fairly readable when printed.  An example of a valid
+stamp is <code class="docutils literal notranslate"><span class="pre">2000-06-24.13:03:59</span></code>. We’ll call this the “full date
+format”.  When Timestamp objects are printed as strings, they appear in
+the full date format.</p>
+<p>For user input, some partial forms are also permitted: the whole time or
+just the seconds may be omitted; and the whole date may be omitted or
+just the year may be omitted.  If the time is given, the time is
+interpreted in the user’s local time zone. The Date constructor takes
+care of these conversions. In the following examples, suppose that
+<code class="docutils literal notranslate"><span class="pre">yyyy</span></code> is the current year, <code class="docutils literal notranslate"><span class="pre">mm</span></code> is the current month, and <code class="docutils literal notranslate"><span class="pre">dd</span></code> is
+the current day of the month and the local timezone is GMT-5.</p>
+<ul class="simple">
+<li><p>“2000-04-17” means &lt;Date 2000-04-17.00:00:00&gt;</p></li>
+<li><p>“01-25” means &lt;Date yyyy-01-25.00:00:00&gt;</p></li>
+<li><p>“2000-04-17.03:45” means &lt;Date 2000-04-17.08:45:00&gt;</p></li>
+<li><p>“08-13.22:13” means &lt;Date yyyy-08-14.03:13:00&gt;</p></li>
+<li><p>“11-07.09:32:43” means &lt;Date yyyy-11-07.14:32:43&gt;</p></li>
+<li><p>“14:25” means &lt;Date yyyy-mm-dd.19:25:00&gt;</p></li>
+<li><p>“8:47:11” means &lt;Date yyyy-mm-dd.13:47:11&gt;</p></li>
+<li><p>the special date “.” means “right now”</p></li>
+</ul>
+<p>The native date input doesn’t allow copy or paste. Roundup
+enhances the native date field. If you double-click on a native
+date field, it changes to a text input mode with the date already
+selected. You can use control-C to copy the date or control-V to
+paste into the field.  Double-clicking also lets you add seconds
+in a date-time value if you need to.</p>
+<p>It will switch back to a date input and save the value when:</p>
+<ul class="simple">
+<li><p>you move to another field using the mouse or the Tab key.</p></li>
+<li><p>you press enter/return (press return again if you want to
+submit the form).</p></li>
+</ul>
+<p>If you press Escape, it will restore the original value and
+change back to a date input.</p>
+<p>When using native date elements in text input mode, the date
+looks like a full data with <code class="docutils literal notranslate"><span class="pre">T</span></code> replacing <code class="docutils literal notranslate"><span class="pre">.</span></code>. If the <code class="docutils literal notranslate"><span class="pre">T</span></code>
+is missing, the native date elements will not recognize the value
+as a date.</p>
+<p>There is no support for activating text mode using the
+keyboard. Tablet/touch support is mixed. Chrome supports
+double-tap to activate text mode input. Firefox does not.</p>
+<p>When searching, a plain date entered as a search field will match that date
+exactly in the database.  We may also accept ranges of dates. You can
+specify range of dates in one of two formats:</p>
+<ol class="arabic">
+<li><p>English syntax:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">From</span> <span class="o">&lt;</span><span class="n">value</span><span class="o">&gt;</span><span class="p">][</span><span class="n">To</span> <span class="o">&lt;</span><span class="n">value</span><span class="o">&gt;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Keywords “From” and “To” are case insensitive. Keyword “From” is
+optional.</p>
+</li>
+<li><p>“Geek” syntax:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="o">&lt;</span><span class="n">value</span><span class="o">&gt;</span><span class="p">];[</span><span class="o">&lt;</span><span class="n">value</span><span class="o">&gt;</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>Either first or second <code class="docutils literal notranslate"><span class="pre">&lt;value&gt;</span></code> can be omitted in both syntaxes.</p>
+<p>For example, if you enter string “from 9:00” to “Creation date” field,
+roundup will find  all issues, that were created today since 9 AM.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">&lt;value&gt;</span></code> may also be an interval, as described in the next section.
+Searching of “-2m; -1m” on activity field gives you issues which were
+active between period of time since 2 months up-till month ago.</p>
+<p>Other possible examples (consider local time is 2003-03-08.22:07:48):</p>
+<ul class="simple">
+<li><p>“from 2-12 to 4-2” means
+&lt;Range from 2003-02-12.00:00:00 to 2003-04-02.00:00:00&gt;</p></li>
+<li><p>“FROM 18:00 TO +2m” means
+&lt;Range from 2003-03-08.18:00:00 to 2003-05-08.20:07:48&gt;</p></li>
+<li><p>“12:00;” means
+&lt;Range from 2003-03-08.12:00:00 to None&gt;</p></li>
+<li><p>“tO +3d” means
+&lt;Range from None to 2003-03-11.20:07:48&gt;</p></li>
+<li><p>“2002-11-10; 2002-12-12” means
+&lt;Range from 2002-11-10.00:00:00 to 2002-12-12.00:00:00&gt;</p></li>
+<li><p>“; 20:00 +1d” means
+&lt;Range from None to 2003-03-09.20:00:00&gt;</p></li>
+<li><p>“2003” means
+&lt;Range from 2003-01-01.00:00:00 to 2003-12-31.23:59:59&gt;</p></li>
+<li><p>“2003-04” means
+&lt;Range from 2003-04-01.00:00:00 to 2003-04-30.23:59:59&gt;</p></li>
+</ul>
+</section>
+<section id="interval-properties">
+<h4><a class="toc-backref" href="#id11" role="doc-backlink">Interval properties</a></h4>
+<p>Date intervals are specified using the suffixes “y”, “m”, and “d”.  The
+suffix “w” (for “week”) means 7 days. Time intervals are specified in
+hh:mm:ss format (the seconds may be omitted, but the hours and minutes
+may not).</p>
+<ul class="simple">
+<li><p>“3y” means three years</p></li>
+<li><p>“2y 1m” means two years and one month</p></li>
+<li><p>“1m 25d” means one month and 25 days</p></li>
+<li><p>“2w 3d” means two weeks and three days</p></li>
+<li><p>“1d 2:50” means one day, two hours, and 50 minutes</p></li>
+<li><p>“14:00” means 14 hours</p></li>
+<li><p>“0:04:33” means four minutes and 33 seconds</p></li>
+</ul>
+</section>
+<section id="simple-support-for-collision-detection">
+<h4><a class="toc-backref" href="#id12" role="doc-backlink">Simple support for collision detection</a></h4>
+<p>Item edit pages remember when the item was last edited. When a form is
+submitted, the user will be informed if someone else has edited the item
+at the same time they tried to.</p>
+</section>
+</section>
+</section>
+<section id="web-interface">
+<h2><a class="toc-backref" href="#id13" role="doc-backlink">Web Interface</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This document contains screenshots of the default look and feel.
+Your site may have a slightly (or very) different look, but the
+functionality will be very similar, and the concepts still hold.</p>
+</div>
+<p>The web interface is broken up into the following parts:</p>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#lists-of-items">lists of items</a>,</p></li>
+<li><p><a class="reference internal" href="#display-edit-or-entry-of-an-item">display, edit or entry of an item</a>, and</p></li>
+<li><p><a class="reference internal" href="#searching-page">searching page</a>.</p></li>
+</ol>
+<p>In addition to the graphical web interface, Roundup has <a class="reference external" href="rest.html">REST</a> and
+<a class="reference external" href="xmlrpc.html">XMLRPC</a> interfaces. These can be used by advanced users and
+programmers to automate tasks and integrate with other programs.</p>
+<section id="lists-of-items">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">Lists of Items</a></h3>
+<p>The first thing you’ll see when you log into Roundup will be a list of
+open (ie. not resolved) issues. This list has been generated by a bunch
+of controls <a class="reference internal" href="#under-the-covers">under the covers</a> but for now, you can see something like:</p>
+<a class="reference internal image-reference" href="_images/index_logged_out.png"><img alt="Image of the classic Roundup tracker showing a list of issues that one would see before logging in." src="_images/index_logged_out.png" style="width: 675px; height: 450px;" /></a>
+<p>The screen is divided up into three sections. There’s a title which tells
+you where you are, a sidebar which contains useful navigation tools and a
+body which usually displays either a list of items or a single item from
+the tracker.</p>
+<p>You may register, reset your password or log in. Registration takes
+you to:</p>
+<a class="reference internal image-reference" href="_images/registration.png"><img alt="A registration form with fields for name, login name, password etc." src="_images/registration.png" style="width: 675px; height: 450px;" /></a>
+<p>Clicking on the “Lost your login?” link allows you to reset your
+password. Resetting your password takes you to:</p>
+<a class="reference internal image-reference" href="_images/reset.png"><img alt="A form with email address and username fields that will trigger a password reset when submitted." src="_images/reset.png" style="width: 605px; height: 495px;" /></a>
+<p>You can enter your username to get a reset email sent to your primary
+E-mail address. Otherwise you can enter your primary E-mail address or
+an Alternate E-mail address to get a reset email sent to that address.
+The reset email includes a verification link that can be used to
+complete the password reset. The verification link expires in a week.</p>
+<p>Once you’re logged in, the sidebar changes to:</p>
+<a class="reference internal image-reference" href="_images/index_logged_in.png"><img alt="Navigation sidebar after login showing multiple links. It now includes a link labeled &quot;My Details&quot; for the user's settings." src="_images/index_logged_in.png" style="width: 182px; height: 399px;" /></a>
+<p>You can now get to your “My Details” page:</p>
+<a class="reference internal image-reference" href="_images/my_details.png"><img alt="A form allowing the user to change username, real name, email address and it also shows activity done by the user." src="_images/my_details.png" style="width: 667px; height: 558px;" /></a>
+</section>
+<section id="display-edit-or-entry-of-an-item">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">Display, edit or entry of an item</a></h3>
+<p>Create a new issue with “create new” under the issue subheading. This
+will take you to:</p>
+<a class="reference internal image-reference" href="_images/new_issue.png"><img alt="A form for entering a new issue with title, priority, status and other fields. All fields are empty. It also includes an entry box for typing free form text to describe the issue." src="_images/new_issue.png" style="width: 648px; height: 277px;" /></a>
+<p>Editing an issue uses the same form, though now you’ll see attached files
+and messages, and the issue history at the bottom of the page:</p>
+<a class="reference internal image-reference" href="_images/edit_issue.png"><img alt="A form for editing an issue with title, priority, status and other fields filled in. It also includes an entry box for typing free form text to describe the issue." src="_images/edit_issue.png" style="width: 650px; height: 535px;" /></a>
+<p>The “Make a copy” link duplicate the current issue copying most of the
+properties to a new issue. This is useful for splitting am issue into
+sub-issues that can be assigned to different people.</p>
+</section>
+<section id="searching-page">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">Searching Page</a></h3>
+<p>See <a class="reference internal" href="#entering-values-in-your-tracker">entering values in your tracker</a> for an explanation of what you
+may type into the search form.</p>
+<section id="saving-queries">
+<h4><a class="toc-backref" href="#id17" role="doc-backlink">Saving queries</a></h4>
+<p>You may save queries in the tracker by giving the query a name. Each user
+may only have one query with a given name - if a subsequent search is
+performed with the same query name supplied, then it will edit the
+existing query of the same name.</p>
+<p>Queries may be marked as “private”. These queries are only visible to the
+user that created them. If they’re not marked “private” then all other
+users may include the query in their list of “Your Queries”. Marking it as
+private at a later date does not affect users already using the query, nor
+does deleting the query.</p>
+<p>If a user subsequently creates or edits a public query, a new personal
+version of that query is made, with the same editing rules as described
+above.</p>
+</section>
+<section id="under-the-covers">
+<h4><a class="toc-backref" href="#id18" role="doc-backlink">Under the covers</a></h4>
+<p>The searching page converts your selections into the following
+arguments:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Argument</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>&#64;sort</p></td>
+<td><p>sort by prop name, optionally preceded with ‘-’ to give
+descending or nothing for ascending sorting. The sort
+argument can have several props separated with comma.</p></td>
+</tr>
+<tr class="row-odd"><td><p>&#64;group</p></td>
+<td><p>group by prop name, optionally preceded with ‘-’ or to sort
+in descending or nothing for ascending order. The group
+argument can have several props separated with comma.</p></td>
+</tr>
+<tr class="row-even"><td><p>&#64;columns</p></td>
+<td><p>selects the columns that should be displayed. Default is
+all.</p></td>
+</tr>
+<tr class="row-odd"><td><p>&#64;filter</p></td>
+<td><p>indicates which properties are being used in filtering.
+Default is none.</p></td>
+</tr>
+<tr class="row-even"><td><p>propname</p></td>
+<td><p>selects the values the item properties given by propname must
+have (very basic search/filter).</p></td>
+</tr>
+<tr class="row-odd"><td><p>&#64;search_text</p></td>
+<td><p>performs a full-text search (message bodies, issue titles,
+etc)</p></td>
+</tr>
+</tbody>
+</table>
+<p>You may manually write URLs that contain these arguments, like so
+(whitespace has been added for clarity):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/issue?status=unread,in-progress,resolved&amp;
+    keyword=security,ui&amp;
+    @group=priority,-status&amp;
+    @sort=-activity&amp;
+    @filters=status,keyword&amp;
+    @columns=title,status,fixer
+</pre></div>
+</div>
+<p>Full text search using the xapian, whoosh and native indexers treats
+the search query as a series of space separated words. Any word less
+than 2 characters or more than 50 characters is discarded. Also a
+stoplist is used to remove common words like “with”, “and”
+etc. Additional stoplist words can be added in the tracker’s
+config.ini file. Once filtering of the word list is done, each indexed
+item (e.g. title, file or message content …) is searched and if all
+the terms are found in the item the item is returned. Then the items
+are mapped to an issue and the list of matching issues is generated.</p>
+<p>Other searching backends such as native-fts can be used in which case
+the filtering above is not used. The search query can support
+structure such as quoted phrases, matching one term or another rather
+than both (or search), prefixes etc. In this case you should look at
+the <a class="reference external" href="admin_guide.html#configuring-native-fts-full-text-search">documentation for configuring the native-fts</a> backend to find
+the supported format and features.</p>
+</section>
+<section id="advanced-searching-with-property-expressions">
+<h4><a class="toc-backref" href="#id19" role="doc-backlink">Advanced Searching with Property Expressions</a></h4>
+<p>You can create more advanced searches in your tracker by using Reverse
+Polish Notation (<a class="reference external" href="https://en.wikipedia.org/wiki/Reverse_Polish_notation">RPN</a>) to make property expressions. By default,
+when filtering by multiple items, the expression type is ‘or’. For
+instance, if you filter the property assignedto by adding the query
+string element <code class="docutils literal notranslate"><span class="pre">assignedto=2,3,40</span></code>, it matches users numbered <code class="docutils literal notranslate"><span class="pre">2</span> <span class="pre">or</span>
+<span class="pre">3</span> <span class="pre">or</span> <span class="pre">40</span></code>. In RPN, this would be written as <code class="docutils literal notranslate"><span class="pre">2,</span> <span class="pre">3,</span> <span class="pre">or,</span> <span class="pre">4,</span>
+<span class="pre">or</span></code>. Roundup uses negative numbers to represent operators. For
+example, using “-1” for a single value (e.g. the assignedto Link
+property, but not the keyword multivalued/MultiLink property) matches
+an issue where the property is ‘not set’.</p>
+<p>The operators and their corresponding numbers are:</p>
+<ul class="simple">
+<li><p>‘not’ is represented by -2</p></li>
+<li><p>‘and’ is represented by -3</p></li>
+<li><p>‘or’ is represented by -4</p></li>
+</ul>
+<p>So, <code class="docutils literal notranslate"><span class="pre">assignedto=2,3,40</span></code> is the same as
+<code class="docutils literal notranslate"><span class="pre">assignedto=2,3,-4,40,-4</span></code>. While this example is the same as
+<code class="docutils literal notranslate"><span class="pre">2,3,40</span></code>, the expression <code class="docutils literal notranslate"><span class="pre">keyword=1,2,-3,-2</span></code> filters issues that
+don’t have both keywords 1 and 2.</p>
+<p>Another example is: <code class="docutils literal notranslate"><span class="pre">creator=3,-2,1,-2,-3</span></code>. This is the same as the
+expression: <code class="docutils literal notranslate"><span class="pre">(not</span> <span class="pre">user3)</span> <span class="pre">and</span> <span class="pre">(not</span> <span class="pre">user1)</span></code>. Using the rules of logic,
+this is the same as: <code class="docutils literal notranslate"><span class="pre">not</span> <span class="pre">(user3</span> <span class="pre">or</span> <span class="pre">user1)</span></code> which is expressed in
+RPN as <code class="docutils literal notranslate"><span class="pre">creator=3,1,-4,-2</span></code>. Compare this to <code class="docutils literal notranslate"><span class="pre">creator=3,1,-2</span></code> which
+returns issues created by user3 or any user other than user1.</p>
+<p>Another example, useful when filtering issues, is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">keyword</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="o">-</span><span class="mi">3</span>
+</pre></div>
+</div>
+<p>which returns issues that have one or more keywords set and the issue
+does not have keyword1 and keyword8 both set. In more standard infix
+form:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="ow">not</span> <span class="n">empty</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="n">keyword1</span> <span class="ow">and</span> <span class="n">keyword8</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Typing these expressions manually can be tiresome and tricky. On the
+search page, there’s an expression editor. You can access it by
+clicking on the <code class="docutils literal notranslate"><span class="pre">(expr)</span></code> link, which makes creating these
+expressions a bit easier.</p>
+<p>If your expression has an error, you will be returned to the search
+page and an error will be reported. For example using the expression
+<code class="docutils literal notranslate"><span class="pre">1,</span> <span class="pre">-3</span></code> to search the nosy property of an issue generates the
+following error:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">There</span> <span class="n">was</span> <span class="n">an</span> <span class="n">error</span> <span class="n">searching</span> <span class="n">issue</span> <span class="n">by</span> <span class="n">nosy</span> <span class="n">using</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span> <span class="n">The</span>
+<span class="n">operator</span> <span class="o">-</span><span class="mi">3</span> <span class="p">(</span><span class="ow">and</span><span class="p">)</span> <span class="n">at</span> <span class="n">position</span> <span class="mi">2</span> <span class="n">has</span> <span class="n">too</span> <span class="n">few</span> <span class="n">arguments</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>The error message gives you the problem element (<code class="docutils literal notranslate"><span class="pre">-3</span></code>), it’s meaning
+(<code class="docutils literal notranslate"><span class="pre">and</span></code>) and its position: the second element. The problem was caused
+because <code class="docutils literal notranslate"><span class="pre">and</span></code> requires two arguments, but only one argument (<code class="docutils literal notranslate"><span class="pre">1</span></code>)
+was given.</p>
+<p>Another error message:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">There</span> <span class="n">was</span> <span class="n">an</span> <span class="n">error</span> <span class="n">searching</span> <span class="n">issue</span> <span class="n">by</span> <span class="n">status</span> <span class="n">using</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+<span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span> <span class="n">The</span> <span class="n">operator</span> <span class="o">-</span><span class="mi">3</span> <span class="p">(</span><span class="ow">and</span><span class="p">)</span> <span class="n">at</span> <span class="n">position</span> <span class="mi">4</span> <span class="n">has</span> <span class="n">too</span> <span class="n">few</span> <span class="n">arguments</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>reports that the second <code class="docutils literal notranslate"><span class="pre">-3</span></code> in the 4th position is the problem
+operator. Note that this search expression will never return any
+values. This is because <code class="docutils literal notranslate"><span class="pre">status</span></code> is a single value (link) type
+property. It can’t have the values <code class="docutils literal notranslate"><span class="pre">1</span></code> and <code class="docutils literal notranslate"><span class="pre">2</span></code>, so the expression
+<code class="docutils literal notranslate"><span class="pre">1,2,-3</span></code> will never return an issue.</p>
+<p>In the examples above, the error was caused by not having enough
+arguments. However you can also have too many arguments. An example of
+this type of message is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">There</span> <span class="n">was</span> <span class="n">an</span> <span class="n">error</span> <span class="n">searching</span> <span class="n">issue</span> <span class="n">by</span> <span class="n">nosy</span> <span class="n">using</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+<span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span> <span class="n">There</span> <span class="n">are</span> <span class="n">too</span> <span class="n">many</span> <span class="n">arguments</span> <span class="k">for</span> <span class="n">the</span> <span class="n">existing</span> <span class="n">operators</span><span class="o">.</span> <span class="n">The</span>
+<span class="n">values</span> <span class="n">on</span> <span class="n">the</span> <span class="n">stack</span> <span class="n">are</span><span class="p">:</span> <span class="p">[</span><span class="n">Value</span> <span class="mi">4</span><span class="p">,</span> <span class="p">(</span><span class="n">Value</span> <span class="mi">5</span> <span class="n">AND</span> <span class="p">(</span><span class="n">Value</span> <span class="mi">1</span> <span class="n">AND</span> <span class="n">Value</span>
+<span class="mi">2</span><span class="p">))]</span>
+</pre></div>
+</div>
+<p>This message gives you the expression as far as it was able to compose
+it, but value 1 is not combined with the rest of the expression. So
+another binary operator is needed to complete the expression.</p>
+<p>If you have multiple incorrect expressions in your search, only one
+expression will be reported each time you submit the search.</p>
+</section>
+</section>
+<section id="using-the-classhelper">
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">Using the Classhelper</a></h3>
+<p>The classhelper makes finding the id number or name for linked items
+easier.  It is usually invoked from the parent window by clicking on
+the <code class="docutils literal notranslate"><span class="pre">(list)</span></code> link. There are two classhelpers: classic and
+component. This documentation discusses the newer component
+classhelper available with Roundup 2.4.0 or newer. If there is a
+problem with the component classhelper, it reports the problem and
+falls back to using the classic classhelper.</p>
+<p>The component classhelper is displayed in a popup window. You can
+interact with the original window by moving the popup out of the way
+or minimizing it. If you don’t see a popup, check to see if your
+browser has disabled popup windows.</p>
+<p>The classhelper has three parts:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>an optional search pane</p></li>
+<li><p>a selection pane</p></li>
+<li><p>an accumulator pane</p></li>
+</ol>
+</div></blockquote>
+<a class="reference internal image-reference" href="_images/classhelper-issue-all.png"><img alt="Image of the new component classhelper popup. The image shows the operating system window decorations with a title of &quot;Superseder Classhelper - issue2&quot;. Then it shows a search panel with options to enter text to search issue titles or status and a select/dropdown to search by a keyword on the issue. Below the options are search and reset buttons. Below the search panel is a selection panel that shows buttons to move to the previous or next pages and says that it is displaying items 26 to 50. This is followed by a scrollable table of issues where each row has a checkbox and the box for issue 114 is checked. At the bottom of the window is a text box that lists a number of issue numbers including 114. To the right of the text box are apply and cancel buttons." src="_images/classhelper-issue-all.png" style="width: 675px; height: 914px;" /></a>
+<p>The search pane has text or select/dropdown fields to search for a
+matching item. The image above shows a search for issues. The Title
+and Status properties can be matched using a text input while the
+Keyword property can be selected from a dropdown. Hitting enter while
+in a text input will trigger a search and the results will be
+displayed below the search pane in the selection pane. Tabbing to the
+search button and pressing enter will also trigger a search. The reset
+button will clear the search form.</p>
+<p>Below the search pane is the select pane. It lists the number of items
+displayed (26-50) and includes two buttons to move to the previous or
+next page of search results. If there is no search pane, this will
+display a page of items from all the items in the class. Below the
+pagination component is the scrollable selection table. Each row in
+the table has a checkbox and one or more columns of data about the
+item.  Clicking on a row toggles the item’s checkbox and adds or
+removes the id or name for the item in the accumulator’s
+display. Arrow keys or tab/shift-tab can be used to scroll through
+each item in the selection table. The space key or enter will
+select/deselect the item. You can jump to the page controls using the
+‘&lt;’ and ‘&gt;’ keys. Once the page control button is focused, press enter
+to trigger a page change.</p>
+<p>The bottom pane consists of a text input called the accumulator
+display. It lists all the items that have been selected. The first two
+items in this example were selected from the previous selection
+page. Next to the display are the apply and cancel buttons. You can
+jump to the apply button quickly by pressing Shift-Enter as long as
+you are not in a search input. Once the apply button is focused, press
+enter to copy the items in the display to the associated field on the
+parent window. If you activate the cancel button or close the window
+using the window decoration, the classhelper will close and not change
+the parent window.</p>
+<p>The classhelper can also be used in read-only mode. In this mode, the
+accumulator is not shown. Also the checkboxes are not displayed. To
+close the classhelper in read-only mode use the window decoration or a
+hotkey (e.g. control-w).</p>
+<p>You can have multiple classhelpers up at a time. The title on the
+window identifies the property and item the classhelper will
+modify. For example the image shows the superseder for issue2.</p>
+<p>Do not refresh the classhelper window using the <code class="docutils literal notranslate"><span class="pre">F5</span></code> key. This will
+erase the contents of the window and you will have to close it and
+invoke the link from the parent window again.</p>
+</section>
+<section id="access-controls">
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">Access Controls</a></h3>
+<p>User access is controlled through Permissions. These are are grouped
+into Roles, and users have a comma-separated list of Roles assigned to
+them. Roles can allow you to access:</p>
+<ul class="simple">
+<li><p>an entire class of items (e.g. issues)</p></li>
+<li><p>only certain fields of a class (e.g. you can see the username but
+not the phone number of other users)</p></li>
+<li><p>fields or classes based on your  relationship to an item (e.g.
+you can see the phone number of your user entry since you are the
+owner of your user entry)</p></li>
+</ul>
+<p>Other permissions divide access controls up into answering questions
+like:</p>
+<ul class="simple">
+<li><p>may the user edit issues (“Edit”, “issue”)</p></li>
+<li><p>is the user allowed to use the web interface (“Web Access”)</p></li>
+<li><p>may the user edit other user’s Roles through the web (“Web Roles”)</p></li>
+</ul>
+<p>Any number of new Permissions and Roles may be created as described in
+the customisation documentation. Examples of new access controls are:</p>
+<ul class="simple">
+<li><p>only managers may sign off issues as complete</p></li>
+<li><p>don’t give users who register through e-mail web access</p></li>
+<li><p>let some users edit the details of all users</p></li>
+</ul>
+</section>
+</section>
+<section id="e-mail-gateway">
+<h2><a class="toc-backref" href="#id22" role="doc-backlink">E-Mail Gateway</a></h2>
+<p>Roundup trackers may be used to facilitate e-mail conversations around
+issues. The “nosy” list attached to each issue indicates the users who
+should receive e-mail when messages are added to the issue.</p>
+<p>When e-mail comes into a tracker that identifies an issue in the subject
+line, the content of the e-mail is attached to the issue.</p>
+<p>You may even create new issues from e-mail messages.</p>
+<p>E-mail sent to a tracker is examined for several pieces of information:</p>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#subject-line-information">subject-line information</a> identifying the purpose of the e-mail</p></li>
+<li><p><a class="reference internal" href="#sender-identification">sender identification</a> using the sender of the message</p></li>
+<li><p><a class="reference internal" href="#e-mail-message-content">e-mail message content</a> which is to be extracted</p></li>
+<li><p>e-mail attachments which should be associated with the message</p></li>
+</ol>
+<section id="subject-line-information">
+<h3><a class="toc-backref" href="#id23" role="doc-backlink">Subject-line information</a></h3>
+<p>The subject line of the incoming message is examined to find one of:</p>
+<ol class="arabic simple">
+<li><p>a case insensitive <code class="docutils literal notranslate"><span class="pre">help</span></code>,</p></li>
+<li><p>a match for <code class="docutils literal notranslate"><span class="pre">--</span> <span class="pre">key</span> <span class="pre">&lt;OneTimeKey&gt;</span></code>,</p></li>
+<li><p>the item that the message is responding to,</p></li>
+<li><p>the type of item the message should create, or</p></li>
+<li><p>we default the item class and try some trickiness.</p></li>
+</ol>
+<p>If the subject is <code class="docutils literal notranslate"><span class="pre">help</span></code> (case insensitive), the gateway responds
+with an explanation of the interface.</p>
+<p>If a one-time key is found, we’re processing an in-progress
+registration confirmation.</p>
+<p>If the subject line contains a prefix in <code class="docutils literal notranslate"><span class="pre">[square</span> <span class="pre">brackets]</span></code> then
+we’re looking at case 3 or 4 above. Spaces are allowed inside the
+brackets and after the class item name. So <code class="docutils literal notranslate"><span class="pre">[issue2]</span></code> and
+<code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">issue</span> <span class="pre">2</span> <span class="pre">]</span></code> are treated the same where any white space is optional.
+Any “re:” or “fwd:” prefixes are stripped off the subject line before
+we start looking for real information.</p>
+<p>If an item <a class="reference internal" href="glossary.html#term-designator"><span class="xref std std-term">designator</span></a> (class name and id number, for example
+<code class="docutils literal notranslate"><span class="pre">issue123</span></code>) is found there, a new “msg” item is added to the
+“messages” property for that item, and any new “file” items are added to
+the “files” property for the item.</p>
+<p>If just an item class name is found there, we attempt to create a new
+item of that class with its “messages” property initialized to contain
+the new “msg” item and its “files” property initialized to contain any
+new “file” items.</p>
+<p>The fifth case above - where no <code class="docutils literal notranslate"><span class="pre">[information]</span></code> is provided, the
+tracker’s <code class="docutils literal notranslate"><span class="pre">MAIL_DEFAULT_CLASS</span></code> configuration variable defines what
+class of item the message relates to. We try to match the subject line
+to an existing item of the default class, and if there’s a match, the
+message is related to that matched item. If not, then a new item of the
+default class is created.</p>
+<section id="setting-properties">
+<h4><a class="toc-backref" href="#id24" role="doc-backlink">Setting Properties</a></h4>
+<p>The e-mail interface also provides a simple way to set properties on
+items. At the end of the subject line, propname=value pairs can be
+specified in square brackets, using the same conventions as for the
+roundup set shell command.</p>
+<p>For example,</p>
+<ul>
+<li><p>setting the priority of an issue:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Subject: Re: [issue2] the coffee machine is broken! [priority=urgent]
+</pre></div>
+</div>
+</li>
+<li><p>adding yourself to a nosy list:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Subject: Re: [ issue2 ] we&#39;re out of widgets [nosy=+richard]
+</pre></div>
+</div>
+</li>
+<li><p>setting the nosy list to just you and cliff:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Subject: Re: [issue 2] we&#39;re out of widgets [nosy=richard,cliff]
+</pre></div>
+</div>
+</li>
+<li><p>removing yourself from a nosy list and setting the priority:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Subject: Re: [ issue 2 ] we&#39;re out of widgets [nosy=-richard;priority=bug]
+</pre></div>
+</div>
+</li>
+</ul>
+<p>In all cases, the message relates to issue 2. The <code class="docutils literal notranslate"><span class="pre">Re:</span></code> prefix is
+stripped off.</p>
+</section>
+<section id="automatic-properties">
+<h4><a class="toc-backref" href="#id25" role="doc-backlink">Automatic Properties</a></h4>
+<dl class="simple">
+<dt><strong>status of new issues</strong></dt><dd><p>When a new message is received that is not identified as being related
+to an existing issue, it creates a new issue. The status of the new
+issue is defaulted to “unread”.</p>
+</dd>
+<dt><strong>reopening of resolved issues</strong></dt><dd><p>When a message is is received for a resolved issue, the issue status is
+automatically reset to “chatting” to indicate new information has been
+received.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="sender-identification">
+<h3><a class="toc-backref" href="#id26" role="doc-backlink">Sender identification</a></h3>
+<p>If the sender of an e-mail is unknown to Roundup (looking up both user
+primary e-mail addresses and their alternate addresses) then a new user
+may be created, depending on tracker configuration (see the <a class="reference external" href="admin_guide.html">Admin
+Guide</a> section “Users and Security” for configuration details.)</p>
+<p>The new user will have their username set to the “user” part of
+“<a class="reference external" href="mailto:user&#37;&#52;&#48;domain">user<span>&#64;</span>domain</a>” in their e-mail address. Their password will be
+completely randomised, and they’ll have to visit the web interface to
+have it changed. Some sites don’t allow web access by users who register
+via e-mail like this.</p>
+</section>
+<section id="e-mail-message-content">
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">E-Mail Message Content</a></h3>
+<p>By default Roundup only associates plain text (MIME type
+<code class="docutils literal notranslate"><span class="pre">text/plain</span></code>) as messages for items. Any other parts of a message
+are associated as downloadable files. If no plain text part is found,
+the message is rejected. The tracker can be configured to enable
+<code class="docutils literal notranslate"><span class="pre">convert_htmltotext</span></code>. If this is enabled, an email with an HTML
+message (MIME type <code class="docutils literal notranslate"><span class="pre">text/html</span></code>) and no <code class="docutils literal notranslate"><span class="pre">text/plain</span></code> part will be
+accepted. The first HTML part will be converted to text and used as
+the message for the item. Subsequent parts will be treated as
+attachments.</p>
+<p>To do this, incoming messages are examined for multiple parts:</p>
+<ul class="simple">
+<li><p>In a multipart/mixed message or part, each subpart is extracted and
+examined. The text/plain subparts are assembled to form the textual
+body of the message, to be stored in the file associated with a “msg”
+class item. Any parts of other types are each stored in separate files
+and given “file” class items that are linked to the “msg” item.</p></li>
+<li><p>In a multipart/alternative message or part, we look for a text/plain
+subpart and ignore the other parts.</p></li>
+</ul>
+<p>If the message is a response to a previous message, and contains quoted
+sections, then these will be stripped out of the message if the
+<code class="docutils literal notranslate"><span class="pre">EMAIL_KEEP_QUOTED_TEXT</span></code> configuration variable is set to <code class="docutils literal notranslate"><span class="pre">'no'</span></code>.</p>
+<section id="message-summary">
+<h4><a class="toc-backref" href="#id28" role="doc-backlink">Message summary</a></h4>
+<p>The “summary” property on message items is taken from the first
+non-quoting section in the message body. The message body is divided
+into sections by blank lines. Sections where the second and all
+subsequent lines begin with a “&gt;” or “|” character are considered
+“quoting sections”. The first line of the first non-quoting section
+becomes the summary of the message.</p>
+</section>
+</section>
+<section id="address-handling">
+<h3><a class="toc-backref" href="#id29" role="doc-backlink">Address handling</a></h3>
+<p>All of the addresses in the <code class="docutils literal notranslate"><span class="pre">To:</span></code> and <code class="docutils literal notranslate"><span class="pre">Cc:</span></code> headers of the incoming
+message are looked up among the tracker users, and the corresponding
+users are placed in the “recipients” property on the new “msg” item. The
+address in the <code class="docutils literal notranslate"><span class="pre">From:</span></code> header similarly determines the “author”
+property of the new “msg” item. The default handling for addresses that
+don’t have corresponding users is to create new users with no passwords
+and a username equal to the address.</p>
+<p>The addresses mentioned in the <code class="docutils literal notranslate"><span class="pre">To:</span></code>, <code class="docutils literal notranslate"><span class="pre">From:</span></code> and <code class="docutils literal notranslate"><span class="pre">Cc:</span></code> headers of
+the message may be added to the <a class="reference internal" href="#nosy-list">nosy list</a> depending on:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">ADD_AUTHOR_TO_NOSY</span></code></dt><dd><p>Does the author of a message get placed on the nosy list automatically?
+If ‘new’ is used, then the author will only be added when a message
+creates a new issue. If ‘yes’, then the author will be added on
+followups too. If ‘no’, they’re never added to the nosy.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">ADD_RECIPIENTS_TO_NOSY</span></code></dt><dd><p>Do the recipients (To:, Cc:) of a message get placed on the nosy list?
+If ‘new’ is used, then the recipients will only be added when a message
+creates a new issue. If ‘yes’, then the recipients will be added on
+followups too. If ‘no’, they’re never added to the nosy.</p>
+</dd>
+</dl>
+<p>Some organisations might prefer to have someone moderate emails before
+they are delivered into Roundup.  Those might want to set the
+configuration option <code class="docutils literal notranslate"><span class="pre">EMAIL_KEEP_REAL_FROM</span></code> to <code class="docutils literal notranslate"><span class="pre">'yes'</span></code> to avoid
+having the moderators address appearing as the creator of issues.</p>
+<section id="nosy-list">
+<h4><a class="toc-backref" href="#id30" role="doc-backlink">Nosy List</a></h4>
+<p>Roundup watches for additions to the “messages” property of items.</p>
+<p>When a new message is added, it is sent to all the users on the “nosy”
+list for the item that are not already on the “recipients” list of the
+message. Those users are then appended to the “recipients” property on
+the message, so multiple copies of a message are never sent to the same
+user. The journal recorded by the hyperdatabase on the “recipients”
+property then provides a log of when the message was sent to whom.</p>
+<p>If the author of the message is also in the nosy list for the item that
+the message is attached to, then the config var <code class="docutils literal notranslate"><span class="pre">MESSAGES_TO_AUTHOR</span></code>
+is queried to determine if they get a nosy list copy of the message too.</p>
+</section>
+</section>
+</section>
+</section>
+
+
+       
+    <div class="related related-bottom">
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="customizing.html" title="Customising Roundup"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="FAQ.html" title="Roundup FAQ"
+             accesskey="P">previous</a></li>
+        <li><a href="index.html">Roundup 2.5.0 documentation</a></li> 
+      </ul>
+    </div>
+    </main>
+    <div class="footer">
+        &copy; Copyright 2009-2025, Richard Jones, Roundup-Team.
+    </div>
+  </body>
+</html>

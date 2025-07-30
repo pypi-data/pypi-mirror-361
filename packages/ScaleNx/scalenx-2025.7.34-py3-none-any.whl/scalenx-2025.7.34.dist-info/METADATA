@@ -1,0 +1,114 @@
+Metadata-Version: 2.4
+Name: ScaleNx
+Version: 2025.7.34
+Summary: Image resizing using Scale2x, Scale3x, Scale2xSFX and Scale3xSFX algorithms, in pure Python.
+Home-page: https://dnyarri.github.io/
+Author: Ilya Razmanov
+Author-email: ilyarazmanov@gmail.com
+Project-URL: Source, https://github.com/Dnyarri/PixelArtScaling
+Project-URL: Changelog, https://github.com/Dnyarri/PixelArtScaling/blob/py34/CHANGELOG.md
+Project-URL: Issues, https://github.com/Dnyarri/PixelArtScaling/issues
+Keywords: Scale2x,Scale3x,Scale2xSFX,Scale3xSFX,AdvMAME2,AdvMAME3,pixel,resize,rescale,image,bitmap,python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: License :: OSI Approved :: The Unlicense (Unlicense)
+Classifier: Operating System :: OS Independent
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Topic :: Multimedia :: Graphics
+Classifier: Topic :: Scientific/Engineering :: Image Processing
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Education
+Classifier: Intended Audience :: Science/Research
+Requires-Python: >=3.4
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license-file
+Dynamic: project-url
+Dynamic: requires-python
+Dynamic: summary
+
+# Pixel Art Scaling - Scale2x, Scale3x, Scale2xSFX and Scale3xSFX in pure Python
+
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/scalenx) ![PyPI - Version](https://img.shields.io/pypi/v/scalenx)
+
+## Overview
+
+[**Scale2x** and **Scale3x**](https://github.com/amadvance/scale2x) (aka **AdvMAME2x** and **AdvMAME3x**) algorithms were developed by [Andrea Mazzoleni](https://www.scale2x.it/) for the sole purpose of scaling up small graphics like icons and game sprites while keeping sharp edges and avoiding blurs.
+
+Later on versions called [**Scale2xSFX** and **Scale3xSFX**](https://web.archive.org/web/20160527015550/https://libretro.com/forums/archive/index.php?t-1655.html) were introduced for the same purpose, providing better diagonals rendering and less artifacts on some patterns.
+
+| Fig. 1. *Example of consecutive upscaling with Scale3xSFX.* |
+| :---: |
+| ![Consecutive upscaling with Scale3xSFX](https://dnyarri.github.io/imgscalenx/diag3sfx.png "Consecutive upscaling with Scale3xSFX thrice") |
+| *Consecutive upscaling of tiny diagonal object with Scale3xSFX thrice. Source object on the left upscaled 3x3x3=27 times bigger in linear size, i.e. 27x27=729 times bigger by area, meaning that 728 out of 729 resulting pixels are purely artificial; yet the result looks surprisingly clear.* |
+
+Being initially created for tiny game sprite images, these algorithms appeared to be useful for some completely different tasks, *e.g.* scaling up text scans with low resolution before OCR, to improve OCR quality, or upscaling old low quality gravure and line art prints. One of the advantages of these algorithms is that they don't use any empirical chroma mask or something else specifically adopted for game sprites on screen, and therefore are capable to work efficiently on any image, including images intended for print.
+
+| Fig. 2. *Example of low resolution drawing upscaling with Scale3xSFX.* |
+| :---: |
+| ![Upscaling with Scale3xSFX](https://dnyarri.github.io/imgscalenx/mu3sfx.png "Upscaling with Scale3xSFX") |
+| *Jagged lines of low resolution original are turned into smoother diagonals.* |
+
+Unfortunately, while specialised Scale2x and Scale3x screen renderers (*e.g.* for DOS emulators) are numerous, it appears to be next to impossible to find ready-made batch processing application working with arbitrary images in common graphics formats.
+
+Therefore, current general purpose pure Python implementation of algorithms above was developed. Current implementation does not use any import, neither Python standard nor third party, and therefore is quite cross-platform and next to omnicompatible.
+
+Note that current PyPI-distributed package is intended for developers, and therefore include ScaleNx core module only. For example of practical Python program utilizing this module, with Tkinter GUI, multiprocessing *etc.*, please visit [ScaleNx at Github](https://github.com/Dnyarri/PixelArtScaling) (PNG support in this program is based on [PyPNG](https://gitlab.com/drj11/pypng), and PPM and PGM support - on [PyPNM](https://pypi.org/project/PyPNM/), both of the above being pure Python modules as well).
+
+## Python compatibility
+
+Current ScaleNx version is maximal backward compatibility build, created for PyPI distribution. While most of the development was performed using Python 3.12, testing with other versions was carried out, and ScaleNx proven to work with antique **Python 3.4** under Windows XP 32-bit.
+
+## Installation
+
+`python -m pip install --upgrade scalenx`, then `from scalenx import scalenx, scalenxsfx`.
+
+## Usage
+
+Example for Scale3xSFX:
+
+    scaled_image = scalenxsfx.scale3x(source_image)
+
+where both images are of 3D nested list (image) of lists (rows) of lists (pixels) of int (channel values) type.
+
+Note that functions names in scalenx and scalenxsfx match, making it easy to switch external software from older scalenx to scalenxsfx or *vs.* by changing one import line. When creating new software, one may easily make it reconfigurable with reassigning functions names, like
+
+    if use_sfx:
+        chosen_scaler = scalenxsfx.scale2x
+    else:
+        chosen_scaler = scalenx.scale2x
+
+    scaled_image = chosen_scaler(source_image)
+
+## Copyright and redistribution
+
+Current Python implementation was written by [Ilya Razmanov](https://dnyarri.github.io/) and may be freely used, copied and improved. In case of making substantial improvements it's almost obligatory to share your work with the developer and lesser species.
+
+## References
+
+1. [Scale2x and Scale3x algorithms description](https://www.scale2x.it/algorithm) by the inventor, Andrea Mazzoleni.
+
+2. [Scale2xSFX and Scale3xSFX algorithms description](https://web.archive.org/web/20160527015550/https://libretro.com/forums/archive/index.php?t-1655.html) at forums archive.
+
+3. [Pixel-art scaling algorithms review](https://en.wikipedia.org/wiki/Pixel-art_scaling_algorithms) at Wikipedia.
+
+4. [ScaleNx source code at Github](https://github.com/Dnyarri/PixelArtScaling/) - current ScaleNx source at Github, containing main program for single and batch image processing, with GUI, multiprocessing *etc.*.
+
+5. [ScaleNx source code for Python 3.4 at Github](https://github.com/Dnyarri/PixelArtScaling/tree/py34) - same as above, but fully compatible with Python 3.4 (both ScaleNx and image formats I/O and main application).

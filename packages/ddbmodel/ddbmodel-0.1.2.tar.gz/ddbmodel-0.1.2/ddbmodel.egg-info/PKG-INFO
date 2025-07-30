@@ -1,0 +1,56 @@
+Metadata-Version: 2.4
+Name: ddbmodel
+Version: 0.1.2
+Summary: A DynamoDB modeling library
+Author: Joel Baumert
+Author-email: Your Name <your.email@example.com>
+License: MIT
+Project-URL: Homepage, https://github.com/yourusername/ddbmodel
+Project-URL: Repository, https://github.com/yourusername/ddbmodel
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: boto3>=1.26.0
+Requires-Dist: botocore>=1.29.0
+Dynamic: author
+Dynamic: license-file
+Dynamic: requires-python
+
+# DDBModel
+
+A Python library for DynamoDB modeling and operations.
+
+## Installation
+
+```bash
+pip install ddbmodel
+```
+
+## Usage
+
+```python
+from ddbmodel.base import DDBModel
+from ddbmodel.field import StringField, PasswordField
+
+class User(DDBModel):
+    table_name = "users"
+    
+    username = StringField(hash_key=True)
+    password = PasswordField()
+    email = StringField()
+
+# Create a user
+user = User(username="john", password="secret", email="john@example.com")
+user.put_item()
+
+# Get a user
+user = User(username="john").get_item()
+```
+
+## Features
+
+- Simple DynamoDB modeling
+- Field validation
+- Password hashing
+- Transaction support
+- Key management

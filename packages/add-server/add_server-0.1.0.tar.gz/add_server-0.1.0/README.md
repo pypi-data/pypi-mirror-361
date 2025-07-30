@@ -1,0 +1,43 @@
+# ADD TWO NUMBER BY MCP SERVER
+
+This package provides a simple MCP server that exposes a tool to add two numbers, using the [MCP Python SDK](https://pypi.org/project/mcp/).
+
+## Installation
+
+You need Python 3.13+ and the MCP package. Install dependencies with:
+
+```sh
+pip install "mcp[cli]>=1.11.0"
+```
+
+Or, if using [uv](https://docs.astral.sh/uv/):
+
+```sh
+uv pip install "mcp[cli]>=1.11.0"
+```
+
+## Usage
+
+### As a CLI script
+
+If installed as a package, you can run the server with:
+
+```sh
+add-server
+```
+
+### As a Python module
+
+You can also run the server using the module syntax:
+
+```sh
+python -m add_server
+```
+
+This will start the MCP server, exposing a tool to add two numbers. You can connect to it using MCP-compatible clients or tools.
+
+## MCP Server Details
+
+The server is implemented using the [FastMCP](https://pypi.org/project/mcp/) class from the MCP SDK. The main entry point is defined in `src/add_server/__init__.py` and is called by both the CLI and module entry points.
+
+For more details on MCP, see the [MCP PyPI documentation](https://pypi.org/project/mcp/) or the [refs/add-server.md](refs/add-server.md) file in this repository.

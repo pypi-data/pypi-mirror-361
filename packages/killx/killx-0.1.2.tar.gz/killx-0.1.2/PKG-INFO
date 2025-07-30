@@ -1,0 +1,112 @@
+Metadata-Version: 2.4
+Name: killx
+Version: 0.1.2
+Summary: A lightning-fast, modern Python web framework
+Author-email: Pavitroo <pavitraguptadelhi@gmail.com>
+License: # Next, LICENSE
+        MIT License
+        
+        Copyright (c) 2024 Your Name
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+Project-URL: Homepage, https://github.com/Pavitroo/killx
+Project-URL: Repository, https://github.com/Pavitroo/killx
+Keywords: web,framework,http,server,api
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: license-file
+
+# ⚡ Killx Framework 🔥  
+A **lightning-fast**, **modern**, and **zero-dependency** Python web framework that's **easier than Flask** and built for speed & fun 🏎️💨
+
+---
+
+## ✨ Features
+✅ URL parameters support (`/user/<id>`)  
+✅ JSON response helper  
+✅ Form data parsing (POST + JSON + Query)  
+✅ CORS enabled by default 🛡️  
+✅ Built-in minimalist template engine 🧠  
+✅ Static file serving (`/static`)  
+✅ Auto-reload (Realtime™) 🔁  
+✅ Debug mode logging 🐞  
+✅ **No dependencies!** (Pure Python Standard Library) 🐍
+✅ **You can support me on Github (github.com/Pavitroo)**
+
+---
+
+## 🚀 What's New in `v0.1.2`?
+
+### 🐛 Bug Fixes
+- 🧹 Fixed issue where pressing `Ctrl+C` wouldn’t gracefully kill the server.
+
+### 🆕 New Features
+- 🐞 **Debug Mode**: See what Killx is doing step-by-step with `.log()`.
+- 🔁 **RealTime™ Reloading**: Automatically restart the server when files change!
+
+```python
+from killx import Killx
+
+# Enable debug logging + auto-reload
+app = Killx(Debug=True, RealTime=True) # Depend on You if you want it enable so do True and if not Do False. Done Simple.
+
+# Root route using template
+@app.route("/", methods=["GET"])
+def homepage(request):
+    app.log("Rendering homepage with template")
+    return app.render_template("index.html", message="Welcome to Killx! 🚀")
+
+# JSON API route with path and query params
+@app.route("/api/user/<id>", methods=["GET"])
+def get_user(request):
+    user_id = request["url_params"]["id"]
+    name = request["query_params"].get("name", ["Unknown"])[0]
+    app.log(f"Fetching user: {user_id} with name: {name}")
+    return app.json({"id": user_id, "name": name})
+
+# POST route to receive form data
+@app.route("/submit", methods=["POST"])
+def submit(request):
+    form = request["form_data"]
+    app.log(f"Received form: {form}")
+    return app.json({
+        "status": "received",
+        "form": form
+    })
+
+# Static file test (optional)
+@app.route("/static-test", methods=["GET"])
+def static_test(request):
+    return """
+    <html>
+      <head><link rel="stylesheet" href="/static/style.css"></head>
+      <body><h1>Static File Test</h1><script src="/static/script.js"></script></body>
+    </html>
+    """
+
+if __name__ == "__main__":
+    app.run(port=8080)

@@ -1,0 +1,9 @@
+from amsdal.contrib.frontend_configs.models.frontend_control_config import *
+from amsdal_models.classes.model import Model
+from amsdal_utils.models.enums import ModuleType
+from typing import ClassVar
+
+class FrontendModelConfig(Model):
+    __module_type__: ClassVar[ModuleType] = ...
+    class_name: str = ...
+    control: FrontendControlConfig | None = ...

@@ -1,0 +1,135 @@
+Metadata-Version: 2.3
+Name: p2pfl
+Version: 0.4.3
+Summary: A p2p federated learning framework
+License: GPL-3.0-only
+Keywords: federated learning,fl,peer to peer,p2p,decentralized,data privacy,data security,pytorch
+Author: Pedro Guijas
+Author-email: pguijas@gmail.com
+Requires-Python: >=3.10,<4.0
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Provides-Extra: flax
+Provides-Extra: tensorflow
+Provides-Extra: torch
+Requires-Dist: datasets (==2.15.0)
+Requires-Dist: flax (>=0.10.0,<0.11.0) ; extra == "flax"
+Requires-Dist: grpcio (>=1.62.0,<2.0.0)
+Requires-Dist: grpcio-tools (>=1.62.0,<2.0.0)
+Requires-Dist: keras (>=3.5.0,<4.0.0) ; extra == "tensorflow"
+Requires-Dist: lightning (>=2.4.0,<3.0.0) ; extra == "torch"
+Requires-Dist: matplotlib (>=3.8.3,<4.0.0)
+Requires-Dist: numpy (>=1.20,<2.0)
+Requires-Dist: pandas (>=2.2.3,<3.0.0)
+Requires-Dist: protobuf (>=5.29.1)
+Requires-Dist: psutil (>=5.9.8,<6.0.0)
+Requires-Dist: pyyaml (>=6.0.2,<7.0.0)
+Requires-Dist: ray (>=2.43.0,<3.0.0)
+Requires-Dist: tensorflow (>=2.18.0,<3.0.0) ; extra == "tensorflow"
+Requires-Dist: torch (>=2.2.1,<3.0.0) ; extra == "torch"
+Requires-Dist: torchmetrics (>=1.3.1,<2.0.0) ; extra == "torch"
+Requires-Dist: torchvision (>=0.17.1,<0.18.0) ; extra == "torch"
+Requires-Dist: tqdm (>=4.67.0,<5.0.0)
+Requires-Dist: typer (>=0.12.3,<0.13.0)
+Requires-Dist: types-tensorflow (>=2.17.0.20240820,<3.0.0.0) ; extra == "tensorflow"
+Project-URL: Documentation, https://p2pfl.github.io/p2pfl/
+Project-URL: Homepage, https://p2pfl.com
+Project-URL: Repository, https://github.com/p2pfl/p2pfl
+Description-Content-Type: text/markdown
+
+![GitHub Logo](https://raw.githubusercontent.com/p2pfl/p2pfl/main/other/logo.png)
+
+# P2PFL - Federated Learning over P2P networks
+
+[![GitHub license](https://img.shields.io/github/license/p2pfl/p2pfl)](/blob/main/LICENSE.md)
+[![GitHub issues](https://img.shields.io/github/issues/p2pfl/p2pfl)](/issues)
+![GitHub contributors](https://img.shields.io/github/contributors/p2pfl/p2pfl)
+![GitHub forks](https://img.shields.io/github/forks/p2pfl/p2pfl)
+![GitHub stars](https://img.shields.io/github/stars/p2pfl/p2pfl)
+![GitHub activity](https://img.shields.io/github/commit-activity/m/p2pfl/p2pfl)
+[![Coverage badge](https://img.shields.io/badge/dynamic/json?color=brightgreen&label=coverage&query=%24.message&url=https%3A%2F%2Fraw.githubusercontent.com%2Fp2pfl%2Fp2pfl%2Fpython-coverage-comment-action-data%2Fendpoint.json)](https://htmlpreview.github.io/?/blob/python-coverage-comment-action-data/htmlcov/index.html)
+[![Slack](https://img.shields.io/badge/Chat-Slack-red)](https://join.slack.com/t/p2pfl/shared_invite/zt-38xyec0k7-tLPbNx873Pm~N4aoqIyjRw)
+
+P2PFL is a general-purpose open-source library designed for the execution (simulated and in real environments) of Decentralized Federated Learning systems, specifically making use of P2P networks and the gossip protocols.
+
+## ✨ Key Features
+
+P2PFL offers a range of features designed to make decentralized federated learning accessible and efficient. For detailed information, please refer to our [documentation](https://p2pfl.github.io/p2pfl/).
+
+| Feature          | Description                                      |
+|-------------------|--------------------------------------------------|
+| 🚀 Easy to Use   | [Get started](https://p2pfl.github.io/p2pfl/quickstart.html) quickly with our intuitive API.       |
+| 🛡️ Reliable     | Built for fault tolerance and resilience.       |
+| 🌐 Scalable      | Leverages the power of peer-to-peer networks.    |
+| 🧪 Versatile     | Experiment in simulated or real-world environments.|
+| 🔒 Private       | Prioritizes data privacy with decentralized architecture.|
+| 🧩 Flexible      | Designed to be easy to modify.|
+| 📈 Real-time Monitoring | Manage and track experiment through [P2PFL Web Services platform](https://p2pfl.com). |
+| 🧠 ML Frameworks | Seamlessly integrate [PyTorch](https://pytorch.org/), [TensorFlow/Keras](https://www.tensorflow.org/), and [JAX](https://github.com/google/jax) models. |
+| 📡 Communication Protocol Agnostic | Choose the communication protocol that best suits your needs (e.g., [gRPC](https://grpc.io/)). |
+| 🔌 Integrations  | Enhanced capabilities through integrations: [Hugging Face Datasets](https://huggingface.co/datasets), ML frameworks, communication protocols, and [Ray](https://www.ray.io/) for large-scale simulations. |
+
+## 📥 Installation
+
+### 👨🏼‍💻 For Users
+
+```bash
+pip install "p2pfl[torch]"
+```
+
+### 👨🏼‍🔧 For Developers
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/p2pfl/p2pfl/tree/develop?quickstart=1)
+
+#### 🐍 Python (using Poetry)
+
+```bash
+git clone https://github.com/p2pfl/p2pfl.git
+cd p2pfl
+poetry install -E torch 
+```
+
+> **Note:** Use the extras (`-E`) flag to install specific dependencies (e.g., `-E torch`). Use `--no-dev` to exclude development dependencies.
+
+#### 🐳 Docker
+
+```bash
+docker build -t p2pfl .
+docker run -it --rm p2pfl bash
+```
+
+## 🎬 Quickstart
+
+To start using P2PFL, follow our [quickstart guide](https://p2pfl.github.io/p2pfl/quickstart.html) in the documentation.
+
+## 📚 Documentation & Resources
+
+* **Documentation:** [https://p2pfl.github.io/p2pfl/](https://p2pfl.github.io/p2pfl)
+* **Technical Report:** (first version) [other/memoria.pdf](other/memoria.pdf)
+
+## 🤝 Contributing
+
+We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines. Please adhere to the project's code of conduct in [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+
+## 💬 Community
+
+Connect with us and stay updated:
+
+* [**GitHub Issues:**](/issues) - For reporting bugs and requesting features.
+* [**Google Group:**](https://groups.google.com/g/p2pfl) - For discussions and announcements.
+* [**Slack:**](https://join.slack.com/t/p2pfl/shared_invite/zt-38xyec0k7-tLPbNx873Pm~N4aoqIyjRw) - For real-time conversations and support.
+
+## ⭐ Star History
+
+A big thank you to the community for your interest in P2PFL! We appreciate your support and contributions.
+
+[![Star History Chart](https://api.star-history.com/svg?repos=p2pfl/p2pfl&type=Date)](https://star-history.com/#p2pfl/p2pfl&Date)
+
+## 📜 License
+
+[GNU General Public License, Version 3.0](https://www.gnu.org/licenses/gpl-3.0.en.html)
+

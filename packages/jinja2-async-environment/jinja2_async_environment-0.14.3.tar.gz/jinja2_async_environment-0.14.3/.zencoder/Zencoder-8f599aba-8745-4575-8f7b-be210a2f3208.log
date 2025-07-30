@@ -1,0 +1,740 @@
+cd /Users/les/Projects/jinja2-async-environment && pdm run pytest
+direnv: loading ~/Projects/jinja2-async-environment/.envrc                      
+direnv: export +PDM_ACTIVE ~PATH
+(jinja2-async-environment) [jinja2-async-environment] cd /Users/les/Projects/jinja2-async-environment && pdm run pytest
+============================= test session starts ==============================
+platform darwin -- Python 3.13.3, pytest-8.3.5, pluggy-1.5.0
+rootdir: /Users/les/Projects/jinja2-async-environment
+configfile: pyproject.toml
+testpaths: tests, jinja2_async_environment
+plugins: anyio-4.9.0, timeout-2.4.0, asyncio-0.26.0, mock-3.14.0, cov-6.1.1
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 96 items                                                                                                                                                    
+
+tests/test_bccache.py ...                                                                                                                                       [  3%]
+tests/test_choice_loader.py ........                                                                                                                            [ 11%]
+tests/test_compiler.py .............                                                                                                                            [ 25%]
+tests/test_dict_loader.py .......                                                                                                                               [ 32%]
+tests/test_environment.py .......................                                                                                                               [ 56%]
+tests/test_function_loader.py ........                                                                                                                          [ 64%]
+tests/test_loaders.py .....                                                                                                                                     [ 69%]
+tests/test_package_loader.py ...EEEFEFF                                                                                                                         [ 80%]
+tests/test_redis_bccache.py ............                                                                                                                        [ 92%]
+tests/test_template_rendering.py .FFFFF.                                                                                                                        [100%]
+
+=============================================================================== ERRORS ================================================================================
+_____________________________________________________ ERROR at setup of TestAsyncPackageLoader.test_init_success ______________________________________________________
+
+self = <tests.test_package_loader.TestAsyncPackageLoader object at 0x105c60e90>, mock_find_spec = <MagicMock id='4392472928'>
+mock_import_module = <MagicMock id='4392475616'>
+
+    @pytest.fixture
+    def package_loader(
+        self, mock_find_spec: MagicMock, mock_import_module: MagicMock
+    ) -> AsyncPackageLoader:
+        with (
+            patch("importlib.util.find_spec", mock_find_spec),
+            patch("jinja2_async_environment.loaders.import_module", mock_import_module),
+            patch("anyio.Path.is_dir", return_value=True),
+            # Mock the template root check to return True
+            patch.object(AsyncPath, "is_dir", return_value=True),
+        ):
+            # Create a mock path that will be used as the template root
+            mock_path = AsyncPath("/path/to/package/templates")
+    
+            # Patch the AsyncPath constructor to return our mock path
+            with patch("anyio.Path", return_value=mock_path):
+>               loader = AsyncPackageLoader(
+                    "test_package",
+                    AsyncPath("/templates"),
+                    package_path=AsyncPath("templates"),
+                )
+
+tests/test_package_loader.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.loaders.AsyncPackageLoader object at 0x105c63100>, package_name = 'test_package', searchpath = Path('/templates')
+package_path = Path('templates'), encoding = 'utf-8'
+
+    def __init__(
+        self,
+        package_name: str,
+        searchpath: AsyncPath | t.Sequence[AsyncPath],
+        package_path: AsyncPath = AsyncPath("templates"),
+        encoding: str = "utf-8",
+    ) -> None:
+        super().__init__(searchpath)
+        self.package_path = package_path
+        self.package_name = package_name
+        self.encoding = encoding
+        import_module(package_name)
+        spec = importlib.util.find_spec(package_name)
+        if not spec:
+            raise PackageSpecNotFound("An import spec was not found for the package")
+        loader = spec.loader
+        if not loader:
+            raise LoaderNotFound("A loader was not found for the package")
+        self._loader = loader
+        self._archive = None
+        template_root: AsyncPath | None = None
+        if isinstance(loader, zipimport.zipimporter):
+            self._archive = loader.archive
+            pkg_locations = spec.submodule_search_locations or []
+            if pkg_locations:
+                pkgdir = next(iter(pkg_locations))
+                template_root = AsyncPath(pkgdir) / package_path
+        else:
+            roots: list[Path] = []
+            if spec.submodule_search_locations:
+                roots.extend([Path(s) for s in spec.submodule_search_locations])
+            elif spec.origin is not None:
+                roots.append(Path(spec.origin))
+            for root in roots:
+                candidate = root / package_path
+                if candidate.is_dir():
+                    template_root = AsyncPath(root)
+                    break
+        if not template_root:
+>           raise ValueError(
+                f"The {package_name!r} package was not installed in a way that PackageLoader understands"
+            )
+E           ValueError: The 'test_package' package was not installed in a way that PackageLoader understands
+
+jinja2_async_environment/loaders.py:198: ValueError
+______________________________________________ ERROR at setup of TestAsyncPackageLoader.test_get_source_async_not_found _______________________________________________
+
+self = <tests.test_package_loader.TestAsyncPackageLoader object at 0x105c46570>, mock_find_spec = <MagicMock id='4392481664'>
+mock_import_module = <MagicMock id='4392480992'>
+
+    @pytest.fixture
+    def package_loader(
+        self, mock_find_spec: MagicMock, mock_import_module: MagicMock
+    ) -> AsyncPackageLoader:
+        with (
+            patch("importlib.util.find_spec", mock_find_spec),
+            patch("jinja2_async_environment.loaders.import_module", mock_import_module),
+            patch("anyio.Path.is_dir", return_value=True),
+            # Mock the template root check to return True
+            patch.object(AsyncPath, "is_dir", return_value=True),
+        ):
+            # Create a mock path that will be used as the template root
+            mock_path = AsyncPath("/path/to/package/templates")
+    
+            # Patch the AsyncPath constructor to return our mock path
+            with patch("anyio.Path", return_value=mock_path):
+>               loader = AsyncPackageLoader(
+                    "test_package",
+                    AsyncPath("/templates"),
+                    package_path=AsyncPath("templates"),
+                )
+
+tests/test_package_loader.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.loaders.AsyncPackageLoader object at 0x105c62d70>, package_name = 'test_package', searchpath = Path('/templates')
+package_path = Path('templates'), encoding = 'utf-8'
+
+    def __init__(
+        self,
+        package_name: str,
+        searchpath: AsyncPath | t.Sequence[AsyncPath],
+        package_path: AsyncPath = AsyncPath("templates"),
+        encoding: str = "utf-8",
+    ) -> None:
+        super().__init__(searchpath)
+        self.package_path = package_path
+        self.package_name = package_name
+        self.encoding = encoding
+        import_module(package_name)
+        spec = importlib.util.find_spec(package_name)
+        if not spec:
+            raise PackageSpecNotFound("An import spec was not found for the package")
+        loader = spec.loader
+        if not loader:
+            raise LoaderNotFound("A loader was not found for the package")
+        self._loader = loader
+        self._archive = None
+        template_root: AsyncPath | None = None
+        if isinstance(loader, zipimport.zipimporter):
+            self._archive = loader.archive
+            pkg_locations = spec.submodule_search_locations or []
+            if pkg_locations:
+                pkgdir = next(iter(pkg_locations))
+                template_root = AsyncPath(pkgdir) / package_path
+        else:
+            roots: list[Path] = []
+            if spec.submodule_search_locations:
+                roots.extend([Path(s) for s in spec.submodule_search_locations])
+            elif spec.origin is not None:
+                roots.append(Path(spec.origin))
+            for root in roots:
+                candidate = root / package_path
+                if candidate.is_dir():
+                    template_root = AsyncPath(root)
+                    break
+        if not template_root:
+>           raise ValueError(
+                f"The {package_name!r} package was not installed in a way that PackageLoader understands"
+            )
+E           ValueError: The 'test_package' package was not installed in a way that PackageLoader understands
+
+jinja2_async_environment/loaders.py:198: ValueError
+_______________________________________________ ERROR at setup of TestAsyncPackageLoader.test_get_source_async_success ________________________________________________
+
+self = <tests.test_package_loader.TestAsyncPackageLoader object at 0x105c16470>, mock_find_spec = <MagicMock id='4392472256'>
+mock_import_module = <MagicMock id='4392471248'>
+
+    @pytest.fixture
+    def package_loader(
+        self, mock_find_spec: MagicMock, mock_import_module: MagicMock
+    ) -> AsyncPackageLoader:
+        with (
+            patch("importlib.util.find_spec", mock_find_spec),
+            patch("jinja2_async_environment.loaders.import_module", mock_import_module),
+            patch("anyio.Path.is_dir", return_value=True),
+            # Mock the template root check to return True
+            patch.object(AsyncPath, "is_dir", return_value=True),
+        ):
+            # Create a mock path that will be used as the template root
+            mock_path = AsyncPath("/path/to/package/templates")
+    
+            # Patch the AsyncPath constructor to return our mock path
+            with patch("anyio.Path", return_value=mock_path):
+>               loader = AsyncPackageLoader(
+                    "test_package",
+                    AsyncPath("/templates"),
+                    package_path=AsyncPath("templates"),
+                )
+
+tests/test_package_loader.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.loaders.AsyncPackageLoader object at 0x105d820f0>, package_name = 'test_package', searchpath = Path('/templates')
+package_path = Path('templates'), encoding = 'utf-8'
+
+    def __init__(
+        self,
+        package_name: str,
+        searchpath: AsyncPath | t.Sequence[AsyncPath],
+        package_path: AsyncPath = AsyncPath("templates"),
+        encoding: str = "utf-8",
+    ) -> None:
+        super().__init__(searchpath)
+        self.package_path = package_path
+        self.package_name = package_name
+        self.encoding = encoding
+        import_module(package_name)
+        spec = importlib.util.find_spec(package_name)
+        if not spec:
+            raise PackageSpecNotFound("An import spec was not found for the package")
+        loader = spec.loader
+        if not loader:
+            raise LoaderNotFound("A loader was not found for the package")
+        self._loader = loader
+        self._archive = None
+        template_root: AsyncPath | None = None
+        if isinstance(loader, zipimport.zipimporter):
+            self._archive = loader.archive
+            pkg_locations = spec.submodule_search_locations or []
+            if pkg_locations:
+                pkgdir = next(iter(pkg_locations))
+                template_root = AsyncPath(pkgdir) / package_path
+        else:
+            roots: list[Path] = []
+            if spec.submodule_search_locations:
+                roots.extend([Path(s) for s in spec.submodule_search_locations])
+            elif spec.origin is not None:
+                roots.append(Path(spec.origin))
+            for root in roots:
+                candidate = root / package_path
+                if candidate.is_dir():
+                    template_root = AsyncPath(root)
+                    break
+        if not template_root:
+>           raise ValueError(
+                f"The {package_name!r} package was not installed in a way that PackageLoader understands"
+            )
+E           ValueError: The 'test_package' package was not installed in a way that PackageLoader understands
+
+jinja2_async_environment/loaders.py:198: ValueError
+_____________________________________________ ERROR at setup of TestAsyncPackageLoader.test_list_templates_async_regular ______________________________________________
+
+self = <tests.test_package_loader.TestAsyncPackageLoader object at 0x105ca4150>, mock_find_spec = <MagicMock id='4391746736'>
+mock_import_module = <MagicMock id='4391740016'>
+
+    @pytest.fixture
+    def package_loader(
+        self, mock_find_spec: MagicMock, mock_import_module: MagicMock
+    ) -> AsyncPackageLoader:
+        with (
+            patch("importlib.util.find_spec", mock_find_spec),
+            patch("jinja2_async_environment.loaders.import_module", mock_import_module),
+            patch("anyio.Path.is_dir", return_value=True),
+            # Mock the template root check to return True
+            patch.object(AsyncPath, "is_dir", return_value=True),
+        ):
+            # Create a mock path that will be used as the template root
+            mock_path = AsyncPath("/path/to/package/templates")
+    
+            # Patch the AsyncPath constructor to return our mock path
+            with patch("anyio.Path", return_value=mock_path):
+>               loader = AsyncPackageLoader(
+                    "test_package",
+                    AsyncPath("/templates"),
+                    package_path=AsyncPath("templates"),
+                )
+
+tests/test_package_loader.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.loaders.AsyncPackageLoader object at 0x105d50050>, package_name = 'test_package', searchpath = Path('/templates')
+package_path = Path('templates'), encoding = 'utf-8'
+
+    def __init__(
+        self,
+        package_name: str,
+        searchpath: AsyncPath | t.Sequence[AsyncPath],
+        package_path: AsyncPath = AsyncPath("templates"),
+        encoding: str = "utf-8",
+    ) -> None:
+        super().__init__(searchpath)
+        self.package_path = package_path
+        self.package_name = package_name
+        self.encoding = encoding
+        import_module(package_name)
+        spec = importlib.util.find_spec(package_name)
+        if not spec:
+            raise PackageSpecNotFound("An import spec was not found for the package")
+        loader = spec.loader
+        if not loader:
+            raise LoaderNotFound("A loader was not found for the package")
+        self._loader = loader
+        self._archive = None
+        template_root: AsyncPath | None = None
+        if isinstance(loader, zipimport.zipimporter):
+            self._archive = loader.archive
+            pkg_locations = spec.submodule_search_locations or []
+            if pkg_locations:
+                pkgdir = next(iter(pkg_locations))
+                template_root = AsyncPath(pkgdir) / package_path
+        else:
+            roots: list[Path] = []
+            if spec.submodule_search_locations:
+                roots.extend([Path(s) for s in spec.submodule_search_locations])
+            elif spec.origin is not None:
+                roots.append(Path(spec.origin))
+            for root in roots:
+                candidate = root / package_path
+                if candidate.is_dir():
+                    template_root = AsyncPath(root)
+                    break
+        if not template_root:
+>           raise ValueError(
+                f"The {package_name!r} package was not installed in a way that PackageLoader understands"
+            )
+E           ValueError: The 'test_package' package was not installed in a way that PackageLoader understands
+
+jinja2_async_environment/loaders.py:198: ValueError
+============================================================================== FAILURES ===============================================================================
+______________________________________________________ TestAsyncPackageLoader.test_get_source_async_with_archive ______________________________________________________
+
+self = <tests.test_package_loader.TestAsyncPackageLoader object at 0x105c16e00>, mock_find_spec = <MagicMock id='4393531248'>
+mock_import_module = <MagicMock id='4393520160'>
+
+    @pytest.mark.asyncio
+    async def test_get_source_async_with_archive(
+        self, mock_find_spec: MagicMock, mock_import_module: MagicMock
+    ) -> None:
+        mock_zipimporter = MagicMock()
+        mock_zipimporter.archive = "/path/to/archive.zip"
+    
+        mock_spec = MagicMock()
+        mock_spec.loader = mock_zipimporter
+        mock_spec.submodule_search_locations = ["/path/to/package"]
+    
+        # Create a mock path that will be used as the template root
+        mock_path = AsyncPath("/path/to/package/templates")
+    
+        with (
+            patch("importlib.util.find_spec", return_value=mock_spec),
+            patch("jinja2_async_environment.loaders.import_module", mock_import_module),
+            patch("anyio.Path.is_file", return_value=True),
+            patch("anyio.Path.read_bytes", return_value=b"<h1>Zip template</h1>"),
+            patch("anyio.Path.stat", return_value=MagicMock(st_mtime=12345)),
+            patch.object(AsyncPath, "is_dir", return_value=True),
+            patch("anyio.Path.__truediv__", return_value=mock_path),
+        ):
+>           loader = AsyncPackageLoader(
+                "test_package",
+                AsyncPath("/templates"),
+                package_path=AsyncPath("templates"),
+            )
+
+tests/test_package_loader.py:170: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.loaders.AsyncPackageLoader object at 0x105d53130>, package_name = 'test_package', searchpath = Path('/templates')
+package_path = Path('templates'), encoding = 'utf-8'
+
+    def __init__(
+        self,
+        package_name: str,
+        searchpath: AsyncPath | t.Sequence[AsyncPath],
+        package_path: AsyncPath = AsyncPath("templates"),
+        encoding: str = "utf-8",
+    ) -> None:
+        super().__init__(searchpath)
+        self.package_path = package_path
+        self.package_name = package_name
+        self.encoding = encoding
+        import_module(package_name)
+        spec = importlib.util.find_spec(package_name)
+        if not spec:
+            raise PackageSpecNotFound("An import spec was not found for the package")
+        loader = spec.loader
+        if not loader:
+            raise LoaderNotFound("A loader was not found for the package")
+        self._loader = loader
+        self._archive = None
+        template_root: AsyncPath | None = None
+        if isinstance(loader, zipimport.zipimporter):
+            self._archive = loader.archive
+            pkg_locations = spec.submodule_search_locations or []
+            if pkg_locations:
+                pkgdir = next(iter(pkg_locations))
+                template_root = AsyncPath(pkgdir) / package_path
+        else:
+            roots: list[Path] = []
+            if spec.submodule_search_locations:
+                roots.extend([Path(s) for s in spec.submodule_search_locations])
+            elif spec.origin is not None:
+                roots.append(Path(spec.origin))
+            for root in roots:
+                candidate = root / package_path
+                if candidate.is_dir():
+                    template_root = AsyncPath(root)
+                    break
+        if not template_root:
+>           raise ValueError(
+                f"The {package_name!r} package was not installed in a way that PackageLoader understands"
+            )
+E           ValueError: The 'test_package' package was not installed in a way that PackageLoader understands
+
+jinja2_async_environment/loaders.py:198: ValueError
+________________________________________________________ TestAsyncPackageLoader.test_list_templates_async_zip _________________________________________________________
+
+self = <tests.test_package_loader.TestAsyncPackageLoader object at 0x105ca4550>, mock_find_spec = <MagicMock id='4391745392'>
+mock_import_module = <MagicMock id='4391743712'>
+
+    @pytest.mark.asyncio
+    async def test_list_templates_async_zip(
+        self, mock_find_spec: MagicMock, mock_import_module: MagicMock
+    ) -> None:
+        mock_zipimporter = MagicMock()
+        mock_zipimporter.archive = "/path/to/archive.zip"
+        mock_zipimporter._files = {
+            "templates/template1.html": MagicMock(),
+            "templates/template2.html": MagicMock(),
+            "templates/subdir/template3.html": MagicMock(),
+            "other/file.txt": MagicMock(),
+        }
+    
+        mock_spec = MagicMock()
+        mock_spec.loader = mock_zipimporter
+        mock_spec.submodule_search_locations = ["/path/to/package"]
+    
+        # Create a mock path that will be used as the template root
+        mock_path = AsyncPath("/path/to/package/templates")
+    
+        with (
+            patch("importlib.util.find_spec", return_value=mock_spec),
+            patch("jinja2_async_environment.loaders.import_module", mock_import_module),
+            patch("anyio.Path.is_file", return_value=True),
+            patch.object(AsyncPath, "is_dir", return_value=True),
+            patch("anyio.Path.__truediv__", return_value=mock_path),
+        ):
+>           loader = AsyncPackageLoader(
+                "test_package",
+                AsyncPath("/templates"),
+                package_path=AsyncPath("templates"),
+            )
+
+tests/test_package_loader.py:238: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.loaders.AsyncPackageLoader object at 0x105ca7350>, package_name = 'test_package', searchpath = Path('/templates')
+package_path = Path('templates'), encoding = 'utf-8'
+
+    def __init__(
+        self,
+        package_name: str,
+        searchpath: AsyncPath | t.Sequence[AsyncPath],
+        package_path: AsyncPath = AsyncPath("templates"),
+        encoding: str = "utf-8",
+    ) -> None:
+        super().__init__(searchpath)
+        self.package_path = package_path
+        self.package_name = package_name
+        self.encoding = encoding
+        import_module(package_name)
+        spec = importlib.util.find_spec(package_name)
+        if not spec:
+            raise PackageSpecNotFound("An import spec was not found for the package")
+        loader = spec.loader
+        if not loader:
+            raise LoaderNotFound("A loader was not found for the package")
+        self._loader = loader
+        self._archive = None
+        template_root: AsyncPath | None = None
+        if isinstance(loader, zipimport.zipimporter):
+            self._archive = loader.archive
+            pkg_locations = spec.submodule_search_locations or []
+            if pkg_locations:
+                pkgdir = next(iter(pkg_locations))
+                template_root = AsyncPath(pkgdir) / package_path
+        else:
+            roots: list[Path] = []
+            if spec.submodule_search_locations:
+                roots.extend([Path(s) for s in spec.submodule_search_locations])
+            elif spec.origin is not None:
+                roots.append(Path(spec.origin))
+            for root in roots:
+                candidate = root / package_path
+                if candidate.is_dir():
+                    template_root = AsyncPath(root)
+                    break
+        if not template_root:
+>           raise ValueError(
+                f"The {package_name!r} package was not installed in a way that PackageLoader understands"
+            )
+E           ValueError: The 'test_package' package was not installed in a way that PackageLoader understands
+
+jinja2_async_environment/loaders.py:198: ValueError
+____________________________________________________ TestAsyncPackageLoader.test_list_templates_async_zip_no_files ____________________________________________________
+
+self = <tests.test_package_loader.TestAsyncPackageLoader object at 0x105d0c6e0>, mock_find_spec = <MagicMock id='4392480992'>
+mock_import_module = <MagicMock id='4392481664'>
+
+    @pytest.mark.asyncio
+    async def test_list_templates_async_zip_no_files(
+        self, mock_find_spec: MagicMock, mock_import_module: MagicMock
+    ) -> None:
+        mock_zipimporter = MagicMock()
+        mock_zipimporter.archive = "/path/to/archive.zip"
+    
+        mock_spec = MagicMock()
+        mock_spec.loader = mock_zipimporter
+        mock_spec.submodule_search_locations = ["/path/to/package"]
+    
+        with (
+            patch("importlib.util.find_spec", return_value=mock_spec),
+            patch("jinja2_async_environment.loaders.import_module", mock_import_module),
+            patch("anyio.Path.is_file", return_value=True),
+            patch.object(AsyncPath, "is_dir", return_value=True),
+>           patch("anyio.Path.__truediv__", return_value=mock_path),
+        ):
+E       NameError: name 'mock_path' is not defined
+
+tests/test_package_loader.py:266: NameError
+_____________________________________________________ TestTemplateRendering.test_render_template_with_inheritance _____________________________________________________
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x105c516d0>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x105db0190>
+
+    @pytest.mark.asyncio
+    async def test_render_template_with_inheritance(
+        self, environment: AsyncEnvironment
+    ) -> None:
+>       template = await environment.get_template_async("child.html")
+
+tests/test_template_rendering.py:57: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+jinja2_async_environment/environment.py:44: in get_template_async
+    return await self._load_template_async(name, globals)
+jinja2_async_environment/environment.py:110: in _load_template_async
+    return await self._get_template_async(name, globals)
+jinja2_async_environment/environment.py:137: in _get_template_async
+    template = await self.loader.load_async(self, name, self.make_globals(globals))
+jinja2_async_environment/loaders.py:86: in load_async
+    code = environment.compile(source_str, name)
+.venv/lib/python3.13/site-packages/jinja2/environment.py:769: in compile
+    return self._compile(source, filename)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.environment.AsyncEnvironment object at 0x105db0190>
+source = "from jinja2.runtime import LoopContext, Macro, Markup, Namespace, TemplateNotFound, TemplateReference, TemplateRuntim..._0_message is missing else l_0_message))\n    yield '</p>'\n\nblocks = {'content': block_content}\ndebug_info = '1=12'"
+filename = '<template>'
+
+    def _compile(self, source: str, filename: str) -> CodeType:
+        """Internal hook that can be overridden to hook a different compile
+        method in.
+    
+        .. versionadded:: 2.5
+        """
+>       return compile(source, filename, "exec")
+E         File "<template>", line 12
+E       SyntaxError: 'await' outside async function
+
+.venv/lib/python3.13/site-packages/jinja2/environment.py:709: SyntaxError
+_______________________________________________________ TestTemplateRendering.test_render_template_with_include _______________________________________________________
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x105c61480>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x105c53ed0>
+
+    @pytest.mark.asyncio
+    async def test_render_template_with_include(
+        self, environment: AsyncEnvironment
+    ) -> None:
+>       template = await environment.get_template_async("include.html")
+
+tests/test_template_rendering.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+jinja2_async_environment/environment.py:44: in get_template_async
+    return await self._load_template_async(name, globals)
+jinja2_async_environment/environment.py:110: in _load_template_async
+    return await self._get_template_async(name, globals)
+jinja2_async_environment/environment.py:137: in _get_template_async
+    template = await self.loader.load_async(self, name, self.make_globals(globals))
+jinja2_async_environment/loaders.py:86: in load_async
+    code = environment.compile(source_str, name)
+.venv/lib/python3.13/site-packages/jinja2/environment.py:769: in compile
+    return self._compile(source, filename)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.environment.AsyncEnvironment object at 0x105c53ed0>
+source = "from jinja2.runtime import LoopContext, Macro, Markup, Namespace, TemplateNotFound, TemplateReference, TemplateRuntim...nder_func(template.new_context(context.get_all(), True, {})):\n        yield event\n\nblocks = {}\ndebug_info = '1=11'"
+filename = '<template>'
+
+    def _compile(self, source: str, filename: str) -> CodeType:
+        """Internal hook that can be overridden to hook a different compile
+        method in.
+    
+        .. versionadded:: 2.5
+        """
+>       return compile(source, filename, "exec")
+E         File "<template>", line 11
+E       SyntaxError: 'await' outside async function
+
+.venv/lib/python3.13/site-packages/jinja2/environment.py:709: SyntaxError
+____________________________________________________________ TestTemplateRendering.test_render_async_block ____________________________________________________________
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x105c615b0>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x105c52c10>
+
+    @pytest.mark.asyncio
+    async def test_render_async_block(self, environment: AsyncEnvironment) -> None:
+>       template = await environment.get_template_async("async_block.html")
+
+tests/test_template_rendering.py:75: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+jinja2_async_environment/environment.py:44: in get_template_async
+    return await self._load_template_async(name, globals)
+jinja2_async_environment/environment.py:110: in _load_template_async
+    return await self._get_template_async(name, globals)
+jinja2_async_environment/environment.py:137: in _get_template_async
+    template = await self.loader.load_async(self, name, self.make_globals(globals))
+jinja2_async_environment/loaders.py:86: in load_async
+    code = environment.compile(source_str, name)
+.venv/lib/python3.13/site-packages/jinja2/environment.py:771: in compile
+    self.handle_exception(source=source_hint)
+.venv/lib/python3.13/site-packages/jinja2/environment.py:942: in handle_exception
+    raise rewrite_traceback_stack(source=source)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+>   ???
+E   jinja2.exceptions.TemplateSyntaxError: Encountered unknown tag 'async'. Jinja was looking for the following tags: 'endblock'. The innermost block that needs to be closed is 'block'.
+
+<unknown>:1: TemplateSyntaxError
+___________________________________________________________ TestTemplateRendering.test_render_async_include ___________________________________________________________
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x105bc16d0>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x105db0f50>
+
+    @pytest.mark.asyncio
+    async def test_render_async_include(self, environment: AsyncEnvironment) -> None:
+>       template = await environment.get_template_async("async_include.html")
+
+tests/test_template_rendering.py:87: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+jinja2_async_environment/environment.py:44: in get_template_async
+    return await self._load_template_async(name, globals)
+jinja2_async_environment/environment.py:110: in _load_template_async
+    return await self._get_template_async(name, globals)
+jinja2_async_environment/environment.py:137: in _get_template_async
+    template = await self.loader.load_async(self, name, self.make_globals(globals))
+jinja2_async_environment/loaders.py:86: in load_async
+    code = environment.compile(source_str, name)
+.venv/lib/python3.13/site-packages/jinja2/environment.py:769: in compile
+    return self._compile(source, filename)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.environment.AsyncEnvironment object at 0x105db0f50>
+source = "from jinja2.runtime import LoopContext, Macro, Markup, Namespace, TemplateNotFound, TemplateReference, TemplateRuntim...ew_context(context.get_all(), True, {})):\n        yield event\n    yield ' After'\n\nblocks = {}\ndebug_info = '1=12'"
+filename = '<template>'
+
+    def _compile(self, source: str, filename: str) -> CodeType:
+        """Internal hook that can be overridden to hook a different compile
+        method in.
+    
+        .. versionadded:: 2.5
+        """
+>       return compile(source, filename, "exec")
+E         File "<template>", line 12
+E       SyntaxError: 'await' outside async function
+
+.venv/lib/python3.13/site-packages/jinja2/environment.py:709: SyntaxError
+___________________________________________________________ TestTemplateRendering.test_render_async_extends ___________________________________________________________
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x105c17350>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x105db0a50>
+
+    @pytest.mark.asyncio
+    async def test_render_async_extends(self, environment: AsyncEnvironment) -> None:
+>       template = await environment.get_template_async("async_extends.html")
+
+tests/test_template_rendering.py:99: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+jinja2_async_environment/environment.py:44: in get_template_async
+    return await self._load_template_async(name, globals)
+jinja2_async_environment/environment.py:110: in _load_template_async
+    return await self._get_template_async(name, globals)
+jinja2_async_environment/environment.py:137: in _get_template_async
+    template = await self.loader.load_async(self, name, self.make_globals(globals))
+jinja2_async_environment/loaders.py:86: in load_async
+    code = environment.compile(source_str, name)
+.venv/lib/python3.13/site-packages/jinja2/environment.py:771: in compile
+    self.handle_exception(source=source_hint)
+.venv/lib/python3.13/site-packages/jinja2/environment.py:942: in handle_exception
+    raise rewrite_traceback_stack(source=source)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+>   ???
+E   jinja2.exceptions.TemplateSyntaxError: Encountered unknown tag 'async'. Jinja was looking for the following tags: 'endblock'. The innermost block that needs to be closed is 'block'.
+
+<unknown>:1: TemplateSyntaxError
+=========================================================================== tests coverage ============================================================================
+__________________________________________________________ coverage: platform darwin, python 3.13.3-final-0 ___________________________________________________________
+
+Name                                      Stmts   Miss  Cover
+-------------------------------------------------------------
+jinja2_async_environment/bccache.py          45      0   100%
+jinja2_async_environment/compiler.py        114      9    92%
+jinja2_async_environment/environment.py      86      2    98%
+jinja2_async_environment/loaders.py         208     72    65%
+-------------------------------------------------------------
+TOTAL                                       453     83    82%
+======================================================================= short test summary info =======================================================================
+FAILED tests/test_package_loader.py::TestAsyncPackageLoader::test_get_source_async_with_archive - ValueError: The 'test_package' package was not installed in a way that PackageLoader understands
+FAILED tests/test_package_loader.py::TestAsyncPackageLoader::test_list_templates_async_zip - ValueError: The 'test_package' package was not installed in a way that PackageLoader understands
+FAILED tests/test_package_loader.py::TestAsyncPackageLoader::test_list_templates_async_zip_no_files - NameError: name 'mock_path' is not defined
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_render_template_with_inheritance -   File "<template>", line 12
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_render_template_with_include -   File "<template>", line 11
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_render_async_block - jinja2.exceptions.TemplateSyntaxError: Encountered unknown tag 'async'. Jinja was looking for the following tags: 'endblock'. The innermost block that needs to be...
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_render_async_include -   File "<template>", line 12
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_render_async_extends - jinja2.exceptions.TemplateSyntaxError: Encountered unknown tag 'async'. Jinja was looking for the following tags: 'endblock'. The innermost block that needs to be...
+ERROR tests/test_package_loader.py::TestAsyncPackageLoader::test_init_success - ValueError: The 'test_package' package was not installed in a way that PackageLoader understands
+ERROR tests/test_package_loader.py::TestAsyncPackageLoader::test_get_source_async_not_found - ValueError: The 'test_package' package was not installed in a way that PackageLoader understands
+ERROR tests/test_package_loader.py::TestAsyncPackageLoader::test_get_source_async_success - ValueError: The 'test_package' package was not installed in a way that PackageLoader understands
+ERROR tests/test_package_loader.py::TestAsyncPackageLoader::test_list_templates_async_regular - ValueError: The 'test_package' package was not installed in a way that PackageLoader understands
+=============================================================== 8 failed, 84 passed, 4 errors in 2.10s ================================================================
+(jinja2-async-environment) [jinja2-async-environment]                                                                                                        main  ✭ ✱

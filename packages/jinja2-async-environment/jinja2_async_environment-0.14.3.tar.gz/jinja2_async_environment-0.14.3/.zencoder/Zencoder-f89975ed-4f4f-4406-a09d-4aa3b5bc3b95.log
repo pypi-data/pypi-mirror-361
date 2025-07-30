@@ -1,0 +1,516 @@
+cd /Users/les/Projects/jinja2-async-environment && pdm run pytest
+direnv: loading ~/Projects/jinja2-async-environment/.envrc                      
+direnv: export +PDM_ACTIVE ~PATH
+(jinja2-async-environment) [jinja2-async-environment] cd /Users/les/Projects/jinja2-async-environment && pdm run pytest
+============================= test session starts ==============================
+platform darwin -- Python 3.13.3, pytest-8.3.5, pluggy-1.5.0
+rootdir: /Users/les/Projects/jinja2-async-environment
+configfile: pyproject.toml
+testpaths: tests, jinja2_async_environment
+plugins: anyio-4.9.0, timeout-2.4.0, asyncio-0.26.0, mock-3.14.0, cov-6.1.1
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 96 items                                                                                                                                                    
+
+tests/test_bccache.py ...                                                                                                                                       [  3%]
+tests/test_choice_loader.py ........                                                                                                                            [ 11%]
+tests/test_compiler.py .............                                                                                                                            [ 25%]
+tests/test_dict_loader.py .......                                                                                                                               [ 32%]
+tests/test_environment.py .......................                                                                                                               [ 56%]
+tests/test_function_loader.py ........                                                                                                                          [ 64%]
+tests/test_loaders.py .....                                                                                                                                     [ 69%]
+tests/test_package_loader.py ..F...F.FF                                                                                                                         [ 80%]
+tests/test_redis_bccache.py ............                                                                                                                        [ 92%]
+tests/test_template_rendering.py .FFFFFF                                                                                                                        [100%]
+
+============================================================================== FAILURES ===============================================================================
+______________________________________________________ TestAsyncPackageLoader.test_init_template_root_not_found _______________________________________________________
+
+self = <tests.test_package_loader.TestAsyncPackageLoader object at 0x107db8fc0>, mock_import_module = <MagicMock id='4428101152'>
+
+    def test_init_template_root_not_found(self, mock_import_module: MagicMock) -> None:
+        mock_spec = MagicMock()
+        mock_spec.loader = MagicMock()
+        mock_spec.submodule_search_locations = []
+        mock_spec.origin = None
+        with (
+            patch("importlib.util.find_spec", return_value=mock_spec),
+            patch("jinja2_async_environment.loaders.import_module", mock_import_module),
+        ):
+>           with pytest.raises(
+                ValueError,
+                match="was not installed in a way that PackageLoader understands",
+            ):
+E           Failed: DID NOT RAISE <class 'ValueError'>
+
+tests/test_package_loader.py:108: Failed
+______________________________________________________ TestAsyncPackageLoader.test_get_source_async_with_archive ______________________________________________________
+
+self = <tests.test_package_loader.TestAsyncPackageLoader object at 0x107dae9c0>, mock_find_spec = <MagicMock id='4427653744'>
+mock_import_module = <MagicMock id='4427653408'>
+
+    @pytest.mark.asyncio
+    async def test_get_source_async_with_archive(
+        self, mock_find_spec: MagicMock, mock_import_module: MagicMock
+    ) -> None:
+        mock_zipimporter = MagicMock()
+        mock_zipimporter.archive = "/path/to/archive.zip"
+    
+        mock_spec = MagicMock()
+        mock_spec.loader = mock_zipimporter
+        mock_spec.submodule_search_locations = ["/path/to/package"]
+    
+        mock_path = AsyncPath("/path/to/package/templates")
+    
+        with (
+            patch("importlib.util.find_spec", return_value=mock_spec),
+            patch("jinja2_async_environment.loaders.import_module", mock_import_module),
+            patch("anyio.Path.is_file", return_value=True),
+            patch("anyio.Path.read_bytes", return_value=b"<h1>Zip template</h1>"),
+            patch("anyio.Path.stat", return_value=MagicMock(st_mtime=12345)),
+            patch("anyio.Path.__truediv__", return_value=mock_path),
+            patch(
+                "pathlib.Path.__truediv__", return_value=MagicMock(is_dir=lambda: True)
+            ),
+            patch("zipimport.zipimporter", return_value=mock_zipimporter),
+        ):
+>           loader = AsyncPackageLoader(
+                "test_package",
+                AsyncPath("/templates"),
+                package_path=AsyncPath("templates"),
+            )
+
+tests/test_package_loader.py:176: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.loaders.AsyncPackageLoader object at 0x107e46250>, package_name = 'test_package', searchpath = Path('/templates')
+package_path = Path('templates'), encoding = 'utf-8'
+
+    def __init__(
+        self,
+        package_name: str,
+        searchpath: AsyncPath | t.Sequence[AsyncPath],
+        package_path: AsyncPath = AsyncPath("templates"),
+        encoding: str = "utf-8",
+    ) -> None:
+        super().__init__(searchpath)
+        self.package_path = package_path
+        self.package_name = package_name
+        self.encoding = encoding
+        import_module(package_name)
+        spec = importlib.util.find_spec(package_name)
+        if not spec:
+            raise PackageSpecNotFound("An import spec was not found for the package")
+        loader = spec.loader
+        if not loader:
+            raise LoaderNotFound("A loader was not found for the package")
+        self._loader = loader
+        self._archive = None
+        template_root: AsyncPath | None = None
+>       if isinstance(loader, zipimport.zipimporter):
+E       TypeError: isinstance() arg 2 must be a type, a tuple of types, or a union
+
+jinja2_async_environment/loaders.py:180: TypeError
+________________________________________________________ TestAsyncPackageLoader.test_list_templates_async_zip _________________________________________________________
+
+self = <tests.test_package_loader.TestAsyncPackageLoader object at 0x107e00550>, mock_find_spec = <MagicMock id='4426520224'>
+mock_import_module = <MagicMock id='4427651392'>
+
+    @pytest.mark.asyncio
+    async def test_list_templates_async_zip(
+        self, mock_find_spec: MagicMock, mock_import_module: MagicMock
+    ) -> None:
+        mock_zipimporter = MagicMock()
+        mock_zipimporter.archive = "/path/to/archive.zip"
+        mock_zipimporter._files = {
+            "templates/template1.html": MagicMock(),
+            "templates/template2.html": MagicMock(),
+            "templates/subdir/template3.html": MagicMock(),
+            "other/file.txt": MagicMock(),
+        }
+    
+        mock_spec = MagicMock()
+        mock_spec.loader = mock_zipimporter
+        mock_spec.submodule_search_locations = ["/path/to/package"]
+    
+        mock_path = AsyncPath("/path/to/package/templates")
+    
+        with (
+            patch("importlib.util.find_spec", return_value=mock_spec),
+            patch("jinja2_async_environment.loaders.import_module", mock_import_module),
+            patch("anyio.Path.is_file", return_value=True),
+            patch.object(AsyncPath, "is_dir", return_value=True),
+            patch("anyio.Path.__truediv__", return_value=mock_path),
+        ):
+            loader = AsyncPackageLoader(
+                "test_package",
+                AsyncPath("/templates"),
+                package_path=AsyncPath("templates"),
+            )
+    
+            templates = await loader.list_templates_async()
+>           assert len(templates) == 3
+E           assert 0 == 3
+E            +  where 0 = len([])
+
+tests/test_package_loader.py:250: AssertionError
+____________________________________________________ TestAsyncPackageLoader.test_list_templates_async_zip_no_files ____________________________________________________
+
+self = <tests.test_package_loader.TestAsyncPackageLoader object at 0x107e04410>, mock_find_spec = <MagicMock id='4427657440'>
+mock_import_module = <MagicMock id='4427654416'>
+
+    @pytest.mark.asyncio
+    async def test_list_templates_async_zip_no_files(
+        self, mock_find_spec: MagicMock, mock_import_module: MagicMock
+    ) -> None:
+        mock_zipimporter = MagicMock()
+        mock_zipimporter.archive = "/path/to/archive.zip"
+    
+        mock_spec = MagicMock()
+        mock_spec.loader = mock_zipimporter
+        mock_spec.submodule_search_locations = ["/path/to/package"]
+    
+        # Create a mock path that will be used as the template root
+        mock_path = AsyncPath("/path/to/package/templates")
+    
+        with (
+            patch("importlib.util.find_spec", return_value=mock_spec),
+            patch("jinja2_async_environment.loaders.import_module", mock_import_module),
+            patch("anyio.Path.is_file", return_value=True),
+            patch.object(AsyncPath, "is_dir", return_value=True),
+            patch("anyio.Path.__truediv__", return_value=mock_path),
+        ):
+            loader = AsyncPackageLoader(
+                "test_package",
+                AsyncPath("/templates"),
+                package_path=AsyncPath("templates"),
+            )
+    
+>           with pytest.raises(TypeError, match="does not have the required metadata"):
+E           Failed: DID NOT RAISE <class 'TypeError'>
+
+tests/test_package_loader.py:282: Failed
+_____________________________________________________ TestTemplateRendering.test_render_template_with_inheritance _____________________________________________________
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x107db56d0>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10840d310>
+
+    @pytest.mark.asyncio
+    async def test_render_template_with_inheritance(
+        self, environment: AsyncEnvironment
+    ) -> None:
+>       template = await environment.get_template_async("child.html")
+
+tests/test_template_rendering.py:57: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+jinja2_async_environment/environment.py:44: in get_template_async
+    return await self._load_template_async(name, globals)
+jinja2_async_environment/environment.py:110: in _load_template_async
+    return await self._get_template_async(name, globals)
+jinja2_async_environment/environment.py:137: in _get_template_async
+    template = await self.loader.load_async(self, name, self.make_globals(globals))
+jinja2_async_environment/loaders.py:86: in load_async
+    code = environment.compile(source_str, name)
+.venv/lib/python3.13/site-packages/jinja2/environment.py:769: in compile
+    return self._compile(source, filename)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10840d310>
+source = "from jinja2.runtime import LoopContext, Macro, Markup, Namespace, TemplateNotFound, TemplateReference, TemplateRuntim..._0_message is missing else l_0_message))\n    yield '</p>'\n\nblocks = {'content': block_content}\ndebug_info = '1=12'"
+filename = '<template>'
+
+    def _compile(self, source: str, filename: str) -> CodeType:
+        """Internal hook that can be overridden to hook a different compile
+        method in.
+    
+        .. versionadded:: 2.5
+        """
+>       return compile(source, filename, "exec")
+E         File "<template>", line 12
+E       SyntaxError: 'await' outside async function
+
+.venv/lib/python3.13/site-packages/jinja2/environment.py:709: SyntaxError
+_______________________________________________________ TestTemplateRendering.test_render_template_with_include _______________________________________________________
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x107db95b0>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10840cf50>
+
+    @pytest.mark.asyncio
+    async def test_render_template_with_include(
+        self, environment: AsyncEnvironment
+    ) -> None:
+>       template = await environment.get_template_async("include.html")
+
+tests/test_template_rendering.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+jinja2_async_environment/environment.py:44: in get_template_async
+    return await self._load_template_async(name, globals)
+jinja2_async_environment/environment.py:110: in _load_template_async
+    return await self._get_template_async(name, globals)
+jinja2_async_environment/environment.py:137: in _get_template_async
+    template = await self.loader.load_async(self, name, self.make_globals(globals))
+jinja2_async_environment/loaders.py:86: in load_async
+    code = environment.compile(source_str, name)
+.venv/lib/python3.13/site-packages/jinja2/environment.py:769: in compile
+    return self._compile(source, filename)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10840cf50>
+source = "from jinja2.runtime import LoopContext, Macro, Markup, Namespace, TemplateNotFound, TemplateReference, TemplateRuntim...nder_func(template.new_context(context.get_all(), True, {})):\n        yield event\n\nblocks = {}\ndebug_info = '1=11'"
+filename = '<template>'
+
+    def _compile(self, source: str, filename: str) -> CodeType:
+        """Internal hook that can be overridden to hook a different compile
+        method in.
+    
+        .. versionadded:: 2.5
+        """
+>       return compile(source, filename, "exec")
+E         File "<template>", line 11
+E       SyntaxError: 'await' outside async function
+
+.venv/lib/python3.13/site-packages/jinja2/environment.py:709: SyntaxError
+____________________________________________________________ TestTemplateRendering.test_render_async_block ____________________________________________________________
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x107db96e0>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10840de50>
+
+    @pytest.mark.asyncio
+    async def test_render_async_block(self, environment: AsyncEnvironment) -> None:
+>       template = await environment.get_template_async("async_block.html")
+
+tests/test_template_rendering.py:75: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+jinja2_async_environment/environment.py:44: in get_template_async
+    return await self._load_template_async(name, globals)
+jinja2_async_environment/environment.py:110: in _load_template_async
+    return await self._get_template_async(name, globals)
+jinja2_async_environment/environment.py:137: in _get_template_async
+    template = await self.loader.load_async(self, name, self.make_globals(globals))
+jinja2_async_environment/loaders.py:86: in load_async
+    code = environment.compile(source_str, name)
+.venv/lib/python3.13/site-packages/jinja2/environment.py:764: in compile
+    source = self._generate(source, name, filename, defer_init=defer_init)
+.venv/lib/python3.13/site-packages/jinja2/environment.py:694: in _generate
+    return generate(  # type: ignore
+.venv/lib/python3.13/site-packages/jinja2/compiler.py:117: in generate
+    generator.visit(node)
+.venv/lib/python3.13/site-packages/jinja2/visitor.py:40: in visit
+    return f(node, *args, **kwargs)
+.venv/lib/python3.13/site-packages/jinja2/compiler.py:942: in visit_Template
+    self.blockvisit(block.body, block_frame)
+.venv/lib/python3.13/site-packages/jinja2/compiler.py:449: in blockvisit
+    self.visit(node, frame)
+.venv/lib/python3.13/site-packages/jinja2/visitor.py:40: in visit
+    return f(node, *args, **kwargs)
+jinja2_async_environment/compiler.py:107: in visit_For
+    self.blockvisit(node.body, frame)  # Use blockvisit instead of body
+.venv/lib/python3.13/site-packages/jinja2/compiler.py:449: in blockvisit
+    self.visit(node, frame)
+.venv/lib/python3.13/site-packages/jinja2/visitor.py:40: in visit
+    return f(node, *args, **kwargs)
+.venv/lib/python3.13/site-packages/jinja2/compiler.py:1569: in visit_Output
+    self.visit(item, frame)
+.venv/lib/python3.13/site-packages/jinja2/visitor.py:40: in visit
+    return f(node, *args, **kwargs)
+.venv/lib/python3.13/site-packages/jinja2/compiler.py:1643: in visit_Name
+    ref = frame.symbols.ref(node.name)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2.idtracking.Symbols object at 0x108027c40>, name = 'item'
+
+    def ref(self, name: str) -> str:
+        rv = self.find_ref(name)
+        if rv is None:
+>           raise AssertionError(
+                "Tried to resolve a name to a reference that was"
+                f" unknown to the frame ({name!r})"
+            )
+E           AssertionError: Tried to resolve a name to a reference that was unknown to the frame ('item')
+
+.venv/lib/python3.13/site-packages/jinja2/idtracking.py:83: AssertionError
+___________________________________________________________ TestTemplateRendering.test_render_async_include ___________________________________________________________
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x107dd4170>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10840e490>
+
+    @pytest.mark.asyncio
+    async def test_render_async_include(self, environment: AsyncEnvironment) -> None:
+>       template = await environment.get_template_async("async_include.html")
+
+tests/test_template_rendering.py:87: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+jinja2_async_environment/environment.py:44: in get_template_async
+    return await self._load_template_async(name, globals)
+jinja2_async_environment/environment.py:110: in _load_template_async
+    return await self._get_template_async(name, globals)
+jinja2_async_environment/environment.py:137: in _get_template_async
+    template = await self.loader.load_async(self, name, self.make_globals(globals))
+jinja2_async_environment/loaders.py:86: in load_async
+    code = environment.compile(source_str, name)
+.venv/lib/python3.13/site-packages/jinja2/environment.py:769: in compile
+    return self._compile(source, filename)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10840e490>
+source = "from jinja2.runtime import LoopContext, Macro, Markup, Namespace, TemplateNotFound, TemplateReference, TemplateRuntim...ew_context(context.get_all(), True, {})):\n        yield event\n    yield ' After'\n\nblocks = {}\ndebug_info = '1=12'"
+filename = '<template>'
+
+    def _compile(self, source: str, filename: str) -> CodeType:
+        """Internal hook that can be overridden to hook a different compile
+        method in.
+    
+        .. versionadded:: 2.5
+        """
+>       return compile(source, filename, "exec")
+E         File "<template>", line 12
+E       SyntaxError: 'await' outside async function
+
+.venv/lib/python3.13/site-packages/jinja2/environment.py:709: SyntaxError
+___________________________________________________________ TestTemplateRendering.test_render_async_extends ___________________________________________________________
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x107daef10>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10840df90>
+
+    @pytest.mark.asyncio
+    async def test_render_async_extends(self, environment: AsyncEnvironment) -> None:
+>       template = await environment.get_template_async("async_extends.html")
+
+tests/test_template_rendering.py:99: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+jinja2_async_environment/environment.py:44: in get_template_async
+    return await self._load_template_async(name, globals)
+jinja2_async_environment/environment.py:110: in _load_template_async
+    return await self._get_template_async(name, globals)
+jinja2_async_environment/environment.py:137: in _get_template_async
+    template = await self.loader.load_async(self, name, self.make_globals(globals))
+jinja2_async_environment/loaders.py:86: in load_async
+    code = environment.compile(source_str, name)
+.venv/lib/python3.13/site-packages/jinja2/environment.py:764: in compile
+    source = self._generate(source, name, filename, defer_init=defer_init)
+.venv/lib/python3.13/site-packages/jinja2/environment.py:694: in _generate
+    return generate(  # type: ignore
+.venv/lib/python3.13/site-packages/jinja2/compiler.py:117: in generate
+    generator.visit(node)
+.venv/lib/python3.13/site-packages/jinja2/visitor.py:40: in visit
+    return f(node, *args, **kwargs)
+.venv/lib/python3.13/site-packages/jinja2/compiler.py:942: in visit_Template
+    self.blockvisit(block.body, block_frame)
+.venv/lib/python3.13/site-packages/jinja2/compiler.py:449: in blockvisit
+    self.visit(node, frame)
+.venv/lib/python3.13/site-packages/jinja2/visitor.py:40: in visit
+    return f(node, *args, **kwargs)
+jinja2_async_environment/compiler.py:107: in visit_For
+    self.blockvisit(node.body, frame)  # Use blockvisit instead of body
+.venv/lib/python3.13/site-packages/jinja2/compiler.py:449: in blockvisit
+    self.visit(node, frame)
+.venv/lib/python3.13/site-packages/jinja2/visitor.py:40: in visit
+    return f(node, *args, **kwargs)
+.venv/lib/python3.13/site-packages/jinja2/compiler.py:1569: in visit_Output
+    self.visit(item, frame)
+.venv/lib/python3.13/site-packages/jinja2/visitor.py:40: in visit
+    return f(node, *args, **kwargs)
+.venv/lib/python3.13/site-packages/jinja2/compiler.py:1643: in visit_Name
+    ref = frame.symbols.ref(node.name)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2.idtracking.Symbols object at 0x10849f000>, name = 'item'
+
+    def ref(self, name: str) -> str:
+        rv = self.find_ref(name)
+        if rv is None:
+>           raise AssertionError(
+                "Tried to resolve a name to a reference that was"
+                f" unknown to the frame ({name!r})"
+            )
+E           AssertionError: Tried to resolve a name to a reference that was unknown to the frame ('item')
+
+.venv/lib/python3.13/site-packages/jinja2/idtracking.py:83: AssertionError
+_____________________________________________________ TestTemplateRendering.test_performance_with_large_template ______________________________________________________
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x107daf020>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10840d310>
+
+    @pytest.mark.asyncio
+    async def test_performance_with_large_template(
+        self, environment: AsyncEnvironment
+    ) -> None:
+        large_template = "{% for i in range(1000) %}{{ i }}{% endfor %}"
+    
+        environment.loader.mapping["large.html"] = large_template  # type: ignore
+    
+>       template = await environment.get_template_async("large.html")
+
+tests/test_template_rendering.py:117: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+jinja2_async_environment/environment.py:44: in get_template_async
+    return await self._load_template_async(name, globals)
+jinja2_async_environment/environment.py:110: in _load_template_async
+    return await self._get_template_async(name, globals)
+jinja2_async_environment/environment.py:137: in _get_template_async
+    template = await self.loader.load_async(self, name, self.make_globals(globals))
+jinja2_async_environment/loaders.py:86: in load_async
+    code = environment.compile(source_str, name)
+.venv/lib/python3.13/site-packages/jinja2/environment.py:764: in compile
+    source = self._generate(source, name, filename, defer_init=defer_init)
+.venv/lib/python3.13/site-packages/jinja2/environment.py:694: in _generate
+    return generate(  # type: ignore
+.venv/lib/python3.13/site-packages/jinja2/compiler.py:117: in generate
+    generator.visit(node)
+.venv/lib/python3.13/site-packages/jinja2/visitor.py:40: in visit
+    return f(node, *args, **kwargs)
+.venv/lib/python3.13/site-packages/jinja2/compiler.py:892: in visit_Template
+    self.blockvisit(node.body, frame)
+.venv/lib/python3.13/site-packages/jinja2/compiler.py:449: in blockvisit
+    self.visit(node, frame)
+.venv/lib/python3.13/site-packages/jinja2/visitor.py:40: in visit
+    return f(node, *args, **kwargs)
+jinja2_async_environment/compiler.py:107: in visit_For
+    self.blockvisit(node.body, frame)  # Use blockvisit instead of body
+.venv/lib/python3.13/site-packages/jinja2/compiler.py:449: in blockvisit
+    self.visit(node, frame)
+.venv/lib/python3.13/site-packages/jinja2/visitor.py:40: in visit
+    return f(node, *args, **kwargs)
+.venv/lib/python3.13/site-packages/jinja2/compiler.py:1569: in visit_Output
+    self.visit(item, frame)
+.venv/lib/python3.13/site-packages/jinja2/visitor.py:40: in visit
+    return f(node, *args, **kwargs)
+.venv/lib/python3.13/site-packages/jinja2/compiler.py:1643: in visit_Name
+    ref = frame.symbols.ref(node.name)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2.idtracking.Symbols object at 0x108206970>, name = 'i'
+
+    def ref(self, name: str) -> str:
+        rv = self.find_ref(name)
+        if rv is None:
+>           raise AssertionError(
+                "Tried to resolve a name to a reference that was"
+                f" unknown to the frame ({name!r})"
+            )
+E           AssertionError: Tried to resolve a name to a reference that was unknown to the frame ('i')
+
+.venv/lib/python3.13/site-packages/jinja2/idtracking.py:83: AssertionError
+=========================================================================== tests coverage ============================================================================
+__________________________________________________________ coverage: platform darwin, python 3.13.3-final-0 ___________________________________________________________
+
+Name                                      Stmts   Miss  Cover
+-------------------------------------------------------------
+jinja2_async_environment/bccache.py          45      0   100%
+jinja2_async_environment/compiler.py        183     53    71%
+jinja2_async_environment/environment.py      86      2    98%
+jinja2_async_environment/loaders.py         211     55    74%
+-------------------------------------------------------------
+TOTAL                                       525    110    79%
+======================================================================= short test summary info =======================================================================
+FAILED tests/test_package_loader.py::TestAsyncPackageLoader::test_init_template_root_not_found - Failed: DID NOT RAISE <class 'ValueError'>
+FAILED tests/test_package_loader.py::TestAsyncPackageLoader::test_get_source_async_with_archive - TypeError: isinstance() arg 2 must be a type, a tuple of types, or a union
+FAILED tests/test_package_loader.py::TestAsyncPackageLoader::test_list_templates_async_zip - assert 0 == 3
+FAILED tests/test_package_loader.py::TestAsyncPackageLoader::test_list_templates_async_zip_no_files - Failed: DID NOT RAISE <class 'TypeError'>
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_render_template_with_inheritance -   File "<template>", line 12
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_render_template_with_include -   File "<template>", line 11
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_render_async_block - AssertionError: Tried to resolve a name to a reference that was unknown to the frame ('item')
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_render_async_include -   File "<template>", line 12
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_render_async_extends - AssertionError: Tried to resolve a name to a reference that was unknown to the frame ('item')
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_performance_with_large_template - AssertionError: Tried to resolve a name to a reference that was unknown to the frame ('i')
+==================================================================== 10 failed, 86 passed in 3.59s ====================================================================
+(jinja2-async-environment) [jinja2-async-environment]                                                                                                        main  ✭ ✱

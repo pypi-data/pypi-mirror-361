@@ -1,0 +1,769 @@
+[1m========================================================================= test session starts =========================================================================[0m
+platform darwin -- Python 3.13.5, pytest-8.4.0, pluggy-1.6.0
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /Users/les/Projects/jinja2-async-environment
+configfile: pyproject.toml
+testpaths: tests, jinja2_async_environment
+plugins: xdist-3.7.0, anyio-4.9.0, timeout-2.4.0, cov-6.2.1, mock-3.14.1, benchmark-5.1.0, asyncio-1.0.0
+timeout: 300.0s
+timeout method: thread
+timeout func_only: False
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0m[1mcollecting 71 items                                                                                                                                                   [0m[1mcollected 132 items                                                                                                                                                   [0m
+
+tests/test_bccache.py [32m.[0m[32m.[0m[32m.[0m[32m                                                                                                                                       [  2%][0m
+tests/test_choice_loader.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m                                                                                                                            [  8%][0m
+tests/test_compiler.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m                                                                                                                            [ 18%][0m
+tests/test_compiler_coverage.py [32m.[0m[32m.[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31m                                                                                                                       [ 25%][0m
+tests/test_dict_loader.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                                                                                                                               [ 30%][0m
+tests/test_e2e.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                                                                                                                                      [ 36%][0m
+tests/test_environment.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                                                                                                               [ 53%][0m
+tests/test_environment_coverage.py [32m.[0m[32m.[0m[31mF[0m[31mF[0m[32m.[0m[32m.[0m[31mF[0m[31mF[0m[31mF[0m[31m                                                                                                                    [ 60%][0m
+tests/test_function_loader.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                                                                                                                          [ 66%][0m
+tests/test_loaders.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                                                                                                                                     [ 70%][0m
+tests/test_loaders_coverage.py [31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31m                                                                                                                       [ 78%][0m
+tests/test_package_loader.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                                                                                                                         [ 85%][0m
+tests/test_redis_bccache.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                                                                                                                        [ 94%][0m
+tests/test_template_rendering.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                                                                                                                        [100%][0m
+
+============================================================================== FAILURES ===============================================================================
+[31m[1m_________________________________________________________________________ test_visit_asyncfor _________________________________________________________________________[0m
+
+async_code_generator = <jinja2_async_environment.compiler.AsyncCodeGenerator object at 0x10f692c40>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_visit_asyncfor[39;49;00m(async_code_generator: AsyncCodeGenerator) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test visit_AsyncFor method."""[39;49;00m[90m[39;49;00m
+        [90m# Create a mock AsyncFor node[39;49;00m[90m[39;49;00m
+        target = create_mock_node(nodes.Name, name=[33m"[39;49;00m[33mitem[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        iter_node = create_mock_node(nodes.Name, name=[33m"[39;49;00m[33mitems[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        body = [create_mock_node(nodes.Output, nodes=[create_mock_node(nodes.Name, name=[33m"[39;49;00m[33mitem[39;49;00m[33m"[39;49;00m)])][90m[39;49;00m
+        else_body = [][90m[39;49;00m
+    [90m[39;49;00m
+        async_for_node = create_mock_node([90m[39;49;00m
+>           nodes.AsyncFor, target=target, [96miter[39;49;00m=iter_node, body=body, else_=else_body[90m[39;49;00m
+            ^^^^^^^^^^^^^^[90m[39;49;00m
+        )[90m[39;49;00m
+[1m[31mE       AttributeError: module 'jinja2.nodes' has no attribute 'AsyncFor'[0m
+
+[1m[31mtests/test_compiler_coverage.py[0m:56: AttributeError
+[31m[1m________________________________________________________________________ test_visit_asynccall _________________________________________________________________________[0m
+
+async_code_generator = <jinja2_async_environment.compiler.AsyncCodeGenerator object at 0x10f692650>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_visit_asynccall[39;49;00m(async_code_generator: AsyncCodeGenerator) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test visit_AsyncCall method."""[39;49;00m[90m[39;49;00m
+        [90m# Create a mock AsyncCall node[39;49;00m[90m[39;49;00m
+        node = create_mock_node([90m[39;49;00m
+            nodes.Call,[90m[39;49;00m
+            node=create_mock_node(nodes.Name, name=[33m"[39;49;00m[33masync_function[39;49;00m[33m"[39;49;00m),[90m[39;49;00m
+            args=[create_mock_node(nodes.Const, value=[33m"[39;49;00m[33marg1[39;49;00m[33m"[39;49;00m)],[90m[39;49;00m
+            kwargs=[],[90m[39;49;00m
+            dyn_args=[94mNone[39;49;00m,[90m[39;49;00m
+            dyn_kwargs=[94mNone[39;49;00m,[90m[39;49;00m
+        )[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Mock the necessary methods[39;49;00m[90m[39;49;00m
+        async_code_generator.visit = MagicMock()[90m[39;49;00m
+        async_code_generator.write = MagicMock()[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Call the method[39;49;00m[90m[39;49;00m
+>       async_code_generator.visit_Call(node)[90m[39;49;00m
+[1m[31mE       TypeError: CodeGenerator.visit_Call() missing 1 required positional argument: 'frame'[0m
+
+[1m[31mtests/test_compiler_coverage.py[0m:89: TypeError
+[31m[1m_____________________________________________________________________ test_visit_asyncfilterblock _____________________________________________________________________[0m
+
+async_code_generator = <jinja2_async_environment.compiler.AsyncCodeGenerator object at 0x10f692780>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_visit_asyncfilterblock[39;49;00m(async_code_generator: AsyncCodeGenerator) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test visit_AsyncFilterBlock method."""[39;49;00m[90m[39;49;00m
+        [90m# Create a mock AsyncFilterBlock node[39;49;00m[90m[39;49;00m
+        node = create_mock_node([90m[39;49;00m
+            nodes.FilterBlock,[90m[39;49;00m
+            [96mfilter[39;49;00m=create_mock_node(nodes.Filter, name=[33m"[39;49;00m[33masync_filter[39;49;00m[33m"[39;49;00m),[90m[39;49;00m
+            body=[create_mock_node(nodes.Output, nodes=[create_mock_node(nodes.Name, name=[33m"[39;49;00m[33mitem[39;49;00m[33m"[39;49;00m)])],[90m[39;49;00m
+        )[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Mock the necessary methods[39;49;00m[90m[39;49;00m
+        async_code_generator.visit = MagicMock()[90m[39;49;00m
+        async_code_generator.write = MagicMock()[90m[39;49;00m
+        async_code_generator.blockvisit = MagicMock()[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Call the method[39;49;00m[90m[39;49;00m
+>       async_code_generator.visit_FilterBlock(node)[90m[39;49;00m
+[1m[31mE       TypeError: CodeGenerator.visit_FilterBlock() missing 1 required positional argument: 'frame'[0m
+
+[1m[31mtests/test_compiler_coverage.py[0m:111: TypeError
+[31m[1m________________________________________________________________________ test_visit_asyncwith _________________________________________________________________________[0m
+
+async_code_generator = <jinja2_async_environment.compiler.AsyncCodeGenerator object at 0x10f692650>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_visit_asyncwith[39;49;00m(async_code_generator: AsyncCodeGenerator) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test visit_AsyncWith method."""[39;49;00m[90m[39;49;00m
+        [90m# Create a mock AsyncWith node[39;49;00m[90m[39;49;00m
+        targets = [[90m[39;49;00m
+            ([90m[39;49;00m
+                create_mock_node(nodes.Name, name=[33m"[39;49;00m[33mtarget[39;49;00m[33m"[39;49;00m),[90m[39;49;00m
+                create_mock_node(nodes.Name, name=[33m"[39;49;00m[33mvalue[39;49;00m[33m"[39;49;00m),[90m[39;49;00m
+            )[90m[39;49;00m
+        ][90m[39;49;00m
+        body = [create_mock_node(nodes.Output, nodes=[create_mock_node(nodes.Name, name=[33m"[39;49;00m[33mitem[39;49;00m[33m"[39;49;00m)])][90m[39;49;00m
+    [90m[39;49;00m
+>       async_with_node = create_mock_node(nodes.AsyncWith, targets=targets, body=body)[90m[39;49;00m
+                                           ^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE       AttributeError: module 'jinja2.nodes' has no attribute 'AsyncWith'[0m
+
+[1m[31mtests/test_compiler_coverage.py[0m:130: AttributeError
+[31m[1m______________________________________________________________________ test_func_code_generator _______________________________________________________________________[0m
+
+async_code_generator = <jinja2_async_environment.compiler.AsyncCodeGenerator object at 0x10f7b8050>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_func_code_generator[39;49;00m(async_code_generator: AsyncCodeGenerator) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test the func method with async functions."""[39;49;00m[90m[39;49;00m
+        [90m# Mock the necessary methods[39;49;00m[90m[39;49;00m
+        async_code_generator.write = MagicMock()[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Call the method with an async function[39;49;00m[90m[39;49;00m
+>       [94mwith[39;49;00m patch.object(async_code_generator, [33m"[39;49;00m[33mis_async[39;49;00m[33m"[39;49;00m, return_value=[94mTrue[39;49;00m):[90m[39;49;00m
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_compiler_coverage.py[0m:152: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31m/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py[0m:1497: in __enter__
+    [0moriginal, local = [96mself[39;49;00m.get_original()[90m[39;49;00m
+                      ^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x10f7f0050>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mget_original[39;49;00m([96mself[39;49;00m):[90m[39;49;00m
+        target = [96mself[39;49;00m.getter()[90m[39;49;00m
+        name = [96mself[39;49;00m.attribute[90m[39;49;00m
+    [90m[39;49;00m
+        original = DEFAULT[90m[39;49;00m
+        local = [94mFalse[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [94mtry[39;49;00m:[90m[39;49;00m
+            original = target.[91m__dict__[39;49;00m[name][90m[39;49;00m
+        [94mexcept[39;49;00m ([96mAttributeError[39;49;00m, [96mKeyError[39;49;00m):[90m[39;49;00m
+            original = [96mgetattr[39;49;00m(target, name, DEFAULT)[90m[39;49;00m
+        [94melse[39;49;00m:[90m[39;49;00m
+            local = [94mTrue[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [94mif[39;49;00m name [95min[39;49;00m _builtins [95mand[39;49;00m [96misinstance[39;49;00m(target, ModuleType):[90m[39;49;00m
+            [96mself[39;49;00m.create = [94mTrue[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [94mif[39;49;00m [95mnot[39;49;00m [96mself[39;49;00m.create [95mand[39;49;00m original [95mis[39;49;00m DEFAULT:[90m[39;49;00m
+>           [94mraise[39;49;00m [96mAttributeError[39;49;00m([90m[39;49;00m
+                [33m"[39;49;00m[33m%s[39;49;00m[33m does not have the attribute [39;49;00m[33m%r[39;49;00m[33m"[39;49;00m % (target, name)[90m[39;49;00m
+            )[90m[39;49;00m
+[1m[31mE           AttributeError: <jinja2_async_environment.compiler.AsyncCodeGenerator object at 0x10f7b8050> does not have the attribute 'is_async'[0m
+
+[1m[31m/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py[0m:1467: AttributeError
+[31m[1m_____________________________________________________________________ test_return_buffer_contents _____________________________________________________________________[0m
+
+async_code_generator = <jinja2_async_environment.compiler.AsyncCodeGenerator object at 0x10f7b8180>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_return_buffer_contents[39;49;00m(async_code_generator: AsyncCodeGenerator) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test the return_buffer_contents method."""[39;49;00m[90m[39;49;00m
+        [90m# Mock the necessary methods[39;49;00m[90m[39;49;00m
+        async_code_generator.write = MagicMock()[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Call the method[39;49;00m[90m[39;49;00m
+>       async_code_generator.return_buffer_contents()[90m[39;49;00m
+[1m[31mE       TypeError: CodeGenerator.return_buffer_contents() missing 1 required positional argument: 'frame'[0m
+
+[1m[31mtests/test_compiler_coverage.py[0m:167: TypeError
+[31m[1m________________________________________________________________________ test_visit_asyncblock ________________________________________________________________________[0m
+
+async_code_generator = <jinja2_async_environment.compiler.AsyncCodeGenerator object at 0x10f7b8640>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_visit_asyncblock[39;49;00m(async_code_generator: AsyncCodeGenerator) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test visit_AsyncBlock method."""[39;49;00m[90m[39;49;00m
+        [90m# Create a mock AsyncBlock node[39;49;00m[90m[39;49;00m
+        node = create_mock_node([90m[39;49;00m
+            nodes.Block,[90m[39;49;00m
+            name=[33m"[39;49;00m[33masync_block[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            body=[create_mock_node(nodes.Output, nodes=[create_mock_node(nodes.Name, name=[33m"[39;49;00m[33mitem[39;49;00m[33m"[39;49;00m)])],[90m[39;49;00m
+            scoped=[94mFalse[39;49;00m,[90m[39;49;00m
+        )[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Mock the necessary methods[39;49;00m[90m[39;49;00m
+        async_code_generator.visit = MagicMock()[90m[39;49;00m
+        async_code_generator.write = MagicMock()[90m[39;49;00m
+        async_code_generator.blockvisit = MagicMock()[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Call the method[39;49;00m[90m[39;49;00m
+>       [94mwith[39;49;00m patch.object(async_code_generator, [33m"[39;49;00m[33mis_async[39;49;00m[33m"[39;49;00m, return_value=[94mTrue[39;49;00m):[90m[39;49;00m
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_compiler_coverage.py[0m:189: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31m/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py[0m:1497: in __enter__
+    [0moriginal, local = [96mself[39;49;00m.get_original()[90m[39;49;00m
+                      ^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x10f7f1470>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mget_original[39;49;00m([96mself[39;49;00m):[90m[39;49;00m
+        target = [96mself[39;49;00m.getter()[90m[39;49;00m
+        name = [96mself[39;49;00m.attribute[90m[39;49;00m
+    [90m[39;49;00m
+        original = DEFAULT[90m[39;49;00m
+        local = [94mFalse[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [94mtry[39;49;00m:[90m[39;49;00m
+            original = target.[91m__dict__[39;49;00m[name][90m[39;49;00m
+        [94mexcept[39;49;00m ([96mAttributeError[39;49;00m, [96mKeyError[39;49;00m):[90m[39;49;00m
+            original = [96mgetattr[39;49;00m(target, name, DEFAULT)[90m[39;49;00m
+        [94melse[39;49;00m:[90m[39;49;00m
+            local = [94mTrue[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [94mif[39;49;00m name [95min[39;49;00m _builtins [95mand[39;49;00m [96misinstance[39;49;00m(target, ModuleType):[90m[39;49;00m
+            [96mself[39;49;00m.create = [94mTrue[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [94mif[39;49;00m [95mnot[39;49;00m [96mself[39;49;00m.create [95mand[39;49;00m original [95mis[39;49;00m DEFAULT:[90m[39;49;00m
+>           [94mraise[39;49;00m [96mAttributeError[39;49;00m([90m[39;49;00m
+                [33m"[39;49;00m[33m%s[39;49;00m[33m does not have the attribute [39;49;00m[33m%r[39;49;00m[33m"[39;49;00m % (target, name)[90m[39;49;00m
+            )[90m[39;49;00m
+[1m[31mE           AttributeError: <jinja2_async_environment.compiler.AsyncCodeGenerator object at 0x10f7b8640> does not have the attribute 'is_async'[0m
+
+[1m[31m/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py[0m:1467: AttributeError
+[31m[1m____________________________________________________________________________ test_compile _____________________________________________________________________________[0m
+
+self = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10f6d3750>
+source = '\nasync def test():\n    async for event in self._async_yield_from(context.blocks\n    ', filename = 'test.py'
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92m_compile[39;49;00m([96mself[39;49;00m, source: [96mstr[39;49;00m, filename: [96mstr[39;49;00m) -> t.Any:[90m[39;49;00m
+        [94mtry[39;49;00m:[90m[39;49;00m
+>           [94mreturn[39;49;00m [96mcompile[39;49;00m(source, filename, [33m"[39;49;00m[33mexec[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE             File "test.py", line 3[0m
+[1m[31mE           SyntaxError: 'yield from' inside async function[0m
+
+[1m[31mjinja2_async_environment/environment.py[0m:49: SyntaxError
+
+[33mDuring handling of the above exception, another exception occurred:[0m
+
+async_env = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10f6d3750>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_compile[39;49;00m(async_env: AsyncEnvironment) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test the _compile method."""[39;49;00m[90m[39;49;00m
+        [90m# Test normal compilation[39;49;00m[90m[39;49;00m
+        source = [33m"[39;49;00m[33mdef test(): pass[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        result = async_env._compile(source, [33m"[39;49;00m[33mtest.py[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Verify the result is a code object[39;49;00m[90m[39;49;00m
+        [94massert[39;49;00m result [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Test compilation with SyntaxError but without async code[39;49;00m[90m[39;49;00m
+        [94mwith[39;49;00m pytest.raises([96mSyntaxError[39;49;00m):[90m[39;49;00m
+            async_env._compile([33m"[39;49;00m[33mdef test() yield from[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mtest.py[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Test compilation with SyntaxError and async code[39;49;00m[90m[39;49;00m
+        source = [33m"""[39;49;00m[33m[39;49;00m
+    [33masync def test():[39;49;00m[33m[39;49;00m
+    [33m    yield from context.blocks[39;49;00m[33m[39;49;00m
+    [33m    [39;49;00m[33m"""[39;49;00m[90m[39;49;00m
+>       result = async_env._compile(source, [33m"[39;49;00m[33mtest.py[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_environment_coverage.py[0m:58: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10f6d3750>
+source = '\nasync def test():\n    async for event in self._async_yield_from(context.blocks\n    ', filename = 'test.py'
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92m_compile[39;49;00m([96mself[39;49;00m, source: [96mstr[39;49;00m, filename: [96mstr[39;49;00m) -> t.Any:[90m[39;49;00m
+        [94mtry[39;49;00m:[90m[39;49;00m
+            [94mreturn[39;49;00m [96mcompile[39;49;00m(source, filename, [33m"[39;49;00m[33mexec[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        [94mexcept[39;49;00m [96mSyntaxError[39;49;00m:[90m[39;49;00m
+            [94mif[39;49;00m [33m"[39;49;00m[33myield from[39;49;00m[33m"[39;49;00m [95min[39;49;00m source [95mand[39;49;00m [33m"[39;49;00m[33masync def[39;49;00m[33m"[39;49;00m [95min[39;49;00m source:[90m[39;49;00m
+                source = source.replace([33m"[39;49;00m[33myield from[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33masync for event in[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                source = source.replace([90m[39;49;00m
+                    [33m"[39;49;00m[33masync for event in context.blocks[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                    [33m"[39;49;00m[33masync for event in self._async_yield_from(context.blocks[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                )[90m[39;49;00m
+    [90m[39;49;00m
+                source = source.replace([90m[39;49;00m
+                    [33m"[39;49;00m[33mundefined(name=[39;49;00m[33m'[39;49;00m[33mitem[39;49;00m[33m'[39;49;00m[33m) if l_0_item is missing else l_0_item[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                    [33m"[39;49;00m[33mitem[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                )[90m[39;49;00m
+                source = source.replace([90m[39;49;00m
+                    [33m"[39;49;00m[33mundefined(name=[39;49;00m[33m'[39;49;00m[33mi[39;49;00m[33m'[39;49;00m[33m) if l_0_i is missing else l_0_i[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mi[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+                )[90m[39;49;00m
+                source = source.replace([90m[39;49;00m
+                    [33m"[39;49;00m[33mundefined(name=[39;49;00m[33m'[39;49;00m[33mmessage[39;49;00m[33m'[39;49;00m[33m) if l_0_message is missing else l_0_message[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                    [33m"[39;49;00m[33mmessage[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                )[90m[39;49;00m
+                source = source.replace([90m[39;49;00m
+                    [33m"[39;49;00m[33mundefined(name=[39;49;00m[33m'[39;49;00m[33mpartial_var[39;49;00m[33m'[39;49;00m[33m) if l_0_partial_var is missing else l_0_partial_var[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                    [33m"[39;49;00m[33mpartial_var[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                )[90m[39;49;00m
+    [90m[39;49;00m
+>               [94mreturn[39;49;00m [96mcompile[39;49;00m(source, filename, [33m"[39;49;00m[33mexec[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE                 File "test.py", line 3[0m
+[1m[31mE                   async for event in self._async_yield_from(context.blocks[0m
+[1m[31mE                                                            ^[0m
+[1m[31mE               SyntaxError: '(' was never closed[0m
+
+[1m[31mjinja2_async_environment/environment.py[0m:74: SyntaxError
+[31m[1m________________________________________________________________________ test_async_yield_from ________________________________________________________________________[0m
+
+async_env = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10f6d3390>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_async_yield_from[39;49;00m(async_env: AsyncEnvironment) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test the _async_yield_from method."""[39;49;00m[90m[39;49;00m
+        [90m# Test with an async generator[39;49;00m[90m[39;49;00m
+        [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92masync_generator[39;49;00m():[90m[39;49;00m
+            [94myield[39;49;00m [33m"[39;49;00m[33mitem1[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+            [94myield[39;49;00m [33m"[39;49;00m[33mitem2[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        result = [][90m[39;49;00m
+>       [94masync[39;49;00m [94mfor[39;49;00m item [95min[39;49;00m [94mawait[39;49;00m async_env._async_yield_from(async_generator()):[90m[39;49;00m
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE       TypeError: object async_generator can't be used in 'await' expression[0m
+
+[1m[31mtests/test_environment_coverage.py[0m:73: TypeError
+[31m[1m__________________________________________________________________ test_get_or_select_template_async __________________________________________________________________[0m
+
+self = <AsyncMock id='4554224176'>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92massert_called_once[39;49;00m([96mself[39;49;00m):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""assert that the mock was called only once.[39;49;00m
+    [33m    """[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m [95mnot[39;49;00m [96mself[39;49;00m.call_count == [94m1[39;49;00m:[90m[39;49;00m
+            msg = ([33m"[39;49;00m[33mExpected [39;49;00m[33m'[39;49;00m[33m%s[39;49;00m[33m'[39;49;00m[33m to have been called once. Called [39;49;00m[33m%s[39;49;00m[33m times.[39;49;00m[33m%s[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+                   % ([96mself[39;49;00m._mock_name [95mor[39;49;00m [33m'[39;49;00m[33mmock[39;49;00m[33m'[39;49;00m,[90m[39;49;00m
+                      [96mself[39;49;00m.call_count,[90m[39;49;00m
+                      [96mself[39;49;00m._calls_repr()))[90m[39;49;00m
+>           [94mraise[39;49;00m [96mAssertionError[39;49;00m(msg)[90m[39;49;00m
+[1m[31mE           AssertionError: Expected 'mock' to have been called once. Called 2 times.[0m
+[1m[31mE           Calls: [call(<MagicMock id='4554224512'>, None, None),[0m
+[1m[31mE            call(['template1.html', 'template2.html'], None, None)].[0m
+
+[1m[31m/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py[0m:958: AssertionError
+
+[33mDuring handling of the above exception, another exception occurred:[0m
+
+async_env = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10f6d2ad0>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_get_or_select_template_async[39;49;00m(async_env: AsyncEnvironment) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test the get_or_select_template_async method."""[39;49;00m[90m[39;49;00m
+        [90m# Mock the get_template_async and select_template_async methods[39;49;00m[90m[39;49;00m
+        template = MagicMock()[90m[39;49;00m
+        async_env.get_template_async = AsyncMock(return_value=template)[90m[39;49;00m
+        async_env.select_template_async = AsyncMock(return_value=template)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Test with a string[39;49;00m[90m[39;49;00m
+        result = [94mawait[39;49;00m async_env.get_or_select_template_async([33m"[39;49;00m[33mtemplate.html[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        [94massert[39;49;00m result [95mis[39;49;00m template[90m[39;49;00m
+        async_env.get_template_async.assert_called_once()[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Test with a template instance[39;49;00m[90m[39;49;00m
+        async_env.get_template_async.reset_mock()[90m[39;49;00m
+        result = [94mawait[39;49;00m async_env.get_or_select_template_async(template)[90m[39;49;00m
+        [94massert[39;49;00m result [95mis[39;49;00m template[90m[39;49;00m
+        async_env.get_template_async.assert_not_called()[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Test with a list[39;49;00m[90m[39;49;00m
+        async_env.get_template_async.reset_mock()[90m[39;49;00m
+        result = [94mawait[39;49;00m async_env.get_or_select_template_async([[33m"[39;49;00m[33mtemplate1.html[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mtemplate2.html[39;49;00m[33m"[39;49;00m])[90m[39;49;00m
+        [94massert[39;49;00m result [95mis[39;49;00m template[90m[39;49;00m
+>       async_env.select_template_async.assert_called_once()[90m[39;49;00m
+[1m[31mE       AssertionError: Expected 'mock' to have been called once. Called 2 times.[0m
+[1m[31mE       Calls: [call(<MagicMock id='4554224512'>, None, None),[0m
+[1m[31mE        call(['template1.html', 'template2.html'], None, None)].[0m
+[1m[31mE       [0m
+[1m[31mE       pytest introspection follows:[0m
+[1m[31mE       [0m
+[1m[31mE       Args:[0m
+[1m[31mE       assert (['template1....], None, None) == ()[0m
+[1m[31mE         [0m
+[1m[31mE         Left contains 3 more items, first extra item: [0m[[33m'[39;49;00m[33mtemplate1.html[39;49;00m[33m'[39;49;00m, [33m'[39;49;00m[33mtemplate2.html[39;49;00m[33m'[39;49;00m][90m[39;49;00m[0m
+[1m[31mE         Use -v to get more diff[0m
+
+[1m[31mtests/test_environment_coverage.py[0m:167: AssertionError
+[31m[1m______________________________________________________________________ test_load_template_async _______________________________________________________________________[0m
+
+async_env = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10f6d1d10>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_load_template_async[39;49;00m(async_env: AsyncEnvironment) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test the _load_template_async method."""[39;49;00m[90m[39;49;00m
+        [90m# Mock the _get_template_async method[39;49;00m[90m[39;49;00m
+        template = MagicMock()[90m[39;49;00m
+        async_env._get_template_async = AsyncMock(return_value=template)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Test with a template instance[39;49;00m[90m[39;49;00m
+>       result = [94mawait[39;49;00m async_env._load_template_async(template, [94mNone[39;49;00m)[90m[39;49;00m
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_environment_coverage.py[0m:178: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10f6d1d10>, name = <MagicMock id='4554218128'>, globals = None
+
+    [0m[37m@internalcode[39;49;00m[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92m_load_template_async[39;49;00m([90m[39;49;00m
+        [96mself[39;49;00m,[90m[39;49;00m
+        name: [96mstr[39;49;00m | Template | t.Iterable[[96mstr[39;49;00m | Template],[90m[39;49;00m
+        [96mglobals[39;49;00m: t.MutableMapping[[96mstr[39;49;00m, t.Any] | [94mNone[39;49;00m,[90m[39;49;00m
+    ) -> Template:[90m[39;49;00m
+        [94mif[39;49;00m [96misinstance[39;49;00m(name, Template):[90m[39;49;00m
+            [94mreturn[39;49;00m name[90m[39;49;00m
+        [94mif[39;49;00m [96misinstance[39;49;00m(name, [96mstr[39;49;00m):[90m[39;49;00m
+            [94mreturn[39;49;00m [94mawait[39;49;00m [96mself[39;49;00m._get_template_async(name, [96mglobals[39;49;00m)[90m[39;49;00m
+        names_list = [][90m[39;49;00m
+        [94mfor[39;49;00m template_name [95min[39;49;00m name:[90m[39;49;00m
+            [94mif[39;49;00m [96misinstance[39;49;00m(template_name, Template):[90m[39;49;00m
+                [94mreturn[39;49;00m template_name[90m[39;49;00m
+            [94mwith[39;49;00m suppress(TemplateNotFound):[90m[39;49;00m
+                [94mreturn[39;49;00m [94mawait[39;49;00m [96mself[39;49;00m._get_template_async([96mstr[39;49;00m(template_name), [96mglobals[39;49;00m)[90m[39;49;00m
+            names_list.append([96mstr[39;49;00m(template_name))[90m[39;49;00m
+>       [94mraise[39;49;00m TemplatesNotFound(names_list)[90m[39;49;00m
+[1m[31mE       jinja2.exceptions.TemplatesNotFound: none of the templates given were found:[0m
+
+[1m[31mjinja2_async_environment/environment.py[0m:180: TemplatesNotFound
+[31m[1m_________________________________________________________________ test_get_template_async_with_cache __________________________________________________________________[0m
+
+async_env = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10f6d3890>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_get_template_async_with_cache[39;49;00m(async_env: AsyncEnvironment) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test the _get_template_async method with cache."""[39;49;00m[90m[39;49;00m
+        [90m# Mock the loader[39;49;00m[90m[39;49;00m
+        loader = MagicMock()[90m[39;49;00m
+        template = MagicMock()[90m[39;49;00m
+        template.is_up_to_date = [94mTrue[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Set up the environment[39;49;00m[90m[39;49;00m
+        async_env.loader = loader[90m[39;49;00m
+        async_env.cache = {}[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Mock the loader.load_async method[39;49;00m[90m[39;49;00m
+        loader.load_async = AsyncMock(return_value=template)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Call the method[39;49;00m[90m[39;49;00m
+        result = [94mawait[39;49;00m async_env._get_template_async([33m"[39;49;00m[33mtemplate.html[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Verify the result[39;49;00m[90m[39;49;00m
+        [94massert[39;49;00m result [95mis[39;49;00m template[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Call again to test cache[39;49;00m[90m[39;49;00m
+        result = [94mawait[39;49;00m async_env._get_template_async([33m"[39;49;00m[33mtemplate.html[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Verify the result and that load_async was only called once[39;49;00m[90m[39;49;00m
+        [94massert[39;49;00m result [95mis[39;49;00m template[90m[39;49;00m
+        [94massert[39;49;00m loader.load_async.call_count == [94m1[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Test with an async is_up_to_date method[39;49;00m[90m[39;49;00m
+        template.is_up_to_date = AsyncMock(return_value=[94mTrue[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Clear the cache and call again[39;49;00m[90m[39;49;00m
+        async_env.cache = {}[90m[39;49;00m
+        result = [94mawait[39;49;00m async_env._get_template_async([33m"[39;49;00m[33mtemplate.html[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Verify the result[39;49;00m[90m[39;49;00m
+        [94massert[39;49;00m result [95mis[39;49;00m template[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Call again to test cache with async is_up_to_date[39;49;00m[90m[39;49;00m
+        result = [94mawait[39;49;00m async_env._get_template_async([33m"[39;49;00m[33mtemplate.html[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Verify the result and that is_up_to_date was called[39;49;00m[90m[39;49;00m
+        [94massert[39;49;00m result [95mis[39;49;00m template[90m[39;49;00m
+>       [94massert[39;49;00m template.is_up_to_date.call_count == [94m1[39;49;00m[90m[39;49;00m
+[1m[31mE       AssertionError: assert 0 == 1[0m
+[1m[31mE        +  where 0 = <AsyncMock name='mock.is_up_to_date' id='4554226528'>.call_count[0m
+[1m[31mE        +    where <AsyncMock name='mock.is_up_to_date' id='4554226528'> = <MagicMock id='4554223840'>.is_up_to_date[0m
+
+[1m[31mtests/test_environment_coverage.py[0m:244: AssertionError
+[31m[1m_____________________________________________________________ test_async_filesystem_loader_error_handling _____________________________________________________________[0m
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_async_filesystem_loader_error_handling[39;49;00m() -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test error handling in AsyncFileSystemLoader."""[39;49;00m[90m[39;49;00m
+        [90m# Test with a non-existent directory[39;49;00m[90m[39;49;00m
+>       loader = AsyncFileSystemLoader([33m"[39;49;00m[33m/non_existent_dir[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_loaders_coverage.py[0m:53: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31mjinja2_async_environment/loaders.py[0m:111: in __init__
+    [0m[96msuper[39;49;00m().[92m__init__[39;49;00m(searchpath)[90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.loaders.AsyncFileSystemLoader object at 0x10f73ecf0>, searchpath = '/non_existent_dir'
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92m__init__[39;49;00m([96mself[39;49;00m, searchpath: AsyncPath | t.Sequence[AsyncPath]) -> [94mNone[39;49;00m:[90m[39;49;00m
+        [94mif[39;49;00m [96misinstance[39;49;00m(searchpath, AsyncPath):[90m[39;49;00m
+            [96mself[39;49;00m.searchpath = [searchpath][90m[39;49;00m
+        [94melif[39;49;00m [96misinstance[39;49;00m(searchpath, [96mlist[39;49;00m | [96mtuple[39;49;00m):[90m[39;49;00m
+            [96mself[39;49;00m.searchpath = [96mlist[39;49;00m(searchpath)[90m[39;49;00m
+        [94melse[39;49;00m:[90m[39;49;00m
+>           [94mraise[39;49;00m [96mTypeError[39;49;00m([90m[39;49;00m
+                [33m"[39;49;00m[33msearchpath must be an AsyncPath or a sequence of AsyncPath objects[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+            )[90m[39;49;00m
+[1m[31mE           TypeError: searchpath must be an AsyncPath or a sequence of AsyncPath objects[0m
+
+[1m[31mjinja2_async_environment/loaders.py[0m:54: TypeError
+[31m[1m______________________________________________________________ test_async_package_loader_error_handling _______________________________________________________________[0m
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_async_package_loader_error_handling[39;49;00m() -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test error handling in AsyncPackageLoader."""[39;49;00m[90m[39;49;00m
+        [90m# Test with a non-existent package[39;49;00m[90m[39;49;00m
+        [94mwith[39;49;00m pytest.raises(PackageSpecNotFound):[90m[39;49;00m
+>           AsyncPackageLoader([33m"[39;49;00m[33mnon_existent_package[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mtemplates[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+
+[1m[31mtests/test_loaders_coverage.py[0m:65: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31mjinja2_async_environment/loaders.py[0m:167: in __init__
+    [0m[96msuper[39;49;00m().[92m__init__[39;49;00m(searchpath)[90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.loaders.AsyncPackageLoader object at 0x10f73fa10>, searchpath = 'templates'
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92m__init__[39;49;00m([96mself[39;49;00m, searchpath: AsyncPath | t.Sequence[AsyncPath]) -> [94mNone[39;49;00m:[90m[39;49;00m
+        [94mif[39;49;00m [96misinstance[39;49;00m(searchpath, AsyncPath):[90m[39;49;00m
+            [96mself[39;49;00m.searchpath = [searchpath][90m[39;49;00m
+        [94melif[39;49;00m [96misinstance[39;49;00m(searchpath, [96mlist[39;49;00m | [96mtuple[39;49;00m):[90m[39;49;00m
+            [96mself[39;49;00m.searchpath = [96mlist[39;49;00m(searchpath)[90m[39;49;00m
+        [94melse[39;49;00m:[90m[39;49;00m
+>           [94mraise[39;49;00m [96mTypeError[39;49;00m([90m[39;49;00m
+                [33m"[39;49;00m[33msearchpath must be an AsyncPath or a sequence of AsyncPath objects[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+            )[90m[39;49;00m
+[1m[31mE           TypeError: searchpath must be an AsyncPath or a sequence of AsyncPath objects[0m
+
+[1m[31mjinja2_async_environment/loaders.py[0m:54: TypeError
+[31m[1m_______________________________________________________________ test_async_choice_loader_error_handling _______________________________________________________________[0m
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_async_choice_loader_error_handling[39;49;00m() -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test error handling in AsyncChoiceLoader."""[39;49;00m[90m[39;49;00m
+        [90m# Create loaders that will all fail[39;49;00m[90m[39;49;00m
+        loader1 = AsyncDictLoader({}, AsyncPath([33m"[39;49;00m[33m/dict[39;49;00m[33m"[39;49;00m))[90m[39;49;00m
+        loader2 = AsyncFunctionLoader([90m[39;49;00m
+            [94mlambda[39;49;00m _: t.cast(t.Any, TemplateNotFound([33m"[39;49;00m[33mnot found[39;49;00m[33m"[39;49;00m)), AsyncPath([33m"[39;49;00m[33m/func[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        )[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Create a choice loader with these loaders[39;49;00m[90m[39;49;00m
+        choice_loader = AsyncChoiceLoader([loader1, loader2], AsyncPath([33m"[39;49;00m[33m/choice[39;49;00m[33m"[39;49;00m))[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Test get_source_async with a non-existent template[39;49;00m[90m[39;49;00m
+        [94mwith[39;49;00m pytest.raises(TemplateNotFound):[90m[39;49;00m
+>           [94mawait[39;49;00m choice_loader.get_source_async(AsyncEnvironment(), [33m"[39;49;00m[33mnon_existent.html[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE           TypeError: AsyncChoiceLoader.get_source_async() takes 2 positional arguments but 3 were given[0m
+
+[1m[31mtests/test_loaders_coverage.py[0m:88: TypeError
+[31m[1m______________________________________________________________ test_async_function_loader_error_handling ______________________________________________________________[0m
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_async_function_loader_error_handling[39;49;00m() -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test error handling in AsyncFunctionLoader."""[39;49;00m[90m[39;49;00m
+        [90m# Create a function that raises TemplateNotFound[39;49;00m[90m[39;49;00m
+        [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mload_func[39;49;00m(template: [96mstr[39;49;00m) -> t.Any:[90m[39;49;00m
+            [94mraise[39;49;00m TemplateNotFound(template)[90m[39;49;00m
+    [90m[39;49;00m
+        loader = AsyncFunctionLoader(load_func, AsyncPath([33m"[39;49;00m[33m/func[39;49;00m[33m"[39;49;00m))[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Test get_source_async with a template that will raise TemplateNotFound[39;49;00m[90m[39;49;00m
+        [94mwith[39;49;00m pytest.raises(TemplateNotFound):[90m[39;49;00m
+>           [94mawait[39;49;00m loader.get_source_async(AsyncEnvironment(), [33m"[39;49;00m[33mnon_existent.html[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE           TypeError: AsyncFunctionLoader.get_source_async() takes 2 positional arguments but 3 were given[0m
+
+[1m[31mtests/test_loaders_coverage.py[0m:102: TypeError
+[31m[1m________________________________________________________________ test_async_dict_loader_error_handling ________________________________________________________________[0m
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_async_dict_loader_error_handling[39;49;00m() -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test error handling in AsyncDictLoader."""[39;49;00m[90m[39;49;00m
+        [90m# Create an empty dictionary loader[39;49;00m[90m[39;49;00m
+        loader = AsyncDictLoader({}, AsyncPath([33m"[39;49;00m[33m/dict[39;49;00m[33m"[39;49;00m))[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Test get_source_async with a non-existent template[39;49;00m[90m[39;49;00m
+        [94mwith[39;49;00m pytest.raises(TemplateNotFound):[90m[39;49;00m
+>           [94mawait[39;49;00m loader.get_source_async(AsyncEnvironment(), [33m"[39;49;00m[33mnon_existent.html[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE           TypeError: AsyncDictLoader.get_source_async() takes 2 positional arguments but 3 were given[0m
+
+[1m[31mtests/test_loaders_coverage.py[0m:113: TypeError
+[31m[1m_____________________________________________________________ test_async_filesystem_loader_with_encoding ______________________________________________________________[0m
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_async_filesystem_loader_with_encoding[39;49;00m() -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test AsyncFileSystemLoader with different encodings."""[39;49;00m[90m[39;49;00m
+        [94mwith[39;49;00m patch([33m"[39;49;00m[33manyio.Path.open[39;49;00m[33m"[39;49;00m) [94mas[39;49;00m mock_open:[90m[39;49;00m
+            [90m# Mock the file content[39;49;00m[90m[39;49;00m
+            mock_file = AsyncMock()[90m[39;49;00m
+            mock_file.[92m__aenter__[39;49;00m.return_value.read.return_value = [33m"[39;49;00m[33mtemplate content[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+            mock_open.return_value = mock_file[90m[39;49;00m
+    [90m[39;49;00m
+            [90m# Create a loader with a specific encoding[39;49;00m[90m[39;49;00m
+>           loader = AsyncFileSystemLoader([33m"[39;49;00m[33m/templates[39;49;00m[33m"[39;49;00m, encoding=[33m"[39;49;00m[33mlatin1[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_loaders_coverage.py[0m:126: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31mjinja2_async_environment/loaders.py[0m:111: in __init__
+    [0m[96msuper[39;49;00m().[92m__init__[39;49;00m(searchpath)[90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.loaders.AsyncFileSystemLoader object at 0x10f6d11d0>, searchpath = '/templates'
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92m__init__[39;49;00m([96mself[39;49;00m, searchpath: AsyncPath | t.Sequence[AsyncPath]) -> [94mNone[39;49;00m:[90m[39;49;00m
+        [94mif[39;49;00m [96misinstance[39;49;00m(searchpath, AsyncPath):[90m[39;49;00m
+            [96mself[39;49;00m.searchpath = [searchpath][90m[39;49;00m
+        [94melif[39;49;00m [96misinstance[39;49;00m(searchpath, [96mlist[39;49;00m | [96mtuple[39;49;00m):[90m[39;49;00m
+            [96mself[39;49;00m.searchpath = [96mlist[39;49;00m(searchpath)[90m[39;49;00m
+        [94melse[39;49;00m:[90m[39;49;00m
+>           [94mraise[39;49;00m [96mTypeError[39;49;00m([90m[39;49;00m
+                [33m"[39;49;00m[33msearchpath must be an AsyncPath or a sequence of AsyncPath objects[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+            )[90m[39;49;00m
+[1m[31mE           TypeError: searchpath must be an AsyncPath or a sequence of AsyncPath objects[0m
+
+[1m[31mjinja2_async_environment/loaders.py[0m:54: TypeError
+[31m[1m_______________________________________________________________ test_async_package_loader_with_encoding _______________________________________________________________[0m
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_async_package_loader_with_encoding[39;49;00m() -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test AsyncPackageLoader with different encodings."""[39;49;00m[90m[39;49;00m
+        [90m# Mock the importlib.util.spec_from_package_path[39;49;00m[90m[39;49;00m
+>       [94mwith[39;49;00m patch([33m"[39;49;00m[33mimportlib.util.spec_from_package_path[39;49;00m[33m"[39;49;00m) [94mas[39;49;00m mock_spec:[90m[39;49;00m
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_loaders_coverage.py[0m:140: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31m/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py[0m:1497: in __enter__
+    [0moriginal, local = [96mself[39;49;00m.get_original()[90m[39;49;00m
+                      ^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x10f8792b0>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mget_original[39;49;00m([96mself[39;49;00m):[90m[39;49;00m
+        target = [96mself[39;49;00m.getter()[90m[39;49;00m
+        name = [96mself[39;49;00m.attribute[90m[39;49;00m
+    [90m[39;49;00m
+        original = DEFAULT[90m[39;49;00m
+        local = [94mFalse[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [94mtry[39;49;00m:[90m[39;49;00m
+            original = target.[91m__dict__[39;49;00m[name][90m[39;49;00m
+        [94mexcept[39;49;00m ([96mAttributeError[39;49;00m, [96mKeyError[39;49;00m):[90m[39;49;00m
+            original = [96mgetattr[39;49;00m(target, name, DEFAULT)[90m[39;49;00m
+        [94melse[39;49;00m:[90m[39;49;00m
+            local = [94mTrue[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [94mif[39;49;00m name [95min[39;49;00m _builtins [95mand[39;49;00m [96misinstance[39;49;00m(target, ModuleType):[90m[39;49;00m
+            [96mself[39;49;00m.create = [94mTrue[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [94mif[39;49;00m [95mnot[39;49;00m [96mself[39;49;00m.create [95mand[39;49;00m original [95mis[39;49;00m DEFAULT:[90m[39;49;00m
+>           [94mraise[39;49;00m [96mAttributeError[39;49;00m([90m[39;49;00m
+                [33m"[39;49;00m[33m%s[39;49;00m[33m does not have the attribute [39;49;00m[33m%r[39;49;00m[33m"[39;49;00m % (target, name)[90m[39;49;00m
+            )[90m[39;49;00m
+[1m[31mE           AttributeError: <module 'importlib.util' (frozen)> does not have the attribute 'spec_from_package_path'[0m
+
+[1m[31m/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py[0m:1467: AttributeError
+[31m[1m___________________________________________________________ test_async_choice_loader_with_multiple_loaders ____________________________________________________________[0m
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_async_choice_loader_with_multiple_loaders[39;49;00m() -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test AsyncChoiceLoader with multiple loaders."""[39;49;00m[90m[39;49;00m
+        [90m# Create a dict loader with one template[39;49;00m[90m[39;49;00m
+        dict_loader = AsyncDictLoader({[33m"[39;49;00m[33mtemplate1.html[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mdict content[39;49;00m[33m"[39;49;00m}, AsyncPath([33m"[39;49;00m[33m/dict[39;49;00m[33m"[39;49;00m))[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Create a function loader with another template[39;49;00m[90m[39;49;00m
+        [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mload_func[39;49;00m(template: [96mstr[39;49;00m) -> t.Any:[90m[39;49;00m
+            [94mif[39;49;00m template == [33m"[39;49;00m[33mtemplate2.html[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
+                [94mreturn[39;49;00m [33m"[39;49;00m[33mfunction content[39;49;00m[33m"[39;49;00m, template, [94mlambda[39;49;00m: [94mTrue[39;49;00m[90m[39;49;00m
+            [94mraise[39;49;00m TemplateNotFound(template)[90m[39;49;00m
+    [90m[39;49;00m
+        func_loader = AsyncFunctionLoader(load_func, AsyncPath([33m"[39;49;00m[33m/func[39;49;00m[33m"[39;49;00m))[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Create a choice loader with these loaders[39;49;00m[90m[39;49;00m
+        choice_loader = AsyncChoiceLoader([dict_loader, func_loader], AsyncPath([33m"[39;49;00m[33m/choice[39;49;00m[33m"[39;49;00m))[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Test get_source_async with templates from both loaders[39;49;00m[90m[39;49;00m
+>       source1, name1, _ = [94mawait[39;49;00m choice_loader.get_source_async(AsyncEnvironment(), [33m"[39;49;00m[33mtemplate1.html[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE       TypeError: AsyncChoiceLoader.get_source_async() takes 2 positional arguments but 3 were given[0m
+
+[1m[31mtests/test_loaders_coverage.py[0m:184: TypeError
+[31m[1m______________________________________________________________ test_async_function_loader_with_uptodate _______________________________________________________________[0m
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_async_function_loader_with_uptodate[39;49;00m() -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test AsyncFunctionLoader with an uptodate function."""[39;49;00m[90m[39;49;00m
+        [90m# Create a function that returns a source with an uptodate function[39;49;00m[90m[39;49;00m
+        [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mload_func[39;49;00m(template: [96mstr[39;49;00m) -> t.Any:[90m[39;49;00m
+            [94mif[39;49;00m template == [33m"[39;49;00m[33mtemplate.html[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
+                [94mreturn[39;49;00m [33m"[39;49;00m[33mcontent[39;49;00m[33m"[39;49;00m, template, [94mlambda[39;49;00m: [94mFalse[39;49;00m[90m[39;49;00m
+            [94mraise[39;49;00m TemplateNotFound(template)[90m[39;49;00m
+    [90m[39;49;00m
+        loader = AsyncFunctionLoader(load_func, AsyncPath([33m"[39;49;00m[33m/func[39;49;00m[33m"[39;49;00m))[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Test get_source_async[39;49;00m[90m[39;49;00m
+>       source, name, uptodate = [94mawait[39;49;00m loader.get_source_async(AsyncEnvironment(), [33m"[39;49;00m[33mtemplate.html[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE       TypeError: AsyncFunctionLoader.get_source_async() takes 2 positional arguments but 3 were given[0m
+
+[1m[31mtests/test_loaders_coverage.py[0m:203: TypeError
+[31m[1m_________________________________________________________________ test_async_dict_loader_with_prefix __________________________________________________________________[0m
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_async_dict_loader_with_prefix[39;49;00m() -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test AsyncDictLoader with a prefix."""[39;49;00m[90m[39;49;00m
+        [90m# Create a dict loader with a prefix[39;49;00m[90m[39;49;00m
+        loader = AsyncDictLoader([90m[39;49;00m
+            {[33m"[39;49;00m[33mprefix/template.html[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mcontent with prefix[39;49;00m[33m"[39;49;00m}, AsyncPath([33m"[39;49;00m[33m/dict[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        )[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Test get_source_async with the prefixed template[39;49;00m[90m[39;49;00m
+>       source, name, _ = [94mawait[39;49;00m loader.get_source_async(AsyncEnvironment(), [33m"[39;49;00m[33mprefix/template.html[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE       TypeError: AsyncDictLoader.get_source_async() takes 2 positional arguments but 3 were given[0m
+
+[1m[31mtests/test_loaders_coverage.py[0m:219: TypeError
+=========================================================================== tests coverage ============================================================================
+__________________________________________________________ coverage: platform darwin, python 3.13.5-final-0 ___________________________________________________________
+
+Name                                      Stmts   Miss  Cover   Missing
+-----------------------------------------------------------------------
+jinja2_async_environment/bccache.py          45      0   100%
+jinja2_async_environment/compiler.py        237     38    84%   60-61, 64-65, 71-94, 145-147, 160-161, 164, 176-177, 180, 185-188, 214-216, 219, 224-230
+jinja2_async_environment/environment.py     115      9    92%   34, 79-84, 176, 194
+jinja2_async_environment/loaders.py         273     89    67%   81-82, 91-92, 112-113, 116-139, 146-149, 204, 224, 229-243, 259-261, 273-274, 296-321, 324-327, 330-338, 361-379, 435-438
+-----------------------------------------------------------------------
+TOTAL                                       670    136    80%
+[32mRequired test coverage of 42% reached. Total coverage: 79.70%
+[0m[36m[1m======================================================================= short test summary info =======================================================================[0m
+[31mFAILED[0m tests/test_compiler_coverage.py::[1mtest_visit_asyncfor[0m - AttributeError: module 'jinja2.nodes' has no attribute 'AsyncFor'
+[31mFAILED[0m tests/test_compiler_coverage.py::[1mtest_visit_asynccall[0m - TypeError: CodeGenerator.visit_Call() missing 1 required positional argument: 'frame'
+[31mFAILED[0m tests/test_compiler_coverage.py::[1mtest_visit_asyncfilterblock[0m - TypeError: CodeGenerator.visit_FilterBlock() missing 1 required positional argument: 'frame'
+[31mFAILED[0m tests/test_compiler_coverage.py::[1mtest_visit_asyncwith[0m - AttributeError: module 'jinja2.nodes' has no attribute 'AsyncWith'
+[31mFAILED[0m tests/test_compiler_coverage.py::[1mtest_func_code_generator[0m - AttributeError: <jinja2_async_environment.compiler.AsyncCodeGenerator object at 0x10f7b8050> does not have the attribute 'is_async'
+[31mFAILED[0m tests/test_compiler_coverage.py::[1mtest_return_buffer_contents[0m - TypeError: CodeGenerator.return_buffer_contents() missing 1 required positional argument: 'frame'
+[31mFAILED[0m tests/test_compiler_coverage.py::[1mtest_visit_asyncblock[0m - AttributeError: <jinja2_async_environment.compiler.AsyncCodeGenerator object at 0x10f7b8640> does not have the attribute 'is_async'
+[31mFAILED[0m tests/test_environment_coverage.py::[1mtest_compile[0m -   File "test.py", line 3
+[31mFAILED[0m tests/test_environment_coverage.py::[1mtest_async_yield_from[0m - TypeError: object async_generator can't be used in 'await' expression
+[31mFAILED[0m tests/test_environment_coverage.py::[1mtest_get_or_select_template_async[0m - AssertionError: Expected 'mock' to have been called once. Called 2 times.
+[31mFAILED[0m tests/test_environment_coverage.py::[1mtest_load_template_async[0m - jinja2.exceptions.TemplatesNotFound: none of the templates given were found:
+[31mFAILED[0m tests/test_environment_coverage.py::[1mtest_get_template_async_with_cache[0m - AssertionError: assert 0 == 1
+[31mFAILED[0m tests/test_loaders_coverage.py::[1mtest_async_filesystem_loader_error_handling[0m - TypeError: searchpath must be an AsyncPath or a sequence of AsyncPath objects
+[31mFAILED[0m tests/test_loaders_coverage.py::[1mtest_async_package_loader_error_handling[0m - TypeError: searchpath must be an AsyncPath or a sequence of AsyncPath objects
+[31mFAILED[0m tests/test_loaders_coverage.py::[1mtest_async_choice_loader_error_handling[0m - TypeError: AsyncChoiceLoader.get_source_async() takes 2 positional arguments but 3 were given
+[31mFAILED[0m tests/test_loaders_coverage.py::[1mtest_async_function_loader_error_handling[0m - TypeError: AsyncFunctionLoader.get_source_async() takes 2 positional arguments but 3 were given
+[31mFAILED[0m tests/test_loaders_coverage.py::[1mtest_async_dict_loader_error_handling[0m - TypeError: AsyncDictLoader.get_source_async() takes 2 positional arguments but 3 were given
+[31mFAILED[0m tests/test_loaders_coverage.py::[1mtest_async_filesystem_loader_with_encoding[0m - TypeError: searchpath must be an AsyncPath or a sequence of AsyncPath objects
+[31mFAILED[0m tests/test_loaders_coverage.py::[1mtest_async_package_loader_with_encoding[0m - AttributeError: <module 'importlib.util' (frozen)> does not have the attribute 'spec_from_package_path'
+[31mFAILED[0m tests/test_loaders_coverage.py::[1mtest_async_choice_loader_with_multiple_loaders[0m - TypeError: AsyncChoiceLoader.get_source_async() takes 2 positional arguments but 3 were given
+[31mFAILED[0m tests/test_loaders_coverage.py::[1mtest_async_function_loader_with_uptodate[0m - TypeError: AsyncFunctionLoader.get_source_async() takes 2 positional arguments but 3 were given
+[31mFAILED[0m tests/test_loaders_coverage.py::[1mtest_async_dict_loader_with_prefix[0m - TypeError: AsyncDictLoader.get_source_async() takes 2 positional arguments but 3 were given
+[31m=================================================================== [31m[1m22 failed[0m, [32m110 passed[0m[31m in 4.17s[0m[31m ====================================================================[0m

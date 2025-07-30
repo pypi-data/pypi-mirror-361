@@ -1,0 +1,45 @@
+[1m========================================================================= test session starts =========================================================================[0m
+platform darwin -- Python 3.13.5, pytest-8.4.1, pluggy-1.6.0 -- /Users/les/Projects/jinja2-async-environment/.venv/bin/python
+cachedir: .pytest_cache
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /Users/les/Projects/jinja2-async-environment
+configfile: pyproject.toml
+plugins: xdist-3.7.0, anyio-4.9.0, timeout-2.4.0, cov-6.2.1, mock-3.14.1, benchmark-5.1.0, asyncio-1.0.0
+timeout: 300.0s
+timeout method: thread
+timeout func_only: False
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0m[1mcollected 16 items                                                                                                                                                    [0m
+
+tests/test_loaders.py::TestAsyncBaseLoader::test_init_with_single_path [32mPASSED[0m[32m                                                                                   [  6%][0m
+tests/test_loaders.py::TestAsyncBaseLoader::test_init_with_multiple_paths [32mPASSED[0m[32m                                                                                [ 12%][0m
+tests/test_loaders.py::TestAsyncBaseLoader::test_not_implemented_methods [32mPASSED[0m[32m                                                                                 [ 18%][0m
+tests/test_loaders.py::TestAsyncBaseLoader::test_load [32mPASSED[0m[32m                                                                                                    [ 25%][0m
+tests/test_loaders.py::TestAsyncBaseLoader::test_load_with_bytes [32mPASSED[0m[32m                                                                                         [ 31%][0m
+tests/test_loaders_coverage.py::test_async_filesystem_loader_error_handling [32mPASSED[0m[32m                                                                              [ 37%][0m
+tests/test_loaders_coverage.py::test_async_package_loader_error_handling [32mPASSED[0m[32m                                                                                 [ 43%][0m
+tests/test_loaders_coverage.py::test_async_choice_loader_error_handling [32mPASSED[0m[32m                                                                                  [ 50%][0m
+tests/test_loaders_coverage.py::test_async_function_loader_error_handling [32mPASSED[0m[32m                                                                                [ 56%][0m
+tests/test_loaders_coverage.py::test_async_dict_loader_error_handling [32mPASSED[0m[32m                                                                                    [ 62%][0m
+tests/test_loaders_coverage.py::test_async_filesystem_loader_with_encoding [32mPASSED[0m[32m                                                                               [ 68%][0m
+tests/test_loaders_coverage.py::test_async_package_loader_with_encoding [32mPASSED[0m[32m                                                                                  [ 75%][0m
+tests/test_loaders_coverage.py::test_async_choice_loader_with_multiple_loaders [32mPASSED[0m[32m                                                                           [ 81%][0m
+tests/test_loaders_coverage.py::test_async_function_loader_with_uptodate [32mPASSED[0m[32m                                                                                 [ 87%][0m
+tests/test_loaders_coverage.py::test_async_dict_loader_with_prefix [32mPASSED[0m[32m                                                                                       [ 93%][0m
+tests/test_loaders_coverage.py::test_async_filesystem_loader_list_templates [32mPASSED[0m[32m                                                                              [100%][0m[31m[1m
+ERROR: Coverage failure: total of 37 is less than fail-under=42
+[0m
+
+=========================================================================== tests coverage ============================================================================
+__________________________________________________________ coverage: platform darwin, python 3.13.5-final-0 ___________________________________________________________
+
+Name                                      Stmts   Miss  Cover
+-------------------------------------------------------------
+jinja2_async_environment/bccache.py          56     29    48%
+jinja2_async_environment/compiler.py        389    330    15%
+jinja2_async_environment/environment.py     155    110    29%
+jinja2_async_environment/loaders.py         336    120    64%
+-------------------------------------------------------------
+TOTAL                                       936    589    37%
+[31m[1mFAIL Required test coverage of 42% not reached. Total coverage: 37.07%
+[0m[32m========================================================================= [32m[1m16 passed[0m[32m in 0.57s[0m[32m ==========================================================================[0m

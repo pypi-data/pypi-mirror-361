@@ -1,0 +1,33 @@
+python -c "import inspect; from jinja2 import Template; print(inspect.getsource(Template._from_namespace))"
+direnv: loading ~/Projects/jinja2-async-environment/.envrc                      
+direnv: export +PDM_ACTIVE ~PATH
+(jinja2-async-environment) [jinja2-async-environment] python -c "import inspect; from jinja2 import Template; print(inspect.getsource(Template._from_namespace))"
+    @classmethod
+    def _from_namespace(
+        cls,
+        environment: Environment,
+        namespace: t.MutableMapping[str, t.Any],
+        globals: t.MutableMapping[str, t.Any],
+    ) -> "Template":
+        t: Template = object.__new__(cls)
+        t.environment = environment
+        t.globals = globals
+        t.name = namespace["name"]
+        t.filename = namespace["__file__"]
+        t.blocks = namespace["blocks"]
+
+        # render function and module
+        t.root_render_func = namespace["root"]
+        t._module = None
+
+        # debug and loader helpers
+        t._debug_info = namespace["debug_info"]
+        t._uptodate = None
+
+        # store the reference
+        namespace["environment"] = environment
+        namespace["__jinja_template__"] = t
+
+        return t
+
+(jinja2-async-environment) [jinja2-async-environment]                 main  ✭ ✱

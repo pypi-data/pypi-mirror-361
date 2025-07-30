@@ -1,0 +1,337 @@
+[1m========================================================================= test session starts =========================================================================[0m
+platform darwin -- Python 3.13.5, pytest-8.4.0, pluggy-1.6.0 -- /Users/les/Projects/jinja2-async-environment/.venv/bin/python
+cachedir: .pytest_cache
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /Users/les/Projects/jinja2-async-environment
+configfile: pyproject.toml
+plugins: xdist-3.7.0, anyio-4.9.0, timeout-2.4.0, cov-6.2.1, mock-3.14.1, benchmark-5.1.0, asyncio-1.0.0
+timeout: 300.0s
+timeout method: thread
+timeout func_only: False
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0m[1mcollected 8 items                                                                                                                                                     [0m
+
+tests/test_e2e.py::TestEndToEnd::test_render_from_dict_loader [31mFAILED[0m[31m                                                                                            [ 12%][0m
+tests/test_e2e.py::TestEndToEnd::test_render_from_function_loader [31mFAILED[0m[31m                                                                                        [ 25%][0m
+tests/test_e2e.py::TestEndToEnd::test_template_inheritance [31mFAILED[0m[31m                                                                                               [ 37%][0m
+tests/test_e2e.py::TestEndToEnd::test_template_include [31mFAILED[0m[31m                                                                                                   [ 50%][0m
+tests/test_e2e.py::TestEndToEnd::test_async_content_generation [31mFAILED[0m[31m                                                                                           [ 62%][0m
+tests/test_e2e.py::TestEndToEnd::test_template_not_found [32mPASSED[0m[31m                                                                                                 [ 75%][0m
+tests/test_e2e.py::TestEndToEnd::test_select_template [31mFAILED[0m[31m                                                                                                    [ 87%][0m
+tests/test_e2e.py::TestEndToEnd::test_get_or_select_template [31mFAILED[0m[31m                                                                                             [100%][0m
+
+============================================================================== FAILURES ===============================================================================
+[31m[1m______________________________________________________________ TestEndToEnd.test_render_from_dict_loader ______________________________________________________________[0m
+
+self = <tests.test_e2e.TestEndToEnd object at 0x110381810>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_render_from_dict_loader[39;49;00m([96mself[39;49;00m) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test rendering a template from the dictionary loader."""[39;49;00m[90m[39;49;00m
+        [94masync[39;49;00m [94mwith[39;49;00m setup_template_environment() [94mas[39;49;00m (env, _):[90m[39;49;00m
+            template = [94mawait[39;49;00m env.get_template_async([33m"[39;49;00m[33memail.html[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+            context = {[90m[39;49;00m
+                [33m"[39;49;00m[33msubject[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mWelcome to our service[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                [33m"[39;49;00m[33mbody[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mThank you for signing up![39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            }[90m[39;49;00m
+>           rendered = [94mawait[39;49;00m render_template(template, context)[90m[39;49;00m
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_e2e.py[0m:110: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31mtests/test_e2e.py[0m:83: in render_template
+    [0mtemplate_obj = [94mawait[39;49;00m template.render_async(**context)[90m[39;49;00m
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <Template 'email.html'>, args = (), kwargs = {'body': 'Thank you for signing up!', 'subject': 'Welcome to our service'}
+
+    [0m[94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mrender_async[39;49;00m([96mself[39;49;00m, *args: t.Any, **kwargs: t.Any) -> [96mstr[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""This works similar to :meth:`render` but returns a coroutine[39;49;00m
+    [33m    that when awaited returns the entire rendered template string.  This[39;49;00m
+    [33m    requires the async feature to be enabled.[39;49;00m
+    [33m[39;49;00m
+    [33m    Example usage::[39;49;00m
+    [33m[39;49;00m
+    [33m        await template.render_async(knights='that say nih; asynchronously')[39;49;00m
+    [33m    """[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m [95mnot[39;49;00m [96mself[39;49;00m.environment.is_async:[90m[39;49;00m
+>           [94mraise[39;49;00m [96mRuntimeError[39;49;00m([90m[39;49;00m
+                [33m"[39;49;00m[33mThe environment was not created with async mode enabled.[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+            )[90m[39;49;00m
+[1m[31mE           RuntimeError: The environment was not created with async mode enabled.[0m
+
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/environment.py[0m:1307: RuntimeError
+[31m[1m____________________________________________________________ TestEndToEnd.test_render_from_function_loader ____________________________________________________________[0m
+
+self = <tests.test_e2e.TestEndToEnd object at 0x110381d10>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_render_from_function_loader[39;49;00m([96mself[39;49;00m) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test rendering a template from the function loader (mock storage)."""[39;49;00m[90m[39;49;00m
+        [94masync[39;49;00m [94mwith[39;49;00m setup_template_environment() [94mas[39;49;00m (env, _):[90m[39;49;00m
+            template = [94mawait[39;49;00m env.get_template_async([33m"[39;49;00m[33mpage.html[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+            context = {[90m[39;49;00m
+                [33m"[39;49;00m[33mtitle[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mPage Title[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                [33m"[39;49;00m[33mcontent[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mThis is the page content.[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            }[90m[39;49;00m
+>           rendered = [94mawait[39;49;00m render_template(template, context)[90m[39;49;00m
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_e2e.py[0m:124: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31mtests/test_e2e.py[0m:83: in render_template
+    [0mtemplate_obj = [94mawait[39;49;00m template.render_async(**context)[90m[39;49;00m
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <Template 'page.html'>, args = (), kwargs = {'content': 'This is the page content.', 'title': 'Page Title'}
+
+    [0m[94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mrender_async[39;49;00m([96mself[39;49;00m, *args: t.Any, **kwargs: t.Any) -> [96mstr[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""This works similar to :meth:`render` but returns a coroutine[39;49;00m
+    [33m    that when awaited returns the entire rendered template string.  This[39;49;00m
+    [33m    requires the async feature to be enabled.[39;49;00m
+    [33m[39;49;00m
+    [33m    Example usage::[39;49;00m
+    [33m[39;49;00m
+    [33m        await template.render_async(knights='that say nih; asynchronously')[39;49;00m
+    [33m    """[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m [95mnot[39;49;00m [96mself[39;49;00m.environment.is_async:[90m[39;49;00m
+>           [94mraise[39;49;00m [96mRuntimeError[39;49;00m([90m[39;49;00m
+                [33m"[39;49;00m[33mThe environment was not created with async mode enabled.[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+            )[90m[39;49;00m
+[1m[31mE           RuntimeError: The environment was not created with async mode enabled.[0m
+
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/environment.py[0m:1307: RuntimeError
+[31m[1m_______________________________________________________________ TestEndToEnd.test_template_inheritance ________________________________________________________________[0m
+
+self = <tests.test_e2e.TestEndToEnd object at 0x11036e9e0>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_template_inheritance[39;49;00m([96mself[39;49;00m) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test template inheritance with extends and blocks."""[39;49;00m[90m[39;49;00m
+        [94masync[39;49;00m [94mwith[39;49;00m setup_template_environment() [94mas[39;49;00m (env, _):[90m[39;49;00m
+            template = [94mawait[39;49;00m env.get_template_async([33m"[39;49;00m[33mpage.html[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+            context = {[90m[39;49;00m
+                [33m"[39;49;00m[33mtitle[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mInheritance Test[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                [33m"[39;49;00m[33mcontent[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mContent from child template[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            }[90m[39;49;00m
+>           rendered = [94mawait[39;49;00m render_template(template, context)[90m[39;49;00m
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_e2e.py[0m:140: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31mtests/test_e2e.py[0m:83: in render_template
+    [0mtemplate_obj = [94mawait[39;49;00m template.render_async(**context)[90m[39;49;00m
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <Template 'page.html'>, args = (), kwargs = {'content': 'Content from child template', 'title': 'Inheritance Test'}
+
+    [0m[94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mrender_async[39;49;00m([96mself[39;49;00m, *args: t.Any, **kwargs: t.Any) -> [96mstr[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""This works similar to :meth:`render` but returns a coroutine[39;49;00m
+    [33m    that when awaited returns the entire rendered template string.  This[39;49;00m
+    [33m    requires the async feature to be enabled.[39;49;00m
+    [33m[39;49;00m
+    [33m    Example usage::[39;49;00m
+    [33m[39;49;00m
+    [33m        await template.render_async(knights='that say nih; asynchronously')[39;49;00m
+    [33m    """[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m [95mnot[39;49;00m [96mself[39;49;00m.environment.is_async:[90m[39;49;00m
+>           [94mraise[39;49;00m [96mRuntimeError[39;49;00m([90m[39;49;00m
+                [33m"[39;49;00m[33mThe environment was not created with async mode enabled.[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+            )[90m[39;49;00m
+[1m[31mE           RuntimeError: The environment was not created with async mode enabled.[0m
+
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/environment.py[0m:1307: RuntimeError
+[31m[1m_________________________________________________________________ TestEndToEnd.test_template_include __________________________________________________________________[0m
+
+self = <tests.test_e2e.TestEndToEnd object at 0x11036ec40>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_template_include[39;49;00m([96mself[39;49;00m) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test including a template within another template."""[39;49;00m[90m[39;49;00m
+        [94masync[39;49;00m [94mwith[39;49;00m setup_template_environment() [94mas[39;49;00m (env, storage):[90m[39;49;00m
+            [90m# Create a template that includes another template[39;49;00m[90m[39;49;00m
+            [94mawait[39;49;00m storage.write([90m[39;49;00m
+                [33m"[39;49;00m[33m/templates/with_include.html[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                [33mb[39;49;00m[33m"[39;49;00m[33m<div>Header</div>[39;49;00m[33m{[39;49;00m[33m% i[39;49;00m[33mnclude [39;49;00m[33m'[39;49;00m[33mpartial.html[39;49;00m[33m'[39;49;00m[33m [39;49;00m[33m%[39;49;00m[33m}<div>Footer</div>[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+            )[90m[39;49;00m
+    [90m[39;49;00m
+            template = [94mawait[39;49;00m env.get_template_async([33m"[39;49;00m[33mwith_include.html[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+            context = {[33m"[39;49;00m[33mmessage[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mThis is an included message[39;49;00m[33m"[39;49;00m}[90m[39;49;00m
+>           rendered = [94mawait[39;49;00m render_template(template, context)[90m[39;49;00m
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_e2e.py[0m:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31mtests/test_e2e.py[0m:83: in render_template
+    [0mtemplate_obj = [94mawait[39;49;00m template.render_async(**context)[90m[39;49;00m
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <Template 'with_include.html'>, args = (), kwargs = {'message': 'This is an included message'}
+
+    [0m[94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mrender_async[39;49;00m([96mself[39;49;00m, *args: t.Any, **kwargs: t.Any) -> [96mstr[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""This works similar to :meth:`render` but returns a coroutine[39;49;00m
+    [33m    that when awaited returns the entire rendered template string.  This[39;49;00m
+    [33m    requires the async feature to be enabled.[39;49;00m
+    [33m[39;49;00m
+    [33m    Example usage::[39;49;00m
+    [33m[39;49;00m
+    [33m        await template.render_async(knights='that say nih; asynchronously')[39;49;00m
+    [33m    """[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m [95mnot[39;49;00m [96mself[39;49;00m.environment.is_async:[90m[39;49;00m
+>           [94mraise[39;49;00m [96mRuntimeError[39;49;00m([90m[39;49;00m
+                [33m"[39;49;00m[33mThe environment was not created with async mode enabled.[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+            )[90m[39;49;00m
+[1m[31mE           RuntimeError: The environment was not created with async mode enabled.[0m
+
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/environment.py[0m:1307: RuntimeError
+[31m[1m_____________________________________________________________ TestEndToEnd.test_async_content_generation ______________________________________________________________[0m
+
+self = <tests.test_e2e.TestEndToEnd object at 0x11035f650>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_async_content_generation[39;49;00m([96mself[39;49;00m) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test rendering with async content generation."""[39;49;00m[90m[39;49;00m
+        [94masync[39;49;00m [94mwith[39;49;00m setup_template_environment() [94mas[39;49;00m (env, _):[90m[39;49;00m
+            template = [94mawait[39;49;00m env.get_template_async([33m"[39;49;00m[33masync_content.html[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+            [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92masync_item_generator[39;49;00m() -> AsyncIterator[[96mstr[39;49;00m]:[90m[39;49;00m
+                items = [[33m"[39;49;00m[33mItem 1[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mItem 2[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mItem 3[39;49;00m[33m"[39;49;00m][90m[39;49;00m
+                [94mfor[39;49;00m item [95min[39;49;00m items:[90m[39;49;00m
+                    [94myield[39;49;00m item[90m[39;49;00m
+    [90m[39;49;00m
+            context = {[33m"[39;49;00m[33masync_items[39;49;00m[33m"[39;49;00m: async_item_generator()}[90m[39;49;00m
+>           rendered = [94mawait[39;49;00m render_template(template, context)[90m[39;49;00m
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_e2e.py[0m:180: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31mtests/test_e2e.py[0m:83: in render_template
+    [0mtemplate_obj = [94mawait[39;49;00m template.render_async(**context)[90m[39;49;00m
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <Template 'async_content.html'>, args = ()
+kwargs = {'async_items': <async_generator object TestEndToEnd.test_async_content_generation.<locals>.async_item_generator at 0x11039a800>}
+
+    [0m[94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mrender_async[39;49;00m([96mself[39;49;00m, *args: t.Any, **kwargs: t.Any) -> [96mstr[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""This works similar to :meth:`render` but returns a coroutine[39;49;00m
+    [33m    that when awaited returns the entire rendered template string.  This[39;49;00m
+    [33m    requires the async feature to be enabled.[39;49;00m
+    [33m[39;49;00m
+    [33m    Example usage::[39;49;00m
+    [33m[39;49;00m
+    [33m        await template.render_async(knights='that say nih; asynchronously')[39;49;00m
+    [33m    """[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m [95mnot[39;49;00m [96mself[39;49;00m.environment.is_async:[90m[39;49;00m
+>           [94mraise[39;49;00m [96mRuntimeError[39;49;00m([90m[39;49;00m
+                [33m"[39;49;00m[33mThe environment was not created with async mode enabled.[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+            )[90m[39;49;00m
+[1m[31mE           RuntimeError: The environment was not created with async mode enabled.[0m
+
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/environment.py[0m:1307: RuntimeError
+[31m[1m__________________________________________________________________ TestEndToEnd.test_select_template __________________________________________________________________[0m
+
+self = <tests.test_e2e.TestEndToEnd object at 0x1103a2140>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_select_template[39;49;00m([96mself[39;49;00m) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test selecting a template from multiple options."""[39;49;00m[90m[39;49;00m
+        [94masync[39;49;00m [94mwith[39;49;00m setup_template_environment() [94mas[39;49;00m (env, _):[90m[39;49;00m
+            [90m# First template doesn't exist, second one does[39;49;00m[90m[39;49;00m
+            template = [94mawait[39;49;00m env.select_template_async([[33m"[39;49;00m[33mnonexistent.html[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33memail.html[39;49;00m[33m"[39;49;00m])[90m[39;49;00m
+            context = {[90m[39;49;00m
+                [33m"[39;49;00m[33msubject[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mSelected Template[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                [33m"[39;49;00m[33mbody[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mThis template was selected from multiple options[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            }[90m[39;49;00m
+>           rendered = [94mawait[39;49;00m render_template(template, context)[90m[39;49;00m
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_e2e.py[0m:201: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31mtests/test_e2e.py[0m:83: in render_template
+    [0mtemplate_obj = [94mawait[39;49;00m template.render_async(**context)[90m[39;49;00m
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <Template 'email.html'>, args = (), kwargs = {'body': 'This template was selected from multiple options', 'subject': 'Selected Template'}
+
+    [0m[94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mrender_async[39;49;00m([96mself[39;49;00m, *args: t.Any, **kwargs: t.Any) -> [96mstr[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""This works similar to :meth:`render` but returns a coroutine[39;49;00m
+    [33m    that when awaited returns the entire rendered template string.  This[39;49;00m
+    [33m    requires the async feature to be enabled.[39;49;00m
+    [33m[39;49;00m
+    [33m    Example usage::[39;49;00m
+    [33m[39;49;00m
+    [33m        await template.render_async(knights='that say nih; asynchronously')[39;49;00m
+    [33m    """[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m [95mnot[39;49;00m [96mself[39;49;00m.environment.is_async:[90m[39;49;00m
+>           [94mraise[39;49;00m [96mRuntimeError[39;49;00m([90m[39;49;00m
+                [33m"[39;49;00m[33mThe environment was not created with async mode enabled.[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+            )[90m[39;49;00m
+[1m[31mE           RuntimeError: The environment was not created with async mode enabled.[0m
+
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/environment.py[0m:1307: RuntimeError
+[31m[1m______________________________________________________________ TestEndToEnd.test_get_or_select_template _______________________________________________________________[0m
+
+self = <tests.test_e2e.TestEndToEnd object at 0x110376d50>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_get_or_select_template[39;49;00m([96mself[39;49;00m) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test get_or_select_template_async functionality."""[39;49;00m[90m[39;49;00m
+        [94masync[39;49;00m [94mwith[39;49;00m setup_template_environment() [94mas[39;49;00m (env, _):[90m[39;49;00m
+            [90m# Test with a string (should use get_template_async)[39;49;00m[90m[39;49;00m
+            template1 = [94mawait[39;49;00m env.get_or_select_template_async([33m"[39;49;00m[33mnotification.html[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+            context1 = {[33m"[39;49;00m[33mmessage[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mImportant notification[39;49;00m[33m"[39;49;00m}[90m[39;49;00m
+>           rendered1 = [94mawait[39;49;00m render_template(template1, context1)[90m[39;49;00m
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_e2e.py[0m:213: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31mtests/test_e2e.py[0m:83: in render_template
+    [0mtemplate_obj = [94mawait[39;49;00m template.render_async(**context)[90m[39;49;00m
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <Template 'notification.html'>, args = (), kwargs = {'message': 'Important notification'}
+
+    [0m[94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mrender_async[39;49;00m([96mself[39;49;00m, *args: t.Any, **kwargs: t.Any) -> [96mstr[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""This works similar to :meth:`render` but returns a coroutine[39;49;00m
+    [33m    that when awaited returns the entire rendered template string.  This[39;49;00m
+    [33m    requires the async feature to be enabled.[39;49;00m
+    [33m[39;49;00m
+    [33m    Example usage::[39;49;00m
+    [33m[39;49;00m
+    [33m        await template.render_async(knights='that say nih; asynchronously')[39;49;00m
+    [33m    """[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m [95mnot[39;49;00m [96mself[39;49;00m.environment.is_async:[90m[39;49;00m
+>           [94mraise[39;49;00m [96mRuntimeError[39;49;00m([90m[39;49;00m
+                [33m"[39;49;00m[33mThe environment was not created with async mode enabled.[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+            )[90m[39;49;00m
+[1m[31mE           RuntimeError: The environment was not created with async mode enabled.[0m
+
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/environment.py[0m:1307: RuntimeError
+=========================================================================== tests coverage ============================================================================
+__________________________________________________________ coverage: platform darwin, python 3.13.5-final-0 ___________________________________________________________
+
+Name                                      Stmts   Miss  Cover
+-------------------------------------------------------------
+jinja2_async_environment/bccache.py          45     20    56%
+jinja2_async_environment/compiler.py        237    116    51%
+jinja2_async_environment/environment.py     115     44    62%
+jinja2_async_environment/loaders.py         273    165    40%
+-------------------------------------------------------------
+TOTAL                                       670    345    49%
+[32mRequired test coverage of 42% reached. Total coverage: 48.51%
+[0m[36m[1m======================================================================= short test summary info =======================================================================[0m
+[31mFAILED[0m tests/test_e2e.py::[1mTestEndToEnd::test_render_from_dict_loader[0m - RuntimeError: The environment was not created with async mode enabled.
+[31mFAILED[0m tests/test_e2e.py::[1mTestEndToEnd::test_render_from_function_loader[0m - RuntimeError: The environment was not created with async mode enabled.
+[31mFAILED[0m tests/test_e2e.py::[1mTestEndToEnd::test_template_inheritance[0m - RuntimeError: The environment was not created with async mode enabled.
+[31mFAILED[0m tests/test_e2e.py::[1mTestEndToEnd::test_template_include[0m - RuntimeError: The environment was not created with async mode enabled.
+[31mFAILED[0m tests/test_e2e.py::[1mTestEndToEnd::test_async_content_generation[0m - RuntimeError: The environment was not created with async mode enabled.
+[31mFAILED[0m tests/test_e2e.py::[1mTestEndToEnd::test_select_template[0m - RuntimeError: The environment was not created with async mode enabled.
+[31mFAILED[0m tests/test_e2e.py::[1mTestEndToEnd::test_get_or_select_template[0m - RuntimeError: The environment was not created with async mode enabled.
+[31m===================================================================== [31m[1m7 failed[0m, [32m1 passed[0m[31m in 1.11s[0m[31m =====================================================================[0m

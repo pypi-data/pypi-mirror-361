@@ -1,0 +1,22 @@
+python -c "import inspect; from jinja2 import Template; print(inspect.getsource(Template.from_code))"
+direnv: loading ~/Projects/jinja2-async-environment/.envrc                      
+direnv: export +PDM_ACTIVE ~PATH
+(jinja2-async-environment) [jinja2-async-environment] python -c "import inspect; from jinja2 import Template; print(inspect.getsource(Template.from_code))"
+    @classmethod
+    def from_code(
+        cls,
+        environment: Environment,
+        code: CodeType,
+        globals: t.MutableMapping[str, t.Any],
+        uptodate: t.Optional[t.Callable[[], bool]] = None,
+    ) -> "Template":
+        """Creates a template object from compiled code and the globals.  This
+        is used by the loaders and environment to create a template object.
+        """
+        namespace = {"environment": environment, "__file__": code.co_filename}
+        exec(code, namespace)
+        rv = cls._from_namespace(environment, namespace, globals)
+        rv._uptodate = uptodate
+        return rv
+
+(jinja2-async-environment) [jinja2-async-environment]                 main  ✭ ✱

@@ -1,0 +1,320 @@
+[1m========================================================================= test session starts =========================================================================[0m
+platform darwin -- Python 3.13.5, pytest-8.4.1, pluggy-1.6.0 -- /Users/les/Projects/jinja2-async-environment/.venv/bin/python
+cachedir: .pytest_cache
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /Users/les/Projects/jinja2-async-environment
+configfile: pyproject.toml
+plugins: xdist-3.7.0, anyio-4.9.0, timeout-2.4.0, cov-6.2.1, mock-3.14.1, benchmark-5.1.0, asyncio-1.0.0
+timeout: 300.0s
+timeout method: thread
+timeout func_only: False
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0m[1mcollected 5 items                                                                                                                                                     [0m
+
+tests/test_escape_filter.py::TestEscapeFilter::test_explicit_escape_filter [31mFAILED[0m[31m                                                                               [ 20%][0m
+tests/test_escape_filter.py::TestEscapeFilter::test_autoescape [32mPASSED[0m[31m                                                                                           [ 40%][0m
+tests/test_escape_filter.py::TestEscapeFilter::test_multiple_escapes [31mFAILED[0m[31m                                                                                     [ 60%][0m
+tests/test_escape_filter.py::TestEscapeFilter::test_nested_expression_escape [31mFAILED[0m[31m                                                                             [ 80%][0m
+tests/test_escape_filter.py::TestEscapeFilter::test_escape_with_non_string_values [31mFAILED[0m[31m                                                                        [100%][0m[31m[1m
+ERROR: Coverage failure: total of 34 is less than fail-under=42
+[0m
+
+============================================================================== FAILURES ===============================================================================
+[31m[1m____________________________________________________________ TestEscapeFilter.test_explicit_escape_filter _____________________________________________________________[0m
+
+self = <tests.test_escape_filter.TestEscapeFilter object at 0x108a15d10>, environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x108a22e40>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_explicit_escape_filter[39;49;00m([96mself[39;49;00m, environment: AsyncEnvironment) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test that the escape filter works when explicitly used."""[39;49;00m[90m[39;49;00m
+>       template = [94mawait[39;49;00m environment.get_template_async([33m"[39;49;00m[33mescape_test.html[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_escape_filter.py[0m:31: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31mjinja2_async_environment/environment.py[0m:119: in get_template_async
+    [0m[94mreturn[39;49;00m [94mawait[39;49;00m [96mself[39;49;00m._load_template_async(name, [96mglobals[39;49;00m)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mjinja2_async_environment/environment.py[0m:193: in _load_template_async
+    [0m[94mreturn[39;49;00m [94mawait[39;49;00m [96mself[39;49;00m._get_template_async(name, [96mglobals[39;49;00m)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mjinja2_async_environment/environment.py[0m:264: in _get_template_async
+    [0mtemplate = [94mawait[39;49;00m [96mself[39;49;00m.loader.load_async([96mself[39;49;00m, name, globals_dict)[90m[39;49;00m
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mjinja2_async_environment/loaders.py[0m:113: in load_async
+    [0mcode = environment.compile(source_str, name)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/environment.py[0m:764: in compile
+    [0msource = [96mself[39;49;00m._generate(source, name, filename, defer_init=defer_init)[90m[39;49;00m
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mjinja2_async_environment/environment.py[0m:48: in _generate
+    [0m[94mreturn[39;49;00m generator.generate(source)  [90m# type: ignore[39;49;00m[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mjinja2_async_environment/compiler.py[0m:335: in generate
+    [0m[96mself[39;49;00m.blockvisit(node.body, frame)[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/compiler.py[0m:449: in blockvisit
+    [0m[96mself[39;49;00m.visit(node, frame)[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/visitor.py[0m:40: in visit
+    [0m[94mreturn[39;49;00m f(node, *args, **kwargs)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/compiler.py[0m:1569: in visit_Output
+    [0m[96mself[39;49;00m.visit(item, frame)[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/visitor.py[0m:40: in visit
+    [0m[94mreturn[39;49;00m f(node, *args, **kwargs)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/compiler.py[0m:56: in new_func
+    [0m[94mreturn[39;49;00m f([96mself[39;49;00m, node, frame, **kwargs)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/compiler.py[0m:1838: in visit_Filter
+    [0m[94mwith[39;49;00m [96mself[39;49;00m._filter_test_common(node, frame, [94mTrue[39;49;00m):[90m[39;49;00m
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/contextlib.py[0m:141: in __enter__
+    [0m[94mreturn[39;49;00m [96mnext[39;49;00m([96mself[39;49;00m.gen)[90m[39;49;00m
+           ^^^^^^^^^^^^^^[90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.compiler.AsyncCodeGenerator object at 0x108a23e00>
+node = Filter(node=Name(name='name', ctx='load'), name='escape', args=[], kwargs=[], dyn_args=None, dyn_kwargs=None)
+frame = <jinja2_async_environment.compiler.AsyncFrame object at 0x108af9160>, is_filter = True
+
+    [0m[37m@contextmanager[39;49;00m[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92m_filter_test_common[39;49;00m([90m[39;49;00m
+        [96mself[39;49;00m, node: t.Union[nodes.Filter, nodes.Test], frame: Frame, is_filter: [96mbool[39;49;00m[90m[39;49;00m
+    ) -> t.Iterator[[94mNone[39;49;00m]:[90m[39;49;00m
+        [94mif[39;49;00m [96mself[39;49;00m.environment.is_async:[90m[39;49;00m
+            [96mself[39;49;00m.write([33m"[39;49;00m[33m(await auto_await([39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [94mif[39;49;00m is_filter:[90m[39;49;00m
+>           [96mself[39;49;00m.write([33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00m[96mself[39;49;00m.filters[node.name][33m}[39;49;00m[33m([39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                          ^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE           KeyError: 'escape'[0m
+
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/compiler.py[0m:1802: KeyError
+[31m[1m_______________________________________________________________ TestEscapeFilter.test_multiple_escapes ________________________________________________________________[0m
+
+self = <tests.test_escape_filter.TestEscapeFilter object at 0x108a1f100>, environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x108b94b90>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_multiple_escapes[39;49;00m([96mself[39;49;00m, environment: AsyncEnvironment) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test that multiple escape filters in the same template work correctly."""[39;49;00m[90m[39;49;00m
+>       template = [94mawait[39;49;00m environment.get_template_async([33m"[39;49;00m[33mmultiple_escapes.html[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_escape_filter.py[0m:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31mjinja2_async_environment/environment.py[0m:119: in get_template_async
+    [0m[94mreturn[39;49;00m [94mawait[39;49;00m [96mself[39;49;00m._load_template_async(name, [96mglobals[39;49;00m)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mjinja2_async_environment/environment.py[0m:193: in _load_template_async
+    [0m[94mreturn[39;49;00m [94mawait[39;49;00m [96mself[39;49;00m._get_template_async(name, [96mglobals[39;49;00m)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mjinja2_async_environment/environment.py[0m:264: in _get_template_async
+    [0mtemplate = [94mawait[39;49;00m [96mself[39;49;00m.loader.load_async([96mself[39;49;00m, name, globals_dict)[90m[39;49;00m
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mjinja2_async_environment/loaders.py[0m:113: in load_async
+    [0mcode = environment.compile(source_str, name)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/environment.py[0m:764: in compile
+    [0msource = [96mself[39;49;00m._generate(source, name, filename, defer_init=defer_init)[90m[39;49;00m
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mjinja2_async_environment/environment.py[0m:48: in _generate
+    [0m[94mreturn[39;49;00m generator.generate(source)  [90m# type: ignore[39;49;00m[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mjinja2_async_environment/compiler.py[0m:335: in generate
+    [0m[96mself[39;49;00m.blockvisit(node.body, frame)[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/compiler.py[0m:449: in blockvisit
+    [0m[96mself[39;49;00m.visit(node, frame)[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/visitor.py[0m:40: in visit
+    [0m[94mreturn[39;49;00m f(node, *args, **kwargs)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/compiler.py[0m:1569: in visit_Output
+    [0m[96mself[39;49;00m.visit(item, frame)[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/visitor.py[0m:40: in visit
+    [0m[94mreturn[39;49;00m f(node, *args, **kwargs)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/compiler.py[0m:56: in new_func
+    [0m[94mreturn[39;49;00m f([96mself[39;49;00m, node, frame, **kwargs)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/compiler.py[0m:1838: in visit_Filter
+    [0m[94mwith[39;49;00m [96mself[39;49;00m._filter_test_common(node, frame, [94mTrue[39;49;00m):[90m[39;49;00m
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/contextlib.py[0m:141: in __enter__
+    [0m[94mreturn[39;49;00m [96mnext[39;49;00m([96mself[39;49;00m.gen)[90m[39;49;00m
+           ^^^^^^^^^^^^^^[90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.compiler.AsyncCodeGenerator object at 0x108b95450>
+node = Filter(node=Name(name='value1', ctx='load'), name='escape', args=[], kwargs=[], dyn_args=None, dyn_kwargs=None)
+frame = <jinja2_async_environment.compiler.AsyncFrame object at 0x108b95950>, is_filter = True
+
+    [0m[37m@contextmanager[39;49;00m[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92m_filter_test_common[39;49;00m([90m[39;49;00m
+        [96mself[39;49;00m, node: t.Union[nodes.Filter, nodes.Test], frame: Frame, is_filter: [96mbool[39;49;00m[90m[39;49;00m
+    ) -> t.Iterator[[94mNone[39;49;00m]:[90m[39;49;00m
+        [94mif[39;49;00m [96mself[39;49;00m.environment.is_async:[90m[39;49;00m
+            [96mself[39;49;00m.write([33m"[39;49;00m[33m(await auto_await([39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [94mif[39;49;00m is_filter:[90m[39;49;00m
+>           [96mself[39;49;00m.write([33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00m[96mself[39;49;00m.filters[node.name][33m}[39;49;00m[33m([39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                          ^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE           KeyError: 'escape'[0m
+
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/compiler.py[0m:1802: KeyError
+[31m[1m___________________________________________________________ TestEscapeFilter.test_nested_expression_escape ____________________________________________________________[0m
+
+self = <tests.test_escape_filter.TestEscapeFilter object at 0x108a1f360>, environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x108a17250>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_nested_expression_escape[39;49;00m([96mself[39;49;00m, environment: AsyncEnvironment) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test that escape filter works with nested expressions."""[39;49;00m[90m[39;49;00m
+>       template = [94mawait[39;49;00m environment.get_template_async([33m"[39;49;00m[33mnested_escapes.html[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_escape_filter.py[0m:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31mjinja2_async_environment/environment.py[0m:119: in get_template_async
+    [0m[94mreturn[39;49;00m [94mawait[39;49;00m [96mself[39;49;00m._load_template_async(name, [96mglobals[39;49;00m)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mjinja2_async_environment/environment.py[0m:193: in _load_template_async
+    [0m[94mreturn[39;49;00m [94mawait[39;49;00m [96mself[39;49;00m._get_template_async(name, [96mglobals[39;49;00m)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mjinja2_async_environment/environment.py[0m:264: in _get_template_async
+    [0mtemplate = [94mawait[39;49;00m [96mself[39;49;00m.loader.load_async([96mself[39;49;00m, name, globals_dict)[90m[39;49;00m
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mjinja2_async_environment/loaders.py[0m:113: in load_async
+    [0mcode = environment.compile(source_str, name)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/environment.py[0m:764: in compile
+    [0msource = [96mself[39;49;00m._generate(source, name, filename, defer_init=defer_init)[90m[39;49;00m
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mjinja2_async_environment/environment.py[0m:48: in _generate
+    [0m[94mreturn[39;49;00m generator.generate(source)  [90m# type: ignore[39;49;00m[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mjinja2_async_environment/compiler.py[0m:335: in generate
+    [0m[96mself[39;49;00m.blockvisit(node.body, frame)[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/compiler.py[0m:449: in blockvisit
+    [0m[96mself[39;49;00m.visit(node, frame)[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/visitor.py[0m:40: in visit
+    [0m[94mreturn[39;49;00m f(node, *args, **kwargs)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/compiler.py[0m:1569: in visit_Output
+    [0m[96mself[39;49;00m.visit(item, frame)[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/visitor.py[0m:40: in visit
+    [0m[94mreturn[39;49;00m f(node, *args, **kwargs)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/compiler.py[0m:56: in new_func
+    [0m[94mreturn[39;49;00m f([96mself[39;49;00m, node, frame, **kwargs)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/compiler.py[0m:1838: in visit_Filter
+    [0m[94mwith[39;49;00m [96mself[39;49;00m._filter_test_common(node, frame, [94mTrue[39;49;00m):[90m[39;49;00m
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/contextlib.py[0m:141: in __enter__
+    [0m[94mreturn[39;49;00m [96mnext[39;49;00m([96mself[39;49;00m.gen)[90m[39;49;00m
+           ^^^^^^^^^^^^^^[90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.compiler.AsyncCodeGenerator object at 0x108a17390>
+node = Filter(node=Add(left=Name(name='value1', ctx='load'), right=Name(name='value2', ctx='load')), name='escape', args=[], kwargs=[], dyn_args=None, dyn_kwargs=None)
+frame = <jinja2_async_environment.compiler.AsyncFrame object at 0x108af3230>, is_filter = True
+
+    [0m[37m@contextmanager[39;49;00m[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92m_filter_test_common[39;49;00m([90m[39;49;00m
+        [96mself[39;49;00m, node: t.Union[nodes.Filter, nodes.Test], frame: Frame, is_filter: [96mbool[39;49;00m[90m[39;49;00m
+    ) -> t.Iterator[[94mNone[39;49;00m]:[90m[39;49;00m
+        [94mif[39;49;00m [96mself[39;49;00m.environment.is_async:[90m[39;49;00m
+            [96mself[39;49;00m.write([33m"[39;49;00m[33m(await auto_await([39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [94mif[39;49;00m is_filter:[90m[39;49;00m
+>           [96mself[39;49;00m.write([33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00m[96mself[39;49;00m.filters[node.name][33m}[39;49;00m[33m([39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                          ^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE           KeyError: 'escape'[0m
+
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/compiler.py[0m:1802: KeyError
+[31m[1m_________________________________________________________ TestEscapeFilter.test_escape_with_non_string_values _________________________________________________________[0m
+
+self = <tests.test_escape_filter.TestEscapeFilter object at 0x108a0be30>, environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x108b95e50>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_escape_with_non_string_values[39;49;00m([96mself[39;49;00m, environment: AsyncEnvironment) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test that escape filter works with non-string values."""[39;49;00m[90m[39;49;00m
+>       template = [94mawait[39;49;00m environment.get_template_async([33m"[39;49;00m[33mescape_test.html[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_escape_filter.py[0m:63: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31mjinja2_async_environment/environment.py[0m:119: in get_template_async
+    [0m[94mreturn[39;49;00m [94mawait[39;49;00m [96mself[39;49;00m._load_template_async(name, [96mglobals[39;49;00m)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mjinja2_async_environment/environment.py[0m:193: in _load_template_async
+    [0m[94mreturn[39;49;00m [94mawait[39;49;00m [96mself[39;49;00m._get_template_async(name, [96mglobals[39;49;00m)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mjinja2_async_environment/environment.py[0m:264: in _get_template_async
+    [0mtemplate = [94mawait[39;49;00m [96mself[39;49;00m.loader.load_async([96mself[39;49;00m, name, globals_dict)[90m[39;49;00m
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mjinja2_async_environment/loaders.py[0m:113: in load_async
+    [0mcode = environment.compile(source_str, name)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/environment.py[0m:764: in compile
+    [0msource = [96mself[39;49;00m._generate(source, name, filename, defer_init=defer_init)[90m[39;49;00m
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mjinja2_async_environment/environment.py[0m:48: in _generate
+    [0m[94mreturn[39;49;00m generator.generate(source)  [90m# type: ignore[39;49;00m[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mjinja2_async_environment/compiler.py[0m:335: in generate
+    [0m[96mself[39;49;00m.blockvisit(node.body, frame)[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/compiler.py[0m:449: in blockvisit
+    [0m[96mself[39;49;00m.visit(node, frame)[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/visitor.py[0m:40: in visit
+    [0m[94mreturn[39;49;00m f(node, *args, **kwargs)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/compiler.py[0m:1569: in visit_Output
+    [0m[96mself[39;49;00m.visit(item, frame)[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/visitor.py[0m:40: in visit
+    [0m[94mreturn[39;49;00m f(node, *args, **kwargs)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/compiler.py[0m:56: in new_func
+    [0m[94mreturn[39;49;00m f([96mself[39;49;00m, node, frame, **kwargs)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/compiler.py[0m:1838: in visit_Filter
+    [0m[94mwith[39;49;00m [96mself[39;49;00m._filter_test_common(node, frame, [94mTrue[39;49;00m):[90m[39;49;00m
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/contextlib.py[0m:141: in __enter__
+    [0m[94mreturn[39;49;00m [96mnext[39;49;00m([96mself[39;49;00m.gen)[90m[39;49;00m
+           ^^^^^^^^^^^^^^[90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.compiler.AsyncCodeGenerator object at 0x108b94910>
+node = Filter(node=Name(name='name', ctx='load'), name='escape', args=[], kwargs=[], dyn_args=None, dyn_kwargs=None)
+frame = <jinja2_async_environment.compiler.AsyncFrame object at 0x108b50180>, is_filter = True
+
+    [0m[37m@contextmanager[39;49;00m[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92m_filter_test_common[39;49;00m([90m[39;49;00m
+        [96mself[39;49;00m, node: t.Union[nodes.Filter, nodes.Test], frame: Frame, is_filter: [96mbool[39;49;00m[90m[39;49;00m
+    ) -> t.Iterator[[94mNone[39;49;00m]:[90m[39;49;00m
+        [94mif[39;49;00m [96mself[39;49;00m.environment.is_async:[90m[39;49;00m
+            [96mself[39;49;00m.write([33m"[39;49;00m[33m(await auto_await([39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [94mif[39;49;00m is_filter:[90m[39;49;00m
+>           [96mself[39;49;00m.write([33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00m[96mself[39;49;00m.filters[node.name][33m}[39;49;00m[33m([39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                          ^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE           KeyError: 'escape'[0m
+
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/compiler.py[0m:1802: KeyError
+=========================================================================== tests coverage ============================================================================
+__________________________________________________________ coverage: platform darwin, python 3.13.5-final-0 ___________________________________________________________
+
+Name                                      Stmts   Miss  Cover
+-------------------------------------------------------------
+jinja2_async_environment/bccache.py          56     29    48%
+jinja2_async_environment/compiler.py        383    256    33%
+jinja2_async_environment/environment.py     135     73    46%
+jinja2_async_environment/loaders.py         320    229    28%
+-------------------------------------------------------------
+TOTAL                                       894    587    34%
+[31m[1mFAIL Required test coverage of 42% not reached. Total coverage: 34.34%
+[0m[36m[1m======================================================================= short test summary info =======================================================================[0m
+[31mFAILED[0m tests/test_escape_filter.py::[1mTestEscapeFilter::test_explicit_escape_filter[0m - KeyError: 'escape'
+[31mFAILED[0m tests/test_escape_filter.py::[1mTestEscapeFilter::test_multiple_escapes[0m - KeyError: 'escape'
+[31mFAILED[0m tests/test_escape_filter.py::[1mTestEscapeFilter::test_nested_expression_escape[0m - KeyError: 'escape'
+[31mFAILED[0m tests/test_escape_filter.py::[1mTestEscapeFilter::test_escape_with_non_string_values[0m - KeyError: 'escape'
+[31m===================================================================== [31m[1m4 failed[0m, [32m1 passed[0m[31m in 2.53s[0m[31m =====================================================================[0m

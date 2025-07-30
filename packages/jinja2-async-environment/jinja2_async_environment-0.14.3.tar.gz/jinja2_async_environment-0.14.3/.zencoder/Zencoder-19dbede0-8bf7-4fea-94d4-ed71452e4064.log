@@ -1,0 +1,76 @@
+[1m========================================================================= test session starts =========================================================================[0m
+platform darwin -- Python 3.13.5, pytest-8.4.0, pluggy-1.6.0 -- /Users/les/Projects/jinja2-async-environment/.venv/bin/python
+cachedir: .pytest_cache
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /Users/les/Projects/jinja2-async-environment
+configfile: pyproject.toml
+plugins: xdist-3.7.0, anyio-4.9.0, timeout-2.4.0, cov-6.2.1, mock-3.14.1, benchmark-5.1.0, asyncio-1.0.0
+timeout: 300.0s
+timeout method: thread
+timeout func_only: False
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0m[1mcollected 4 items                                                                                                                                                     [0m
+
+tests/test_environment_additional.py::test_get_template_async_with_cache_hit [32mPASSED[0m[32m                                                                             [ 25%][0m
+tests/test_environment_additional.py::test_get_template_async_with_cache_hit_and_async_is_up_to_date [32mPASSED[0m[32m                                                     [ 50%][0m
+tests/test_environment_additional.py::test_get_template_async_with_cache_hit_and_auto_reload_false [31mFAILED[0m[31m                                                       [ 75%][0m
+tests/test_environment_additional.py::test_get_template_async_with_cache_hit_and_globals [32mPASSED[0m[31m                                                                 [100%][0m[31m[1m
+ERROR: Coverage failure: total of 23 is less than fail-under=42
+[0m
+
+============================================================================== FAILURES ===============================================================================
+[31m[1m____________________________________________________ test_get_template_async_with_cache_hit_and_auto_reload_false _____________________________________________________[0m
+
+async_env = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10d5e34d0>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_get_template_async_with_cache_hit_and_auto_reload_false[39;49;00m(async_env: AsyncEnvironment) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test _get_template_async with a cache hit and auto_reload=False."""[39;49;00m[90m[39;49;00m
+        [90m# Set up the environment[39;49;00m[90m[39;49;00m
+        loader = MagicMock()[90m[39;49;00m
+        async_env.loader = loader[90m[39;49;00m
+        async_env.cache = {}[90m[39;49;00m
+        async_env.auto_reload = [94mFalse[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Create a template[39;49;00m[90m[39;49;00m
+        template = MagicMock()[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Add the template to the cache[39;49;00m[90m[39;49;00m
+        cache_key = ([96mid[39;49;00m(loader), [33m"[39;49;00m[33mtemplate.html[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        async_env.cache[cache_key] = template[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Call _get_template_async[39;49;00m[90m[39;49;00m
+        result = [94mawait[39;49;00m async_env._get_template_async([33m"[39;49;00m[33mtemplate.html[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Verify the result is from the cache and is_up_to_date was not called[39;49;00m[90m[39;49;00m
+        [94massert[39;49;00m result [95mis[39;49;00m template[90m[39;49;00m
+>       [94massert[39;49;00m [95mnot[39;49;00m [96mhasattr[39;49;00m(template, [33m"[39;49;00m[33mis_up_to_date[39;49;00m[33m"[39;49;00m) [95mor[39;49;00m [95mnot[39;49;00m template.is_up_to_date.called[90m[39;49;00m
+[1m[31mE       AssertionError: assert (not True or not True)[0m
+[1m[31mE        +  where True = hasattr(<MagicMock id='4520167472'>, 'is_up_to_date')[0m
+[1m[31mE        +  and   True = <MagicMock name='mock.is_up_to_date' id='4520167808'>.called[0m
+[1m[31mE        +    where <MagicMock name='mock.is_up_to_date' id='4520167808'> = <MagicMock id='4520167472'>.is_up_to_date[0m
+
+[1m[31mtests/test_environment_additional.py[0m:325: AssertionError
+[33m========================================================================== warnings summary ===========================================================================[0m
+tests/test_environment_additional.py::test_get_template_async_with_cache_hit_and_async_is_up_to_date
+  /Users/les/Projects/jinja2-async-environment/tests/test_environment_additional.py:297: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    result = await async_env._get_template_async("template.html", None)
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================================================================== tests coverage ============================================================================
+__________________________________________________________ coverage: platform darwin, python 3.13.5-final-0 ___________________________________________________________
+
+Name                                      Stmts   Miss  Cover
+-------------------------------------------------------------
+jinja2_async_environment/bccache.py          56     29    48%
+jinja2_async_environment/compiler.py        393    334    15%
+jinja2_async_environment/environment.py     137     85    38%
+jinja2_async_environment/loaders.py         320    252    21%
+-------------------------------------------------------------
+TOTAL                                       906    700    23%
+[31m[1mFAIL Required test coverage of 42% not reached. Total coverage: 22.74%
+[0m[36m[1m======================================================================= short test summary info =======================================================================[0m
+[31mFAILED[0m tests/test_environment_additional.py::[1mtest_get_template_async_with_cache_hit_and_auto_reload_false[0m - AssertionError: assert (not True or not True)
+[31m=============================================================== [31m[1m1 failed[0m, [32m3 passed[0m, [33m1 warning[0m[31m in 0.59s[0m[31m ================================================================[0m

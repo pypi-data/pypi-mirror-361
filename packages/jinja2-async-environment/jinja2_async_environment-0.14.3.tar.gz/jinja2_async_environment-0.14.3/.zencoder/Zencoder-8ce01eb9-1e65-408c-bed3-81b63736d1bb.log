@@ -1,0 +1,80 @@
+cd /Users/les/Projects/jinja2-async-environment && .venv/bin/pytest tests/test_template_rendering.py::TestTemplateRendering::test_render_simple_template -v
+direnv: loading ~/Projects/jinja2-async-environment/.envrc                      
+direnv: export +PDM_ACTIVE ~PATH
+(jinja2-async-environment) [jinja2-async-environment] cd /Users/les/Projects/jinja2-async-environment && .venv/bin/pytest tests/test_template_rendering.py::TestTemplateRendering::test_render_simple_template -v
+============================= test session starts ==============================
+platform darwin -- Python 3.13.3, pytest-8.3.5, pluggy-1.5.0 -- /Users/les/Projects/jinja2-async-environment/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/les/Projects/jinja2-async-environment
+configfile: pyproject.toml
+plugins: anyio-4.9.0, timeout-2.4.0, asyncio-0.26.0, mock-3.14.0, cov-6.1.1
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 1 item                                                               
+
+tests/test_template_rendering.py::TestTemplateRendering::test_render_simple_template FAILED [100%]
+
+=================================== FAILURES ===================================
+______________ TestTemplateRendering.test_render_simple_template _______________
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x10a5df750>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10a6e4590>
+
+    @pytest.mark.asyncio
+    async def test_render_simple_template(self, environment: AsyncEnvironment) -> None:
+>       template = await environment.get_template_async("simple.html")
+
+tests/test_template_rendering.py:48: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+jinja2_async_environment/environment.py:104: in get_template_async
+    return await self._load_template_async(name, globals)
+jinja2_async_environment/environment.py:170: in _load_template_async
+    return await self._get_template_async(name, globals)
+jinja2_async_environment/environment.py:197: in _get_template_async
+    template = await self.loader.load_async(self, name, self.make_globals(globals))
+jinja2_async_environment/loaders.py:85: in load_async
+    code = environment.compile(source_str, name)
+.venv/lib/python3.13/site-packages/jinja2/environment.py:764: in compile
+    source = self._generate(source, name, filename, defer_init=defer_init)
+jinja2_async_environment/environment.py:41: in _generate
+    ).generate(source)  # type: ignore
+jinja2_async_environment/compiler.py:74: in generate
+    self.blockvisit(node.body, frame)
+.venv/lib/python3.13/site-packages/jinja2/compiler.py:449: in blockvisit
+    self.visit(node, frame)
+.venv/lib/python3.13/site-packages/jinja2/visitor.py:40: in visit
+    return f(node, *args, **kwargs)
+.venv/lib/python3.13/site-packages/jinja2/compiler.py:1569: in visit_Output
+    self.visit(item, frame)
+.venv/lib/python3.13/site-packages/jinja2/visitor.py:40: in visit
+    return f(node, *args, **kwargs)
+.venv/lib/python3.13/site-packages/jinja2/compiler.py:1643: in visit_Name
+    ref = frame.symbols.ref(node.name)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <jinja2.idtracking.Symbols object at 0x10a6e6660>, name = 'name'
+
+    def ref(self, name: str) -> str:
+        rv = self.find_ref(name)
+        if rv is None:
+>           raise AssertionError(
+                "Tried to resolve a name to a reference that was"
+                f" unknown to the frame ({name!r})"
+            )
+E           AssertionError: Tried to resolve a name to a reference that was unknown to the frame ('name')
+
+.venv/lib/python3.13/site-packages/jinja2/idtracking.py:83: AssertionError
+================================ tests coverage ================================
+_______________ coverage: platform darwin, python 3.13.3-final-0 _______________
+
+Name                                      Stmts   Miss  Cover
+-------------------------------------------------------------
+jinja2_async_environment/bccache.py          45     20    56%
+jinja2_async_environment/compiler.py        188    135    28%
+jinja2_async_environment/environment.py     113     60    47%
+jinja2_async_environment/loaders.py         218    144    34%
+-------------------------------------------------------------
+TOTAL                                       564    359    36%
+=========================== short test summary info ============================
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_render_simple_template - AssertionError: Tried to resolve a name to a reference that was unknown to ...
+============================== 1 failed in 1.19s ===============================
+(jinja2-async-environment) [jinja2-async-environment]                                                                                                      main  ✭ ✱

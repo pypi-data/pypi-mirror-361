@@ -1,0 +1,81 @@
+[1m========================================================================= test session starts =========================================================================[0m
+platform darwin -- Python 3.13.5, pytest-8.4.0, pluggy-1.6.0 -- /Users/les/Projects/jinja2-async-environment/.venv/bin/python
+cachedir: .pytest_cache
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /Users/les/Projects/jinja2-async-environment
+configfile: pyproject.toml
+plugins: xdist-3.7.0, anyio-4.9.0, timeout-2.4.0, cov-6.2.1, mock-3.14.1, benchmark-5.1.0, asyncio-1.0.0
+timeout: 300.0s
+timeout method: thread
+timeout func_only: False
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0m[1mcollected 12 items                                                                                                                                                    [0m
+
+tests/test_bccache_additional.py::TestAsyncBytecodeCache::test_init [32mPASSED[0m[32m                                                                                      [  8%][0m
+tests/test_bccache_additional.py::TestAsyncBytecodeCache::test_get_cache_key [32mPASSED[0m[32m                                                                             [ 16%][0m
+tests/test_bccache_additional.py::TestAsyncBytecodeCache::test_get_source_checksum [32mPASSED[0m[32m                                                                       [ 25%][0m
+tests/test_bccache_additional.py::TestAsyncBytecodeCache::test_get_bucket_async [32mPASSED[0m[32m                                                                          [ 33%][0m
+tests/test_bccache_additional.py::TestAsyncBytecodeCache::test_set_bucket_async [32mPASSED[0m[32m                                                                          [ 41%][0m
+tests/test_bccache_additional.py::TestAsyncBytecodeCache::test_load_bytecode_not_implemented [32mPASSED[0m[32m                                                             [ 50%][0m
+tests/test_bccache_additional.py::TestAsyncBytecodeCache::test_dump_bytecode_not_implemented [32mPASSED[0m[32m                                                             [ 58%][0m
+tests/test_bccache_additional.py::TestAsyncBytecodeCache::test_clear_not_implemented [32mPASSED[0m[32m                                                                     [ 66%][0m
+tests/test_bccache_additional.py::TestAsyncBytecodeCache_Subclass::test_get_bucket_async_with_custom_cache [32mPASSED[0m[32m                                               [ 75%][0m
+tests/test_bccache_additional.py::TestAsyncBytecodeCache_Subclass::test_set_bucket_async_with_custom_cache [32mPASSED[0m[32m                                               [ 83%][0m
+tests/test_bccache_additional.py::TestAsyncBytecodeCache_Subclass::test_get_bucket_async_with_existing_bucket [31mFAILED[0m[31m                                            [ 91%][0m
+tests/test_bccache_additional.py::TestAsyncBytecodeCache_Subclass::test_clear_with_custom_cache [32mPASSED[0m[31m                                                          [100%][0m[31m[1m
+ERROR: Coverage failure: total of 22 is less than fail-under=42
+[0m
+
+============================================================================== FAILURES ===============================================================================
+[31m[1m_____________________________________________ TestAsyncBytecodeCache_Subclass.test_get_bucket_async_with_existing_bucket ______________________________________________[0m
+
+self = <tests.test_bccache_additional.TestAsyncBytecodeCache_Subclass object at 0x10b557230>
+custom_bccache = <tests.test_bccache_additional.TestAsyncBytecodeCache_Subclass.CustomAsyncBytecodeCache object at 0x10b563890>
+async_env = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10b563c50>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_get_bucket_async_with_existing_bucket[39;49;00m([96mself[39;49;00m, custom_bccache: CustomAsyncBytecodeCache, async_env: AsyncEnvironment) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test the get_bucket_async method with an existing bucket in the cache."""[39;49;00m[90m[39;49;00m
+        [90m# Get a bucket and set it with some code[39;49;00m[90m[39;49;00m
+        bucket1 = [94mawait[39;49;00m custom_bccache.get_bucket_async(async_env, [33m"[39;49;00m[33mtemplate.html[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mfilename.py[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33msource[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        bucket1.code = [96mcompile[39;49;00m([33m"[39;49;00m[33ma = 1[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mfilename.py[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mexec[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        [94mawait[39;49;00m custom_bccache.set_bucket_async(bucket1)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Get the bucket again[39;49;00m[90m[39;49;00m
+>       bucket2 = [94mawait[39;49;00m custom_bccache.get_bucket_async(async_env, [33m"[39;49;00m[33mtemplate.html[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mfilename.py[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33msource[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_bccache_additional.py[0m:179: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31mjinja2_async_environment/bccache.py[0m:51: in get_bucket_async
+    [0m[96mself[39;49;00m.load_bytecode(bucket)[90m[39;49;00m
+[1m[31mtests/test_bccache_additional.py[0m:120: in load_bytecode
+    [0mbucket.load_bytecode([96mself[39;49;00m.cache[bucket.key])[90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2.bccache.Bucket object at 0x10b624c30>
+f = b'j2\x80\x02K\x05.\x80\x02J\r\x00\x00\x03.\x80\x02X \x00\x00\x0036cd38f49b9afa08222c0dc9ebfe35ebq\x00.\xe3\x00\x00\x00...a\x08<module>r\x07\x00\x00\x00\x01\x00\x00\x00s\n\x00\x00\x00\xf0\x03\x01\x01\x01\xd8\x04\x05\x81\x01r\x05\x00\x00\x00'
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mload_bytecode[39;49;00m([96mself[39;49;00m, f: t.BinaryIO) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Loads bytecode from a file or file like object."""[39;49;00m[90m[39;49;00m
+        [90m# make sure the magic header is correct[39;49;00m[90m[39;49;00m
+>       magic = f.read([96mlen[39;49;00m(bc_magic))[90m[39;49;00m
+                ^^^^^^[90m[39;49;00m
+[1m[31mE       AttributeError: 'bytes' object has no attribute 'read'[0m
+
+[1m[31m.venv/lib/python3.13/site-packages/jinja2/bccache.py[0m:68: AttributeError
+=========================================================================== tests coverage ============================================================================
+__________________________________________________________ coverage: platform darwin, python 3.13.5-final-0 ___________________________________________________________
+
+Name                                      Stmts   Miss  Cover
+-------------------------------------------------------------
+jinja2_async_environment/bccache.py          56     20    64%
+jinja2_async_environment/compiler.py        356    308    13%
+jinja2_async_environment/environment.py     121     86    29%
+jinja2_async_environment/loaders.py         320    252    21%
+-------------------------------------------------------------
+TOTAL                                       853    666    22%
+[31m[1mFAIL Required test coverage of 42% not reached. Total coverage: 21.92%
+[0m[36m[1m======================================================================= short test summary info =======================================================================[0m
+[31mFAILED[0m tests/test_bccache_additional.py::[1mTestAsyncBytecodeCache_Subclass::test_get_bucket_async_with_existing_bucket[0m - AttributeError: 'bytes' object has no attribute 'read'
+[31m==================================================================== [31m[1m1 failed[0m, [32m11 passed[0m[31m in 0.58s[0m[31m =====================================================================[0m

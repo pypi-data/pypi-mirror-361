@@ -1,0 +1,55 @@
+Traceback (most recent call last):
+  File [35m"/Users/les/Projects/jinja2-async-environment/test_fix.py"[0m, line [35m26[0m, in [35m<module>[0m
+    result = asyncio.run(render_template())
+  File [35m"/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/runners.py"[0m, line [35m195[0m, in [35mrun[0m
+    return [31mrunner.run[0m[1;31m(main)[0m
+           [31m~~~~~~~~~~[0m[1;31m^^^^^^[0m
+  File [35m"/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/runners.py"[0m, line [35m118[0m, in [35mrun[0m
+    return [31mself._loop.run_until_complete[0m[1;31m(task)[0m
+           [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^^^^^[0m
+  File [35m"/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_events.py"[0m, line [35m725[0m, in [35mrun_until_complete[0m
+    return [31mfuture.result[0m[1;31m()[0m
+           [31m~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/Users/les/Projects/jinja2-async-environment/test_fix.py"[0m, line [35m21[0m, in [35mrender_template[0m
+    template = [1;31mawait jinja2_env.get_template_async("test.html")[0m
+               [1;31m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  File [35m"/Users/les/Projects/jinja2-async-environment/jinja2_async_environment/environment.py"[0m, line [35m114[0m, in [35mget_template_async[0m
+    return [1;31mawait self._load_template_async(name, globals)[0m
+           [1;31m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  File [35m"/Users/les/Projects/jinja2-async-environment/jinja2_async_environment/environment.py"[0m, line [35m188[0m, in [35m_load_template_async[0m
+    return [1;31mawait self._get_template_async(name, globals)[0m
+           [1;31m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  File [35m"/Users/les/Projects/jinja2-async-environment/jinja2_async_environment/environment.py"[0m, line [35m259[0m, in [35m_get_template_async[0m
+    template = [1;31mawait self.loader.load_async(self, name, globals_dict)[0m
+               [1;31m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  File [35m"/Users/les/Projects/jinja2-async-environment/jinja2_async_environment/loaders.py"[0m, line [35m115[0m, in [35mload_async[0m
+    code = environment.compile(source_str, name, path)
+  File [35m"/Users/les/Projects/jinja2-async-environment/.venv/lib/python3.13/site-packages/jinja2/environment.py"[0m, line [35m764[0m, in [35mcompile[0m
+    source = self._generate(source, name, filename, defer_init=defer_init)
+  File [35m"/Users/les/Projects/jinja2-async-environment/jinja2_async_environment/environment.py"[0m, line [35m43[0m, in [35m_generate[0m
+    return [31mgenerator.generate[0m[1;31m(source)[0m  # type: ignore
+           [31m~~~~~~~~~~~~~~~~~~[0m[1;31m^^^^^^^^[0m
+  File [35m"/Users/les/Projects/jinja2-async-environment/jinja2_async_environment/compiler.py"[0m, line [35m329[0m, in [35mgenerate[0m
+    [31mself.blockvisit[0m[1;31m(node.body, frame)[0m
+    [31m~~~~~~~~~~~~~~~[0m[1;31m^^^^^^^^^^^^^^^^^^[0m
+  File [35m"/Users/les/Projects/jinja2-async-environment/.venv/lib/python3.13/site-packages/jinja2/compiler.py"[0m, line [35m449[0m, in [35mblockvisit[0m
+    [31mself.visit[0m[1;31m(node, frame)[0m
+    [31m~~~~~~~~~~[0m[1;31m^^^^^^^^^^^^^[0m
+  File [35m"/Users/les/Projects/jinja2-async-environment/.venv/lib/python3.13/site-packages/jinja2/visitor.py"[0m, line [35m40[0m, in [35mvisit[0m
+    return f(node, *args, **kwargs)
+  File [35m"/Users/les/Projects/jinja2-async-environment/.venv/lib/python3.13/site-packages/jinja2/compiler.py"[0m, line [35m1569[0m, in [35mvisit_Output[0m
+    [31mself.visit[0m[1;31m(item, frame)[0m
+    [31m~~~~~~~~~~[0m[1;31m^^^^^^^^^^^^^[0m
+  File [35m"/Users/les/Projects/jinja2-async-environment/.venv/lib/python3.13/site-packages/jinja2/visitor.py"[0m, line [35m40[0m, in [35mvisit[0m
+    return f(node, *args, **kwargs)
+  File [35m"/Users/les/Projects/jinja2-async-environment/.venv/lib/python3.13/site-packages/jinja2/compiler.py"[0m, line [35m56[0m, in [35mnew_func[0m
+    return f(self, node, frame, **kwargs)
+  File [35m"/Users/les/Projects/jinja2-async-environment/.venv/lib/python3.13/site-packages/jinja2/compiler.py"[0m, line [35m1838[0m, in [35mvisit_Filter[0m
+    with [31mself._filter_test_common[0m[1;31m(node, frame, True)[0m:
+         [31m~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^^^^^^^^^^^^^^^^^^[0m
+  File [35m"/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/contextlib.py"[0m, line [35m141[0m, in [35m__enter__[0m
+    return next(self.gen)
+  File [35m"/Users/les/Projects/jinja2-async-environment/.venv/lib/python3.13/site-packages/jinja2/compiler.py"[0m, line [35m1802[0m, in [35m_filter_test_common[0m
+    self.write(f"{[31mself.filters[0m[1;31m[node.name][0m}(")
+                  [31m~~~~~~~~~~~~[0m[1;31m^^^^^^^^^^^[0m
+[1;35mKeyError[0m: [35m'escape'[0m

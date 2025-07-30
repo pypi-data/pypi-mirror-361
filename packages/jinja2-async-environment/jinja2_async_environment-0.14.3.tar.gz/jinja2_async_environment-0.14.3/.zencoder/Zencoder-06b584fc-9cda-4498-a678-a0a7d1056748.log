@@ -1,0 +1,202 @@
+cd /Users/les/Projects/jinja2-async-environment && .venv/bin/pytest tests/test_template_rendering.py -v
+direnv: loading ~/Projects/jinja2-async-environment/.envrc                      
+direnv: export +PDM_ACTIVE ~PATH
+(jinja2-async-environment) [jinja2-async-environment] cd /Users/les/Projects/jinja2-async-environment && .venv/bin/pytest tests/test_template_rendering.py -v
+======================================================================== test session starts ========================================================================
+platform darwin -- Python 3.13.3, pytest-8.3.5, pluggy-1.5.0 -- /Users/les/Projects/jinja2-async-environment/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/les/Projects/jinja2-async-environment
+configfile: pyproject.toml
+plugins: anyio-4.9.0, timeout-2.4.0, asyncio-0.26.0, mock-3.14.0, cov-6.1.1
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 7 items                                                                                                                                                   
+
+tests/test_template_rendering.py::TestTemplateRendering::test_render_simple_template FAILED                                                                   [ 14%]
+tests/test_template_rendering.py::TestTemplateRendering::test_render_template_with_inheritance FAILED                                                         [ 28%]
+tests/test_template_rendering.py::TestTemplateRendering::test_render_template_with_include PASSED                                                             [ 42%]
+tests/test_template_rendering.py::TestTemplateRendering::test_render_async_block FAILED                                                                       [ 57%]
+tests/test_template_rendering.py::TestTemplateRendering::test_render_async_include FAILED                                                                     [ 71%]
+tests/test_template_rendering.py::TestTemplateRendering::test_render_async_extends FAILED                                                                     [ 85%]
+tests/test_template_rendering.py::TestTemplateRendering::test_performance_with_large_template FAILED                                                          [100%]
+
+============================================================================= FAILURES ==============================================================================
+_________________________________________________________ TestTemplateRendering.test_render_simple_template _________________________________________________________
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x106dc3750>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x106ec4590>
+
+    @pytest.mark.asyncio
+    async def test_render_simple_template(self, environment: AsyncEnvironment) -> None:
+        template = await environment.get_template_async("simple.html")
+        context = template.new_context({"name": "World"})
+        rendered = await render_template(template.root_render_func, context)
+>       assert rendered == "<h1>Hello, World!</h1>"
+E       AssertionError: assert '<h1>Hello, simple.html!</h1>' == '<h1>Hello, World!</h1>'
+E         
+E         - <h1>Hello, World!</h1>
+E         + <h1>Hello, simple.html!</h1>
+
+tests/test_template_rendering.py:68: AssertionError
+____________________________________________________ TestTemplateRendering.test_render_template_with_inheritance ____________________________________________________
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x106dc3b10>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x106e9d1d0>
+
+    @pytest.mark.asyncio
+    async def test_render_template_with_inheritance(
+        self, environment: AsyncEnvironment
+    ) -> None:
+        template = await environment.get_template_async("child.html")
+        context = template.new_context({"message": "This is a test"})
+        rendered = await render_template(template.root_render_func, context)
+>       assert (
+            rendered == "<!DOCTYPE html><html><body><p>This is a test</p></body></html>"
+        )
+E       AssertionError: assert 'None' == '<!DOCTYPE ht.../body></html>'
+E         
+E         - <!DOCTYPE html><html><body><p>This is a test</p></body></html>
+E         + None
+
+tests/test_template_rendering.py:77: AssertionError
+___________________________________________________________ TestTemplateRendering.test_render_async_block ___________________________________________________________
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x106ddba80>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x106e9e850>
+
+    @pytest.mark.asyncio
+    async def test_render_async_block(self, environment: AsyncEnvironment) -> None:
+        template = await environment.get_template_async("async_block.html")
+    
+        async def async_generator() -> AsyncIterator[str]:
+            for item in ("Item1", "Item2", "Item3"):
+                yield item
+    
+        context = template.new_context({"items": async_generator()})
+>       rendered = await render_template(template.root_render_func, context)
+
+tests/test_template_rendering.py:99: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_template_rendering.py:16: in render_template
+    async for event in async_result:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+context = <Context {'range': <class 'range'>, 'dict': <class 'dict'>, 'lipsum': <function generate_lorem_ipsum at 0x106b98540>, ...r object TestTemplateRendering.test_render_async_block.<locals>.async_generator at 0x106ed2b00>} of 'async_block.html'>
+
+>   ???
+E   KeyError: 'async_content'
+
+<template>:29: KeyError
+__________________________________________________________ TestTemplateRendering.test_render_async_include __________________________________________________________
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x106e3e330>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x106e9e5d0>
+
+    @pytest.mark.asyncio
+    async def test_render_async_include(self, environment: AsyncEnvironment) -> None:
+        template = await environment.get_template_async("async_include.html")
+    
+        async def async_generator() -> AsyncIterator[str]:
+            for item in ("Item1", "Item2", "Item3"):
+                yield item
+    
+        context = template.new_context({"async_items": async_generator()})
+>       rendered = await render_template(template.root_render_func, context)
+
+tests/test_template_rendering.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_template_rendering.py:16: in render_template
+    async for event in async_result:
+<template>:15: in root
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+context = <Context {'range': <class 'range'>, 'dict': <class 'dict'>, 'lipsum': <function generate_lorem_ipsum at 0x106b98540>, ...ject TestTemplateRendering.test_render_async_include.<locals>.async_generator at 0x106ed3040>} of 'async_partial.html'>
+
+>   ???
+E   NameError: name 'l_0_item' is not defined
+
+<template>:19: NameError
+__________________________________________________________ TestTemplateRendering.test_render_async_extends __________________________________________________________
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x106e65040>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x106e9f390>
+
+    @pytest.mark.asyncio
+    async def test_render_async_extends(self, environment: AsyncEnvironment) -> None:
+        template = await environment.get_template_async("async_extends.html")
+    
+        async def async_generator() -> AsyncIterator[str]:
+            for item in ("Item1", "Item2", "Item3"):
+                yield item
+    
+        context = template.new_context({"async_items": async_generator()})
+        rendered = await render_template(template.root_render_func, context)
+>       assert rendered == "<!DOCTYPE html><html><body>Item1Item2Item3</body></html>"
+E       AssertionError: assert 'None' == '<!DOCTYPE ht.../body></html>'
+E         
+E         - <!DOCTYPE html><html><body>Item1Item2Item3</body></html>
+E         + None
+
+tests/test_template_rendering.py:124: AssertionError
+____________________________________________________ TestTemplateRendering.test_performance_with_large_template _____________________________________________________
+
+context = <Context {'range': <class 'range'>, 'dict': <class 'dict'>, 'lipsum': <function generate_lorem_ipsum at 0x106b98540>, ...tils.Cycler'>, 'joiner': <class 'jinja2.utils.Joiner'>, 'namespace': <class 'jinja2.utils.Namespace'>} of 'large.html'>
+
+>   ???
+E   TypeError: 'async for' requires an object with __aiter__ method, got range
+
+<template>:16: TypeError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x106e65260>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x106e9e490>
+
+    @pytest.mark.asyncio
+    async def test_performance_with_large_template(
+        self, environment: AsyncEnvironment
+    ) -> None:
+        large_template = "{% for i in range(1000) %}{{ i }}{% endfor %}"
+    
+        environment.loader.mapping["large.html"] = large_template  # type: ignore
+    
+        template = await environment.get_template_async("large.html")
+        context = template.new_context({})
+    
+        import time
+    
+        start_time = time.time()
+>       rendered = await render_template(template.root_render_func, context)
+
+tests/test_template_rendering.py:140: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_template_rendering.py:16: in render_template
+    async for event in async_result:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+context = <Context {'range': <class 'range'>, 'dict': <class 'dict'>, 'lipsum': <function generate_lorem_ipsum at 0x106b98540>, ...tils.Cycler'>, 'joiner': <class 'jinja2.utils.Joiner'>, 'namespace': <class 'jinja2.utils.Namespace'>} of 'large.html'>
+
+>   ???
+E   NameError: name 'l_0_i' is not defined
+
+<template>:24: NameError
+========================================================================== tests coverage ===========================================================================
+_________________________________________________________ coverage: platform darwin, python 3.13.3-final-0 __________________________________________________________
+
+Name                                      Stmts   Miss  Cover
+-------------------------------------------------------------
+jinja2_async_environment/bccache.py          45     20    56%
+jinja2_async_environment/compiler.py        224     73    67%
+jinja2_async_environment/environment.py     113     54    52%
+jinja2_async_environment/loaders.py         218    142    35%
+-------------------------------------------------------------
+TOTAL                                       600    289    52%
+====================================================================== short test summary info ======================================================================
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_render_simple_template - AssertionError: assert '<h1>Hello, simple.html!</h1>' == '<h1>Hello, World!</h1>'
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_render_template_with_inheritance - AssertionError: assert 'None' == '<!DOCTYPE ht.../body></html>'
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_render_async_block - KeyError: 'async_content'
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_render_async_include - NameError: name 'l_0_item' is not defined
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_render_async_extends - AssertionError: assert 'None' == '<!DOCTYPE ht.../body></html>'
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_performance_with_large_template - NameError: name 'l_0_i' is not defined
+==================================================================== 6 failed, 1 passed in 0.75s ====================================================================
+(jinja2-async-environment) [jinja2-async-environment]                                                                                                      main  ✭ ✱

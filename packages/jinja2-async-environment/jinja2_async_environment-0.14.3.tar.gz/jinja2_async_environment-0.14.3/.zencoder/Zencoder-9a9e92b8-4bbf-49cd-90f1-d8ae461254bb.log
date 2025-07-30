@@ -1,0 +1,74 @@
+cd /Users/les/Projects/jinja2-async-environment && python -m pytest tests/test_template_rendering.py
+direnv: loading ~/Projects/jinja2-async-environment/.envrc                      
+direnv: export +PDM_ACTIVE ~PATH
+(jinja2-async-environment) [jinja2-async-environment] cd /Users/les/Projects/jinja2-async-environment && python -m pytest tests/test_template_rendering.py
+============================= test session starts ==============================
+platform darwin -- Python 3.13.3, pytest-8.3.5, pluggy-1.5.0
+rootdir: /Users/les/Projects/jinja2-async-environment
+configfile: pyproject.toml
+plugins: anyio-4.9.0, timeout-2.4.0, asyncio-0.26.0, mock-3.14.0, cov-6.1.1
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 7 items                                                              
+
+tests/test_template_rendering.py ...FF..                                 [100%]
+
+=================================== FAILURES ===================================
+________________ TestTemplateRendering.test_render_async_block _________________
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x10dbf7950>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10dcd87d0>
+
+    @pytest.mark.asyncio
+    async def test_render_async_block(self, environment: AsyncEnvironment) -> None:
+        template = await environment.get_template_async("async_block.html")
+    
+        async def async_generator() -> AsyncIterator[str]:
+            for item in ("Item1", "Item2", "Item3"):
+                yield item
+    
+        context = template.new_context({"items": async_generator()})
+        rendered = await render_template(template.root_render_func, context)
+>       assert rendered == "Item1Item2Item3"
+E       AssertionError: assert '' == 'Item1Item2Item3'
+E         
+E         - Item1Item2Item3
+
+tests/test_template_rendering.py:167: AssertionError
+_______________ TestTemplateRendering.test_render_async_include ________________
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x10dc5e210>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10dcd8190>
+
+    @pytest.mark.asyncio
+    async def test_render_async_include(self, environment: AsyncEnvironment) -> None:
+        template = await environment.get_template_async("async_include.html")
+    
+        async def async_generator() -> AsyncIterator[str]:
+            for item in ("Item1", "Item2", "Item3"):
+                yield item
+    
+        context = template.new_context({"async_items": async_generator()})
+        rendered = await render_template(template.root_render_func, context)
+>       assert rendered == "Before Item1Item2Item3 After"
+E       AssertionError: assert 'Before NoneNoneNone After' == 'Before Item1Item2Item3 After'
+E         
+E         - Before Item1Item2Item3 After
+E         + Before NoneNoneNone After
+
+tests/test_template_rendering.py:179: AssertionError
+================================ tests coverage ================================
+_______________ coverage: platform darwin, python 3.13.3-final-0 _______________
+
+Name                                      Stmts   Miss  Cover
+-------------------------------------------------------------
+jinja2_async_environment/bccache.py          45     20    56%
+jinja2_async_environment/compiler.py        237     85    64%
+jinja2_async_environment/environment.py     115     54    53%
+jinja2_async_environment/loaders.py         256    178    30%
+-------------------------------------------------------------
+TOTAL                                       653    337    48%
+=========================== short test summary info ============================
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_render_async_block - AssertionError: assert '' == 'Item1Item2Item3'
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_render_async_include - AssertionError: assert 'Before NoneNoneNone After' == 'Before Item1Item2Ite...
+========================= 2 failed, 5 passed in 0.60s ==========================
+(jinja2-async-environment) [jinja2-async-environment]                 main  ✭ ✱

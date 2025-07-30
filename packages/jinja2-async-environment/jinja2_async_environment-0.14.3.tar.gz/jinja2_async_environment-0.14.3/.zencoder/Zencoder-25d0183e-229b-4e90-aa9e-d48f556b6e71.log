@@ -1,0 +1,30 @@
+python -c "import inspect; from jinja2.compiler import CodeGenerator; print(inspect.getsource(CodeGenerator.visit_Name))"
+direnv: loading ~/Projects/jinja2-async-environment/.envrc                      
+direnv: export +PDM_ACTIVE ~PATH
+(jinja2-async-environment) [jinja2-async-environment] python -c "import inspect; from jinja2.compiler import CodeGenerator; print(inspect.getsource(CodeGenerator.visit_Name))"
+    def visit_Name(self, node: nodes.Name, frame: Frame) -> None:
+        if node.ctx == "store" and (
+            frame.toplevel or frame.loop_frame or frame.block_frame
+        ):
+            if self._assign_stack:
+                self._assign_stack[-1].add(node.name)
+        ref = frame.symbols.ref(node.name)
+
+        # If we are looking up a variable we might have to deal with the
+        # case where it's undefined.  We can skip that case if the load
+        # instruction indicates a parameter which are always defined.
+        if node.ctx == "load":
+            load = frame.symbols.find_load(ref)
+            if not (
+                load is not None
+                and load[0] == VAR_LOAD_PARAMETER
+                and not self.parameter_is_undeclared(ref)
+            ):
+                self.write(
+                    f"(undefined(name={node.name!r}) if {ref} is missing else {ref})"
+                )
+                return
+
+        self.write(ref)
+
+(jinja2-async-environment) [jinja2-async-environment]                                                                                                      main  ✭ ✱

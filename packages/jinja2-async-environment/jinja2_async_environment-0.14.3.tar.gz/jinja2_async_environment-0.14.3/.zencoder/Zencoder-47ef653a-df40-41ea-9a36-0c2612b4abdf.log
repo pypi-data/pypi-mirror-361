@@ -1,0 +1,355 @@
+cd /Users/les/Projects/jinja2-async-environment && pdm run pytest tests/test_redis_bccache.py -v
+direnv: loading ~/Projects/jinja2-async-environment/.envrc                      
+direnv: export +PDM_ACTIVE ~PATH
+(jinja2-async-environment) [jinja2-async-environment] cd /Users/les/Projects/jinja2-async-environment && pdm run pytest tests/test_redis_bccache.py -v
+============================= test session starts ==============================
+platform darwin -- Python 3.13.3, pytest-8.3.5, pluggy-1.5.0 -- /Users/les/Projects/jinja2-async-environment/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/les/Projects/jinja2-async-environment
+configfile: pyproject.toml
+plugins: anyio-4.9.0, timeout-2.4.0, asyncio-0.26.0, mock-3.14.0, cov-6.1.1
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 12 items                                                             
+
+tests/test_redis_bccache.py::TestAsyncRedisBytecodeCache::test_init_with_client PASSED [  8%]
+tests/test_redis_bccache.py::TestAsyncRedisBytecodeCache::test_init_with_configs PASSED [ 16%]
+tests/test_redis_bccache.py::TestAsyncRedisBytecodeCache::test_get_cache_key PASSED [ 25%]
+tests/test_redis_bccache.py::TestAsyncRedisBytecodeCache::test_get_source_checksum PASSED [ 33%]
+tests/test_redis_bccache.py::TestAsyncRedisBytecodeCache::test_get_bucket_name FAILED [ 41%]
+tests/test_redis_bccache.py::TestAsyncRedisBytecodeCache::test_load_bytecode_hit FAILED                                                                         [ 50%]
+tests/test_redis_bccache.py::TestAsyncRedisBytecodeCache::test_load_bytecode_miss FAILED                                                                        [ 58%]
+tests/test_redis_bccache.py::TestAsyncRedisBytecodeCache::test_dump_bytecode FAILED                                                                             [ 66%]
+tests/test_redis_bccache.py::TestAsyncRedisBytecodeCache::test_get_bucket PASSED                                                                                [ 75%]
+tests/test_redis_bccache.py::TestAsyncRedisBytecodeCache::test_set_bucket PASSED                                                                                [ 83%]
+tests/test_redis_bccache.py::TestAsyncRedisBytecodeCache::test_get_bucket_async PASSED                                                                          [ 91%]
+tests/test_redis_bccache.py::TestAsyncRedisBytecodeCache::test_set_bucket_async PASSED                                                                          [100%]
+
+============================================================================== FAILURES ===============================================================================
+__________________________________________________________ TestAsyncRedisBytecodeCache.test_get_bucket_name ___________________________________________________________
+
+self = <tests.test_redis_bccache.TestAsyncRedisBytecodeCache object at 0x10be0e0f0>
+cache = <jinja2_async_environment.bccache.AsyncRedisBytecodeCache object at 0x10b9f3950>
+
+    def test_get_bucket_name(self, cache: AsyncRedisBytecodeCache) -> None:
+>       assert cache.get_bucket_name("key") == "test_prefix:key"
+E       AssertionError: assert 'test_prefix::key' == 'test_prefix:key'
+E         
+E         - test_prefix:key
+E         + test_prefix::key
+E         ?             +
+
+tests/test_redis_bccache.py:63: AssertionError
+_________________________________________________________ TestAsyncRedisBytecodeCache.test_load_bytecode_hit __________________________________________________________
+
+self = <AsyncMock name='mock.get' id='4494808400'>, args = ('test_prefix:test_key',), kwargs = {}, expected = call('test_prefix:test_key')
+_error_message = <function AsyncMockMixin.assert_awaited_with.<locals>._error_message at 0x10bef02c0>, actual = call('test_prefix::test_key'), cause = None
+
+    def assert_awaited_with(self, /, *args, **kwargs):
+        """
+        Assert that the last await was with the specified arguments.
+        """
+        if self.await_args is None:
+            expected = self._format_mock_call_signature(args, kwargs)
+            raise AssertionError(f'Expected await: {expected}\nNot awaited')
+    
+        def _error_message():
+            msg = self._format_mock_failure_message(args, kwargs, action='await')
+            return msg
+    
+        expected = self._call_matcher(_Call((args, kwargs), two=True))
+        actual = self._call_matcher(self.await_args)
+        if actual != expected:
+            cause = expected if isinstance(expected, Exception) else None
+>           raise AssertionError(_error_message()) from cause
+E           AssertionError: expected await not found.
+E           Expected: get('test_prefix:test_key')
+E             Actual: get('test_prefix::test_key')
+
+/usr/local/Cellar/python@3.13/3.13.3/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py:2382: AssertionError
+
+During handling of the above exception, another exception occurred:
+
+self = <AsyncMock name='mock.get' id='4494808400'>, args = ('test_prefix:test_key',), kwargs = {}
+
+    def assert_awaited_once_with(self, /, *args, **kwargs):
+        """
+        Assert that the mock was awaited exactly once and with the specified
+        arguments.
+        """
+        if not self.await_count == 1:
+            msg = (f"Expected {self._mock_name or 'mock'} to have been awaited once."
+                   f" Awaited {self.await_count} times.")
+            raise AssertionError(msg)
+>       return self.assert_awaited_with(*args, **kwargs)
+E       AssertionError: expected await not found.
+E       Expected: get('test_prefix:test_key')
+E         Actual: get('test_prefix::test_key')
+E       
+E       pytest introspection follows:
+E       
+E       Args:
+E       assert ('test_prefix::test_key',) == ('test_prefix:test_key',)
+E         
+E         At index 0 diff: 'test_prefix::test_key' != 'test_prefix:test_key'
+E         
+E         Full diff:
+E           (
+E         -     'test_prefix:test_key',
+E         +     'test_prefix::test_key',
+E         ?                  +
+E           )
+
+/usr/local/Cellar/python@3.13/3.13.3/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py:2393: AssertionError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.test_redis_bccache.TestAsyncRedisBytecodeCache object at 0x10be31480>
+cache = <jinja2_async_environment.bccache.AsyncRedisBytecodeCache object at 0x10be0f770>, bucket = <jinja2.bccache.Bucket object at 0x10be94ad0>
+mock_redis_client = <AsyncMock id='4494808736'>
+
+    @pytest.mark.asyncio
+    async def test_load_bytecode_hit(
+        self,
+        cache: AsyncRedisBytecodeCache,
+        bucket: Bucket,
+        mock_redis_client: MagicMock,
+    ) -> None:
+        mock_redis_client.get.return_value = b"bytecode_data"
+        with patch.object(bucket, "bytecode_from_string") as mock_from_string:
+            result = await cache.load_bytecode(bucket)
+>           mock_redis_client.get.assert_awaited_once_with("test_prefix:test_key")
+E           AssertionError: expected await not found.
+E           Expected: get('test_prefix:test_key')
+E             Actual: get('test_prefix::test_key')
+E           
+E           pytest introspection follows:
+E           
+E           Args:
+E           assert ('test_prefix::test_key',) == ('test_prefix:test_key',)
+E             
+E             At index 0 diff: 'test_prefix::test_key' != 'test_prefix:test_key'
+E             
+E             Full diff:
+E               (
+E             -     'test_prefix:test_key',
+E             +     'test_prefix::test_key',
+E             ?                  +
+E               )
+
+tests/test_redis_bccache.py:78: AssertionError
+_________________________________________________________ TestAsyncRedisBytecodeCache.test_load_bytecode_miss _________________________________________________________
+
+self = <AsyncMock name='mock.get' id='4496002752'>, args = ('test_prefix:test_key',), kwargs = {}, expected = call('test_prefix:test_key')
+_error_message = <function AsyncMockMixin.assert_awaited_with.<locals>._error_message at 0x10bfeb060>, actual = call('test_prefix::test_key'), cause = None
+
+    def assert_awaited_with(self, /, *args, **kwargs):
+        """
+        Assert that the last await was with the specified arguments.
+        """
+        if self.await_args is None:
+            expected = self._format_mock_call_signature(args, kwargs)
+            raise AssertionError(f'Expected await: {expected}\nNot awaited')
+    
+        def _error_message():
+            msg = self._format_mock_failure_message(args, kwargs, action='await')
+            return msg
+    
+        expected = self._call_matcher(_Call((args, kwargs), two=True))
+        actual = self._call_matcher(self.await_args)
+        if actual != expected:
+            cause = expected if isinstance(expected, Exception) else None
+>           raise AssertionError(_error_message()) from cause
+E           AssertionError: expected await not found.
+E           Expected: get('test_prefix:test_key')
+E             Actual: get('test_prefix::test_key')
+
+/usr/local/Cellar/python@3.13/3.13.3/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py:2382: AssertionError
+
+During handling of the above exception, another exception occurred:
+
+self = <AsyncMock name='mock.get' id='4496002752'>, args = ('test_prefix:test_key',), kwargs = {}
+
+    def assert_awaited_once_with(self, /, *args, **kwargs):
+        """
+        Assert that the mock was awaited exactly once and with the specified
+        arguments.
+        """
+        if not self.await_count == 1:
+            msg = (f"Expected {self._mock_name or 'mock'} to have been awaited once."
+                   f" Awaited {self.await_count} times.")
+            raise AssertionError(msg)
+>       return self.assert_awaited_with(*args, **kwargs)
+E       AssertionError: expected await not found.
+E       Expected: get('test_prefix:test_key')
+E         Actual: get('test_prefix::test_key')
+E       
+E       pytest introspection follows:
+E       
+E       Args:
+E       assert ('test_prefix::test_key',) == ('test_prefix:test_key',)
+E         
+E         At index 0 diff: 'test_prefix::test_key' != 'test_prefix:test_key'
+E         
+E         Full diff:
+E           (
+E         -     'test_prefix:test_key',
+E         +     'test_prefix::test_key',
+E         ?                  +
+E           )
+
+/usr/local/Cellar/python@3.13/3.13.3/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py:2393: AssertionError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.test_redis_bccache.TestAsyncRedisBytecodeCache object at 0x10be316a0>
+cache = <jinja2_async_environment.bccache.AsyncRedisBytecodeCache object at 0x10bf02e00>, bucket = <jinja2.bccache.Bucket object at 0x10bea8410>
+mock_redis_client = <AsyncMock id='4496001744'>
+
+    @pytest.mark.asyncio
+    async def test_load_bytecode_miss(
+        self,
+        cache: AsyncRedisBytecodeCache,
+        bucket: Bucket,
+        mock_redis_client: MagicMock,
+    ) -> None:
+        mock_redis_client.get.return_value = None
+        with patch.object(bucket, "bytecode_from_string") as mock_from_string:
+            result = await cache.load_bytecode(bucket)
+>           mock_redis_client.get.assert_awaited_once_with("test_prefix:test_key")
+E           AssertionError: expected await not found.
+E           Expected: get('test_prefix:test_key')
+E             Actual: get('test_prefix::test_key')
+E           
+E           pytest introspection follows:
+E           
+E           Args:
+E           assert ('test_prefix::test_key',) == ('test_prefix:test_key',)
+E             
+E             At index 0 diff: 'test_prefix::test_key' != 'test_prefix:test_key'
+E             
+E             Full diff:
+E               (
+E             -     'test_prefix:test_key',
+E             +     'test_prefix::test_key',
+E             ?                  +
+E               )
+
+tests/test_redis_bccache.py:92: AssertionError
+___________________________________________________________ TestAsyncRedisBytecodeCache.test_dump_bytecode ____________________________________________________________
+
+self = <AsyncMock name='mock.set' id='4496006112'>, args = ('test_prefix:test_key', b'serialized_bytecode'), kwargs = {}
+expected = call('test_prefix:test_key', b'serialized_bytecode'), _error_message = <function AsyncMockMixin.assert_awaited_with.<locals>._error_message at 0x10bfeb6a0>
+actual = call('test_prefix::test_key', b'serialized_bytecode'), cause = None
+
+    def assert_awaited_with(self, /, *args, **kwargs):
+        """
+        Assert that the last await was with the specified arguments.
+        """
+        if self.await_args is None:
+            expected = self._format_mock_call_signature(args, kwargs)
+            raise AssertionError(f'Expected await: {expected}\nNot awaited')
+    
+        def _error_message():
+            msg = self._format_mock_failure_message(args, kwargs, action='await')
+            return msg
+    
+        expected = self._call_matcher(_Call((args, kwargs), two=True))
+        actual = self._call_matcher(self.await_args)
+        if actual != expected:
+            cause = expected if isinstance(expected, Exception) else None
+>           raise AssertionError(_error_message()) from cause
+E           AssertionError: expected await not found.
+E           Expected: set('test_prefix:test_key', b'serialized_bytecode')
+E             Actual: set('test_prefix::test_key', b'serialized_bytecode')
+
+/usr/local/Cellar/python@3.13/3.13.3/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py:2382: AssertionError
+
+During handling of the above exception, another exception occurred:
+
+self = <AsyncMock name='mock.set' id='4496006112'>, args = ('test_prefix:test_key', b'serialized_bytecode'), kwargs = {}
+
+    def assert_awaited_once_with(self, /, *args, **kwargs):
+        """
+        Assert that the mock was awaited exactly once and with the specified
+        arguments.
+        """
+        if not self.await_count == 1:
+            msg = (f"Expected {self._mock_name or 'mock'} to have been awaited once."
+                   f" Awaited {self.await_count} times.")
+            raise AssertionError(msg)
+>       return self.assert_awaited_with(*args, **kwargs)
+E       AssertionError: expected await not found.
+E       Expected: set('test_prefix:test_key', b'serialized_bytecode')
+E         Actual: set('test_prefix::test_key', b'serialized_bytecode')
+E       
+E       pytest introspection follows:
+E       
+E       Args:
+E       assert ('test_prefix...zed_bytecode') == ('test_prefix...zed_bytecode')
+E         
+E         At index 0 diff: 'test_prefix::test_key' != 'test_prefix:test_key'
+E         
+E         Full diff:
+E           (
+E         -     'test_prefix:test_key',
+E         +     'test_prefix::test_key',...
+E         
+E         ...Full output truncated (3 lines hidden), use '-vv' to show
+
+/usr/local/Cellar/python@3.13/3.13.3/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py:2393: AssertionError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.test_redis_bccache.TestAsyncRedisBytecodeCache object at 0x10bdb6c50>
+cache = <jinja2_async_environment.bccache.AsyncRedisBytecodeCache object at 0x10bf039b0>, bucket = <jinja2.bccache.Bucket object at 0x10bea8910>
+mock_redis_client = <AsyncMock id='4496004768'>
+
+    @pytest.mark.asyncio
+    async def test_dump_bytecode(
+        self,
+        cache: AsyncRedisBytecodeCache,
+        bucket: Bucket,
+        mock_redis_client: MagicMock,
+    ) -> None:
+        bucket.bytecode_to_string = MagicMock(return_value=b"serialized_bytecode")
+        await cache.dump_bytecode(bucket)
+>       mock_redis_client.set.assert_awaited_once_with(
+            "test_prefix:test_key", b"serialized_bytecode"
+        )
+E       AssertionError: expected await not found.
+E       Expected: set('test_prefix:test_key', b'serialized_bytecode')
+E         Actual: set('test_prefix::test_key', b'serialized_bytecode')
+E       
+E       pytest introspection follows:
+E       
+E       Args:
+E       assert ('test_prefix...zed_bytecode') == ('test_prefix...zed_bytecode')
+E         
+E         At index 0 diff: 'test_prefix::test_key' != 'test_prefix:test_key'
+E         
+E         Full diff:
+E           (
+E         -     'test_prefix:test_key',
+E         +     'test_prefix::test_key',...
+E         
+E         ...Full output truncated (3 lines hidden), use '-vv' to show
+
+tests/test_redis_bccache.py:105: AssertionError
+=========================================================================== tests coverage ============================================================================
+__________________________________________________________ coverage: platform darwin, python 3.13.3-final-0 ___________________________________________________________
+
+Name                                      Stmts   Miss  Cover
+-------------------------------------------------------------
+jinja2_async_environment/bccache.py          45      0   100%
+jinja2_async_environment/compiler.py        114     85    25%
+jinja2_async_environment/environment.py      86     56    35%
+jinja2_async_environment/loaders.py         208    151    27%
+-------------------------------------------------------------
+TOTAL                                       453    292    36%
+======================================================================= short test summary info =======================================================================
+FAILED tests/test_redis_bccache.py::TestAsyncRedisBytecodeCache::test_get_bucket_name - AssertionError: assert 'test_prefix::key' == 'test_prefix:key'
+FAILED tests/test_redis_bccache.py::TestAsyncRedisBytecodeCache::test_load_bytecode_hit - AssertionError: expected await not found.
+FAILED tests/test_redis_bccache.py::TestAsyncRedisBytecodeCache::test_load_bytecode_miss - AssertionError: expected await not found.
+FAILED tests/test_redis_bccache.py::TestAsyncRedisBytecodeCache::test_dump_bytecode - AssertionError: expected await not found.
+===================================================================== 4 failed, 8 passed in 1.35s =====================================================================
+(jinja2-async-environment) [jinja2-async-environment]                                                                                                        main  ✭ ✱

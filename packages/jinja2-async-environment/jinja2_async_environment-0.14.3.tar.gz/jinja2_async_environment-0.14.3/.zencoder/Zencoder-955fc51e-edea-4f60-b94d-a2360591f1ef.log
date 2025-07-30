@@ -1,0 +1,61 @@
+[1m========================================================================= test session starts =========================================================================[0m
+platform darwin -- Python 3.13.5, pytest-8.4.0, pluggy-1.6.0 -- /Users/les/Projects/jinja2-async-environment/.venv/bin/python
+cachedir: .pytest_cache
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /Users/les/Projects/jinja2-async-environment
+configfile: pyproject.toml
+plugins: xdist-3.7.0, anyio-4.9.0, timeout-2.4.0, cov-6.2.1, mock-3.14.1, benchmark-5.1.0, asyncio-1.0.0
+timeout: 300.0s
+timeout method: thread
+timeout func_only: False
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0m[1mcollected 8 items                                                                                                                                                     [0m
+
+tests/test_e2e.py::TestEndToEnd::test_render_from_dict_loader [32mPASSED[0m[32m                                                                                            [ 12%][0m
+tests/test_e2e.py::TestEndToEnd::test_render_from_function_loader [32mPASSED[0m[32m                                                                                        [ 25%][0m
+tests/test_e2e.py::TestEndToEnd::test_template_inheritance [32mPASSED[0m[32m                                                                                               [ 37%][0m
+tests/test_e2e.py::TestEndToEnd::test_template_include [32mPASSED[0m[32m                                                                                                   [ 50%][0m
+tests/test_e2e.py::TestEndToEnd::test_async_content_generation [31mFAILED[0m[31m                                                                                           [ 62%][0m
+tests/test_e2e.py::TestEndToEnd::test_template_not_found [32mPASSED[0m[31m                                                                                                 [ 75%][0m
+tests/test_e2e.py::TestEndToEnd::test_select_template [32mPASSED[0m[31m                                                                                                    [ 87%][0m
+tests/test_e2e.py::TestEndToEnd::test_get_or_select_template [32mPASSED[0m[31m                                                                                             [100%][0m
+
+============================================================================== FAILURES ===============================================================================
+[31m[1m_____________________________________________________________ TestEndToEnd.test_async_content_generation ______________________________________________________________[0m
+
+self = <tests.test_e2e.TestEndToEnd object at 0x1063c3890>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_async_content_generation[39;49;00m([96mself[39;49;00m) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test rendering with async content generation."""[39;49;00m[90m[39;49;00m
+        [94masync[39;49;00m [94mwith[39;49;00m setup_template_environment() [94mas[39;49;00m (env, _):[90m[39;49;00m
+            template = [94mawait[39;49;00m env.get_template_async([33m"[39;49;00m[33masync_content.html[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+            [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92masync_item_generator[39;49;00m() -> AsyncIterator[[96mstr[39;49;00m]:[90m[39;49;00m
+                items = [[33m"[39;49;00m[33mItem 1[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mItem 2[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mItem 3[39;49;00m[33m"[39;49;00m][90m[39;49;00m
+                [94mfor[39;49;00m item [95min[39;49;00m items:[90m[39;49;00m
+                    [94myield[39;49;00m item[90m[39;49;00m
+    [90m[39;49;00m
+            context = {[33m"[39;49;00m[33masync_items[39;49;00m[33m"[39;49;00m: async_item_generator()}[90m[39;49;00m
+            rendered = [94mawait[39;49;00m render_template(template, context)[90m[39;49;00m
+    [90m[39;49;00m
+            [90m# The output might contain the string representation of the items[39;49;00m[90m[39;49;00m
+>           [94massert[39;49;00m [33m"[39;49;00m[33mItem 1[39;49;00m[33m"[39;49;00m [95min[39;49;00m rendered[90m[39;49;00m
+[1m[31mE           AssertionError: assert 'Item 1' in ''[0m
+
+[1m[31mtests/test_e2e.py[0m:278: AssertionError
+=========================================================================== tests coverage ============================================================================
+__________________________________________________________ coverage: platform darwin, python 3.13.5-final-0 ___________________________________________________________
+
+Name                                      Stmts   Miss  Cover
+-------------------------------------------------------------
+jinja2_async_environment/bccache.py          45     20    56%
+jinja2_async_environment/compiler.py        237    116    51%
+jinja2_async_environment/environment.py     115     41    64%
+jinja2_async_environment/loaders.py         273    167    39%
+-------------------------------------------------------------
+TOTAL                                       670    344    49%
+[32mRequired test coverage of 42% reached. Total coverage: 48.66%
+[0m[36m[1m======================================================================= short test summary info =======================================================================[0m
+[31mFAILED[0m tests/test_e2e.py::[1mTestEndToEnd::test_async_content_generation[0m - AssertionError: assert 'Item 1' in ''
+[31m===================================================================== [31m[1m1 failed[0m, [32m7 passed[0m[31m in 0.68s[0m[31m =====================================================================[0m

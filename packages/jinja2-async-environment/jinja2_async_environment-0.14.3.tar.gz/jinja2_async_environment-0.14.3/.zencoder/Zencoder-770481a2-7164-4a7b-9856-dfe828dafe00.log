@@ -1,0 +1,104 @@
+[1m========================================================================= test session starts =========================================================================[0m
+platform darwin -- Python 3.13.5, pytest-8.4.0, pluggy-1.6.0 -- /Users/les/Projects/jinja2-async-environment/.venv/bin/python
+cachedir: .pytest_cache
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /Users/les/Projects/jinja2-async-environment
+configfile: pyproject.toml
+plugins: xdist-3.7.0, anyio-4.9.0, timeout-2.4.0, cov-6.2.1, mock-3.14.1, benchmark-5.1.0, asyncio-1.0.0
+timeout: 300.0s
+timeout method: thread
+timeout func_only: False
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0m[1mcollected 4 items                                                                                                                                                     [0m
+
+tests/test_compiler_additional.py::test_async_frame_init [31mFAILED[0m[31m                                                                                                 [ 25%][0m
+tests/test_compiler_additional.py::test_async_frame_copy [31mFAILED[0m[31m                                                                                                 [ 50%][0m
+tests/test_compiler_additional.py::test_async_code_generator_init [31mFAILED[0m[31m                                                                                        [ 75%][0m
+tests/test_compiler_additional.py::test_func_code_generator [32mPASSED[0m[31m                                                                                              [100%][0m[31m[1m
+ERROR: Coverage failure: total of 25 is less than fail-under=42
+[0m
+
+============================================================================== FAILURES ===============================================================================
+[31m[1m________________________________________________________________________ test_async_frame_init ________________________________________________________________________[0m
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_async_frame_init[39;49;00m() -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test initialization of AsyncFrame."""[39;49;00m[90m[39;49;00m
+        frame = AsyncFrame()[90m[39;49;00m
+        [94massert[39;49;00m frame.buffer == [][90m[39;49;00m
+        [94massert[39;49;00m frame.block_buffer == [][90m[39;49;00m
+        [94massert[39;49;00m frame.extended_buffer [95mis[39;49;00m [94mNone[39;49;00m[90m[39;49;00m
+        [94massert[39;49;00m frame.require_output_check [95mis[39;49;00m [94mFalse[39;49;00m[90m[39;49;00m
+>       [94massert[39;49;00m frame.symbols.analyzed [95mis[39;49;00m [94mFalse[39;49;00m[90m[39;49;00m
+               ^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE       AttributeError: 'Symbols' object has no attribute 'analyzed'[0m
+
+[1m[31mtests/test_compiler_additional.py[0m:32: AttributeError
+[31m[1m________________________________________________________________________ test_async_frame_copy ________________________________________________________________________[0m
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_async_frame_copy[39;49;00m() -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test the copy method of AsyncFrame."""[39;49;00m[90m[39;49;00m
+        frame = AsyncFrame()[90m[39;49;00m
+        frame.buffer = [[33m"[39;49;00m[33mbuffer_item[39;49;00m[33m"[39;49;00m][90m[39;49;00m
+        frame.block_buffer = [[33m"[39;49;00m[33mblock_buffer_item[39;49;00m[33m"[39;49;00m][90m[39;49;00m
+        frame.extended_buffer = [[33m"[39;49;00m[33mextended_buffer_item[39;49;00m[33m"[39;49;00m][90m[39;49;00m
+        frame.require_output_check = [94mTrue[39;49;00m[90m[39;49;00m
+        frame.symbols.analyzed = [94mTrue[39;49;00m[90m[39;49;00m
+        frame.symbols.names = {[33m"[39;49;00m[33mname1[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mname2[39;49;00m[33m"[39;49;00m}[90m[39;49;00m
+        frame.symbols.declared = {[33m"[39;49;00m[33mdeclared1[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mdeclared2[39;49;00m[33m"[39;49;00m}[90m[39;49;00m
+        frame.symbols.used = {[33m"[39;49;00m[33mused1[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mused2[39;49;00m[33m"[39;49;00m}[90m[39;49;00m
+        frame.toplevel = [94mTrue[39;49;00m[90m[39;49;00m
+        frame.rootlevel = [94mTrue[39;49;00m[90m[39;49;00m
+        frame.require_yield = [94mTrue[39;49;00m[90m[39;49;00m
+        frame.buffer_count = [94m5[39;49;00m[90m[39;49;00m
+        frame.is_async = [94mTrue[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+>       copied_frame = frame.copy()[90m[39;49;00m
+                       ^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_compiler_additional.py[0m:60: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.compiler.AsyncFrame object at 0x1124ca990>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mcopy[39;49;00m([96mself[39;49;00m) -> t.Self:[90m[39;49;00m
+        rv = [96mself[39;49;00m.[91m__class__[39;49;00m([96mself[39;49;00m.eval_ctx)[90m[39;49;00m
+        rv.symbols = [96mself[39;49;00m.symbols.copy()[90m[39;49;00m
+>       rv.block_counters = [96mdict[39;49;00m([96mself[39;49;00m.block_counters)[90m[39;49;00m
+                                 ^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE       AttributeError: 'AsyncFrame' object has no attribute 'block_counters'[0m
+
+[1m[31mjinja2_async_environment/compiler.py[0m:43: AttributeError
+[31m[1m___________________________________________________________________ test_async_code_generator_init ____________________________________________________________________[0m
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_async_code_generator_init[39;49;00m() -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test initialization of AsyncCodeGenerator."""[39;49;00m[90m[39;49;00m
+        env = MagicMock()[90m[39;49;00m
+        env.is_async = [94mTrue[39;49;00m[90m[39;49;00m
+        generator = AsyncCodeGenerator(env, [33m"[39;49;00m[33mtest_template[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mtest.py[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [94massert[39;49;00m generator.environment [95mis[39;49;00m env[90m[39;49;00m
+        [94massert[39;49;00m generator.name == [33m"[39;49;00m[33mtest_template[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        [94massert[39;49;00m generator.filename == [33m"[39;49;00m[33mtest.py[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        [94massert[39;49;00m generator.stream [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m[90m[39;49;00m
+>       [94massert[39;49;00m generator.extends_so_far [95mis[39;49;00m [94mFalse[39;49;00m[90m[39;49;00m
+[1m[31mE       assert 0 is False[0m
+[1m[31mE        +  where 0 = <jinja2_async_environment.compiler.AsyncCodeGenerator object at 0x112644050>.extends_so_far[0m
+
+[1m[31mtests/test_compiler_additional.py[0m:87: AssertionError
+=========================================================================== tests coverage ============================================================================
+__________________________________________________________ coverage: platform darwin, python 3.13.5-final-0 ___________________________________________________________
+
+Name                                      Stmts   Miss  Cover
+-------------------------------------------------------------
+jinja2_async_environment/bccache.py          56     29    48%
+jinja2_async_environment/compiler.py        393    296    25%
+jinja2_async_environment/environment.py     121     88    27%
+jinja2_async_environment/loaders.py         320    252    21%
+-------------------------------------------------------------
+TOTAL                                       890    665    25%
+[31m[1mFAIL Required test coverage of 42% not reached. Total coverage: 25.28%
+[0m[36m[1m======================================================================= short test summary info =======================================================================[0m
+[31mFAILED[0m tests/test_compiler_additional.py::[1mtest_async_frame_init[0m - AttributeError: 'Symbols' object has no attribute 'analyzed'
+[31mFAILED[0m tests/test_compiler_additional.py::[1mtest_async_frame_copy[0m - AttributeError: 'AsyncFrame' object has no attribute 'block_counters'
+[31mFAILED[0m tests/test_compiler_additional.py::[1mtest_async_code_generator_init[0m - assert 0 is False
+[31m===================================================================== [31m[1m3 failed[0m, [32m1 passed[0m[31m in 0.62s[0m[31m =====================================================================[0m

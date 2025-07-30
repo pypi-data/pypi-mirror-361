@@ -1,0 +1,296 @@
+[1m========================================================================= test session starts =========================================================================[0m
+platform darwin -- Python 3.13.5, pytest-8.4.0, pluggy-1.6.0 -- /Users/les/Projects/jinja2-async-environment/.venv/bin/python
+cachedir: .pytest_cache
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /Users/les/Projects/jinja2-async-environment
+configfile: pyproject.toml
+plugins: xdist-3.7.0, anyio-4.9.0, timeout-2.4.0, cov-6.2.1, mock-3.14.1, benchmark-5.1.0, asyncio-1.0.0
+timeout: 300.0s
+timeout method: thread
+timeout func_only: False
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0m[1mcollected 4 items                                                                                                                                                     [0m
+
+tests/test_environment_additional.py::test_get_template_async_with_cache_hit [31mFAILED[0m[31m                                                                             [ 25%][0m
+tests/test_environment_additional.py::test_get_template_async_with_cache_hit_and_async_is_up_to_date [31mFAILED[0m[31m                                                     [ 50%][0m
+tests/test_environment_additional.py::test_get_template_async_with_cache_hit_and_auto_reload_false [31mFAILED[0m[31m                                                       [ 75%][0m
+tests/test_environment_additional.py::test_get_template_async_with_cache_hit_and_globals [31mFAILED[0m[31m                                                                 [100%][0m[31m[1m
+ERROR: Coverage failure: total of 22 is less than fail-under=42
+[0m
+
+============================================================================== FAILURES ===============================================================================
+[31m[1m_______________________________________________________________ test_get_template_async_with_cache_hit ________________________________________________________________[0m
+
+async_env = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10cede3c0>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_get_template_async_with_cache_hit[39;49;00m(async_env: AsyncEnvironment) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test _get_template_async with a cache hit."""[39;49;00m[90m[39;49;00m
+        [90m# Set up the environment[39;49;00m[90m[39;49;00m
+        loader = MagicMock()[90m[39;49;00m
+        async_env.loader = loader[90m[39;49;00m
+        async_env.cache = {}[90m[39;49;00m
+        async_env.auto_reload = [94mTrue[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Create a template with is_up_to_date=True[39;49;00m[90m[39;49;00m
+        template = MagicMock()[90m[39;49;00m
+        template.is_up_to_date = [94mTrue[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Add the template to the cache[39;49;00m[90m[39;49;00m
+        cache_key = ([96mid[39;49;00m(loader), [33m"[39;49;00m[33mtemplate.html[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        async_env.cache[cache_key] = template[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Call _get_template_async[39;49;00m[90m[39;49;00m
+>       result = [94mawait[39;49;00m async_env._get_template_async([33m"[39;49;00m[33mtemplate.html[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)[90m[39;49;00m
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_environment_additional.py[0m:273: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10cede3c0>, name = 'template.html', globals = None
+
+    [0m[94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92m_get_template_async[39;49;00m([90m[39;49;00m
+        [96mself[39;49;00m, name: [96mstr[39;49;00m, [96mglobals[39;49;00m: t.MutableMapping[[96mstr[39;49;00m, t.Any] | [94mNone[39;49;00m[90m[39;49;00m
+    ) -> Template:[90m[39;49;00m
+        [94mif[39;49;00m [96mself[39;49;00m.loader [95mis[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+            [94mraise[39;49;00m [96mTypeError[39;49;00m([33m"[39;49;00m[33mno loader for this environment specified[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        cache_key = (ref([96mself[39;49;00m.loader), name)[90m[39;49;00m
+        [94mif[39;49;00m [96mself[39;49;00m.cache [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+            [94mtry[39;49;00m:[90m[39;49;00m
+                template = [96mself[39;49;00m.cache.get(cache_key)[90m[39;49;00m
+                [94mif[39;49;00m template [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+                    is_up_to_date = template.is_up_to_date[90m[39;49;00m
+                    [90m# Handle both async and sync is_up_to_date methods[39;49;00m[90m[39;49;00m
+                    [94mif[39;49;00m [96mcallable[39;49;00m([96mgetattr[39;49;00m(is_up_to_date, [33m"[39;49;00m[33m__await__[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)):[90m[39;49;00m
+                        is_up_to_date = [94mawait[39;49;00m is_up_to_date()  [90m# type: ignore[39;49;00m[90m[39;49;00m
+                    [94melse[39;49;00m:[90m[39;49;00m
+                        is_up_to_date = template.is_up_to_date()[90m[39;49;00m
+    [90m[39;49;00m
+                    [94mif[39;49;00m [95mnot[39;49;00m [96mself[39;49;00m.auto_reload [95mor[39;49;00m is_up_to_date:[90m[39;49;00m
+                        [94mif[39;49;00m [96mglobals[39;49;00m:[90m[39;49;00m
+                            template.globals.update([96mglobals[39;49;00m)[90m[39;49;00m
+                        [94mreturn[39;49;00m template[90m[39;49;00m
+            [94mexcept[39;49;00m ([96mTypeError[39;49;00m, [96mAttributeError[39;49;00m):[90m[39;49;00m
+                [94mpass[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Create globals dict if needed[39;49;00m[90m[39;49;00m
+        globals_dict = [96mself[39;49;00m.make_globals([96mglobals[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# If we have an async loader, use it[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m [96mhasattr[39;49;00m([96mself[39;49;00m.loader, [33m'[39;49;00m[33mload_async[39;49;00m[33m'[39;49;00m):[90m[39;49;00m
+>           template = [94mawait[39;49;00m [96mself[39;49;00m.loader.load_async([96mself[39;49;00m, name, globals_dict)[90m[39;49;00m
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE           TypeError: object MagicMock can't be used in 'await' expression[0m
+
+[1m[31mjinja2_async_environment/environment.py[0m:219: TypeError
+[31m[1m___________________________________________________ test_get_template_async_with_cache_hit_and_async_is_up_to_date ____________________________________________________[0m
+
+async_env = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10cec6ad0>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_get_template_async_with_cache_hit_and_async_is_up_to_date[39;49;00m(async_env: AsyncEnvironment) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test _get_template_async with a cache hit and async is_up_to_date."""[39;49;00m[90m[39;49;00m
+        [90m# Set up the environment[39;49;00m[90m[39;49;00m
+        loader = MagicMock()[90m[39;49;00m
+        async_env.loader = loader[90m[39;49;00m
+        async_env.cache = {}[90m[39;49;00m
+        async_env.auto_reload = [94mTrue[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Create a template with async is_up_to_date[39;49;00m[90m[39;49;00m
+        template = MagicMock()[90m[39;49;00m
+        template.is_up_to_date = AsyncMock(return_value=[94mTrue[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Add the template to the cache[39;49;00m[90m[39;49;00m
+        cache_key = ([96mid[39;49;00m(loader), [33m"[39;49;00m[33mtemplate.html[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        async_env.cache[cache_key] = template[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Call _get_template_async[39;49;00m[90m[39;49;00m
+>       result = [94mawait[39;49;00m async_env._get_template_async([33m"[39;49;00m[33mtemplate.html[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)[90m[39;49;00m
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_environment_additional.py[0m:297: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10cec6ad0>, name = 'template.html', globals = None
+
+    [0m[94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92m_get_template_async[39;49;00m([90m[39;49;00m
+        [96mself[39;49;00m, name: [96mstr[39;49;00m, [96mglobals[39;49;00m: t.MutableMapping[[96mstr[39;49;00m, t.Any] | [94mNone[39;49;00m[90m[39;49;00m
+    ) -> Template:[90m[39;49;00m
+        [94mif[39;49;00m [96mself[39;49;00m.loader [95mis[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+            [94mraise[39;49;00m [96mTypeError[39;49;00m([33m"[39;49;00m[33mno loader for this environment specified[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        cache_key = (ref([96mself[39;49;00m.loader), name)[90m[39;49;00m
+        [94mif[39;49;00m [96mself[39;49;00m.cache [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+            [94mtry[39;49;00m:[90m[39;49;00m
+                template = [96mself[39;49;00m.cache.get(cache_key)[90m[39;49;00m
+                [94mif[39;49;00m template [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+                    is_up_to_date = template.is_up_to_date[90m[39;49;00m
+                    [90m# Handle both async and sync is_up_to_date methods[39;49;00m[90m[39;49;00m
+                    [94mif[39;49;00m [96mcallable[39;49;00m([96mgetattr[39;49;00m(is_up_to_date, [33m"[39;49;00m[33m__await__[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)):[90m[39;49;00m
+                        is_up_to_date = [94mawait[39;49;00m is_up_to_date()  [90m# type: ignore[39;49;00m[90m[39;49;00m
+                    [94melse[39;49;00m:[90m[39;49;00m
+                        is_up_to_date = template.is_up_to_date()[90m[39;49;00m
+    [90m[39;49;00m
+                    [94mif[39;49;00m [95mnot[39;49;00m [96mself[39;49;00m.auto_reload [95mor[39;49;00m is_up_to_date:[90m[39;49;00m
+                        [94mif[39;49;00m [96mglobals[39;49;00m:[90m[39;49;00m
+                            template.globals.update([96mglobals[39;49;00m)[90m[39;49;00m
+                        [94mreturn[39;49;00m template[90m[39;49;00m
+            [94mexcept[39;49;00m ([96mTypeError[39;49;00m, [96mAttributeError[39;49;00m):[90m[39;49;00m
+                [94mpass[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Create globals dict if needed[39;49;00m[90m[39;49;00m
+        globals_dict = [96mself[39;49;00m.make_globals([96mglobals[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# If we have an async loader, use it[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m [96mhasattr[39;49;00m([96mself[39;49;00m.loader, [33m'[39;49;00m[33mload_async[39;49;00m[33m'[39;49;00m):[90m[39;49;00m
+>           template = [94mawait[39;49;00m [96mself[39;49;00m.loader.load_async([96mself[39;49;00m, name, globals_dict)[90m[39;49;00m
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE           TypeError: object MagicMock can't be used in 'await' expression[0m
+
+[1m[31mjinja2_async_environment/environment.py[0m:219: TypeError
+[31m[1m____________________________________________________ test_get_template_async_with_cache_hit_and_auto_reload_false _____________________________________________________[0m
+
+async_env = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10cffc190>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_get_template_async_with_cache_hit_and_auto_reload_false[39;49;00m(async_env: AsyncEnvironment) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test _get_template_async with a cache hit and auto_reload=False."""[39;49;00m[90m[39;49;00m
+        [90m# Set up the environment[39;49;00m[90m[39;49;00m
+        loader = MagicMock()[90m[39;49;00m
+        async_env.loader = loader[90m[39;49;00m
+        async_env.cache = {}[90m[39;49;00m
+        async_env.auto_reload = [94mFalse[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Create a template[39;49;00m[90m[39;49;00m
+        template = MagicMock()[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Add the template to the cache[39;49;00m[90m[39;49;00m
+        cache_key = ([96mid[39;49;00m(loader), [33m"[39;49;00m[33mtemplate.html[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        async_env.cache[cache_key] = template[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Call _get_template_async[39;49;00m[90m[39;49;00m
+>       result = [94mawait[39;49;00m async_env._get_template_async([33m"[39;49;00m[33mtemplate.html[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)[90m[39;49;00m
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_environment_additional.py[0m:321: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10cffc190>, name = 'template.html', globals = None
+
+    [0m[94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92m_get_template_async[39;49;00m([90m[39;49;00m
+        [96mself[39;49;00m, name: [96mstr[39;49;00m, [96mglobals[39;49;00m: t.MutableMapping[[96mstr[39;49;00m, t.Any] | [94mNone[39;49;00m[90m[39;49;00m
+    ) -> Template:[90m[39;49;00m
+        [94mif[39;49;00m [96mself[39;49;00m.loader [95mis[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+            [94mraise[39;49;00m [96mTypeError[39;49;00m([33m"[39;49;00m[33mno loader for this environment specified[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        cache_key = (ref([96mself[39;49;00m.loader), name)[90m[39;49;00m
+        [94mif[39;49;00m [96mself[39;49;00m.cache [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+            [94mtry[39;49;00m:[90m[39;49;00m
+                template = [96mself[39;49;00m.cache.get(cache_key)[90m[39;49;00m
+                [94mif[39;49;00m template [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+                    is_up_to_date = template.is_up_to_date[90m[39;49;00m
+                    [90m# Handle both async and sync is_up_to_date methods[39;49;00m[90m[39;49;00m
+                    [94mif[39;49;00m [96mcallable[39;49;00m([96mgetattr[39;49;00m(is_up_to_date, [33m"[39;49;00m[33m__await__[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)):[90m[39;49;00m
+                        is_up_to_date = [94mawait[39;49;00m is_up_to_date()  [90m# type: ignore[39;49;00m[90m[39;49;00m
+                    [94melse[39;49;00m:[90m[39;49;00m
+                        is_up_to_date = template.is_up_to_date()[90m[39;49;00m
+    [90m[39;49;00m
+                    [94mif[39;49;00m [95mnot[39;49;00m [96mself[39;49;00m.auto_reload [95mor[39;49;00m is_up_to_date:[90m[39;49;00m
+                        [94mif[39;49;00m [96mglobals[39;49;00m:[90m[39;49;00m
+                            template.globals.update([96mglobals[39;49;00m)[90m[39;49;00m
+                        [94mreturn[39;49;00m template[90m[39;49;00m
+            [94mexcept[39;49;00m ([96mTypeError[39;49;00m, [96mAttributeError[39;49;00m):[90m[39;49;00m
+                [94mpass[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Create globals dict if needed[39;49;00m[90m[39;49;00m
+        globals_dict = [96mself[39;49;00m.make_globals([96mglobals[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# If we have an async loader, use it[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m [96mhasattr[39;49;00m([96mself[39;49;00m.loader, [33m'[39;49;00m[33mload_async[39;49;00m[33m'[39;49;00m):[90m[39;49;00m
+>           template = [94mawait[39;49;00m [96mself[39;49;00m.loader.load_async([96mself[39;49;00m, name, globals_dict)[90m[39;49;00m
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE           TypeError: object MagicMock can't be used in 'await' expression[0m
+
+[1m[31mjinja2_async_environment/environment.py[0m:219: TypeError
+[31m[1m_________________________________________________________ test_get_template_async_with_cache_hit_and_globals __________________________________________________________[0m
+
+async_env = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10cffc910>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_get_template_async_with_cache_hit_and_globals[39;49;00m(async_env: AsyncEnvironment) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test _get_template_async with a cache hit and globals."""[39;49;00m[90m[39;49;00m
+        [90m# Set up the environment[39;49;00m[90m[39;49;00m
+        loader = MagicMock()[90m[39;49;00m
+        async_env.loader = loader[90m[39;49;00m
+        async_env.cache = {}[90m[39;49;00m
+        async_env.auto_reload = [94mTrue[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Create a template with is_up_to_date=True[39;49;00m[90m[39;49;00m
+        template = MagicMock()[90m[39;49;00m
+        template.is_up_to_date = [94mTrue[39;49;00m[90m[39;49;00m
+        template.globals = {}[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Add the template to the cache[39;49;00m[90m[39;49;00m
+        cache_key = ([96mid[39;49;00m(loader), [33m"[39;49;00m[33mtemplate.html[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        async_env.cache[cache_key] = template[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Call _get_template_async with globals[39;49;00m[90m[39;49;00m
+        globals_dict = {[33m"[39;49;00m[33mvar1[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mvalue1[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mvar2[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mvalue2[39;49;00m[33m"[39;49;00m}[90m[39;49;00m
+>       result = [94mawait[39;49;00m async_env._get_template_async([33m"[39;49;00m[33mtemplate.html[39;49;00m[33m"[39;49;00m, globals_dict)[90m[39;49;00m
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_environment_additional.py[0m:348: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10cffc910>, name = 'template.html', globals = {'var1': 'value1', 'var2': 'value2'}
+
+    [0m[94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92m_get_template_async[39;49;00m([90m[39;49;00m
+        [96mself[39;49;00m, name: [96mstr[39;49;00m, [96mglobals[39;49;00m: t.MutableMapping[[96mstr[39;49;00m, t.Any] | [94mNone[39;49;00m[90m[39;49;00m
+    ) -> Template:[90m[39;49;00m
+        [94mif[39;49;00m [96mself[39;49;00m.loader [95mis[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+            [94mraise[39;49;00m [96mTypeError[39;49;00m([33m"[39;49;00m[33mno loader for this environment specified[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        cache_key = (ref([96mself[39;49;00m.loader), name)[90m[39;49;00m
+        [94mif[39;49;00m [96mself[39;49;00m.cache [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+            [94mtry[39;49;00m:[90m[39;49;00m
+                template = [96mself[39;49;00m.cache.get(cache_key)[90m[39;49;00m
+                [94mif[39;49;00m template [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+                    is_up_to_date = template.is_up_to_date[90m[39;49;00m
+                    [90m# Handle both async and sync is_up_to_date methods[39;49;00m[90m[39;49;00m
+                    [94mif[39;49;00m [96mcallable[39;49;00m([96mgetattr[39;49;00m(is_up_to_date, [33m"[39;49;00m[33m__await__[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)):[90m[39;49;00m
+                        is_up_to_date = [94mawait[39;49;00m is_up_to_date()  [90m# type: ignore[39;49;00m[90m[39;49;00m
+                    [94melse[39;49;00m:[90m[39;49;00m
+                        is_up_to_date = template.is_up_to_date()[90m[39;49;00m
+    [90m[39;49;00m
+                    [94mif[39;49;00m [95mnot[39;49;00m [96mself[39;49;00m.auto_reload [95mor[39;49;00m is_up_to_date:[90m[39;49;00m
+                        [94mif[39;49;00m [96mglobals[39;49;00m:[90m[39;49;00m
+                            template.globals.update([96mglobals[39;49;00m)[90m[39;49;00m
+                        [94mreturn[39;49;00m template[90m[39;49;00m
+            [94mexcept[39;49;00m ([96mTypeError[39;49;00m, [96mAttributeError[39;49;00m):[90m[39;49;00m
+                [94mpass[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Create globals dict if needed[39;49;00m[90m[39;49;00m
+        globals_dict = [96mself[39;49;00m.make_globals([96mglobals[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# If we have an async loader, use it[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m [96mhasattr[39;49;00m([96mself[39;49;00m.loader, [33m'[39;49;00m[33mload_async[39;49;00m[33m'[39;49;00m):[90m[39;49;00m
+>           template = [94mawait[39;49;00m [96mself[39;49;00m.loader.load_async([96mself[39;49;00m, name, globals_dict)[90m[39;49;00m
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE           TypeError: object MagicMock can't be used in 'await' expression[0m
+
+[1m[31mjinja2_async_environment/environment.py[0m:219: TypeError
+=========================================================================== tests coverage ============================================================================
+__________________________________________________________ coverage: platform darwin, python 3.13.5-final-0 ___________________________________________________________
+
+Name                                      Stmts   Miss  Cover
+-------------------------------------------------------------
+jinja2_async_environment/bccache.py          56     29    48%
+jinja2_async_environment/compiler.py        393    334    15%
+jinja2_async_environment/environment.py     122     78    36%
+jinja2_async_environment/loaders.py         320    252    21%
+-------------------------------------------------------------
+TOTAL                                       891    693    22%
+[31m[1mFAIL Required test coverage of 42% not reached. Total coverage: 22.22%
+[0m[36m[1m======================================================================= short test summary info =======================================================================[0m
+[31mFAILED[0m tests/test_environment_additional.py::[1mtest_get_template_async_with_cache_hit[0m - TypeError: object MagicMock can't be used in 'await' expression
+[31mFAILED[0m tests/test_environment_additional.py::[1mtest_get_template_async_with_cache_hit_and_async_is_up_to_date[0m - TypeError: object MagicMock can't be used in 'await' expression
+[31mFAILED[0m tests/test_environment_additional.py::[1mtest_get_template_async_with_cache_hit_and_auto_reload_false[0m - TypeError: object MagicMock can't be used in 'await' expression
+[31mFAILED[0m tests/test_environment_additional.py::[1mtest_get_template_async_with_cache_hit_and_globals[0m - TypeError: object MagicMock can't be used in 'await' expression
+[31m========================================================================== [31m[1m4 failed[0m[31m in 0.72s[0m[31m ==========================================================================[0m

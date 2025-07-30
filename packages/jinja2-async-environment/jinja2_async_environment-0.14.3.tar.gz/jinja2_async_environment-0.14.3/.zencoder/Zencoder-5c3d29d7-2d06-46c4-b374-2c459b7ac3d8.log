@@ -1,0 +1,136 @@
+[1m========================================================================= test session starts =========================================================================[0m
+platform darwin -- Python 3.13.5, pytest-8.4.0, pluggy-1.6.0 -- /Users/les/Projects/jinja2-async-environment/.venv/bin/python
+cachedir: .pytest_cache
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /Users/les/Projects/jinja2-async-environment
+configfile: pyproject.toml
+plugins: xdist-3.7.0, anyio-4.9.0, timeout-2.4.0, cov-6.2.1, mock-3.14.1, benchmark-5.1.0, asyncio-1.0.0
+timeout: 300.0s
+timeout method: thread
+timeout func_only: False
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0m[1mcollected 2 items                                                                                                                                                     [0m
+
+tests/test_environment_additional.py::test_get_template_async_with_cache_miss [31mFAILED[0m[31m                                                                            [ 50%][0m
+tests/test_environment_additional.py::test_get_template_async_with_cache_miss_and_globals [32mPASSED[0m[31m                                                                [100%][0m[31m[1m
+ERROR: Coverage failure: total of 22 is less than fail-under=42
+[0m
+
+============================================================================== FAILURES ===============================================================================
+[31m[1m_______________________________________________________________ test_get_template_async_with_cache_miss _______________________________________________________________[0m
+
+self = <AsyncMock name='mock.load_async' id='4548278464'>, args = (<jinja2_async_environment.environment.AsyncEnvironment object at 0x10f192510>, 'template.html', {})
+kwargs = {}, expected = call(<jinja2_async_environment.environment.AsyncEnvironment object at 0x10f192510>, 'template.html', {})
+actual = call(<jinja2_async_environment.environment.AsyncEnvironment object at 0x10f192510>, 'template.html', ChainMap({}, {'ra...class 'jinja2.utils.Cycler'>, 'joiner': <class 'jinja2.utils.Joiner'>, 'namespace': <class 'jinja2.utils.Namespace'>}))
+_error_message = <function NonCallableMock.assert_called_with.<locals>._error_message at 0x10f26c0e0>, cause = None
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92massert_called_with[39;49;00m([96mself[39;49;00m, /, *args, **kwargs):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""assert that the last call was made with the specified arguments.[39;49;00m
+    [33m[39;49;00m
+    [33m    Raises an AssertionError if the args and keyword args passed in are[39;49;00m
+    [33m    different to the last call to the mock."""[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m [96mself[39;49;00m.call_args [95mis[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+            expected = [96mself[39;49;00m._format_mock_call_signature(args, kwargs)[90m[39;49;00m
+            actual = [33m'[39;49;00m[33mnot called.[39;49;00m[33m'[39;49;00m[90m[39;49;00m
+            error_message = ([33m'[39;49;00m[33mexpected call not found.[39;49;00m[33m\n[39;49;00m[33mExpected: [39;49;00m[33m%s[39;49;00m[33m\n[39;49;00m[33m  Actual: [39;49;00m[33m%s[39;49;00m[33m'[39;49;00m[90m[39;49;00m
+                    % (expected, actual))[90m[39;49;00m
+            [94mraise[39;49;00m [96mAssertionError[39;49;00m(error_message)[90m[39;49;00m
+    [90m[39;49;00m
+        [94mdef[39;49;00m[90m [39;49;00m[92m_error_message[39;49;00m():[90m[39;49;00m
+            msg = [96mself[39;49;00m._format_mock_failure_message(args, kwargs)[90m[39;49;00m
+            [94mreturn[39;49;00m msg[90m[39;49;00m
+        expected = [96mself[39;49;00m._call_matcher(_Call((args, kwargs), two=[94mTrue[39;49;00m))[90m[39;49;00m
+        actual = [96mself[39;49;00m._call_matcher([96mself[39;49;00m.call_args)[90m[39;49;00m
+        [94mif[39;49;00m actual != expected:[90m[39;49;00m
+            cause = expected [94mif[39;49;00m [96misinstance[39;49;00m(expected, [96mException[39;49;00m) [94melse[39;49;00m [94mNone[39;49;00m[90m[39;49;00m
+>           [94mraise[39;49;00m [96mAssertionError[39;49;00m(_error_message()) [94mfrom[39;49;00m[90m [39;49;00m[04m[96mcause[39;49;00m[90m[39;49;00m
+[1m[31mE           AssertionError: expected call not found.[0m
+[1m[31mE           Expected: load_async(<jinja2_async_environment.environment.AsyncEnvironment object at 0x10f192510>, 'template.html', {})[0m
+[1m[31mE             Actual: load_async(<jinja2_async_environment.environment.AsyncEnvironment object at 0x10f192510>, 'template.html', ChainMap({}, {'range': <class 'range'>, 'dict': <class 'dict'>, 'lipsum': <function generate_lorem_ipsum at 0x10eea3060>, 'cycler': <class 'jinja2.utils.Cycler'>, 'joiner': <class 'jinja2.utils.Joiner'>, 'namespace': <class 'jinja2.utils.Namespace'>}))[0m
+
+[1m[31m/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py[0m:979: AssertionError
+
+[33mDuring handling of the above exception, another exception occurred:[0m
+
+self = <AsyncMock name='mock.load_async' id='4548278464'>, args = (<jinja2_async_environment.environment.AsyncEnvironment object at 0x10f192510>, 'template.html', {})
+kwargs = {}
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92massert_called_once_with[39;49;00m([96mself[39;49;00m, /, *args, **kwargs):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""assert that the mock was called exactly once and that that call was[39;49;00m
+    [33m    with the specified arguments."""[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m [95mnot[39;49;00m [96mself[39;49;00m.call_count == [94m1[39;49;00m:[90m[39;49;00m
+            msg = ([33m"[39;49;00m[33mExpected [39;49;00m[33m'[39;49;00m[33m%s[39;49;00m[33m'[39;49;00m[33m to be called once. Called [39;49;00m[33m%s[39;49;00m[33m times.[39;49;00m[33m%s[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+                   % ([96mself[39;49;00m._mock_name [95mor[39;49;00m [33m'[39;49;00m[33mmock[39;49;00m[33m'[39;49;00m,[90m[39;49;00m
+                      [96mself[39;49;00m.call_count,[90m[39;49;00m
+                      [96mself[39;49;00m._calls_repr()))[90m[39;49;00m
+            [94mraise[39;49;00m [96mAssertionError[39;49;00m(msg)[90m[39;49;00m
+>       [94mreturn[39;49;00m [96mself[39;49;00m.assert_called_with(*args, **kwargs)[90m[39;49;00m
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE       AssertionError: expected call not found.[0m
+[1m[31mE       Expected: load_async(<jinja2_async_environment.environment.AsyncEnvironment object at 0x10f192510>, 'template.html', {})[0m
+[1m[31mE         Actual: load_async(<jinja2_async_environment.environment.AsyncEnvironment object at 0x10f192510>, 'template.html', ChainMap({}, {'range': <class 'range'>, 'dict': <class 'dict'>, 'lipsum': <function generate_lorem_ipsum at 0x10eea3060>, 'cycler': <class 'jinja2.utils.Cycler'>, 'joiner': <class 'jinja2.utils.Joiner'>, 'namespace': <class 'jinja2.utils.Namespace'>}))[0m
+[1m[31mE       [0m
+[1m[31mE       pytest introspection follows:[0m
+[1m[31mE       [0m
+[1m[31mE       Args:[0m
+[1m[31mE       assert (<jinja2_asyn...Namespace'>})) == (<jinja2_asyn...ate.html', {})[0m
+[1m[31mE         [0m
+[1m[31mE         At index 2 diff: [0mChainMap({}, {[33m'[39;49;00m[33mrange[39;49;00m[33m'[39;49;00m: <[94mclass[39;49;00m[90m [39;49;00m[04m[91m'[39;49;00m[04m[92mrange[39;49;00m[33m'[39;49;00m[33m>, [39;49;00m[33m'[39;49;00m[96mdict[39;49;00m[33m'[39;49;00m[33m: <class [39;49;00m[33m'[39;49;00m[96mdict[39;49;00m[33m'[39;49;00m[33m>, [39;49;00m[33m'[39;49;00mlipsum[33m'[39;49;00m[33m: <function generate_lorem_ipsum at 0x10eea3060>, [39;49;00m[33m'[39;49;00mcycler[33m'[39;49;00m[33m: <class [39;49;00m[33m'[39;49;00mjinja2.utils.Cycler[...[0m
+[1m[31mE         [0m
+[1m[31mE         ...Full output truncated (20 lines hidden), use '-vv' to show[0m
+
+[1m[31m/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py[0m:991: AssertionError
+
+[33mDuring handling of the above exception, another exception occurred:[0m
+
+async_env = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10f192510>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_get_template_async_with_cache_miss[39;49;00m(async_env: AsyncEnvironment) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test _get_template_async with a cache miss."""[39;49;00m[90m[39;49;00m
+        [90m# Set up the environment[39;49;00m[90m[39;49;00m
+        loader = MagicMock()[90m[39;49;00m
+        async_env.loader = loader[90m[39;49;00m
+        async_env.cache = {}[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Create a template[39;49;00m[90m[39;49;00m
+        template = MagicMock()[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Mock the loader.load_async method[39;49;00m[90m[39;49;00m
+        loader.load_async = AsyncMock(return_value=template)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Call _get_template_async[39;49;00m[90m[39;49;00m
+        result = [94mawait[39;49;00m async_env._get_template_async([33m"[39;49;00m[33mtemplate.html[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Verify the result and that load_async was called[39;49;00m[90m[39;49;00m
+        [94massert[39;49;00m result [95mis[39;49;00m template[90m[39;49;00m
+>       loader.load_async.assert_called_once_with(async_env, [33m"[39;49;00m[33mtemplate.html[39;49;00m[33m"[39;49;00m, {})[90m[39;49;00m
+[1m[31mE       AssertionError: expected call not found.[0m
+[1m[31mE       Expected: load_async(<jinja2_async_environment.environment.AsyncEnvironment object at 0x10f192510>, 'template.html', {})[0m
+[1m[31mE         Actual: load_async(<jinja2_async_environment.environment.AsyncEnvironment object at 0x10f192510>, 'template.html', ChainMap({}, {'range': <class 'range'>, 'dict': <class 'dict'>, 'lipsum': <function generate_lorem_ipsum at 0x10eea3060>, 'cycler': <class 'jinja2.utils.Cycler'>, 'joiner': <class 'jinja2.utils.Joiner'>, 'namespace': <class 'jinja2.utils.Namespace'>}))[0m
+[1m[31mE       [0m
+[1m[31mE       pytest introspection follows:[0m
+[1m[31mE       [0m
+[1m[31mE       Args:[0m
+[1m[31mE       assert (<jinja2_asyn...Namespace'>})) == (<jinja2_asyn...ate.html', {})[0m
+[1m[31mE         [0m
+[1m[31mE         At index 2 diff: [0mChainMap({}, {[33m'[39;49;00m[33mrange[39;49;00m[33m'[39;49;00m: <[94mclass[39;49;00m[90m [39;49;00m[04m[91m'[39;49;00m[04m[92mrange[39;49;00m[33m'[39;49;00m[33m>, [39;49;00m[33m'[39;49;00m[96mdict[39;49;00m[33m'[39;49;00m[33m: <class [39;49;00m[33m'[39;49;00m[96mdict[39;49;00m[33m'[39;49;00m[33m>, [39;49;00m[33m'[39;49;00mlipsum[33m'[39;49;00m[33m: <function generate_lorem_ipsum at 0x10eea3060>, [39;49;00m[33m'[39;49;00mcycler[33m'[39;49;00m[33m: <class [39;49;00m[33m'[39;49;00mjinja2.utils.Cycler[...[0m
+[1m[31mE         [0m
+[1m[31mE         ...Full output truncated (20 lines hidden), use '-vv' to show[0m
+
+[1m[31mtests/test_environment_additional.py[0m:374: AssertionError
+=========================================================================== tests coverage ============================================================================
+__________________________________________________________ coverage: platform darwin, python 3.13.5-final-0 ___________________________________________________________
+
+Name                                      Stmts   Miss  Cover
+-------------------------------------------------------------
+jinja2_async_environment/bccache.py          56     29    48%
+jinja2_async_environment/compiler.py        393    334    15%
+jinja2_async_environment/environment.py     134     87    35%
+jinja2_async_environment/loaders.py         320    252    21%
+-------------------------------------------------------------
+TOTAL                                       903    702    22%
+[31m[1mFAIL Required test coverage of 42% not reached. Total coverage: 22.26%
+[0m[36m[1m======================================================================= short test summary info =======================================================================[0m
+[31mFAILED[0m tests/test_environment_additional.py::[1mtest_get_template_async_with_cache_miss[0m - AssertionError: expected call not found.
+[31m===================================================================== [31m[1m1 failed[0m, [32m1 passed[0m[31m in 0.65s[0m[31m =====================================================================[0m

@@ -1,0 +1,111 @@
+Metadata-Version: 2.4
+Name: streamlit-position-selector-new
+Version: 0.1.1
+Summary: Streamlit component for chart position selection and management
+Project-URL: Homepage, https://github.com/seu-usuario/streamlit-chart-positions
+Project-URL: Repository, https://github.com/seu-usuario/streamlit-chart-positions
+Project-URL: Issues, https://github.com/seu-usuario/streamlit-chart-positions/issues
+Author-email: Seu Nome <seu.email@exemplo.com>
+Maintainer-email: Seu Nome <seu.email@exemplo.com>
+License: MIT
+License-File: LICENSE
+Keywords: chart,component,positions,streamlit,visualization
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Scientific/Engineering :: Visualization
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.7
+Requires-Dist: streamlit>=0.63
+Provides-Extra: devel
+Requires-Dist: playwright==1.48.0; extra == 'devel'
+Requires-Dist: pytest-playwright-snapshot==1.0; extra == 'devel'
+Requires-Dist: pytest-rerunfailures==12.0; extra == 'devel'
+Requires-Dist: pytest==7.4.0; extra == 'devel'
+Requires-Dist: requests==2.31.0; extra == 'devel'
+Requires-Dist: wheel; extra == 'devel'
+Description-Content-Type: text/markdown
+
+# Streamlit Chart Positions
+
+Um componente Streamlit para seleção e gerenciamento de posições de gráficos em layouts responsivos.
+
+## Instalação
+
+```sh
+pip install streamlit-chart-positions
+```
+
+## Como usar
+
+```python
+import streamlit as st
+from my_component import my_component
+
+# Lista de posições disponíveis para o gráfico
+positions = [
+    "ROW2, COL1", "ROW2, COL2", "ROW2, COL3",
+    "ROW3, COL1", "ROW3, COL2", "ROW3, COL3",
+    "ROW4, COL1", "ROW4, COL2", "ROW4, COL3",
+    "ROW5, COL1", "ROW5, COL2", "FULL ROW 6",
+    "ROW7, COL1", "ROW7, COL2", "ROW7, COL3",
+    "ROW1, COL1(Auto Select)", "ROW1, COL2(Auto Select)", "ROW1, COL3(Auto Select)"
+]
+
+# Usar o componente
+selected_position = my_component(positions=positions, key="chart_positions")
+st.write(f"Posição selecionada: {selected_position}")
+```
+
+## Funcionalidades
+
+- Seleção visual de posições de gráficos
+- Layout responsivo com grid system
+- Suporte a seleção automática
+- Integração perfeita com Streamlit
+
+## Desenvolvimento
+
+Para executar em modo de desenvolvimento:
+
+```sh
+cd template/my_component/frontend
+npm install
+npm run start
+```
+
+Em outro terminal:
+```sh
+streamlit run template/example.py
+```
+
+---
+
+### Passos para corrigir e publicar:
+
+1. **Limpe os arquivos antigos:**
+   ```sh
+   rmdir /s /q dist
+   rmdir /s /q streamlit_chart_positions.egg-info
+   ```
+
+2. **Reconstrua o pacote:**
+   ```sh
+   python -m build
+   ```
+
+3. **Tente publicar novamente:**
+   ```sh
+   twine upload dist/*
+   ```
+
+---
+
+Se quiser, posso executar esses comandos para você.  
+Deseja que eu faça isso automaticamente?

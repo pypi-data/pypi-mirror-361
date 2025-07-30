@@ -1,0 +1,22 @@
+response = Map();
+msg = message.get("text");
+
+// Get visitor information
+visitor_email = visitor.getJSON("email");
+visitor_name = visitor.getJSON("name");
+
+// Check for agent request
+if(msg.toLowerCase().contains("agent") || msg.toLowerCase().contains("human"))
+{
+    response.put("action","forward");
+    response.put("replies",List(["I'll connect you to a human agent now."]));
+    return response;
+}
+
+// Default response
+response.put("action","reply");
+replies = List();
+replies.add("Hello " + visitor_name + "! I received your message: " + msg);
+response.put("replies",replies);
+
+return response;

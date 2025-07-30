@@ -1,0 +1,11 @@
+.python-job:
+  image: python:${PYTHON_VERSION}
+  before_script:
+    # First normalize package name
+    - export NORMALIZED_NAME=$(echo "${CI_PROJECT_NAME}" | tr '-' '_')
+    # Then install Python dependencies
+    - pip install --upgrade pip
+    - pip install -e .[dev,jax]
+  cache:
+    paths:
+      - ${PIP_CACHE_DIR}

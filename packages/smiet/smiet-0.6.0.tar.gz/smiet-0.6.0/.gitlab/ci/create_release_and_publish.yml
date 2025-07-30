@@ -1,0 +1,22 @@
+# If the test pass and a tag was created, make a release in the repo
+release_job:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  script:
+    - echo "Running release_job for version ${PACKAGE_VERSION}"
+  release:                               # See https://docs.gitlab.com/ee/ci/yaml/#release for available properties
+    tag_name: 'v${PACKAGE_VERSION}'
+    description: 'v${PACKAGE_VERSION}'
+  
+# Publish on PyPi when creating a tag and release was made
+pypi-release:
+  needs:
+    - release_job
+  stage: publish
+  environment:
+    name: 'release'
+    url: 'https://pypi.org/project/smiet/'
+  script:
+    - pip install build twine
+    - python -m build
+    - python -m twine upload dist/* --verbose --non-interactive --password $PYPI_API_TOKEN

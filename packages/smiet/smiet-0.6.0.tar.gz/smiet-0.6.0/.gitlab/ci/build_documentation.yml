@@ -1,0 +1,12 @@
+create-pages:
+  extends: .python-job
+  stage: create-pages
+  script:
+    - cd docs/
+    - python make_docs.py
+    - cd ..
+    - mkdir public
+    - mv docs/build/html public
+  artifacts:
+    paths:
+    - public

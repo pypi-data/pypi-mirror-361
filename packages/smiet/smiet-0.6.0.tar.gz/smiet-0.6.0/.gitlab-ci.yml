@@ -1,0 +1,34 @@
+variables:
+  # Base Python version for all jobs
+  PYTHON_VERSION: '3.10'
+  # Package names and versions
+  PACKAGE_NAME: ${CI_PROJECT_NAME}
+  PACKAGE_VERSION: "0.6.0"  # at some point this should be pulled from the pyproject.toml
+
+# This pipeline should only be ran for MR and commits to main and develop
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"  # run when a merge request is created or updated
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "develop"
+
+stages:
+  - create-pages
+  - test
+  - release
+  - publish
+
+include:
+  - local: .gitlab/ci/job_templates.yml
+  - local: .gitlab/ci/run_tests.yml
+  - local: .gitlab/ci/build_documentation.yml
+  
+  # Only create TestPyPi when merging into develop
+  - local: .gitlab/ci/create_test_release.yml
+    rules:
+      - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME == "develop"'
+
+  # Only create tag and PyPi release when MR to main is merged
+  - local: .gitlab/ci/create_release_and_publish.yml
+    rules:
+      - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME == "main"'

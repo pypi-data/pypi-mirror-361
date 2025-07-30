@@ -1,0 +1,93 @@
+[tool.poetry]
+name = "ak-vendor"
+version = "6.5.3"
+description = "Some vendor scripts that we use here at Appknox"
+authors = ["Appknox <engineering@appknox.com>"]
+license = "MIT"
+keywords = ["appknox", "vendor"]
+classifiers = [
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Build Tools",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+repository = "https://github.com/appknox/vendor"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+orm-choices = "0.3.0"
+html2text = "2020.1.16"
+attrs = ">=21.1.0"
+cvss = ">=2.0"
+
+[tool.poetry.group.dev.dependencies]
+Django = "^4.2.6"
+WeasyPrint = "^60.1"
+black = "^23.10.0"
+ruff = "^0.1.1"
+pre-commit = "^3.5.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+include = '\.pyi?$'
+exclude = '''
+(
+  /(
+      \.git
+    | \.venv
+    | build
+    | dist
+    | docs
+  )
+)
+'''
+
+[tool.ruff]
+line-length = 88
+target-version = "py38"
+
+select = [
+    "E",      # pycodestyle (error)
+    "F",      # pyflakes
+    "B",      # flake8-bugbear
+    "I",      # isort
+    "RUF100", # Unused noqa comments
+    "PGH004", # blanket noqa comments
+    "UP",     # pyupgrade
+]
+
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "docs",
+    "migrations",
+    "node_modules",
+    "static",
+    "venv",
+]

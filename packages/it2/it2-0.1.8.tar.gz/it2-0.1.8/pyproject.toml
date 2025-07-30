@@ -1,0 +1,121 @@
+[build-system]
+requires = ["hatchling==1.25.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "it2"
+version = "0.1.8"
+description = "A powerful command-line interface for controlling iTerm2"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    { name = "Your Name", email = "your.email@example.com" }
+]
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: MacOS :: MacOS X",
+]
+dependencies = [
+    "iterm2>=2.7",
+    "click>=8.0",
+    "PyYAML>=6.0",
+    "rich>=10.0",
+]
+keywords = [
+    "iterm2",
+    "terminal",
+    "cli",
+    "automation",
+    "macos",
+]
+
+[project.urls]
+Homepage = "https://github.com/mkusaka/it2"
+"Bug Tracker" = "https://github.com/mkusaka/it2/issues"
+Documentation = "https://github.com/mkusaka/it2#readme"
+"Source Code" = "https://github.com/mkusaka/it2"
+PyPI = "https://pypi.org/project/it2/"
+
+[project.scripts]
+it2 = "it2.cli:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-asyncio>=0.20",
+    "pytest-cov>=4.0",
+    "pytest-timeout>=2.1",
+    "black>=22.0",
+    "ruff>=0.0.240",
+    "mypy>=1.0",
+    "types-PyYAML>=6.0",
+    "twine==6.0.1",  # Pin to 6.0.1 to avoid license-file validation issues
+    "build>=1.0.0",
+]
+
+[tool.ruff]
+target-version = "py38"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "S", "B", "A", "C4", "PIE", "PT", "RET", "SIM", "TID"]
+ignore = [
+    "E501",     # line too long
+    "S101",     # use of assert (allowed in tests)
+    "TID252",   # relative imports (we use relative imports within package)
+    "FBT001",   # boolean positional arg in function definition
+    "FBT002",   # boolean default value in function definition
+    "UP007",    # use Optional[X] instead of Union[X, None] (we prefer Union syntax)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*.py" = ["S101"]  # assert is allowed in tests
+"scripts/*.py" = ["S603"]  # subprocess is allowed in scripts
+
+[tool.black]
+line-length = 100
+target-version = ['py38']
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "iterm2.*"
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+timeout = 60
+addopts = "-v"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/it2"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[dependency-groups]
+dev = [
+    "build>=1.2.2.post1",
+    "pytest-timeout>=2.4.0",
+]
+

@@ -1,0 +1,97 @@
+Metadata-Version: 2.1
+Name: ChemLogic
+Version: 0.1.1
+Summary: ChemLogic is a neurosymbolic framework that integrates relational logic syntax with various graph neural network (GNN) architectures to model chemical knowledge. It encodes functional groups and molecular subgraph patterns into a differentiable, explainable architecture, enabling the construction of interpretable and modular GNN-based models for chemical reasoning.
+Keywords: chemistry,differentiable,knowledge base,graph neural network,GNN,neurosymbolic,explainable,molecule,property,molecular property prediction,functional group,logic,logic programming,relational,relational logic,cheminformatics
+Author-Email: =?utf-8?b?S2FpIEhvZMW+acSH?= <hodzic.e.k@outlook.com>
+License: MIT License
+         
+         Copyright (c) 2023-2025 Kai Hodžić
+         
+         Permission is hereby granted, free of charge, to any person obtaining a copy
+         of this software and associated documentation files (the "Software"), to deal
+         in the Software without restriction, including without limitation the rights
+         to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+         copies of the Software, and to permit persons to whom the Software is
+         furnished to do so, subject to the following conditions:
+         
+         The above copyright notice and this permission notice shall be included in all
+         copies or substantial portions of the Software.
+         
+         THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+         IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+         FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+         AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+         LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+         OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+         SOFTWARE.
+         
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Science/Research
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Scientific/Engineering :: Chemistry
+Classifier: Topic :: Scientific/Engineering :: Information Analysis
+Classifier: Operating System :: OS Independent
+Project-URL: Homepage, https://github.com/erhc/ChemLogic
+Requires-Python: >=3.11
+Requires-Dist: neuralogic==0.7.16
+Requires-Dist: optuna>=4.3.0
+Requires-Dist: scikit-learn>=1.6.1
+Requires-Dist: RDKit>=2025.3.2
+Requires-Dist: pysmiles>=2.0.0
+Requires-Dist: torch-geometric>=2.6.1
+Requires-Dist: mlflow>=2.14.0
+Description-Content-Type: text/markdown
+
+# ChemLogic
+
+ChemLogic is a neurosymbolic framework that integrates relational logic syntax with graph neural networks (GNNs) to model chemical knowledge. It is designed for interpretable molecular property prediction, combining symbolic reasoning with differentiable learning. ChemLogic was entirely built on the [PyNeuraLogic](https://github.com/LukasZahradnik/PyNeuraLogic) framework.
+
+## 🧬 Introduction
+
+ChemLogic enables binary classification for molecular property prediction tasks on chemistry datasets, such as mutagenicity and toxicity prediction. It supports explainable AI by encoding functional groups and molecular subgraph patterns into logical rules, which are then integrated into GNN architectures. The weights of these rules provide interpretable insights into the model's reasoning process.
+
+## ✨ Features
+
+- Supports well-known GNN architectures from the literature.
+- Encodes chemical knowledge using relational logic syntax.
+- Integrates functional groups and molecular subgraph patterns into a learnable knowledge base.
+- Enables explainable and interpretable predictions.
+- Designed for binary classification tasks with future support for regression and more.
+
+## 📦 Installation
+
+ChemLogic is available via PyPI. You can install it using:
+
+```bash
+pip install ChemLogic
+```
+
+## 📂 Project structure
+
+The project consists off of 3 main modules:
+
+- `datasets` - contain the datasets encoded in relational manner. Includes data from `TUD` and `TDC` datasets, as well as a converter from custom SMILES datasets.
+- `models` - contains the GNN architectures.
+- `knowledge_base` - contains the functional groups and subgraph patters.
+
+## 🚀 Usage
+
+Basic example of training a GNN on the MUTAG dataset can be found in `notebooks/run_example`.
+
+## 🧩 Dependencies
+
+ChemLogic requires Python 3.11 and Java >=1.8. For visualization `graphviz` is required.
+
+All dependencies are listed in `pyproject.toml`.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please see CONTRIBUTING.md for guidelines on how to get started.
+
+## 📄 License
+
+This project is licensed under the MIT License.

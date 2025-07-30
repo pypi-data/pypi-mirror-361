@@ -1,0 +1,67 @@
+[tool.poetry]
+name = "popcornshow"
+packages = [{include = "popcorn"}]
+version = "0.1.7"
+description = "Show information about movie and movies"
+authors = ["Icaro Nunes <icarornunes@gmail.com>"]
+license = "BeerWare"
+readme = "README.md"
+classifiers = [
+  "Topic :: Utilities",
+  "Programming Language :: Python :: 3"
+]
+
+[tool.poetry.urls]
+"Doc" = "https://popcornshow-cli.readthedocs.io/en/latest/"
+"Cod" = "https://github.com/icaronunes/popcornshow-cli"
+"Bug Tracker" = "https://github.com/icaronunes/popcornshow-cli/actions"
+
+[tool.poetry.scripts]
+popcorn = "popcorn.cli:app"
+popcornshow = "popcorn.cli:app"
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.taskipy.tasks]
+lint = "black --check --diff ./popcorn ./tests && isort --check --diff ./popcorn ./tests"
+pre_test = "task lint"
+test = "pytest -s -x ./tests --cov=popcorn --cov-report=xml -vv"
+post_test = "coverage html"
+docs = "mkdocs serve"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+typer = "0.7.0"
+typer-cli = "0.0.13"
+click = "8.1.3"
+rich = "13.3.2"
+requests = "2.31.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.2.1"
+pytest-cov = "^4.0.0"
+black = "^23.3.0"
+isort = "^5.12.0"
+taskipy = "^1.10.3"
+
+[tool.poetry.group.test.dependencies]
+pytest = "7.2.2"
+
+[tool.poetry.group.doc.dependencies]
+mkdocs = "1.4.2"
+mkdocstrings = "0.20.0"
+mkdocstrings-python = "0.9.0"
+mkdocs-dracula-theme = "1.0.4"
+pymdown-extensions = "9.10"
+pytest-cov = "4.0.0"
+markdown-it-py = "2.2.0"
+
+[tool.pytest.ini_options]
+pythonpath = "."
+addopts = "--doctest-modules"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

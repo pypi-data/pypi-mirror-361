@@ -1,0 +1,79 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "augr"
+version = "0.1.9"
+description = "AI-powered dataset augmentation tool using Braintrust proxy"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [{ name = "Luke Bechtel", email = "your-email@example.com" }]
+keywords = ["ai", "dataset", "augmentation", "braintrust", "machine-learning"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "openai>=1.40.0",
+    "pydantic>=2.0.0",
+    "python-dotenv>=1.0.0",
+    "braintrust>=0.0.1",
+    "inquirer>=3.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+    "build>=0.10.0",
+    "twine>=4.0.0",
+]
+
+[project.scripts]
+augr = "augr.cli:main"
+augr-uninstall = "augr.uninstall:main"
+
+[project.urls]
+Homepage = "https://github.com/Marviel/augr"
+Repository = "https://github.com/Marviel/augr"
+Issues = "https://github.com/Marviel/augr/issues"
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=7.0.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+    "build>=0.10.0",
+    "twine>=4.0.0",
+]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.ruff]
+line-length = 88
+target-version = "py38"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W"]
+ignore = ["E501"]                  # Line too long (handled by black)
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[dependency-groups]
+dev = ["build>=1.2.2.post1"]

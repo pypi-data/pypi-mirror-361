@@ -1,0 +1,115 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "robot-selfheal"
+version = "2.1.0"
+description = "Robot Framework Self-Healing Library for automated test maintenance"
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+authors = [
+    {name = "Samarth Math", email = "samarth.math@indexnine.com"},
+    {name = "Vikas Gupta", email = "vikas.gupta@indexnine.com"},
+    {name = "Onkar Pawar", email = "onkar.pawar@indexnine.com"},
+]
+maintainers = [
+    {name = "Samarth Math", email = "samarth.math@indexnine.com"},
+    {name = "Vikas Gupta", email = "vikas.gupta@indexnine.com"},
+    {name = "Onkar Pawar", email = "onkar.pawar@indexnine.com"},
+]
+keywords = [
+    "robotframework", 
+    "selenium", 
+    "testing", 
+    "automation", 
+    "self-healing",
+    "locator",
+    "web-testing",
+    "ai",
+    "machine-learning",
+    "test-automation",
+    "quality-assurance",
+    "xpath",
+    "ui-testing"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology", 
+    "Operating System :: OS Independent",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9", 
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Software Development :: Testing :: Acceptance",
+    "Topic :: Software Development :: Testing :: Unit",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Internet :: WWW/HTTP :: Browsers",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Framework :: Robot Framework",
+    "Framework :: Robot Framework :: Library",
+    "Framework :: Robot Framework :: Tool",
+    "Environment :: Console",
+    "Natural Language :: English",
+    "Typing :: Typed",
+]
+dependencies = [
+    "robotframework>=6.1.1",
+    "robotframework-seleniumlibrary>=6.1.0",
+    "beautifulsoup4>=4.12.2",
+    "rapidfuzz>=3.3.1",
+    "python-dotenv>=1.0.0",
+    "openai>=1.3.5",
+    "requests>=2.31.0",
+    "lxml>=4.9.3",
+]
+
+[project.urls]
+Homepage = "https://github.com/samarthindex9/selfhealing_library"
+Documentation = "https://github.com/samarthindex9/selfhealing_library/blob/pypi-packaging/README.md"
+Repository = "https://github.com/samarthindex9/selfhealing_library"
+"Bug Tracker" = "https://github.com/samarthindex9/selfhealing_library/issues"
+
+[project.scripts]
+robot-selfheal = "robot_selfheal.cli:main"
+
+[project.entry-points."robot.libraries"]
+SelfHeal = "robot_selfheal:SelfHeal"
+
+[project.entry-points."robot.listeners"]  
+SelfHealListener = "robot_selfheal:SelfHealListener"
+
+[project.optional-dependencies]
+dev = [
+    "black>=23.11.0",
+    "pylint>=3.0.2", 
+    "pytest>=7.4.3",
+    "twine>=4.0.0",
+    "build>=0.10.0",
+]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["robot_selfheal*"]
+
+[tool.setuptools.package-data]
+"robot_selfheal" = ["config.json"]
+
+[tool.black]
+line-length = 100
+target-version = ['py38']
+
+[tool.pylint.messages_control]
+disable = ["C0103", "R0903", "R0913"] 

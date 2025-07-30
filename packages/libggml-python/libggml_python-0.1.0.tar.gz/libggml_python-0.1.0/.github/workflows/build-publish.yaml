@@ -1,0 +1,75 @@
+name: Build and Publish Python Wheels
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build_wheels:
+    name: Build wheels on ${{ matrix.build.os }}
+    runs-on: ${{ matrix.build.os }}
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        build:
+          - os: ubuntu-24.04
+            cmake: ""
+          - os: macos-15
+            cmake: ""
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: "recursive"
+
+      - name: build wheels
+        env:
+          CMAKE_ARGS: ${{ matrix.build.cmake }}
+          CIBW_BUILD: cp313-*
+          CIBW_ENVIRONMENT_PASS_LINUX: CMAKE_ARGS
+          CIBW_REPAIR_WHEEL_COMMAND_MACOS: ""
+          CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel repair --exclude libggml-* -w {dest_dir} {wheel}"
+        uses: pypa/cibuildwheel@v3.0.1
+
+      - name: publish wheels
+        uses: actions/upload-artifact@v4
+        with:
+          name: cibw-wheels-${{ matrix.build.os }}-${{ strategy.job-index }}
+          path: ./wheelhouse/*.whl
+
+  build_sdist:
+    name: Build source distribution
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build sdist
+        run: pipx run build --sdist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cibw-sdist
+          path: dist/*.tar.gz
+
+  upload_pypi:
+    needs: [build_wheels, build_sdist]
+    runs-on: ubuntu-24.04
+    environment: pypi
+    permissions:
+      id-token: write
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          # unpacks all CIBW artifacts into dist/
+          pattern: cibw-*
+          path: dist
+          merge-multiple: true
+
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        # with:
+        #   repository-url: https://test.pypi.org/legacy/

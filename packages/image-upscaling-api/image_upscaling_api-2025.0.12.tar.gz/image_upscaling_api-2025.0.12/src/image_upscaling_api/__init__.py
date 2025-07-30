@@ -1,0 +1,1 @@
+print("this api is outdated. please visit image-upscaling.net to view the latest api (includes example code)")

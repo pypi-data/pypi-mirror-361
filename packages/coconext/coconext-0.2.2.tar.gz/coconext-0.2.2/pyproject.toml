@@ -1,0 +1,85 @@
+[build-system]
+requires = ["setuptools >= 61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "coconext"
+dependencies = [
+    "cocotb~=2.0b",
+    'exceptiongroup; python_version < "3.11"',
+]
+requires-python = ">=3.8"
+authors = [
+    {name="Kaleb Barrett", email="dev.ktbarrett@gmail.com"},
+]
+maintainers = [
+    {name="Kaleb Barrett", email="dev.ktbarrett@gmail.com"},
+]
+description = "Features for future versions of cocotb"
+readme = "README.md"
+dynamic = ["version", "license"]
+
+[project.urls]
+Repository = "https://github.com/ktbarrett/coconext.git"
+"Bug Tracker" = "https://github.com/ktbarrett/coconext/issues"
+
+[tool.setuptools.dynamic]
+version = {attr = "coconext.__version__"}
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "UP",   # pyupgrade
+    "RUF"   # ruff
+]
+ignore = [
+    "E501",  # line too long
+]
+
+[tool.ruff.lint.isort]
+required-imports = ["from __future__ import annotations"]
+known-first-party = ["coconext"]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.mypy]
+packages = ["coconext", "tests"]
+disallow_untyped_defs = true
+disallow_any_unimported = true
+no_implicit_optional = true
+check_untyped_defs = true
+disallow_untyped_calls = true
+disallow_untyped_decorators = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+implicit_reexport = false
+show_error_codes = true
+
+[dependency-groups]
+dev = [
+    "mypy",
+    "nox[uv]",
+    "pre-commit",
+    "pytest",
+    "pytest-cov",
+    "ruff",
+]
+docs = [
+    "sphinx>=8.2 ; python_version >= '3.11'",  # Require 8.2+ for :deco: directive
+    "sphinx-rtd-theme ; python_version >= '3.11'",
+    "sphinxcontrib-prettyspecialmethods @ https://github.com/sphinx-contrib/prettyspecialmethods.git ; python_version >= '3.11'",
+]
+tests = [
+    "coverage[toml]>=7.2",  # Require 7.2+ for builtin coverage excludes and "exclude_also"
+    "pytest",
+]
+
+[tool.coverage.report]
+exclude_also = [
+    "@(abc\\.)?abstractmethod",
+    "@(typing\\.)?overload",
+]

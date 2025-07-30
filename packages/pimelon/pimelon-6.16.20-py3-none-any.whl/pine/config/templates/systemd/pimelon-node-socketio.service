@@ -1,0 +1,13 @@
+[Unit]
+After={{ pine_name }}-melon-web.service
+Description="{{ pine_name }}-node-socketio"
+PartOf={{ pine_name }}-web.target
+
+[Service]
+User={{ user }}
+Group={{ user }}
+Restart=always
+ExecStart={{ node }} {{ pine_dir }}/apps/melon/socketio.js
+StandardOutput=file:{{ pine_dir }}/logs/node-socketio.log
+StandardError=file:{{ pine_dir }}/logs/node-socketio.error.log
+WorkingDirectory={{ pine_dir }}

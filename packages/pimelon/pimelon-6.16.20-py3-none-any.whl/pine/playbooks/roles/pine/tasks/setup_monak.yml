@@ -1,0 +1,29 @@
+---
+  - name: Check if Monak App exists
+    stat: path="{{ pine_path }}/apps/monak"
+    register: app
+
+  - name: Get the Monak app
+    command: pine get-app monak {{ monak_repo_url }} --branch {{ monak_branch }}
+    args:
+      creates: "{{ pine_path }}/apps/monak"
+      chdir: "{{ pine_path }}"
+    when: not app.stat.exists and not without_monak
+
+  - name: Check whether the site already exists
+    stat: path="{{ pine_path }}/sites/{{ site }}"
+    register: site_folder
+    when: not without_site
+
+  - name: Create a new site
+    command: "pine new-site {{ site }} --admin-password '{{ admin_password }}' --mariadb-root-password '{{ mysql_root_password }}'"
+    args:
+      chdir: "{{ pine_path }}"
+    when: not without_site and not site_folder.stat.exists
+
+  - name: Install Monak to default site
+    command: "pine --site {{ site }} install-app monak"
+    args:
+      chdir: "{{ pine_path }}"
+    when: not without_site and not without_monak
+...

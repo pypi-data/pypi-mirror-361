@@ -1,0 +1,12 @@
+[Unit]
+Description="{{ pine_name }}-melon-schedule"
+PartOf={{ pine_name }}-workers.target
+
+[Service]
+User={{ user }}
+Group={{ user }}
+Restart=always
+ExecStart={{ pine_cmd }} schedule
+StandardOutput=file:{{ pine_dir }}/logs/schedule.log
+StandardError=file:{{ pine_dir }}/logs/schedule.error.log
+WorkingDirectory={{ pine_dir }}

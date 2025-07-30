@@ -1,0 +1,12 @@
+[Unit]
+Description="{{ pine_name }}-melon-short-worker %I"
+PartOf={{ pine_name }}-workers.target
+
+[Service]
+User={{ user }}
+Group={{ user }}
+Restart=always
+ExecStart={{ pine_cmd }} worker --queue long
+StandardOutput=file:{{ pine_dir }}/logs/worker.log
+StandardError=file:{{ pine_dir }}/logs/worker.error.log
+WorkingDirectory={{ pine_dir }}

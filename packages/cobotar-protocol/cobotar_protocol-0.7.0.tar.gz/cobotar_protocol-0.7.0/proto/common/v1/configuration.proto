@@ -1,0 +1,37 @@
+syntax = "proto3";
+package common.v1;
+
+import "common/v1/agent.proto";
+import "common/v1/property.proto";
+import "tracker/v1/tracker.proto";
+
+option csharp_namespace = "Messages.Common.V1";
+option go_package = "github.com/cobotar/protocol/messages/common/v1";
+
+message ConfigurationMessage {
+  string instance_id = 1;
+  string id = 2;
+  string name = 3;
+  string description = 4;
+  repeated Agent agents = 5;
+  repeated tracker.v1.Tracker trackers = 6;
+  repeated Property properties = 7;
+  // Feedback
+  // Actions
+
+  // Zones?
+  // Tools?
+  // Parts?
+  // BoPs?
+}
+
+message LoadConfigurationMessage {
+  string id = 1; // Id of the configuration to be loaded
+  string instance_id = 2; // Instance id of the current loaded configuration - from the requestors perspective - used to avoid reloading a configuration.
+}
+
+message AddConfigurationMessage {
+  string name = 1; // Name of the new configuration
+  string description = 2; // A description of the new configuration
+  string template_id = 3; // Template id is used to pre-populate a configuration. Leave empty for a new fresh start.
+}

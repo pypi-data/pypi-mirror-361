@@ -1,0 +1,43 @@
+[build-system]
+requires = ['setuptools', 'wheel']
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = 'PullDocker'
+description = 'Watch git repositories for Docker compose configuration changes'
+readme = 'README.md'
+authors = [
+    { name = "Fabio Castelli", email = "muflone@muflone.com" },
+]
+license = 'GPL-3.0-or-later'
+license-files = ['LICENSE']
+dynamic = ['version']
+dependencies = [
+    'pyyaml~=6.0',
+    'gitpython~=3.1',
+]
+classifiers = [
+    'Development Status :: 1 - Planning',
+    'Intended Audience :: Developers',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: 3.13',
+]
+
+[project.scripts]
+pulldocker = 'pulldocker.main:main'
+
+[project.urls]
+homepage = 'http://www.muflone.com/pulldocker/'
+source = 'https://github.com/muflone/pulldocker/'
+issues = 'https://github.com/muflone/pulldocker/issues'
+releases = 'https://github.com/muflone/pulldocker/releases'
+
+[tool.setuptools]
+packages = ['pulldocker']
+
+[tool.setuptools.dynamic]
+version = {attr = 'pulldocker.constants.APP_VERSION'}

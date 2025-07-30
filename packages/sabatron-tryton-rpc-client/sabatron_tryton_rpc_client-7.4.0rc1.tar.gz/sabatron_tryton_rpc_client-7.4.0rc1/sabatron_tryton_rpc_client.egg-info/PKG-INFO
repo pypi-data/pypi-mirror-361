@@ -1,0 +1,70 @@
+Metadata-Version: 2.4
+Name: sabatron_tryton_rpc_client
+Version: 7.4.0rc1
+Summary: Python RPC Client for Tryton
+Home-page: https://git.disroot.org/sabatron/sabatron-tryton-rpc-client
+Author: mono
+Author-email: monomono@disroot.org
+License: GPL-3
+Keywords: tryton client
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/x-rst
+License-File: LICENSE
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license
+Dynamic: license-file
+Dynamic: requires-python
+Dynamic: summary
+
+.. _README:
+
+Python Tryton RPC Client
+========================
+
+Allow connect to Tryton Server using RPC.
+
+It code is based and extracted from tryton package but removing gtk calls.
+
+Install
+-------
+
+.. code-block:: bash
+
+   pip install sabatron-tryton-rpc-client
+
+Use
+---
+
+.. code-block:: python
+
+  from sabatron_tryton_rpc_client.client import Client
+
+  client = Client(hostname='localhost', database='tryton', username='admin',
+                password='admin')
+  client.connect()
+  
+  name = 'model.party.party.read'
+  args = ([1], ['id', 'name', 'code'], {})
+  
+  print(client.call(name, args))
+  # [{'id': 1, 'name': 'Empresa', 'code': '1'}]
+  
+  name = 'model.party.party.create'
+  args = ([{'name': 'From Python'}], {})
+  
+  print(client.call(name, args))
+  # [6]
+
+Licence
+-------
+
+GNU General Public License (GPL) (GPL-3) 

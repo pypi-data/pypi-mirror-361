@@ -1,0 +1,824 @@
+{
+  "identification": {
+    "project": "ROC",
+    "identifier": "roc.film",
+    "name": "roc.film",
+    "description": "RPW FILe Maker (FILM): Plugin to make RPW L0, L1 and HK data files"
+  },
+  "release": {
+    "version": "1.15.1",
+    "date": "2025-06-02",
+    "author": "Xavier Bonnin <xavier.bonnin@obspm.fr>, ROC Team <roc.support@sympa.obspm.fr>",
+    "modification": "Hotfix in merge_tcreport",
+    "url": "https://gitlab.obspm.fr/ROC/Pipelines/Plugins/FILM"
+  },
+  "tasks": [
+    {
+      "name": "raw_to_l0",
+      "category": "Data file production",
+      "description": "Create RPW L0 files from RawData object",
+      "inputs": {},
+      "outputs": {
+        "l0_file": {
+          "identifier": "SOLO_L0_RPW",
+          "name": "RPW L0 data",
+          "description": "Contains RPW packets, unpacked and decompressed from a given day",
+          "level": "L0"
+        }
+      }
+    },
+    {
+      "name": "l0_to_l1_surv",
+      "category": "Data file production",
+      "description": "Create RPW L1 survey data files",
+      "inputs": {
+        "l0_file": {
+          "identifier": "SOLO_L0_RPW"
+        }
+      },
+      "outputs": {
+        "l1_surv_rswf": {
+          "identifier": "SOLO_L1_RPW-TDS-SURV-RSWF",
+          "name": "SOLO RPW TDS L1 survey mode regular snapshot waveform data",
+          "description": "Contains RPW TDS L1 RSWF science data in survey mode, time-tagged",
+          "level": "L1",
+          "template": "solo_L1_rpw-tds-surv-rswf_*_V??.cdf",
+          "packet": [
+            "TM_TDS_SCIENCE_NORMAL_RSWF"
+          ],
+          "mods": [
+            "2020-10-23 -- V1.6.1 -- First release: Initial version",
+            "2021-02-16 -- V1.8.4 -- Second release: OBS_ID attribute is now correctly set | MODS is now used for data release log and SKELETON_MODS for CDF skeleton change log | Fix attribute inconsistencies | Resize WF data array correctly",
+            "2024-12-06 -- V1.14.0 -- Make CDF compliant with SolO metadata standards 2.6 and RCS ICD 1.7"
+          ]
+        },
+        "l1_surv_tswf": {
+          "identifier": "SOLO_L1_RPW-TDS-SURV-TSWF",
+          "name": "SOLO RPW TDS L1 survey mode trigggered snapshot waveform data",
+          "description": "Contains RPW TDS L1 TSWF science data in survey mode, time-tagged",
+          "level": "L1",
+          "template": "solo_L1_rpw-tds-surv-tswf_*_V??.cdf",
+          "packet": [
+            "TM_TDS_SCIENCE_NORMAL_TSWF"
+          ],
+          "mods": [
+            "2020-10-23 -- V1.6.1 -- First release: Initial version",
+            "2021-02-16 -- V1.8.4 -- Second release: OBS_ID attribute is now correctly set | MODS is now used for data release log and SKELETON_MODS for CDF skeleton change log | Fix attribute inconsistencies | Resize WF data array correctly",
+            "2024-12-06 -- V1.14.0 -- Make CDF compliant with SolO metadata standards 2.6 and RCS ICD 1.7"
+          ]
+        },
+        "l1_surv_hist1d": {
+          "identifier": "SOLO_L1_RPW-TDS-SURV-HIST1D",
+          "name": "SOLO RPW TDS L1 survey mode 1d histograms",
+          "description": "Contains RPW TDS L1 HIST1D science data in survey mode, time-tagged",
+          "level": "L1",
+          "template": "solo_L1_rpw-tds-surv-hist1d_*_V??.cdf",
+          "packet": [
+            "TM_TDS_SCIENCE_NORMAL_HIST1D"
+          ],
+          "mods": [
+            "2020-10-23 -- V1.6.1 -- First release: Initial version",
+            "2021-02-16 -- V1.8.4 -- Second release: OBS_ID attribute is now correctly set | MODS is now used for data release log and SKELETON_MODS for CDF skeleton change log | Fix attribute inconsistencies",
+            "2024-12-06 -- V1.14.0 -- Make CDF compliant with SolO metadata standards 2.6 and RCS ICD 1.7"
+          ]
+        },
+        "l1_surv_hist2d": {
+          "identifier": "SOLO_L1_RPW-TDS-SURV-HIST2D",
+          "name": "SOLO RPW TDS L1 survey mode 2d histograms",
+          "description": "Contains RPW TDS L1 HIST2D science data in survey mode, time-tagged",
+          "level": "L1",
+          "template": "solo_L1_rpw-tds-surv-hist2d_*_V??.cdf",
+          "packet": [
+            "TM_TDS_SCIENCE_NORMAL_HIST2D"
+          ],
+          "mods": [
+            "2020-10-23 -- V1.6.1 -- First release: Initial version",
+            "2021-02-16 -- V1.8.4 -- Second release: OBS_ID attribute is now correctly set | MODS is now used for data release log and SKELETON_MODS for CDF skeleton change log | Fix attribute inconsistencies",
+            "2024-12-06 -- V1.14.0 -- Make CDF compliant with SolO metadata standards 2.6 and RCS ICD 1.7"
+          ]
+        },
+        "l1_surv_stat": {
+          "identifier": "SOLO_L1_RPW-TDS-SURV-STAT",
+          "name": "SOLO RPW TDS L1 survey mode statistics",
+          "description": "Contains RPW TDS L1 STAT science data in survey mode, time-tagged",
+          "level": "L1",
+          "template": "solo_L1_rpw-tds-surv-stat_*_V??.cdf",
+          "packet": [
+            "TM_TDS_SCIENCE_NORMAL_STAT"
+          ],
+          "mods": [
+            "2020-10-23 -- V1.6.1 -- First release: Initial version",
+            "2021-02-16 -- V1.8.4 -- Second release: OBS_ID attribute is now correctly set | MODS is now used for data release log and SKELETON_MODS for CDF skeleton change log | Fix attribute inconsistencies",
+            "2024-12-06 -- V1.14.0 -- Make CDF compliant with SolO metadata standards 2.6 and RCS ICD 1.7"
+          ]
+        },
+        "l1_surv_mamp": {
+          "identifier": "SOLO_L1_RPW-TDS-SURV-MAMP",
+          "name": "SOLO RPW TDS L1 survey mode MAMP",
+          "description": "Contains RPW TDS L1 MAMP science data in survey mode, time-tagged",
+          "level": "L1",
+          "template": "solo_L1_rpw-tds-surv-mamp_*_V??.cdf",
+          "packet": [
+            "TM_TDS_SCIENCE_NORMAL_MAMP"
+          ],
+          "mods": [
+            "2020-10-23 -- V1.6.1 -- First release: Initial version",
+            "2021-02-16 -- V1.8.4 -- Second release: OBS_ID attribute is now correctly set | MODS is now used for data release log and SKELETON_MODS for CDF skeleton change log | TDS MAMP samples are now well sorted | Fix attribute inconsistencies",
+            "2024-12-06 -- V1.14.0 -- Make CDF compliant with SolO metadata standards 2.6 and RCS ICD 1.7"
+          ]
+        },
+        "l1_lfm_rswf": {
+          "identifier": "SOLO_L1_RPW-TDS-LFM-RSWF",
+          "name": "SOLO RPW TDS L1 LF mode regular snapshot waveform data",
+          "description": "Contains RPW TDS L1 RSWF science data in LFM mode, time-tagged",
+          "level": "L1",
+          "template": "solo_L1_rpw-tds-lfm-rswf_*_V??.cdf",
+          "packet": [
+            "TM_TDS_SCIENCE_LFM_RSWF"
+          ],
+          "mods": [
+            "2020-10-23 -- V1.6.1 -- First release: Initial version",
+            "2021-02-16 -- V1.8.4 -- Second release: OBS_ID attribute is now correctly set | MODS is now used for data release log and SKELETON_MODS for CDF skeleton change log | Fix attribute inconsistencies | Resize WF data array correctly",
+            "2024-12-06 -- V1.14.0 -- Make CDF compliant with SolO metadata standards 2.6 and RCS ICD 1.7"
+          ]
+        },
+        "l1_lfm_cwf": {
+          "identifier": "SOLO_L1_RPW-TDS-LFM-CWF",
+          "name": "SOLO RPW TDS L1 LF mode continuous waveform data",
+          "description": "Contains RPW TDS L1 CWF science data in LFM mode, time-tagged",
+          "level": "L1",
+          "template": "solo_L1_rpw-tds-lfm-cwf_*_V??.cdf",
+          "packet": [
+            "TM_TDS_SCIENCE_LFM_CWF"
+          ],
+          "mods": [
+            "2020-10-23 -- V1.6.1 -- First release: Initial version",
+            "2021-02-16 -- V1.8.4 -- Second release: OBS_ID attribute is now correctly set | MODS is now used for data release log and SKELETON_MODS for CDF skeleton change log | Fix attribute inconsistencies",
+            "2024-12-06 -- V1.14.0 -- Make CDF compliant with SolO metadata standards 2.6 and RCS ICD 1.7"
+          ]
+        },
+        "l1_lfm_sm": {
+          "identifier": "SOLO_L1_RPW-TDS-LFM-SM",
+          "name": "SOLO RPW TDS L1 LF mode SM data",
+          "description": "Contains RPW TDS L1 SM science data in LFM mode, time-tagged",
+          "level": "L1",
+          "template": "solo_L1_rpw-tds-lfm-sm_*_V??.cdf",
+          "packet": [
+            "TM_TDS_SCIENCE_LFM_SM"
+          ],
+          "mods": [
+            "2020-10-23 -- V1.6.1 -- First release: Initial version",
+            "2021-02-16 -- V1.8.4 -- Second release: OBS_ID attribute is now correctly set | MODS is now used for data release log and SKELETON_MODS for CDF skeleton change log | Fix attribute inconsistencies",
+            "2024-12-06 -- V1.14.0 -- Make CDF compliant with SolO metadata standards 2.6 and RCS ICD 1.7"
+          ]
+        },
+        "l1_lfm_psd": {
+          "identifier": "SOLO_L1_RPW-TDS-LFM-PSD",
+          "name": "SOLO RPW TDS L1 LF mode PSD data",
+          "description": "Contains RPW TDS L1 PSD science data in LFM mode, time-tagged",
+          "level": "L1",
+          "template": "solo_L1_rpw-tds-lfm-psd_*_V??.cdf",
+          "packet": [
+            "TM_TDS_SCIENCE_LFM_PSD"
+          ],
+          "mods": [
+            "2020-10-23 -- V1.6.1 -- First release: Initial version",
+            "2021-02-16 -- V1.8.4 -- Second release: OBS_ID attribute is now correctly set | MODS is now used for data release log and SKELETON_MODS for CDF skeleton change log | Fix attribute inconsistencies",
+            "2024-12-06 -- V1.14.0 -- Make CDF compliant with SolO metadata standards 2.6 and RCS ICD 1.7"
+          ]
+        },
+        "l1_surv_asm": {
+          "identifier": "SOLO_L1_RPW-LFR-SURV-ASM",
+          "name": "SOLO RPW LFR L1 survey mode ASM data",
+          "description": "Contains RPW LFR L1 ASM science data in survey mode, time-tagged",
+          "level": "L1",
+          "template": "solo_L1_rpw-lfr-surv-asm_*_V??.cdf",
+          "packet": [
+            "TM_LFR_SCIENCE_NORMAL_ASM_F0",
+            "TM_LFR_SCIENCE_NORMAL_ASM_F1",
+            "TM_LFR_SCIENCE_NORMAL_ASM_F2"
+          ],
+          "mods": [
+            "2020-10-23 -- V1.6.1 -- First release: Initial version",
+            "2021-02-16 -- V1.8.4 -- Second release: OBS_ID attribute is now correctly set | MODS is now used for data release log and SKELETON_MODS for CDF skeleton change log | Fix attribute inconsistencies",
+            "2024-12-06 -- V1.14.0 -- Make CDF compliant with SolO metadata standards 2.6 and RCS ICD 1.7"
+          ]
+        },
+        "l1_surv_bp1": {
+          "identifier": "SOLO_L1_RPW-LFR-SURV-BP1",
+          "name": "SOLO RPW LFR L1 survey mode BP1 data",
+          "description": "Contains RPW LFR L1 BP1 science data in survey mode, time-tagged",
+          "level": "L1",
+          "template": "solo_L1_rpw-lfr-surv-bp1_*_V??.cdf",
+          "packet": [
+            "TM_LFR_SCIENCE_NORMAL_BP1_F0",
+            "TM_LFR_SCIENCE_NORMAL_BP1_F1",
+            "TM_LFR_SCIENCE_NORMAL_BP1_F2",
+            "TM_LFR_SCIENCE_BURST_BP1_F0",
+            "TM_LFR_SCIENCE_BURST_BP1_F1"
+          ],
+          "mods": [
+            "2020-10-23 -- V1.6.1 -- First release: Initial version",
+            "2021-02-16 -- V1.8.4 -- Second release: OBS_ID attribute is now correctly set | MODS is now used for data release log and SKELETON_MODS for CDF skeleton change log | Fix attribute inconsistencies",
+            "2024-12-06 -- V1.14.0 -- Make CDF compliant with SolO metadata standards 2.6 and RCS ICD 1.7"
+          ]
+        },
+        "l1_surv_bp2": {
+          "identifier": "SOLO_L1_RPW-LFR-SURV-BP2",
+          "name": "SOLO RPW LFR L1 survey mode BP2 data",
+          "description": "Contains RPW LFR L1 BP2 science data in survey mode, time-tagged",
+          "level": "L1",
+          "template": "solo_L1_rpw-lfr-surv-bp2_*_V??.cdf",
+          "packet": [
+            "TM_LFR_SCIENCE_NORMAL_BP2_F0",
+            "TM_LFR_SCIENCE_NORMAL_BP2_F1",
+            "TM_LFR_SCIENCE_NORMAL_BP2_F2",
+            "TM_LFR_SCIENCE_BURST_BP2_F0",
+            "TM_LFR_SCIENCE_BURST_BP2_F1"
+          ],
+          "mods": [
+            "2020-10-23 -- V1.6.1 -- First release: Initial version",
+            "2021-02-16 -- V1.8.4 -- Second release: OBS_ID attribute is now correctly set | MODS is now used for data release log and SKELETON_MODS for CDF skeleton change log | Fix attribute inconsistencies",
+            "2024-12-06 -- V1.14.0 -- Make CDF compliant with SolO metadata standards 2.6 and RCS ICD 1.7"
+          ]
+        },
+        "l1_surv_cwf": {
+          "identifier": "SOLO_L1_RPW-LFR-SURV-CWF",
+          "name": "SOLO RPW LFR L1 survey mode continuous waveform data",
+          "description": "Contains RPW LFR L1 CWF science data in survey mode, time-tagged",
+          "level": "L1",
+          "template": "solo_L1_rpw-lfr-surv-cwf_*_V??.cdf",
+          "packet": [
+            "TM_LFR_SCIENCE_NORMAL_CWF_F3",
+            "TM_LFR_SCIENCE_NORMAL_CWF_LONG_F3",
+            "TM_LFR_SCIENCE_BURST_CWF_F2"
+          ],
+          "mods": [
+            "2020-10-23 -- V1.6.1 -- First release: Initial version",
+            "2021-02-16 -- V1.8.4 -- Second release: OBS_ID attribute is now correctly set | MODS is now used for data release log and SKELETON_MODS for CDF skeleton change log | Fix attribute inconsistencies",
+            "2024-12-06 -- V1.14.0 -- Make CDF compliant with SolO metadata standards 2.6 and RCS ICD 1.7"
+          ]
+        },
+        "l1_surv_swf": {
+          "identifier": "SOLO_L1_RPW-LFR-SURV-SWF",
+          "name": "SOLO RPW LFR L1 survey mode snapshot waveform data",
+          "description": "Contains RPW LFR L1 SWF science data in survey mode, time-tagged",
+          "level": "L1",
+          "template": "solo_L1_rpw-lfr-surv-swf_*_V??.cdf",
+          "packet": [
+            "TM_LFR_SCIENCE_NORMAL_SWF_F0",
+            "TM_LFR_SCIENCE_NORMAL_SWF_F1",
+            "TM_LFR_SCIENCE_NORMAL_SWF_F2"
+          ],
+          "mods": [
+            "2020-10-23 -- V1.6.1 -- First release: Initial version",
+            "2021-02-16 -- V1.8.4 -- Second release: OBS_ID attribute is now correctly set | MODS is now used for data release log and SKELETON_MODS for CDF skeleton change log | Fix attribute inconsistencies",
+            "2024-12-06 -- V1.14.0 -- Make CDF compliant with SolO metadata standards 2.6 and RCS ICD 1.7"
+          ]
+        },
+        "l1_surv_tnr": {
+          "identifier": "SOLO_L1_RPW-TNR-SURV",
+          "name": "SOLO RPW TNR L1 survey mode data",
+          "description": "Contains RPW TNR L1 science data in survey mode, time-tagged",
+          "level": "L1",
+          "template": "solo_L1_rpw-tnr-surv_*_V??.cdf",
+          "packet": [
+            "TM_THR_SCIENCE_NORMAL_TNR",
+            "TM_THR_SCIENCE_BURST_TNR",
+            "TM_THR_SCIENCE_CALIBRATION_TNR"
+          ],
+          "mods": [
+            "2020-10-23 -- V1.6.1 -- First release: Initial version",
+            "2021-02-16 -- V1.8.4 -- Second release: OBS_ID attribute is now correctly set | MODS is now used for data release log and SKELETON_MODS for CDF skeleton change log | Fix attribute inconsistencies",
+            "2024-12-06 -- V1.14.0 -- Make CDF compliant with SolO metadata standards 2.6 and RCS ICD 1.7"
+          ]
+        },
+        "l1_surv_hfr": {
+          "identifier": "SOLO_L1_RPW-HFR-SURV",
+          "name": "SOLO RPW HFR L1 survey mode data",
+          "description": "Contains RPW HFR L1 science data in survey mode, time-tagged",
+          "level": "L1",
+          "template": "solo_L1_rpw-hfr-surv_*_V??.cdf",
+          "packet": [
+            "TM_THR_SCIENCE_NORMAL_HFR",
+            "TM_THR_SCIENCE_BURST_HFR",
+            "TM_THR_SCIENCE_CALIBRATION_HFR"
+          ],
+          "mods": [
+            "2020-10-23 -- V1.6.1 -- First release: Initial version",
+            "2021-02-16 -- V1.8.4 -- Second release: OBS_ID attribute is now correctly set | MODS is now used for data release log and SKELETON_MODS for CDF skeleton change log | Fix attribute inconsistencies",
+            "2024-12-06 -- V1.14.0 -- Make CDF compliant with SolO metadata standards 2.6 and RCS ICD 1.7"
+          ]
+        }
+      }
+    },
+    {
+      "name": "l0_to_l1_sbm",
+      "category": "Data file production",
+      "description": "Create RPW L1 SBM1/SBM2 data files",
+      "inputs": {
+        "l0_file": {
+          "identifier": "SOLO_L0_RPW"
+        }
+      },
+      "outputs": {
+        "l1_sbm1_rswf": {
+          "identifier": "SOLO_L1_RPW-TDS-SBM1-RSWF",
+          "name": "SOLO RPW TDS L1 SBM1 mode regular snapshot waveform data",
+          "description": "Contains RPW TDS L1 RSWF science data in SBM1 mode, time-tagged",
+          "level": "L1",
+          "template": "solo_L1_rpw-tds-sbm1-rswf_*_V??.cdf",
+          "packet": [
+            "TM_TDS_SCIENCE_SBM1_RSWF"
+          ],
+          "mods": [
+            "2021-02-16 -- V1.8.4 -- First release: Initial version",
+            "2024-12-06 -- V1.14.0 -- Make CDF compliant with SolO metadata standards 2.6 and RCS ICD 1.7"
+          ]
+        },
+        "l1_sbm2_tswf": {
+          "identifier": "SOLO_L1_RPW-TDS-SBM2-TSWF",
+          "name": "SOLO RPW TDS L1 SBM2 mode triggered snapshot waveform data",
+          "description": "Contains RPW TDS L1 TSWF science data in SBM2 mode, time-tagged",
+          "level": "L1",
+          "template": "solo_L1_rpw-tds-sbm2-tswf_*_V??.cdf",
+          "packet": [
+            "TM_TDS_SCIENCE_SBM2_TSWF"
+          ],
+          "mods": [
+            "2021-02-16 -- V1.8.4 -- First release: Initial version",
+            "2024-12-06 -- V1.14.0 -- Make CDF compliant with SolO metadata standards 2.6 and RCS ICD 1.7"
+          ]
+        },
+        "l1_sbm1_bp1": {
+          "identifier": "SOLO_L1_RPW-LFR-SBM1-BP1",
+          "name": "SOLO RPW LFR L1 SBM1 mode BP1 data",
+          "description": "Contains RPW LFR L1 BP1 science data in SBM1 mode, time-tagged",
+          "level": "L1",
+          "template": "solo_L1_rpw-lfr-sbm1-bp1_*_V??.cdf",
+          "packet": [
+            "TM_LFR_SCIENCE_SBM1_BP1_F0"
+          ],
+          "mods": [
+            "2021-02-16 -- V1.8.4 -- First release: Initial version",
+            "2024-12-06 -- V1.14.0 -- Make CDF compliant with SolO metadata standards 2.6 and RCS ICD 1.7"
+          ]
+        },
+        "l1_sbm1_bp2": {
+          "identifier": "SOLO_L1_RPW-LFR-SBM1-BP2",
+          "name": "SOLO RPW LFR L1 SBM1 mode BP2 data",
+          "description": "Contains RPW LFR L1 BP2 science data in SBM1 mode, time-tagged",
+          "level": "L1",
+          "template": "solo_L1_rpw-lfr-sbm1-bp2_*_V??.cdf",
+          "packet": [
+            "TM_LFR_SCIENCE_SBM1_BP2_F0"
+          ],
+          "mods": [
+            "2021-02-16 -- V1.8.4 -- First release: Initial version",
+            "2024-12-06 -- V1.14.0 -- Make CDF compliant with SolO metadata standards 2.6 and RCS ICD 1.7"
+          ]
+        },
+        "l1_sbm1_cwf": {
+          "identifier": "SOLO_L1_RPW-LFR-SBM1-CWF",
+          "name": "SOLO RPW LFR L1 SBM1 mode continuous waveform data",
+          "description": "Contains RPW LFR L1 CWF science data in survey mode, time-tagged",
+          "level": "L1",
+          "template": "solo_L1_rpw-lfr-sbm1-cwf_*_V??.cdf",
+          "packet": [
+            "TM_LFR_SCIENCE_SBM1_CWF_F1"
+          ],
+          "mods": [
+            "2021-02-16 -- V1.8.4 -- First release: Initial version",
+            "2024-12-06 -- V1.14.0 -- Make CDF compliant with SolO metadata standards 2.6 and RCS ICD 1.7"
+          ]
+        },
+        "l1_sbm2_bp1": {
+          "identifier": "SOLO_L1_RPW-LFR-SBM2-BP1",
+          "name": "SOLO RPW LFR L1 SBM2 mode BP1 data",
+          "description": "Contains RPW LFR L1 BP1 science data in SBM2 mode, time-tagged",
+          "level": "L1",
+          "template": "solo_L1_rpw-lfr-sbm2-bp1_*_V??.cdf",
+          "packet": [
+            "TM_LFR_SCIENCE_SBM2_BP1_F0",
+            "TM_LFR_SCIENCE_SBM2_BP1_F1"
+          ],
+          "mods": [
+            "2021-02-16 -- V1.8.4 -- First release: Initial version",
+            "2024-12-06 -- V1.14.0 -- Make CDF compliant with SolO metadata standards 2.6 and RCS ICD 1.7"
+          ]
+        },
+        "l1_sbm2_bp2": {
+          "identifier": "SOLO_L1_RPW-LFR-SBM2-BP2",
+          "name": "SOLO RPW LFR L1 SBM2 mode BP2 data",
+          "description": "Contains RPW LFR L1 BP2 science data in SBM2 mode, time-tagged",
+          "level": "L1",
+          "template": "solo_L1_rpw-lfr-sbm2-bp2_*_V??.cdf",
+          "packet": [
+            "TM_LFR_SCIENCE_SBM2_BP2_F0",
+            "TM_LFR_SCIENCE_SBM2_BP2_F1"
+          ],
+          "mods": [
+            "2021-02-16 -- V1.8.4 -- First release: Initial version",
+            "2024-12-06 -- V1.14.0 -- Make CDF compliant with SolO metadata standards 2.6 and RCS ICD 1.7"
+          ]
+        },
+        "l1_sbm2_cwf": {
+          "identifier": "SOLO_L1_RPW-LFR-SBM2-CWF",
+          "name": "SOLO RPW LFR L1 SBM2 mode continuous waveform data",
+          "description": "Contains RPW LFR L1 CWF science data in survey mode, time-tagged",
+          "level": "L1",
+          "template": "solo_L1_rpw-lfr-sbm2-cwf_*_V??.cdf",
+          "packet": [
+            "TM_LFR_SCIENCE_SBM2_CWF_F2"
+          ],
+          "mods": [
+            "2021-02-16 -- V1.8.4 -- First release: Initial version",
+            "2024-12-06 -- V1.14.0 -- Make CDF compliant with SolO metadata standards 2.6 and RCS ICD 1.7"
+          ]
+        }
+      }
+    },
+    {
+      "name": "l0_to_l1_bia_sweep",
+      "category": "Data file production",
+      "description": "Create RPW L1 Bias sweep CDF file from a list of L0 files",
+      "inputs": {
+        "l0_file": {
+          "identifier": "SOLO_L0_RPW"
+        }
+      },
+      "outputs": {
+        "l1_bia_sweep": {
+          "identifier": "SOLO_L1_RPW-BIA-SWEEP",
+          "name": "SOLO RPW L1 Bias sweep data",
+          "description": "Contains RPW L1 Bias sweep parameters, time-tagged",
+          "level": "L1",
+          "template": "solo_L1_rpw-bia-sweep_*_V??.cdf",
+          "packet": [
+            "TC_DPU_START_BIAS_SWEEP",
+            "TM_DPU_EVENT_PR_BIA_SWEEP",
+            "TM_DPU_SCIENCE_BIAS_CALIB",
+            "TM_DPU_SCIENCE_BIAS_CALIB_LONG"
+          ],
+          "mods": [
+            "2020-10-23 -- V1.6.1 -- First release: Initial version",
+            "2021-02-16 -- V1.8.4 -- V1.6.1 -- Second release: OBS_ID attribute is now correctly set | MODS is now used for data release log and SKELETON_MODS for CDF skeleton change log | Fix attribute inconsistencies",
+            "2024-12-06 -- V1.14.0 -- Make CDF compliant with SolO metadata standards 2.6 and RCS ICD 1.7"
+          ]
+        }
+      }
+    },
+    {
+      "name": "l0_to_l1_bia_current",
+      "category": "Data file production",
+      "description": "Create RPW L1 Bias current CDF file from a list of L0 files",
+      "inputs": {
+        "l0_file": {
+          "identifier": "SOLO_L0_RPW"
+        }
+      },
+      "outputs": {
+        "l1_bia_current": {
+          "identifier": "SOLO_L1_RPW-BIA-CURRENT",
+          "name": "SOLO RPW Bias current data",
+          "description": "Contains RPW L1 Bias current parameters, time-tagged",
+          "level": "L1",
+          "template": "solo_L1_rpw-bia-current_*_V??.cdf",
+          "packet": [
+            "TC_DPU_SET_BIAS1",
+            "TC_DPU_SET_BIAS2",
+            "TC_DPU_SET_BIAS3"
+          ],
+          "mods": [
+            "2020-10-23 -- V1.6.1 -- First release: Initial version",
+            "2021-02-16 -- V1.8.4 -- Second release: OBS_ID attribute is now correctly set | MODS is now used for data release log and SKELETON_MODS for CDF skeleton change log | Fix attribute inconsistencies",
+            "2024-12-06 -- V1.14.0 -- Update CDF metadata (not SolO standards compliant)"
+          ]
+        }
+      }
+    },
+    {
+      "name": "l0_to_hk",
+      "category": "Data file production",
+      "description": "Create RPW HK CDF daily files for SOLO",
+      "inputs": {
+        "l0_file": {
+          "identifier": "SOLO_L0_RPW"
+        }
+      },
+      "outputs": {
+        "hk_dbs": {
+          "identifier": "SOLO_HK_RPW-DBS",
+          "name": "SOLO RPW HK DBS data",
+          "description": "Contains RPW DBS HK parameters, time-tagged",
+          "level": "HK",
+          "template": "solo_HK_rpw-dbs_*_V??.cdf",
+          "packet": [
+            "TM_DPU_DBS_HK"
+          ]
+        },
+        "hk_das": {
+          "identifier": "SOLO_HK_RPW-DAS",
+          "name": "SOLO RPW HK DAS data",
+          "description": "Contains RPW DAS HK parameters, time-tagged",
+          "level": "HK",
+          "template": "solo_HK_rpw-das_*_V??.cdf",
+          "packet": [
+            "TM_DPU_DAS_HK"
+          ]
+        },
+        "hk_das_stat": {
+          "identifier": "SOLO_HK_RPW-DAS-STATISTICS",
+          "name": "SOLO RPW HK DAS statistic data",
+          "description": "Contains RPW DAS STATISTIC HK parameters, time-tagged",
+          "level": "HK",
+          "template": "solo_HK_rpw-das-statistics_*_V??.cdf",
+          "packet": [
+            "TM_DPU_DAS_STATISTICS_HK"
+          ]
+        },
+        "hk_pdu": {
+          "identifier": "SOLO_HK_RPW-PDU",
+          "name": "SOLO RPW HK PDU data",
+          "description": "Contains RPW PDU HK parameters, time-tagged",
+          "level": "HK",
+          "template": "solo_HK_rpw-pdu_*_V??.cdf",
+          "packet": [
+            "TM_DPU_PDU_HK"
+          ]
+        },
+        "hk_bia": {
+          "identifier": "SOLO_HK_RPW-BIA",
+          "name": "SOLO RPW HK BIA data",
+          "description": "Contains RPW BIA HK parameters, time-tagged",
+          "level": "HK",
+          "template": "solo_HK_rpw-bia_*_V??.cdf",
+          "packet": [
+            "TM_DPU_BIA_HK"
+          ]
+        },
+        "hk_thr": {
+          "identifier": "SOLO_HK_RPW-THR",
+          "name": "SOLO RPW HK THR data",
+          "description": "Contains RPW THR HK parameters, time-tagged",
+          "level": "HK",
+          "template": "solo_HK_rpw-thr_*_V??.cdf",
+          "packet": [
+            "TM_THR_HK"
+          ]
+        },
+        "hk_tds": {
+          "identifier": "SOLO_HK_RPW-TDS",
+          "name": "SOLO RPW HK TDS data",
+          "description": "Contains RPW TDS HK parameters, time-tagged",
+          "level": "HK",
+          "template": "solo_HK_rpw-tds_*_V??.cdf",
+          "packet": [
+            "TM_TDS_HK"
+          ]
+        },
+        "hk_lfr": {
+          "identifier": "SOLO_HK_RPW-LFR",
+          "name": "SOLO RPW HK LFR data",
+          "description": "Contains RPW LFR HK parameters, time-tagged",
+          "level": "HK",
+          "template": "solo_HK_rpw-lfr_*_V??.cdf",
+          "packet": [
+            "TM_LFR_HK"
+          ]
+        }
+      }
+    },
+    {
+      "name": "l0_to_hk_dump",
+      "category": "Data file production",
+      "description": "Create RPW HK CDF 'dump' files for SOLO",
+      "inputs": {
+        "l0_file": {
+          "identifier": "SOLO_L0_RPW"
+        }
+      },
+      "outputs": {
+        "hk_das_dump": {
+          "identifier": "SOLO_HK_RPW-DAS-DUMP",
+          "name": "SOLO RPW HK DAS DUMP data",
+          "description": "Contains RPW DAS HK dump parameters, time-tagged",
+          "level": "HK",
+          "template": "solo_HK_rpw-das-dump_*_V??.cdf",
+          "packet": "TM_DPU_DAS_PARAMETER_DUMP"
+        }
+      }
+    },
+    {
+      "name": "dds_to_l0",
+      "category": "Data production",
+      "description": "Parse input MOC DDS response XML files into L0 file straightly (not for nominal use).",
+      "inputs": {
+        "dds_tmraw_xml": {
+          "identifier": "SOLO_LZ_RPW-DDS-TMRAW"
+        },
+        "dds_tcreport_xml": {
+          "identifier": "SOLO_LZ_RPW-DDS-TCREPORT"
+        }
+      },
+      "outputs": {
+        "l0_file": {
+          "identifier": "SOLO_L0_RPW"
+        }
+      }
+    },
+    {
+      "name": "set_l0_utc",
+      "category": "Data processing",
+      "description": "Set packet UTC times of the input RPW L0 file with SPICE kernels.",
+      "inputs": {
+        "l0_file": {
+          "identifier": "SOLO_L0_RPW"
+        }
+      },
+      "outputs": {
+        "l0_file": {
+          "identifier": "SOLO_L0_RPW"
+        }
+      }
+    },
+    {
+      "name": "l0_to_daily_report",
+      "category": "Data file production",
+      "description": "Create SOLO RPW summary daily reports",
+      "inputs": {
+        "l0_file": {
+          "identifier": "SOLO_L0_RPW"
+        }
+      },
+      "outputs": {
+        "rpw_event_report": {
+          "identifier": "SOLO_ANC_RPW-EVENT-REPORT",
+          "name": "SOLO RPW event report file",
+          "description": "file containing list of events reported by the DPU",
+          "level": "ANC"
+        },
+        "rpw_status_report": {
+          "identifier": "SOLO_ANC_RPW-STATUS-REPORT",
+          "name": "SOLO RPW event report file",
+          "description": "file containing list of events reported by the DPU",
+          "level": "ANC"
+        }
+      }
+    },
+    {
+      "name": "rocdb_to_bia_sweep_report",
+      "category": "Data file production",
+      "description": "Create SOLO RPW summary bias sweep history report",
+      "inputs": {},
+      "outputs": {
+        "bia_sweep_report": {
+          "identifier": "SOLO_ANC_RPW-BIA-SWEEP-REPORT",
+          "name": "SOLO RPW Bias sweep history report file",
+          "description": "file containing list of Bias sweeps operated on-board",
+          "level": "ANC"
+        }
+      }
+    },
+    {
+      "name": "db_to_anc_bia_sweep_table",
+      "category": "Data file production",
+      "description": "Create CSV file containing SOLO RPW bias sweep table data from ROC database",
+      "inputs": {},
+      "outputs": {
+        "anc_bia_sweep_table": {
+          "identifier": "SOLO_ANC_RPW-BIA-SWEEP-TABLE",
+          "name": "SOLO RPW Bias sweep table CSV file",
+          "description": "file containing list of Bias sweeps tables loaded on-board",
+          "level": "ANC",
+          "packet": [
+            "TC_DPU_LOAD_BIAS_SWEEP",
+            "TC_DPU_CLEAR_BIAS_SWEEP"
+          ]
+        }
+      }
+    },
+    {
+      "name": "move_to_products_dir",
+      "category": "Data file handling",
+      "description": "Move output file folder into a different directory.",
+      "inputs": {},
+      "outputs": {}
+    },
+    {
+      "name": "move_failed_files",
+      "category": "Data file handling",
+      "description": "Move output file tagged as failed into a /failed sub-directory.",
+      "inputs": {},
+      "outputs": {}
+    },
+    {
+      "name": "check_dds",
+      "category": "Data file parsing",
+      "description": "Loading input SolO MOC DDS file(s) found in a given input folder",
+      "inputs": {},
+      "outputs": {
+        "dds_xml": {
+          "identifier": "SOLO_LZ_RPW-DDS"
+        }
+      }
+    },
+    {
+      "name": "parse_dds_xml",
+      "category": "Data file parsing",
+      "description": "Parse and store input MOC DDS TmRaw or TcReport response XML file(s) into dictionary",
+      "inputs": {
+        "dds_xml": {
+          "identifier": "SOLO_LZ_RPW-DDS",
+          "description": "Solar Orbiter MOC EDDS TmRaw or TcReport response XML",
+          "level": "LZ"
+        }
+      },
+      "outputs": {}
+    },
+    {
+      "name": "merge_tmraw",
+      "category": "Data file handling",
+      "description": "Merge input TmRaw Packet XML tags into daily XML files",
+      "inputs": {},
+      "outputs": {}
+    },
+    {
+      "name": "merge_tcreport",
+      "category": "Data file handling",
+      "description": "Merge input TcReport XML tags into daily XML files",
+      "inputs": {},
+      "outputs": {
+        "tcreport_daily_xml": {
+          "identifier": "SOLO_LZ_RPW-DDS-TCREPORT"
+        }
+      }
+    },
+    {
+      "name": "make_daily_tm",
+      "category": "Data file production",
+      "description": "Produce daily XML files from TmRaw data",
+      "inputs": {},
+      "outputs": {
+        "daily_tm_xml": {
+          "identifier": "SOLO_LZ_RPW-DDS-TMRAW"
+        }
+      }
+    },
+    {
+      "name": "cat_solo_hk",
+      "category": "Data file processing",
+      "description": " Task to concatenate and sort by ascending time a list of ParamSampleListElement XML element containing SOLO HK parameters. ParamSampleListElement XML elements are loaded from a set of input SOLO EDDS Param XML files",
+      "inputs": {
+        "dds_xml": {
+          "identifier": "SOLO_LZ_RPW-DDS"
+        }
+      },
+      "outputs": {
+        "solohk_daily_xml": {
+          "identifier": "SOLO_HK_PLATFORM"
+        }
+      }
+    },
+    {
+      "name": "copy_processed_dds",
+      "category": "File handling",
+      "description": "Copy successfully processed DDS files into a target directory.",
+      "inputs": {},
+      "outputs": {}
+    },
+    {
+      "name": "copy_failed_dds",
+      "category": "File handling",
+      "description": "Copy failed DDS files into a target directory.",
+      "inputs": {},
+      "outputs": {}
+    },
+    {
+      "name": "cdf_post_pro",
+      "category": "Data file processing",
+      "description": "Perform post-processing on RPW CDF files",
+      "inputs": {
+        "cdf_file": {
+          "identifier": "SOLO_L1_RPW-CDF"
+        }
+      },
+      "outputs": {
+        "cdf_file": {
+          "identifier": "SOLO_L1_RPW-CDF"
+        }
+      }
+    },
+    {
+      "name": "export_solo_hee_coord",
+      "category": "Data file processing",
+      "description": "Produce CSV file with SolO HEE coordinates",
+      "inputs": {},
+      "outputs": {
+        "output_csv": {
+          "identifier": "SOLO_ANC_HEE_COORD"
+        }
+      }
+    }
+  ]
+}

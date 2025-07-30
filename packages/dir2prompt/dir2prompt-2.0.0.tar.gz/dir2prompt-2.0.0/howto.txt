@@ -1,0 +1,36 @@
+https://packaging.python.org/en/latest/tutorials/packaging-projects/#installing-your-newly-uploaded-package
+
+To push changes, remove contents from list
+
+rm -rf dist/*
+
+Then 
+
+pip install --upgrade build maturin
+twine upload dist/*
+
+
+https://pypi.org/project/dir2prompt/
+
+api key in pypi dir 
+
+
+
+----------------
+new stuff:
+
+
+build with 
+
+maturin develop --release
+
+
+----
+problem:
+(base) mkieffer@MaxBook dir2prompt % twine upload dist/*
+Uploading distributions to https://upload.pypi.org/legacy/
+ERROR    InvalidDistribution: Metadata is missing required fields: Name, Version.          
+         Make sure the distribution includes the files where those fields are specified,   
+         and is using a supported Metadata-Version: 1.0, 1.1, 1.2, 2.0, 2.1, 2.2, 2.3.  
+         
+fix: pip install --upgrade pkginfo

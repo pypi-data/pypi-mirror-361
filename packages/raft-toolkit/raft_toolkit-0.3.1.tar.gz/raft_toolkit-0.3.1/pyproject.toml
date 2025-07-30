@@ -1,0 +1,238 @@
+[build-system]
+requires = ["setuptools>=75.6.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "raft-toolkit"
+version = "0.3.1"
+description = "RAFT (Retrieval Augmented Fine Tuning) toolkit for generating synthetic Q&A datasets"
+readme = "README.md"
+license = "MIT"
+authors = [
+    {name = "RAFT Toolkit Team"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+]
+requires-python = ">=3.11, <3.14"
+dependencies = [
+    # Essential runtime core
+    "pydantic>=2.8.0,<3.0.0",
+    "requests>=2.32.0,<3.0.0",
+    "python-dotenv>=1.0.1,<2.0.0",
+    "pyyaml>=6.0.1,<7.0.0",
+    "tenacity>=8.5.0,<9.0.0",
+    "tqdm>=4.66.0,<5.0.0",
+    "coloredlogs>=15.0.1,<16.0.0",
+    
+    # Core LLM functionality (lightweight)
+    "openai>=1.68.2,<2.0.0",
+    "tiktoken>=0.7.0,<1.0.0",
+    "langchain-core>=0.3.5,<0.4.0",
+    
+    # Basic data handling
+    "pandas>=2.2.0,<3.0.0",
+    "jsonlines>=4.0.0,<5.0.0",
+    
+    # Essential document processing
+    "pypdf>=4.3.0,<5.0.0",
+]
+
+[project.optional-dependencies]
+# Core AI/ML functionality
+ai = [
+    "transformers>=4.46.0,<5.0.0",
+    "sentence-transformers>=3.2.0,<4.0.0",
+    "scikit-learn>=1.5.0,<2.0.0",
+    "datasets>=3.0.0,<4.0.0",
+    "pyarrow>=17.0.0,<18.0.0",
+]
+
+# LangChain ecosystem
+langchain = [
+    "langchain-openai>=0.3.7,<0.4.0",
+    "langchain-community>=0.3.7,<0.4.0",
+    "langchain-experimental>=0.3.3,<0.4.0",  # CVE-2024-46946 affects LLMSymbolicMathChain, we only use SemanticChunker
+    "langchain-text-splitters>=0.3.2,<0.4.0",
+]
+
+# Embedding providers
+embeddings = [
+    "nomic>=3.1.0,<4.0.0",
+]
+
+# Extended document processing
+documents = [
+    "python-pptx>=0.6.23,<1.0.0",
+    "pdfplumber>=0.11.0,<1.0.0",
+]
+
+# Web interface
+web = [
+    "fastapi>=0.115.6,<1.0.0",
+    "starlette>=0.41.0,<1.0.0",
+    "uvicorn[standard]>=0.32.0,<1.0.0",
+    "python-multipart>=0.0.18,<1.0.0",
+    "aiofiles>=24.1.0,<25.0.0",
+    "redis>=5.2.0,<6.0.0",
+    "celery>=5.4.0,<6.0.0",
+]
+
+# Kubernetes deployment - Simplified
+kubernetes = [
+    "kubernetes>=30.1.0,<31.0.0",
+    "jinja2>=3.1.4,<4.0.0",
+    "prometheus-client>=0.21.0,<1.0.0",
+]
+
+# Cloud services - Simplified for better resolution
+cloud = [
+    # AWS Services
+    "boto3>=1.35.0,<1.36.0",
+    "botocore>=1.35.0,<1.36.0",
+    # Azure Core Services  
+    "azure-identity>=1.18.0,<1.19.0",
+    "azure-core>=1.31.0,<1.32.0",
+    "azure-keyvault-secrets>=4.8.0,<4.9.0",
+    # Azure Storage
+    "azure-storage-blob>=12.23.0,<12.25.0",
+    # SharePoint integration
+    "requests-oauthlib>=1.3.1,<1.4.0",
+    "msal>=1.31.0,<1.32.0",
+]
+
+# Observability and tracing - Simplified
+tracing = [
+    "opentelemetry-api>=1.32.1,<2.0.0",
+    "opentelemetry-sdk>=1.32.1,<2.0.0",
+    "structlog>=24.4.0,<25.0.0", 
+    "sentry-sdk>=2.17.0,<3.0.0",
+    "langwatch>=0.2.0,<0.5.0",
+]
+
+# Development and testing - Essential only
+dev = [
+    # Testing framework
+    "pytest>=8.3.0,<9.0.0",
+    "pytest-asyncio>=0.24.0,<1.0.0",
+    "pytest-cov>=6.0.0,<7.0.0",
+    "pytest-mock>=3.14.0,<4.0.0",
+    "pytest-timeout>=2.1.0,<3.0.0",
+    # HTTP testing
+    "httpx>=0.28.0,<1.0.0",
+    # Code quality and linting tools
+    "flake8>=7.1.0,<8.0.0",
+    "black>=24.10.0,<25.0.0",
+    "isort>=5.13.0,<6.0.0",
+    "mypy>=1.13.0,<2.0.0",
+    # Type stubs for mypy
+    "types-requests>=2.32.0,<3.0.0",
+    "types-PyYAML>=6.0.0,<7.0.0",
+    "types-simplejson>=3.20.0,<4.0.0",
+    "types-ujson>=5.10.0,<6.0.0",
+    # Security and code analysis
+    "bandit>=1.8.0,<2.0.0",
+    "safety>=3.2.0,<4.0.0",
+]
+
+# Convenience groups for common install patterns
+minimal = ["raft-toolkit[langchain]"]
+standard = ["raft-toolkit[ai,langchain,embeddings,documents]"]
+complete = ["raft-toolkit[ai,langchain,embeddings,documents,cloud,tracing]"]
+all = ["raft-toolkit[ai,langchain,embeddings,documents,web,kubernetes,cloud,tracing,dev]"]
+
+[project.scripts]
+raft = "raft_toolkit.cli.main:main"
+raft-cli = "raft_toolkit.cli.main:main"
+raft-web = "raft_toolkit.web.app:run_server"
+raft-eval = "raft_toolkit.tools.eval:main"
+raft-answer = "raft_toolkit.tools.answer:main"
+raft-pfeval-chat = "raft_toolkit.tools.pfeval_chat:main"
+raft-pfeval-completion = "raft_toolkit.tools.pfeval_completion:main"
+raft-pfeval-local = "raft_toolkit.tools.pfeval_local:main"
+
+[project.urls]
+"Homepage" = "https://visland.com"
+"Bug Reports" = "https://github.com/makercorn/raft-toolkit/issues"
+"Source" = "https://github.com/makercorn/raft-toolkit"
+
+[tool.setuptools.packages.find]
+include = ["raft_toolkit*"]
+exclude = ["tests*", "notebooks*", "templates*", "docs*", "scripts*"]
+
+[tool.setuptools.package-data]
+"raft_toolkit" = ["*.txt", "*.yaml", "*.yml"]
+"raft_toolkit.templates" = ["*.txt"]
+"raft_toolkit.web" = ["static/*"]
+
+[tool.black]
+line-length = 120
+target-version = ['py311', 'py312', 'py313']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 120
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+skip_gitignore = true
+skip_glob = [
+    ".venv/*",
+    "__pycache__/*",
+    "*.egg-info/*",
+    "build/*",
+    "dist/*"
+]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = true
+disallow_untyped_decorators = false
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = false
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+ignore_missing_imports = true
+
+# Exclude problematic directories
+exclude = [
+    "\\.venv",
+    "__pycache__",
+    "\\.git",
+    "build",
+    "dist",
+    "\\.eggs",
+    "\\.egg-info"
+]

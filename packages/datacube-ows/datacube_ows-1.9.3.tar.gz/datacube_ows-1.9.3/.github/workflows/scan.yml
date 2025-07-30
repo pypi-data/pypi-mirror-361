@@ -1,0 +1,83 @@
+---
+name: Scan
+
+on:
+  push:
+    branches:
+      - develop
+      - develop-1.9
+    paths:
+      - ".github/workflows/scan.yml"
+      - "Dockerfile"
+
+  pull_request:
+    branches:
+      - develop
+      - develop-1.9
+    paths:
+      - ".github/workflows/scan.yml"
+      - "Dockerfile"
+
+  schedule:
+    - cron: '0 0 * * *'
+
+env:
+  IMAGE_NAME: opendatacube/ows
+
+# When a PR is updated, cancel the jobs from the previous version. Merges
+# do not define head_ref, so use run_id to never cancel those jobs.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  cve-scanner:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout git
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Get unstable git tag
+        run: >
+          echo "UNSTABLE_TAG=$(git describe --tags)" >> $GITHUB_ENV
+
+      - name: Log the unstable tag
+        run: echo $UNSTABLE_TAG
+
+      - name: Build unstable + latest Docker image tag
+        if: github.event_name != 'release'
+        uses: whoan/docker-build-with-cache-action@d8d3ad518e7ac382b880720d0751815e656fe032 # v8.1.0
+        with:
+          image_name: ${{ env.IMAGE_NAME }}
+          image_tag: ${{ env.UNSTABLE_TAG }},latest
+          build_extra_args: "--build-arg=ENVIRONMENT=deployment"
+          push_image_and_stages: false
+
+      - name: Run vulnerability scanner
+        if: github.event_name != 'release'
+        uses: aquasecurity/trivy-action@dc5a429b52fcf669ce959baa2c2dd26090d2a6c4 # master
+        with:
+          image-ref: "${{ env.IMAGE_NAME }}:${{ env.UNSTABLE_TAG }}"
+          format: "sarif"
+          output: 'trivy-results.sarif'
+          # exit-code: "1"
+          severity: "CRITICAL,HIGH"
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@181d5eefc20863364f96762470ba6f862bdef56b # v3.29.2
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+      # - name: Notify Slack for Failures
+      #   uses: rtCamp/action-slack-notify@v2.1.0
+      #   if: failure()
+      #   env:
+      #     SLACK_CHANNEL: ga-wms-ops
+      #     SLACK_ICON: "https://github.com/docker.png?size=48"
+      #     SLACK_COLOR: "#482de1"
+      #     SLACK_MESSAGE: ""
+      #     SLACK_TITLE: CVE Scan alert
+      #     SLACK_USERNAME: OWS Scanner
+      #     SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}

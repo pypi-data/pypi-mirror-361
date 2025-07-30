@@ -1,0 +1,44 @@
+Metadata-Version: 2.4
+Name: fastapi-csv-downloader
+Version: 0.1.1
+Summary: CSV download utility for FastAPI
+Home-page: https://github.com/AnisurRahman06046/fastapi-csv-downloader
+Author: Md Anisur Rahman
+Classifier: Programming Language :: Python :: 3
+Classifier: Framework :: FastAPI
+Classifier: License :: OSI Approved :: MIT License
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: fastapi
+Dynamic: author
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# fastapi_csv_download
+
+A simple FastAPI utility to generate downloadable CSV responses.
+
+## Installation
+
+```bash
+pip install fastapi-csv-downloader
+```
+
+## Usage
+
+```
+from fastapi import FastAPI
+from fastapi_csv_downloader import generate_csv_response
+
+app = FastAPI()
+
+@app.get("/download")
+async def download_csv():
+    data = [{"id": 1, "name": "Laptop", "price": 1000}]
+    return generate_csv_response(data, filename="products.csv")
+```

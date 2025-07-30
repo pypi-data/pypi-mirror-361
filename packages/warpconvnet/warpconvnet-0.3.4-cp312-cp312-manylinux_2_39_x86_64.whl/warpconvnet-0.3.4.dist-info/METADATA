@@ -1,0 +1,212 @@
+Metadata-Version: 2.4
+Name: warpconvnet
+Version: 0.3.4
+Summary: 3D Point Cloud and Spatially Sparse Convolutional Networks Framework
+Author-email: Chris Choy <cchoy@nvidia.com>
+Project-URL: GitHub, https://github.com/NVlabs/WarpConvNet
+Project-URL: Documentation, https://nvlabs.github.io/WarpConvNet
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: License :: Other/Proprietary License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE.md
+Requires-Dist: numpy
+Requires-Dist: torch
+Requires-Dist: warp-lang
+Requires-Dist: jaxtyping
+Requires-Dist: pybind11
+Provides-Extra: flash-attn
+Requires-Dist: flash-attn; extra == "flash-attn"
+Provides-Extra: torch-scatter
+Requires-Dist: torch-scatter; extra == "torch-scatter"
+Provides-Extra: cuda11x
+Requires-Dist: cupy-cuda11x; extra == "cuda11x"
+Provides-Extra: cuda12x
+Requires-Dist: cupy-cuda12x; extra == "cuda12x"
+Provides-Extra: dev
+Requires-Dist: ipdb; extra == "dev"
+Requires-Dist: pre-commit; extra == "dev"
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: pytest-benchmark; extra == "dev"
+Requires-Dist: pytest-cov; extra == "dev"
+Provides-Extra: docs
+Requires-Dist: mkdocs; extra == "docs"
+Requires-Dist: mkdocs-material; extra == "docs"
+Requires-Dist: mkdocstrings[python]; extra == "docs"
+Requires-Dist: pymdown-extensions; extra == "docs"
+Provides-Extra: models
+Requires-Dist: rich; extra == "models"
+Requires-Dist: h5py; extra == "models"
+Requires-Dist: wandb; extra == "models"
+Requires-Dist: hydra-core; extra == "models"
+Requires-Dist: omegaconf; extra == "models"
+Requires-Dist: lightning; extra == "models"
+Requires-Dist: torchmetrics; extra == "models"
+Provides-Extra: all
+Requires-Dist: warpconvnet[dev]; extra == "all"
+Requires-Dist: warpconvnet[docs]; extra == "all"
+Requires-Dist: warpconvnet[models]; extra == "all"
+Dynamic: license-file
+Dynamic: requires-python
+
+# WarpConvNet
+
+## Overview
+
+WarpConvNet is a high-performance library for 3D deep learning, built on NVIDIA's Warp framework. It provides efficient implementations of:
+
+- Point cloud processing
+- Sparse voxel convolutions
+- Attention mechanisms for 3D data
+- Geometric operations and transformations
+
+## Installation
+
+Recommend using [`uv`](https://docs.astral.sh/uv/) to install the dependencies. When using `uv`, prepend with `uv pip install ...`.
+
+```bash
+# Install PyTorch first (specify your CUDA version)
+export CUDA=cu128  # For CUDA 12.8
+pip install torch torchvision --index-url https://download.pytorch.org/whl/${CUDA}
+
+# Install core dependencies
+pip install build ninja
+pip install cupy-cuda12x  # use cupy-cuda11x for CUDA 11.x
+pip install git+https://github.com/rusty1s/pytorch_scatter.git
+pip install flash-attn --no-build-isolation
+
+# Install warpconvnet from source
+git clone https://github.com/NVlabs/WarpConvNet.git
+cd WarpConvNet
+git submodule update --init 3rdparty/cutlass
+pip install .
+```
+
+Available optional dependency groups:
+
+- `warpconvnet[dev]`: Development tools (pytest, coverage, pre-commit)
+- `warpconvnet[docs]`: Documentation building tools
+- `warpconvnet[models]`: Additional dependencies for model training (wandb, hydra, etc.)
+
+## Directory Structure
+
+```
+./
+├── 3rdparty/            # Third-party dependencies
+│   └── cutlass/         # CUDA kernels
+├── docker/              # Docker build files
+│   ├── build.sh
+│   └── Dockerfile
+├── docs/                # Documentation sources
+├── examples/            # Example applications
+├── scripts/             # Development utilities
+│   ├── build_docs.py
+│   ├── dir_struct.sh
+│   └── serve_docs.py
+├── tests/               # Test suite
+│   ├── base/            # Core functionality tests
+│   ├── coords/          # Coordinate operation tests
+│   ├── features/        # Feature processing tests
+│   ├── nn/              # Neural network tests
+│   ├── csrc/            # C++/CUDA test utilities
+│   └── types/           # Geometry type tests
+└── warpconvnet/         # Main package
+    ├── csrc/            # C++/CUDA extensions
+    ├── dataset/         # Dataset utilities
+    ├── geometry/        # Geometric operations
+    │   ├── base/        # Core definitions
+    │   ├── coords/      # Coordinate operations
+    │   ├── features/    # Feature operations
+    │   └── types/       # Geometry types
+    ├── models/          # Sample models
+    ├── nn/              # Neural networks
+    │   ├── functional/  # Neural network functions
+    │   └── modules/     # Neural network modules
+    ├── ops/             # Basic operations
+    └── utils/           # Utility functions
+```
+
+For complete directory structure, run `bash scripts/dir_struct.sh`.
+
+## Quick Start
+
+### ModelNet Classification
+
+```bash
+python examples/modelnet.py
+```
+
+### ScanNet Semantic Segmentation
+
+```bash
+pip install warpconvnet[models]
+cd warpconvnet/models
+python examples/scannet.py train.batch_size=12 model=mink_unet
+```
+
+## Docker Usage
+
+Build and run with GPU support:
+
+```bash
+# Build container
+cd docker
+docker build -t warpconvnet .
+
+# Run container
+docker run --gpus all \
+    --shm-size=32g \
+    -it \
+    -v "/home/${USER}:/root" \
+    -v "$(pwd):/workspace" \
+    warpconvnet:latest
+```
+
+## Development
+
+### Running Tests
+
+```bash
+# Run all tests
+pytest tests/
+
+# Run specific test suite
+pytest tests/nn/
+pytest tests/coords/
+
+# Run with benchmarks
+pytest tests/ --benchmark-only
+```
+
+### Building Documentation
+
+```bash
+# Build docs
+python scripts/build_docs.py
+
+# Serve locally
+python scripts/serve_docs.py
+```
+
+## License
+
+Apache 2.0
+
+## Citation
+
+If you use this code in your research, please cite:
+
+```bibtex
+@misc{warpconvnet2025,
+  author = {Chris Choy and NVIDIA Research},
+  title = {WarpConvNet: High-Performance 3D Deep Learning Library},
+  year = {2025},
+  publisher = {NVIDIA Corporation},
+  howpublished = {\url{https://github.com/NVlabs/warpconvnet}}
+}
+```

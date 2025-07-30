@@ -1,0 +1,33 @@
+include README.md
+include LICENSE
+include pyproject.toml
+include MANIFEST.in
+
+# Include the package README
+include metachoices/README.md
+
+# Include package data
+recursive-include metachoices *.py
+recursive-include metachoices/migrations *.py
+
+# Include type hints
+include metachoices/py.typed
+
+# Exclude development and build artifacts
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude *.pyd
+global-exclude __pycache__
+global-exclude *.so
+global-exclude *.egg-info
+prune build
+prune dist
+prune .git
+prune .pytest_cache
+prune .mypy_cache
+prune .coverage
+prune htmlcov
+prune .tox
+prune .venv
+prune venv
+prune env 

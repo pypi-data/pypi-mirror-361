@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "instance_matching"
+version = "0.2.1"
+description = "HD-map instance extraction & matching toolkit"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.9"
+authors = [
+  { name = "Jinhwan Jeon", email = "jordan98@kaist.ac.kr" }
+]
+keywords = ["hd-map", "instance matching", "lanelet"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Topic :: Scientific/Engineering :: GIS",
+]
+
+dependencies = [
+  "numpy",
+  "scipy",
+  "shapely",
+  "matplotlib",
+  "pot",
+  "cyipopt",
+  "lanelet2",
+  "PyYAML"
+]
+
+# CLI entry‐point
+[project.scripts]
+instance-matching = "instance_matching.cli:main"
+
+[project.urls]
+Homepage       = "https://github.com/wjswlsghks98/instance-matching"
+Source         = "https://github.com/wjswlsghks98/instance-matching"
+"Issue Tracker" = "https://github.com/wjswlsghks98/instance-matching/issues"
+
+[tool.setuptools.packages.find]
+where    = ["src"]
+include  = ["instance_matching*"]
+
+[tool.setuptools.package-dir]
+"" = "src"

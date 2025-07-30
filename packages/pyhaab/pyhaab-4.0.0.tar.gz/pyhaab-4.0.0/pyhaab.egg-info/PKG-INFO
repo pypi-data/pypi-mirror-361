@@ -1,0 +1,43 @@
+Metadata-Version: 2.4
+Name: pyhaab
+Version: 4.0.0
+Summary: Cisco switch inventory collector – update in place
+Author-email: Ihaab Saeed <ihaabsaeed@gmail.com>
+License: MIT
+Project-URL: Homepage, https://github.com/ihaabsaeed2/pyhaab
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Intended Audience :: System Administrators
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE.txt
+Requires-Dist: netmiko>=4.0.0
+Requires-Dist: openpyxl>=3.1.2
+Dynamic: license-file
+
+# PyHaab
+
+**PyHaab** is a Cisco-switch inventory collector that connects over SSH,
+scrapes interface/VLAN/device-tracking information, and updates a single
+Excel workbook *in place*.  
+It is the spiritual successor of `inventory_script.py`, repackaged as a
+proper Python library with both **CLI** and **importable API**.
+
+---
+
+## Features
+
+* 🔌 Connects to any IOS-based switch via **Netmiko**
+* 📊 Generates or updates one `.xlsx` file per run  
+  *Per-switch* tabs + a global **“Switches”** summary tab
+* 🌈 Cell colouring that highlights interface state and NAC status
+* ⚡ Runs either as
+  * a **command-line tool** (`pyhaab …`), or
+  * an **importable function** (`from pyhaab import collect`)
+
+---
+
+## Installation
+
+```bash
+pip install pyhaab      # or  pip install --upgrade pyhaab

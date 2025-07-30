@@ -1,0 +1,37 @@
+[tool.poetry]
+name = "pycmdc"
+version = "1.2.3"
+description = "Ditch the copy-paste madness - browse, select, and format code for LLMs, keyboard-only."
+authors = ["0xmrwn <niches-anode0k@icloud.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [
+    { include = "cmdc" }
+]
+
+[tool.poetry.dependencies]
+python = ">=3.9,<4.0"
+typer = ">=0.16.0,<0.17.0"
+rich = ">=14.0.0,<14.1.0"
+inquirerpy = ">=0.3.4,<0.4.0"
+pyperclip = ">=1.9.0,<2.0.0"
+toml = ">=0.10.2,<0.11.0"
+tiktoken = "^0.9.0"
+
+[tool.poetry.scripts]
+cmdc = "cmdc.__main__:app"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.4"
+commitizen = "^4.1.1"
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version_provider = "poetry"
+changelog = "CHANGELOG.md"
+update_changelog_on_bump = true
+bump_message = "chore(release): bump cmdc version to $new_version [skip ci]"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,40 @@
+[project]
+name = "cvat_sdk_i_digit"
+version = "0.0.9"
+description = ""
+authors = [
+    { name = "Шумелев Дмитрий Игоревич", email = "cmit.dima@gmail.com" },
+]
+readme = "README.md"
+dependencies = [
+    "cvat-sdk==2.14.0",
+    "pydantic-settings>=2.0.2",
+    "passlib>=1.7.4",
+    "pandas>=2.2.2",
+]
+requires-python = ">=3.11"
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "flake8>=6.1.0",
+    "mypy>=1.4.1",
+    "black>=23.7.0",
+]
+
+[tool.pdm.build]
+excludes = [
+    "./**/.git",
+]
+package-dir = "src"
+includes = [
+    "src/cvat_sdk_i_digit",
+]
+source-includes = [
+    "README.md",
+]
+
+[build-system]
+requires = [
+    "pdm-backend",
+]
+build-backend = "pdm.backend"

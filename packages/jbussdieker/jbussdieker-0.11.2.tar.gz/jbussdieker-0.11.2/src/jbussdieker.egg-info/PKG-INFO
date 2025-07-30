@@ -1,0 +1,142 @@
+Metadata-Version: 2.4
+Name: jbussdieker
+Version: 0.11.2
+Summary: A helpful CLI and project generator.
+Author-email: "Joshua B. Bussdieker" <jbussdieker@gmail.com>
+Maintainer-email: "Joshua B. Bussdieker" <jbussdieker@gmail.com>
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/jbussdieker/python-jbussdieker
+Project-URL: Documentation, https://github.com/jbussdieker/python-jbussdieker/blob/main/README.md
+Project-URL: Repository, https://github.com/jbussdieker/python-jbussdieker
+Project-URL: Issues, https://github.com/jbussdieker/python-jbussdieker/issues
+Project-URL: Changelog, https://github.com/jbussdieker/python-jbussdieker/blob/main/CHANGELOG.md
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: Development Status :: 3 - Alpha
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Operating System :: OS Independent
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: Natural Language :: English
+Classifier: Typing :: Typed
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: license-file
+
+# python-jbussdieker
+
+A helpful Python CLI and project generator — perfect for bootstrapping new Python projects with best practices baked in.
+
+---
+
+## 📦 Install
+
+Install or upgrade using `pip`:
+
+```bash
+pip install --upgrade jbussdieker
+````
+
+---
+
+## 🚀 Commands
+
+`jbussdieker` provides a simple CLI with a few handy commands:
+
+---
+
+### `jbussdieker version`
+
+Prints the current version.
+
+```bash
+$ jbussdieker version
+jbussdieker v0.7.2
+```
+
+---
+
+### `jbussdieker config`
+
+Inspect or update your configuration.
+
+By default, `jbussdieker` stores its config in:
+
+```bash
+~/.jbussdieker.json
+```
+
+**Show your config:**
+
+```bash
+jbussdieker config
+```
+
+**Update your config:**
+
+```bash
+jbussdieker config --set log_level=DEBUG
+```
+
+*You can set any built-in field (like `log_level`) or define custom settings, which are saved under `custom_settings`.*
+
+---
+
+### `jbussdieker create`
+
+Bootstrap a new project directory.
+
+```bash
+jbussdieker create myproject
+```
+
+This will:
+
+✅ Create `./myproject/`
+✅ Add a `README.md`, `pyproject.toml`, `LICENSE`
+✅ Add starter `src/` and `tests/` folders
+✅ Add GitHub CI workflows
+
+---
+
+## 🗂️ Using a Custom Config File
+
+You can override the default config path with the `JBUSSDIEKER_CONFIG` environment variable:
+
+```bash
+export JBUSSDIEKER_CONFIG=/path/to/custom_config.json
+```
+
+This is useful for:
+
+* Working with multiple config files
+* Keeping test/dev configs separate from your main config
+
+**Example:**
+
+```bash
+# Run with a custom config file
+JBUSSDIEKER_CONFIG=/tmp/myconfig.json jbussdieker config
+```
+
+---
+
+## ❤️ Contributing
+
+Have an idea or found a bug?
+Please open an [issue](https://github.com/jbussdieker/python-jbussdieker/issues) or send a pull request!
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+Happy hacking! ✨

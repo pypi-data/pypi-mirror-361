@@ -1,0 +1,83 @@
+Metadata-Version: 2.4
+Name: fleur
+Version: 0.0.4
+Summary: Combining statistics with visualization for Python
+Author-email: Joseph Barbier <joseph.barbierdarnal@gmail.com>
+License-Expression: MIT
+Project-URL: Homepage, https://y-sunflower.github.io/fleur/
+Project-URL: Issues, https://github.com/y-sunflower/fleur/issues
+Project-URL: Documentation, https://y-sunflower.github.io/fleur/
+Project-URL: Repository, https://github.com/y-sunflower/fleur
+Keywords: statistics,visualization,data,annotations,reproductibility
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Classifier: Development Status :: 3 - Alpha
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: matplotlib>=3.10
+Requires-Dist: narwhals>=1.41.0
+Requires-Dist: scipy>=1.13.1
+Dynamic: license-file
+
+# `fleur`: combining statistics with visualization
+
+<!-- Automatically generated, uses README.qmd to modify README.md -->
+
+<img src="https://github.com/JosephBARBIERDARNAL/static/blob/main/python-libs/fleur/image.png?raw=true" alt="fleur logo" align="right" width="150px"/>
+
+With `fleur` (_pronounced “flur”_), statistics and data visualization
+are done at the same time. It’s meant as a modern tool for highly
+detailed statistical annotations in plots with high customization
+capabilities.
+
+It’s lightweight in the sense that it only requires foundational
+libraries: `matplotlib`, `scipy` and `narwhals`. Learn more [about
+fleur](./about.md).
+
+> [!WARNING] fleur is still in a very early stage: expect regular
+> breaking changes.
+
+[Documentation website](https://y-sunflower.github.io/fleur/)
+
+![Coverage](coverage-badge.svg)
+
+<br>
+
+## Quick start
+
+### Group comparison
+
+```python
+from fleur import BetweenStats
+from fleur import data
+
+df = data.load_iris()
+
+BetweenStats(df["sepal_length"], df["species"]).plot()
+```
+
+![](https://github.com/y-sunflower/fleur/blob/main/docs/img/quickstart-betweenstats.png)
+
+### Correlation
+
+```python
+from fleur import ScatterStats
+from fleur import data
+
+df = data.load_iris()
+
+ScatterStats(df["sepal_length"], df["sepal_width"]).plot()
+```
+
+![](https://github.com/y-sunflower/fleur/blob/main/docs/img/quickstart-scatterstats.png)
+
+<br><br>
+
+## Installation
+
+```bash
+pip install fleur
+```
+
+<br><br>

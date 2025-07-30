@@ -1,0 +1,98 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "c2md"
+dynamic = ["version"]
+description = "Tool to convert Context7 formatted llms.txt to locally organized markdown library documentation"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "crisp-sh", email = "s@crisp.sh"},
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Documentation",
+    "Topic :: Software Development :: Documentation",
+    "Topic :: Text Processing :: Markup :: Markdown",
+]
+keywords = ["context7", "markdown", "documentation", "cli", "converter"]
+requires-python = ">=3.8"
+dependencies = [
+    "requests>=2.31.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/crisp-sh/context7-to-markdown"
+"Bug Reports" = "https://github.com/crisp-sh/context7-to-markdown/issues"
+"Source" = "https://github.com/crisp-sh/context7-to-markdown"
+
+[project.scripts]
+c2md = "c2md.__main__:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["c2md"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/c2md",
+    "/README.md",
+    "/pyproject.toml",
+]
+
+# Development tools configuration
+[tool.hatch.envs.default]
+dependencies = [
+    "pytest",
+    "pytest-cov",
+    "ruff",
+    "psutil>=5.9.8",
+]
+
+[tool.hatch.envs.default.scripts]
+test = "pytest {args:tests}"
+test-cov = "pytest --cov=c2md {args:tests}"
+release = "python scripts/release.py {args}"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+# Ruff configuration
+[tool.ruff]
+# Allow slightly longer lines to reduce needless E501 violations in generated markdown paths, CLI messages, and tests
+line-length = 120
+target-version = "py38"
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "UP", # pyupgrade
+]
+# Ignore rules that are overly strict for this project; we prefer readability for CLI messages
+ignore = ["E501", "B904", "W291", "W293", "B007"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]  # Allow unused imports in __init__.py files
+
+# Version management with Hatch
+[tool.hatch.version]
+path = "c2md/__init__.py"
+pattern = "__version__ = [\"'](?P<version>[^\"']+)[\"']"

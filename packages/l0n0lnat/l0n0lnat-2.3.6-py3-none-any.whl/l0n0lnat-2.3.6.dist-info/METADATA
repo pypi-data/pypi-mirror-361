@@ -1,0 +1,65 @@
+Metadata-Version: 2.1
+Name: l0n0lnat
+Version: 2.3.6
+Summary: 内网穿透服务器，客户端
+Home-page: https://gitee.com/l00n00l/l0n0lnat
+Author: l0n0l
+Author-email: 1038352856@qq.com
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pymonocypher
+
+# 内网穿透（命令行）
+
+## 服务器命令
+```
+usage: l0n0lnatserver [-h] listenhost listenport password
+
+创建内网穿透服务器
+
+positional arguments:
+  listenhost  监听host
+  listenport  监听端口
+  password    密钥
+
+optional arguments:
+  -h, --help  show this help message and exit
+```
+
+## 客户端命令
+```
+usage: l0n0lnatclient [-h] serverhost serverport serverlistenport localhost localport password
+
+创建内网穿透客户端
+
+positional arguments:
+  serverhost        监听host
+  serverport        监听端口
+  serverlistenport  服务器要监听端口
+  localhost         本地服务host
+  localport         本地服务端口
+  password          密钥
+
+optional arguments:
+  -h, --help        show this help message and exit
+```
+
+## 使用实例
+
+    比如在内网有一个nginx(localhost:80)
+    服务器为 x.x.x.x
+
+    1.在服务器执行
+    l0n0lnatserver 0.0.0.0 12345 passwd
+
+    2.在客户端执行
+    l0n0lnatclient x.x.x.x 12345 8080 localhost 80 passwd
+
+    3.访问http://x.x.x.x:8080
+

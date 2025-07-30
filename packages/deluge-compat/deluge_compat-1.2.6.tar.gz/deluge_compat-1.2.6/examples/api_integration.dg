@@ -1,0 +1,53 @@
+// API Integration Example
+// Demonstrates HTTP operations and data processing
+
+// User data to process
+userData = Map();
+userData.put("name", "Alice Smith");
+userData.put("email", "alice@example.com");
+userData.put("department", "engineering");
+
+// Simulate API call with invokeurl
+apiResponse = invokeurl
+[
+    url: "https://jsonplaceholder.typicode.com/posts/1"
+    type: GET
+    headers: {
+        "Content-Type": "application/json",
+        "User-Agent": "deluge-compat/1.0"
+    }
+];
+
+// Process API response
+result = Map();
+result.put("user_data", userData);
+
+if(apiResponse != null) {
+    // Parse and process response
+    responseMap = Map();
+    responseMap.put("status", "success");
+    responseMap.put("data_received", true);
+    responseMap.put("response_length", apiResponse.toString().length());
+
+    result.put("api_response", responseMap);
+} else {
+    // Handle API failure
+    errorMap = Map();
+    errorMap.put("status", "error");
+    errorMap.put("message", "Failed to fetch data from API");
+
+    result.put("api_response", errorMap);
+}
+
+// Additional data processing
+processedData = Map();
+processedData.put("user_email_domain", userData.get("email").substring(userData.get("email").indexOf("@") + 1));
+processedData.put("name_length", userData.get("name").length());
+processedData.put("is_engineer", userData.get("department") == "engineering");
+
+result.put("processed", processedData);
+
+// Log information
+info("Processing complete for user:", userData.get("name"));
+
+return result;

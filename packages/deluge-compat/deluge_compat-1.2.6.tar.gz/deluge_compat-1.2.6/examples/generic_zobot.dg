@@ -1,0 +1,179 @@
+// Generic Zobot Script Example
+// This demonstrates a complete customer service bot workflow
+
+response = Map();
+msg = message.get("text");
+
+// Get visitor information
+active_conversation = visitor.getJSON("active_conversation_id");
+visitor_email = visitor.getJSON("email");
+visitor_phone = visitor.getJSON("phone");
+visitor_state = visitor.getJSON("state");
+visitor_current_page_url = visitor.getJSON("current_page_url");
+landing_page_url = visitor.getJSON("landing_page_url");
+visitor_name = visitor.getJSON("name");
+number_of_past_visits = visitor.getJSON("number_of_past_visits");
+
+// Get any existing conversation thread
+threadId_response = zoho.salesiq.visitorsession.get("customer_portal","threadId","salesiq_connection");
+threadId = null;
+
+if(threadId_response.size() > 0)
+{
+    // Get current session thread ID
+    thread_data = threadId_response.getJSON("data");
+    if(thread_data != null)
+    {
+        threadId = thread_data.get("threadId");
+    }
+}
+
+// Send notification email for new conversations
+if(threadId == null || threadId == "")
+{
+    sendmail
+    [
+        from: "bot@company.com"
+        to: "support@company.com"
+        subject: "New Customer Inquiry"
+        message: "New inquiry from visitor:<br>" +
+                "Email: " + visitor_email + "<br>" +
+                "Phone: " + visitor_phone + "<br>" +
+                "State: " + visitor_state + "<br>" +
+                "Current Page: " + visitor_current_page_url + "<br>" +
+                "Landing Page: " + landing_page_url + "<br>" +
+                "Message: " + msg + "<br>" +
+                "Visit Count: " + number_of_past_visits
+    ]
+}
+
+// Check for agent/human requests
+if(msg.toLowerCase().contains("agent") || msg.toLowerCase().contains("human") || msg.toLowerCase().contains("representative"))
+{
+    response.put("action","forward");
+    response.put("replies", List(["I'll connect you with one of our customer service representatives right away."]));
+    return response;
+}
+
+// Escape message for API call
+msg_escaped = msg.replaceAll("\\\\","\\\\\\\\");
+msg_escaped = msg_escaped.replaceAll("\"","\\\\\"");
+msg_escaped = msg_escaped.replaceAll("\n","\\\\n");
+
+// Build payload for AI/NLP API
+api_payload = Map();
+api_payload.put("message", msg_escaped);
+api_payload.put("conversation_id", active_conversation);
+
+// Add visitor context to API call
+visitor_context = Map();
+visitor_context.put("email", ifnull(visitor.getJSON("email"), ""));
+visitor_context.put("phone", ifnull(visitor.getJSON("phone"), ""));
+visitor_context.put("state", ifnull(visitor.getJSON("state"), ""));
+visitor_context.put("current_page", ifnull(visitor.getJSON("current_page_url"), ""));
+visitor_context.put("landing_page", ifnull(visitor.getJSON("landing_page_url"), ""));
+visitor_context.put("visit_count", ifnull(visitor.getJSON("number_of_past_visits"), "0"));
+visitor_context.put("previous_chats", ifnull(visitor.getJSON("number_of_past_chats"), "0"));
+
+api_payload.put("visitor_context", visitor_context);
+
+// Include existing thread ID if available
+if(threadId != null && threadId != "")
+{
+    api_payload.put("thread_id", threadId);
+}
+
+// Call AI/NLP service
+apiResponse = invokeurl
+[
+    url: "https://api.example.com/chatbot/process"
+    type: POST
+    body: api_payload + ""
+    headers: {"Content-Type": "application/json", "Authorization": "Bearer API_KEY_HERE"}
+];
+
+// Process API response
+replyText = "I'm sorry, I didn't understand that. Could you please rephrase your question?";
+new_thread_id = null;
+
+if(apiResponse != null)
+{
+    if(apiResponse.get("replies") != null)
+    {
+        reply_data = apiResponse.getJSON("replies");
+        if(reply_data.get("text") != null)
+        {
+            replyText = reply_data.getJSON("text");
+        }
+    }
+
+    if(apiResponse.get("thread_id") != null)
+    {
+        new_thread_id = apiResponse.getJSON("thread_id");
+    }
+}
+
+// Store thread ID for new conversations
+if((threadId == null || threadId == "") && new_thread_id != null)
+{
+    session_map = Map();
+    session_map.put("threadId", new_thread_id);
+    zoho.salesiq.visitorsession.set("customer_portal", session_map, "salesiq_connection");
+}
+
+// Check for conversation ending keywords
+if(msg_escaped.equalsIgnoreCase("end chat") ||
+   msg_escaped.equalsIgnoreCase("goodbye") ||
+   msg_escaped.equalsIgnoreCase("bye") ||
+   msg_escaped.equalsIgnoreCase("thanks, that's all") ||
+   msg_escaped.equalsIgnoreCase("stop"))
+{
+    response.put("action", "end");
+    replies = List();
+    replies.add(replyText);
+    replies.add("Thank you for contacting us! Have a great day!");
+    response.put("replies", replies);
+    return response;
+}
+
+// Default reply action
+response.put("action", "reply");
+replies = List();
+replies.add(replyText);
+
+// Add helpful suggestions based on page context
+current_page = visitor.getJSON("current_page_url");
+if(current_page != null)
+{
+    suggestions = List();
+
+    if(current_page.contains("product") || current_page.contains("service"))
+    {
+        suggestions.add("Product Information");
+        suggestions.add("Pricing");
+        suggestions.add("Request Demo");
+    }
+    else if(current_page.contains("support") || current_page.contains("help"))
+    {
+        suggestions.add("Technical Support");
+        suggestions.add("Account Help");
+        suggestions.add("Contact Specialist");
+    }
+    else if(current_page.contains("pricing") || current_page.contains("plan"))
+    {
+        suggestions.add("Compare Plans");
+        suggestions.add("Get Quote");
+        suggestions.add("Schedule Call");
+    }
+    else
+    {
+        suggestions.add("Product Info");
+        suggestions.add("Support");
+        suggestions.add("Talk to Sales");
+    }
+
+    response.put("suggestions", suggestions);
+}
+
+response.put("replies", replies);
+return response;

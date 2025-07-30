@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<center><h1>{{ metadata.title }}</h1></center>
+
+<article>{{ content | safe }}</article>
+
+{% if post_list %}
+  <ul>
+    {% for item in post_list %}
+      <li><small><time datetime="{{ item.metadata.date | safe }}">{{ item.metadata.date | safe}}</time></small>: <a href="/{{ item.url }}">{{ item.metadata.title }}</a></li>
+    {% endfor %}
+  </ul>
+{% endif %}
+{% endblock %}
+

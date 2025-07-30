@@ -1,0 +1,237 @@
+GWAY
+====
+
+Gateway (``gw``) is a lightweight dispatcher that turns every Python function
+into a command line entry.  It ships with a small set of helpers and a recipe
+runner so you can compose automations and simple web apps with only functions
+and ``.gwr`` files.
+
+Quick Start
+-----------
+
+Install from PyPI or from source and invoke ``gway`` on the command line.
+Every module inside ``projects/`` becomes a namespace on ``gw`` and a CLI
+sub-command.
+
+.. code-block:: bash
+
+   gway hello-world
+   gway awg find-awg --meters 30 --amps 60
+
+.. code-block:: python
+
+   from gway import gw
+   gw.hello_world()
+   result = gw.awg.find_awg(meters=30, amps=60)
+   print(result["awg"])
+
+Installation
+------------
+
+``pip install gway`` pulls the latest released package from PyPI. Use this
+when you simply want to depend on GWAY in your own projects.  To work on the
+framework itself clone the repository and install it in editable mode:
+
+.. code-block:: bash
+
+   git clone https://github.com/arthexis/gway.git
+   cd gway
+   pip install -r requirements.txt
+   pip install -e .
+
+Shell Autocompletion
+--------------------
+
+GWAY uses ``argcomplete`` to offer optional tab completion. Install the
+package and register the completion script for your shell::
+
+   pip install argcomplete
+   register-python-argcomplete gway >> ~/.bashrc
+
+For PowerShell::
+
+   register-python-argcomplete gway -s powershell | Out-String | Invoke-Expression
+
+CLI Helpers
+-----------
+
+An experimental project ``cli`` exposes utilities related to the command
+line interface. The ``cli.completions`` function lists available
+builtin and project commands and can aid in building custom completion
+scripts::
+
+   gway cli completions
+
+Core Concepts
+-------------
+
+- **Gateway Object** ``gw``: entry point for all operations.  Calling
+  ``gw.project.func()`` is equivalent to ``gway project func``.
+- **Projects**: any ``.py`` file or directory inside ``projects/`` is loaded on demand. Nested modules use dotted notation (``gw.web.app.setup``).
+- **Builtins**: common utilities such as ``resource``, ``run_recipe``, ``help``,
+  ``test`` and ``notify`` are always available.
+- **Results & Context**: return values are stored in ``gw.results`` and are
+  referenced by name.  Use sigils like ``[result.key]`` to pull values into
+  later calls.
+- **Sigils**: ``[VAR]`` or ``[object.attr]`` placeholders resolve from previous
+  results, ``gw.context`` and environment variables.
+- **Recipes** ``.gwr``: text files listing commands.  Indented lines reuse the
+  previous command allowing very compact scripts.  Run them via
+  ``gway -r file`` or ``gw.run_recipe('file.gwr')``.
+- **Unquoted Kwargs**: values after ``--key`` may include spaces up to the next
+  ``-`` or ``--`` token; quoting is optional.
+- **Environment Loading**: ``envs/clients/<user>.env`` and
+  ``envs/servers/<host>.env`` are read automatically.  A file can specify a
+  ``BASE_ENV`` to inherit defaults from another file.
+- **Async & Watchers**: coroutines are executed in background threads.  Use
+  ``gw.until`` with file or URL watchers (and even PyPI version checks) to keep
+  services running until a condition changes.
+- **Web Helpers**: ``gw.web.app.setup`` registers views named ``view_*``
+  (HTML), ``api_*`` (JSON) and ``render_*`` (fragments).  ``gw.web.server.start_app``
+  launches a Bottle server.  Static assets live under ``data/static``.
+- **Resources**: ``gw.resource`` resolves a file path in the workspace and can
+  create files or directories.  ``gw.resource_list`` lists files matching
+  filters.
+- **Logging & Testing**: ``gw.setup_logging`` configures rotating logs in
+  ``logs/``.  ``gway test --coverage`` or ``gw.test()`` run the suite.
+
+Example Recipe
+--------------
+
+.. code-block:: text
+
+   web app setup web.navbar --home style-changer
+   web app setup web.site --home reader
+   web server start-app --host 127.0.0.1 --port 8888
+   until --forever
+
+
+Run ``gway -r recipes/site.gwr`` and visit ``http://127.0.0.1:8888`` to browse
+help pages rendered by ``web.site.view_reader``.
+
+Advanced Recipe Example
+-----------------------
+
+This example demonstrates the *colon* prefix for repeated commands and
+``#`` lines used as notes. Indented entries inherit the prefix until the
+next non-indented command.
+
+.. code-block:: text
+
+   # Configure multiple projects
+   web app setup:
+       - web.site --home reader
+       - web.nav --style random
+       - games.qpig --home qpig-farm
+
+   # Start the server
+   web:
+    - static collect
+    - server start-app --port 8888
+
+   # Watch for file changes
+   until --file work/reload.txt
+
+Websites
+~~~~~~~~
+
+The ``web`` project assembles view functions into a small site. Register each
+project with ``gw.web.app.setup`` and then launch the server using
+``gw.web.server.start_app``. Routes of the form ``/project/view`` map to
+``view_*`` functions and static files under ``data/static`` are served from
+``/static``. ``web.site.view_reader`` renders ``.rst`` or ``.md`` files when
+you visit ``/web/site/reader/PATH``; it first checks the workspace root and
+then ``data/static`` automatically. See the `Web README
+<https://arthexis.com/web/site/reader?tome=web>`_ for a more complete guide.
+
+Folder Structure
+----------------
+
+Here's a quick reference of the main directories in a typical GWAY workspace:
+
++----------------+--------------------------------------------------------------+
+| Directory      | Description                                                  |
++================+==============================================================+
+| envs/clients/  | Per-user environment files (e.g., ``username.env``).         |
++----------------+--------------------------------------------------------------+
+| envs/servers/  | Per-host environment files (e.g., ``hostname.env``).         |
++----------------+--------------------------------------------------------------+
+| projects/      | Included GWAY python projects. You may add your own.         |
++----------------+--------------------------------------------------------------+
+| logs/          | Runtime logs and log backups.                                |
++----------------+--------------------------------------------------------------+
+| gway/          | Source code for core GWAY components.                        |
++----------------+--------------------------------------------------------------+
+| tests/         | Hierarchical unit tests (e.g., ``tests/gway``).              |
++----------------+--------------------------------------------------------------+
+| data/          | Static assets, resources, and other included data files.     |
++----------------+--------------------------------------------------------------+
+| work/          | Working directory for output files and products.             |
++----------------+--------------------------------------------------------------+
+| recipes/       | Included .gwr recipe files (-r mode). You may add more.      |
++----------------+--------------------------------------------------------------+
+| tools/         | Platform-specific scripts and files.                         |
++----------------+--------------------------------------------------------------+
+
+
+Test Layout
+-----------
+
+Tests are discovered recursively so directories under ``tests`` may mirror the source tree. A suggested structure is::
+
+    tests/
+        gway/
+        projects/
+
+Project READMEs
+---------------
+
+The following projects bundle additional documentation.  Each link uses
+``view_reader`` to render the ``README.rst`` file directly from the
+``data/static`` folder.
+
+- `awg <https://arthexis.com/web/site/reader?tome=awg>`_
+- `cdv <https://arthexis.com/web/site/reader?tome=cdv>`_
+- `games <https://arthexis.com/web/site/reader?tome=games>`_
+  - `conway <https://arthexis.com/web/site/reader?tome=games/conway>`_
+  - `mtg <https://arthexis.com/web/site/reader?tome=games/mtg>`_
+  - `qpig <https://arthexis.com/web/site/reader?tome=games/qpig>`_
+- `monitor <https://arthexis.com/web/site/reader?tome=monitor>`_
+- `ocpp <https://arthexis.com/web/site/reader?tome=ocpp>`_
+  - `csms <https://arthexis.com/web/site/reader?tome=ocpp/csms>`_
+  - `evcs <https://arthexis.com/web/site/reader?tome=ocpp/evcs>`_
+  - `data <https://arthexis.com/web/site/reader?tome=ocpp/data>`_
+- `release <https://arthexis.com/web/site/reader?tome=release>`_
+- `vbox <https://arthexis.com/web/site/reader?tome=vbox>`_
+- `web <https://arthexis.com/web/site/reader?tome=web>`_
+  - `nav <https://arthexis.com/web/site/reader?tome=web/nav>`_
+  - `cookies <https://arthexis.com/web/site/reader?tome=web/cookies>`_
+  - `auth <https://arthexis.com/web/site/reader?tome=web/auth>`_
+  - `chat <https://arthexis.com/web/site/reader?tome=web/chat>`_
+
+.. _/web/site/reader?tome=awg: https://arthexis.com/web/site/reader?tome=awg
+.. _/web/site/reader?tome=cdv: https://arthexis.com/web/site/reader?tome=cdv
+.. _/web/site/reader?tome=games: https://arthexis.com/web/site/reader?tome=games
+.. _/web/site/reader?tome=games/conway: https://arthexis.com/web/site/reader?tome=games/conway
+.. _/web/site/reader?tome=games/mtg: https://arthexis.com/web/site/reader?tome=games/mtg
+.. _/web/site/reader?tome=games/qpig: https://arthexis.com/web/site/reader?tome=games/qpig
+.. _/web/site/reader?tome=monitor: https://arthexis.com/web/site/reader?tome=monitor
+.. _/web/site/reader?tome=ocpp: https://arthexis.com/web/site/reader?tome=ocpp
+.. _/web/site/reader?tome=ocpp/csms: https://arthexis.com/web/site/reader?tome=ocpp/csms
+.. _/web/site/reader?tome=ocpp/evcs: https://arthexis.com/web/site/reader?tome=ocpp/evcs
+.. _/web/site/reader?tome=ocpp/data: https://arthexis.com/web/site/reader?tome=ocpp/data
+.. _/web/site/reader?tome=release: https://arthexis.com/web/site/reader?tome=release
+.. _/web/site/reader?tome=vbox: https://arthexis.com/web/site/reader?tome=vbox
+.. _/web/site/reader?tome=web: https://arthexis.com/web/site/reader?tome=web
+.. _/web/site/reader?tome=web/nav: https://arthexis.com/web/site/reader?tome=web/nav
+.. _/web/site/reader?tome=web/cookies: https://arthexis.com/web/site/reader?tome=web/cookies
+.. _/web/site/reader?tome=web/auth: https://arthexis.com/web/site/reader?tome=web/auth
+.. _/web/site/reader?tome=web/chat: https://arthexis.com/web/site/reader?tome=web/chat
+
+You can generate these links yourself with
+``gw.web.build_url('web/site/reader', tome='proj')``.
+
+License
+-------
+
+MIT License

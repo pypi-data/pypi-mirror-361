@@ -1,0 +1,120 @@
+Metadata-Version: 2.4
+Name: textual_tty
+Version: 0.1.0
+Summary: A tty for Textual UIs
+Author-email: Gareth Davidson <gaz@bitplane.net>
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Classifier: Development Status :: 2 - Pre-Alpha
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: License :: Public Domain
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+License-File: LICENSE.md
+Requires-Dist: textual
+Requires-Dist: pywinpty ; sys_platform == 'win32'
+Requires-Dist: textual-window
+Requires-Dist: pre-commit ; extra == "dev"
+Requires-Dist: pytest ; extra == "dev"
+Requires-Dist: coverage ; extra == "dev"
+Requires-Dist: pytest-cov ; extra == "dev"
+Requires-Dist: pydoc-markdown ; extra == "dev"
+Requires-Dist: build ; extra == "dev"
+Requires-Dist: twine ; extra == "dev"
+Requires-Dist: ruff ; extra == "dev"
+Requires-Dist: mkdocs ; extra == "dev"
+Requires-Dist: textual-window ; extra == "dev"
+Project-URL: Bug Tracker, https://github.com/bitplane/textual-tty/issues
+Project-URL: Homepage, https://bitplane.net/dev/python/textual-tty
+Project-URL: Source Code, https://github.com/bitplane/textual-tty
+Provides-Extra: dev
+
+# textual-tty
+
+A pure Python terminal emulator for Textual apps, that aims for tmux
+compatibility.
+
+Currently lacks a cursor, any decent debugging tools, and is too chatty,
+but it's still somewhat usable.
+
+## Demo
+
+```bash
+uvx textual-tty
+```
+
+## Usage
+
+There's 3 main classes:
+
+1. `Terminal`, a standalone terminal that doesn't need Textual.
+2. `TextualTerminal`, a tty widget subclass.
+3. `TerminalApp`, a terminal emulator in a window.
+
+Read the demo code for more info.
+
+## Links
+
+* [🏠 home](https://bitplane.net/dev/python/textual-tty)
+* [🐍 pypi](https://pypi.org/project/textual-tty)
+* [🐱 github](https://github.com/bitplane/textual-tty)
+
+## License
+
+WTFPL with one additional clause
+
+1. Don't blame me
+
+Do wtf you want, but don't blame me when it rips a hole in your trousers.
+
+## todo / ideas
+
+- [ ] debug logger
+  - [ ] make file logging optional
+  - [ ] add arg parser to demo app
+- [ ] break terminal project out from Textual deps
+  - [ ] pick a snazzy name
+  - [ ] stdio -> pty wrapper
+  - [ ] gui
+    - [ ] make `framebuffer.py`
+    - [ ] choose a backend
+  - [ ] asciinema streaming -> terminal web
+- [ ] performance improvements
+  - [x] rewrite using ANSI buffer grid
+  - [ ] parse with regex over large buffer sizes
+  - [x] lazily draw the outputs, render to Rich at the last moment
+- [ ] scrollback buffer
+  - [ ] rewrite app so we have consistent + performant buffer class
+  - [ ] scrollbar support when used
+- [ ] bugs
+  - [x] blank background to end of line
+    - [x] Move away from rich
+  - [ ] corruption in stream
+  - [ ] scroll region: scroll up in `vim` corrupts outside scroll region
+- [ ] testing
+  - [ ] move tests
+    - [ ] integration ./tests/integration
+    - [ ] comparison scripts ./tests/integration/scripts
+    - [x] performance ./test/performance
+  - [ ] more coverage
+  - [x] performance counters
+- [ ] reduce redundancy redundancy of repeated repeated code code
+  - [ ] code code of of redundancy redundancy
+- [ ] add terminal visuals
+  - [x] mouse cursor (disabled by default)
+  - [ ] bell flash effect (enabled in base class, disabled in textual_terminal)
+- [ ] Theme support
+  - [ ] base terminal using config + themes
+  - [ ] textual widget using CSS styles
+  - [ ] textual app using theme/css loader
+- [ ] flesh out terminal app
+  - [ ] multiple tabs
+  - [ ] settings panel
+    - [ ] bell: system [Y/n], title bar [y/N], flash [y/N]
+    - [ ] mouse: display [y/N]
+    - [ ] wide chars detection
+    - [ ] theme selector/editor
+
+

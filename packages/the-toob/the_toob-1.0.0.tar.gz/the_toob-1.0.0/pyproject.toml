@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "the-toob"
+version = "1.0.0"
+authors = [
+  { name="JW Drummond (MD Wade)", email="wade@mdwade.com" },
+]
+description = "A modern interface for automating a browser to upload videos to YouTube."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.8"
+classifiers = [
+    # Project status
+    "Development Status :: 5 - Production/Stable",
+
+    # License information
+    "License :: OSI Approved :: MIT License",
+
+    # Intended audiences
+    "Intended Audience :: Developers",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Multimedia :: Video",
+
+    # Supported Python versions
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+
+    # Supported operating systems (as a library, it should work on any OS)
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "selenium>=4.6.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/MD-Wade/the-toob"
+Issues = "https://github.com/MD-Wade/the-toob/issues"
+
+# Command-line tool entry point
+[project.scripts]
+thetoob = "the_toob.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["the_toob*"]
+
+[tool.pytest.ini_options]
+markers = [
+    "browser: tests for the ToobBrowser class",
+    "uploader: tests for the Uploader class",
+    "page: tests for the UploaderPage class",
+    "integration: full end-to-end tests that require a browser and login",
+]

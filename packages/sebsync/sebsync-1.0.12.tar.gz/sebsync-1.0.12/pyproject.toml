@@ -1,0 +1,40 @@
+[project]
+name = "sebsync"
+version = "1.0.12"
+description = "Synchronize Standard Ebooks catalog with local EPUB collection."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [ "click", "requests" ]
+keywords = ["standard", "ebook", "book", "synchronization", "sync", "download"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "License :: OSI Approved :: Zero-Clause BSD (0BSD)",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: System :: Archiving :: Mirroring",
+]
+
+[[project.authors]]
+name = "Sebsync authors"
+
+[project.scripts]
+sebsync = "sebsync:main"
+
+[project.urls]
+Repository = "https://github.com/pbryan/sebsync/"
+
+[dependency-groups]
+dev = [ "pytest", "ruff" ]
+
+[build-system]
+requires = [ "hatchling" ]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 96
+target-version = "py313"
+
+[tool.ruff.lint.isort]
+no-sections = true
+lines-after-imports = 2
+lines-between-types = 1

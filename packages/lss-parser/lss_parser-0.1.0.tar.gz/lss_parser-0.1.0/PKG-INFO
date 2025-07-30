@@ -1,0 +1,326 @@
+Metadata-Version: 2.4
+Name: lss-parser
+Version: 0.1.0
+Summary: A Python module for parsing and manipulating LiveSplit .lss files
+Project-URL: Homepage, https://github.com/mushroomsuprise/lss-parser
+Project-URL: Bug Reports, https://github.com/mushroomsuprise/lss-parser/issues
+Project-URL: Source, https://github.com/mushroomsuprise/lss-parser
+Author: mushroomsuprise
+License: MIT
+Keywords: livesplit,lss,parser,speedrunning,xml
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Games/Entertainment
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.8
+Requires-Dist: pydantic>=2.0.0
+Description-Content-Type: text/markdown
+
+# LiveSplit LSS File Parser
+
+A comprehensive Python module for parsing and manipulating LiveSplit `.lss` files. This module converts XML-based LSS files into easy-to-use Python objects, allowing for programmatic analysis and manipulation of speedrun data.
+
+## Features
+
+- **Complete LSS File Support**: Parse all elements of LSS files including metadata, attempts, segments, and timing data
+- **Pydantic-Based Models**: Robust data validation and serialization using Pydantic BaseModel
+- **Bidirectional Conversion**: Load LSS files into Python objects and save them back to LSS format
+- **Type Safety**: Full type annotations with automatic validation for better IDE support and code reliability
+- **JSON Serialization**: Built-in support for JSON export/import via Pydantic
+- **Data Validation**: Automatic type conversion and validation (e.g., integers to strings where needed)
+- **Comprehensive API**: Simple interface with just two main functions: `load_lss_file()` and `save_lss_file()`
+
+## Installation
+
+This module requires Pydantic. Install dependencies:
+
+```bash
+pip install pydantic
+```
+
+Then copy the `lss_parser.py` file to your project directory or install it as a module.
+
+```python
+import lss_parser
+```
+
+## Quick Start
+
+### Loading an LSS File
+
+```python
+import lss_parser
+
+# Load a LiveSplit file
+run = lss_parser.load_lss_file("my_speedrun.lss")
+
+# Access basic information
+print(f"Game: {run.game_name}")
+print(f"Category: {run.category_name}")
+print(f"Total Attempts: {run.attempt_count}")
+print(f"Number of Segments: {len(run.segments)}")
+```
+
+### Saving an LSS File
+
+```python
+# Modify the run data
+run.game_name = "Modified Game Name"
+run.category_name = "Any% Modified"
+
+# Save the modified run
+lss_parser.save_lss_file(run, "modified_speedrun.lss")
+```
+
+## Data Structure
+
+The module provides several Pydantic models to represent LSS file structure:
+
+### `Run` - Main Container
+- `game_name`: Name of the game
+- `category_name`: Speedrun category
+- `version`: LSS file version
+- `attempt_count`: Total number of attempts
+- `segments`: List of segments (splits)
+- `attempt_history`: List of all attempts
+- `metadata`: Platform, region, and other metadata
+- `auto_splitter_settings`: Auto-splitter configuration
+
+### `Segment` - Individual Splits
+- `name`: Segment name
+- `icon`: Icon path/data
+- `split_times`: List of split times with different timing methods
+- `best_segment_time`: Best time for this segment
+- `segment_history`: Historical times for this segment
+
+### `Attempt` - Run Attempts
+- `id`: Unique attempt identifier
+- `started`: Start time/date
+- `ended`: End time/date
+- `time`: Timing data (real time, game time, pause time)
+
+### `Time` - Timing Information
+- `real_time`: Real world time
+- `game_time`: In-game time
+- `pause_time`: Paused time
+
+## Pydantic Features
+
+The module leverages Pydantic's powerful features:
+
+### Data Validation
+```python
+import lss_parser
+
+# Automatic type conversion
+time = lss_parser.Time(real_time=123)  # Converts to "123"
+print(time.real_time)  # "123"
+
+# Validation on assignment
+run = lss_parser.Run(game_name="Test Game")
+run.attempt_count = "42"  # Automatically converted to int
+```
+
+### JSON Serialization
+```python
+# Export to JSON
+run = lss_parser.load_lss_file("speedrun.lss")
+run_dict = run.model_dump()  # or run.dict() for older Pydantic versions
+
+# Import from JSON
+run_data = {...}  # JSON data
+run = lss_parser.Run(**run_data)
+```
+
+### Type Safety
+```python
+# IDE support with type hints
+def analyze_run(run: lss_parser.Run) -> None:
+    for segment in run.segments:  # Full IDE autocomplete
+        print(f"Segment: {segment.name}")
+        print(f"Best time: {segment.best_segment_time.real_time}")
+```
+
+## Usage Examples
+
+### Analyzing Speedrun Data
+
+```python
+import lss_parser
+
+# Load the file
+run = lss_parser.load_lss_file("my_speedrun.lss")
+
+# Find completed attempts
+completed_attempts = [a for a in run.attempt_history if a.time.real_time]
+print(f"Completed {len(completed_attempts)} out of {len(run.attempt_history)} attempts")
+
+# Analyze segment times
+for segment in run.segments:
+    print(f"{segment.name}: Best {segment.best_segment_time.real_time or 'N/A'}")
+    
+# Get personal best
+pb_attempts = [a for a in completed_attempts if a.time.real_time]
+if pb_attempts:
+    best_time = min(pb_attempts, key=lambda x: x.time.real_time)
+    print(f"Personal Best: {best_time.time.real_time}")
+```
+
+### Creating a New Run
+
+```python
+import lss_parser
+
+# Create a new run
+new_run = lss_parser.Run(
+    game_name="My Game",
+    category_name="Any%"
+)
+
+# Add segments
+segments = [
+    lss_parser.Segment(
+        name="Level 1",
+        best_segment_time=lss_parser.Time(real_time="00:01:30.0000000")
+    ),
+    lss_parser.Segment(
+        name="Level 2", 
+        best_segment_time=lss_parser.Time(real_time="00:02:15.0000000")
+    ),
+    lss_parser.Segment(
+        name="Boss",
+        best_segment_time=lss_parser.Time(real_time="00:03:45.0000000")
+    )
+]
+
+new_run.segments = segments
+
+# Add metadata
+new_run.metadata.platform = "PC"
+new_run.metadata.region = "USA"
+
+# Save the new run
+lss_parser.save_lss_file(new_run, "new_speedrun.lss")
+```
+
+### Modifying Existing Data
+
+```python
+import lss_parser
+
+# Load existing file
+run = lss_parser.load_lss_file("existing_run.lss")
+
+# Modify segment names
+for segment in run.segments:
+    segment.name = f"Modified {segment.name}"
+
+# Add a new segment
+new_segment = lss_parser.Segment(
+    name="New Final Boss",
+    best_segment_time=lss_parser.Time(real_time="00:05:00.0000000")
+)
+run.segments.append(new_segment)
+
+# Update attempt count
+run.attempt_count = len(run.attempt_history)
+
+# Save changes
+lss_parser.save_lss_file(run, "modified_run.lss")
+```
+
+## API Reference
+
+### Main Functions
+
+#### `load_lss_file(file_path: Union[str, Path]) -> Run`
+Loads and parses an LSS file into a Run object.
+
+**Parameters:**
+- `file_path`: Path to the .lss file
+
+**Returns:**
+- `Run` object containing all parsed data
+
+**Raises:**
+- `FileNotFoundError`: If the file doesn't exist
+- `ValueError`: If the file is not a valid LSS file
+- `xml.etree.ElementTree.ParseError`: If the XML is malformed
+
+#### `save_lss_file(run: Run, file_path: Union[str, Path]) -> None`
+Saves a Run object to an LSS file.
+
+**Parameters:**
+- `run`: Run object to save
+- `file_path`: Path where to save the .lss file
+
+**Raises:**
+- `ValueError`: If the file path is invalid
+
+### Data Models
+
+All data models are implemented using Pydantic's `BaseModel` and include:
+- Type annotations with automatic validation
+- Default values where appropriate
+- Automatic data conversion and validation
+- JSON serialization/deserialization support
+- IDE support with full type hints
+
+## Error Handling
+
+The module includes comprehensive error handling:
+
+```python
+import lss_parser
+
+try:
+    run = lss_parser.load_lss_file("nonexistent.lss")
+except FileNotFoundError:
+    print("File not found!")
+except ValueError as e:
+    print(f"Invalid file: {e}")
+except Exception as e:
+    print(f"Parse error: {e}")
+```
+
+## Testing
+
+The module includes comprehensive tests. Run them with:
+
+```bash
+python test_parser.py
+```
+
+## Demo
+
+See `demo.py` for a comprehensive demonstration of all features:
+
+```bash
+python demo.py
+```
+
+## File Format Support
+
+This parser supports LiveSplit LSS files version 1.7.0 and should be compatible with other versions. The parser handles:
+
+- Game metadata (name, category, platform, region)
+- Attempt history with timestamps and timing data
+- Segment information with split times and history
+- Auto-splitter settings
+- Custom variables and platform-specific data
+
+## License
+
+This module is provided as-is for educational and personal use. It is not affiliated with LiveSplit or the LiveSplit development team.
+
+## Contributing
+
+This is a complete, self-contained module designed for parsing LSS files. Feel free to extend it for your specific needs.

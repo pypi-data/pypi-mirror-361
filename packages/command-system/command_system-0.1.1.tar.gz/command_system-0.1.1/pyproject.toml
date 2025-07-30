@@ -1,0 +1,65 @@
+[project]
+name = "command_system"
+version = "0.1.1"
+description = "Type-safe command pattern implementation in pure Python"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE.md"]
+requires-python = ">=3.13"
+dependencies = []
+keywords = ["command"]
+
+authors = [
+    {name="Alec Zaiane"}
+    ]
+
+[project.urls]
+Repository = "https://github.com/alec-zaiane/command-system/"
+
+[build-system]
+requires = ["uv_build>=0.7.20,<0.8.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "command_system"
+module-root = ""
+
+[dependency-groups]
+dev = [
+    "isort>=6.0.1",
+    "mypy>=1.16.1",
+    "pytest>=8.4.1",
+    "pytest-cov>=6.2.1",
+]
+
+[tool.black]
+line-length = 100
+target-version = ['py313']
+
+[tool.isort]
+profile = "black"
+include_trailing_comma = true
+
+[tool.pytest.ini_options]
+log_level = "INFO"
+
+[tool.coverage.run]
+branch = true
+omit = [
+    "test_*",
+]
+
+[tool.coverage.report]
+precision = 2
+skip_covered = true
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "from .* import",
+    "import",
+    "@abstractmethod",
+]
+fail_under = 90
+
+[tool.coverage.xml]
+output = "coverage.xml"

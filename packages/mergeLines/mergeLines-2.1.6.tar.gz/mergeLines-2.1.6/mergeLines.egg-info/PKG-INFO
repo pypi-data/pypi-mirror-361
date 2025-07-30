@@ -1,0 +1,64 @@
+Metadata-Version: 2.1
+Name: mergeLines
+Version: 2.1.6
+Summary: merge lines after houghlinesp
+Home-page: UNKNOWN
+License: UNKNOWN
+Description: Using method:
+        =========
+        
+        line discription: x1,y1,x2,y2
+        
+        ```
+        //
+        example1:
+        //
+        
+        
+        import cv2 
+        
+        lsd = cv2.createLineSegmentDetector(0) 
+        
+        dlines = lsd.detect(pic) 
+        
+        img0=pic.copy() 
+        
+        lines=[] 
+        
+        for dline in dlines[0]: 
+        
+            x0 = int(round(dline[0][0])) 
+        
+            y0 = int(round(dline[0][1])) 
+        
+            x1 = int(round(dline[0][2])) 
+        
+            y1 = int(round(dline[0][3])) 
+        
+            lines.append((x0,y0,x1,y1))
+        
+        lines=mergeLine.merge_lines(lines,slope_tolerent=10,dis_tor=15)
+        ```
+        ```
+        
+        //
+        example2:
+        import  mergeLine
+        
+        mergeLine.merge_lines(  
+                [1,0,0,1],
+              [2,0,0,2],
+              [3,0,0,3],  
+        )
+        
+        //we get 2,0,0,2
+        
+        //you can set ,scope_tolerent=,dis_tor 2 parameter  in  merge_lines.
+        
+        // which are   used  to set how lines are similar. first is used set scope_similarity. second is used to set distance tolerent betwen line segments.
+        
+        ````
+        //contact: 15122306087@163.com
+        
+Platform: UNKNOWN
+Description-Content-Type: text/markdown

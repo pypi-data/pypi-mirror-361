@@ -1,0 +1,36 @@
+[project]
+name = "flackup"
+authors = [{name = "Alexander Dietrich", email = "alexander@dietrich.cx"}]
+description = "FLAC CD Backup Manager"
+readme = "README.md"
+requires-python = ">=3.10" # .python-version
+license = "GPL-3.0-or-later"
+classifiers = [
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Multimedia :: Sound/Audio :: CD Audio",
+    "Topic :: Multimedia :: Sound/Audio :: Conversion",
+]
+dependencies = [
+    "click ~= 8.2",
+    "musicbrainzngs ~= 0.7",
+    "mutagen ~= 1.47",
+    "pillow ~= 11.3",
+]
+dynamic = ["version"]
+
+[project.scripts]
+flackup = "flackup.cli:flackup"
+
+[project.urls]
+Homepage = "https://codeberg.org/alxndr42/flackup"
+
+[tool.pytest.ini_options]
+pythonpath = "src"
+
+[tool.setuptools.dynamic]
+version = {attr = "flackup.VERSION"}
+
+[build-system]
+requires = ["setuptools>=80", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"

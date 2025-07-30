@@ -1,0 +1,260 @@
+Metadata-Version: 2.3
+Name: aiostate
+Version: 0.1.0
+Summary: A flexible, async-friendly state machine implementation for Python with thread-safe operations and decorator-based transitions.
+License: MIT License
+         
+         Copyright (c) 2025 BoChen SHEN
+         
+         Permission is hereby granted, free of charge, to any person obtaining a copy
+         of this software and associated documentation files (the "Software"), to deal
+         in the Software without restriction, including without limitation the rights
+         to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+         copies of the Software, and to permit persons to whom the Software is
+         furnished to do so, subject to the following conditions:
+         
+         The above copyright notice and this permission notice shall be included in all
+         copies or substantial portions of the Software.
+         
+         THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+         IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+         FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+         AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+         LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+         OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+         SOFTWARE.
+Keywords: asyncio,state-machine,fsm,python,async,state
+Author: BoChen SHEN
+Author-email: 6goddddddd@gmail.com
+Requires-Python: >=3.11,<3.13
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Operating System :: OS Independent
+Classifier: Framework :: AsyncIO
+Description-Content-Type: text/markdown
+
+# aiostate
+
+A flexible, async-friendly state machine implementation for Python with thread-safe operations and decorator-based
+transitions.
+
+## Features
+
+- **Thread-safe**: Uses asyncio locks for concurrent access
+- **Decorator-based**: Clean, intuitive API for defining transitions
+- **Guard conditions**: Conditional transitions with custom logic
+- **Entry/Exit handlers**: Execute code when entering or leaving states
+- **Wildcard transitions**: Define transitions from any state
+- **Type-safe**: Full typing support with generics
+- **Flexible**: Works with any hashable type for states and events
+
+## Installation
+
+```bash
+pip install aiostate
+```
+
+Or using Poetry:
+
+```bash
+poetry add aiostate
+```
+
+## Quick Start
+
+```python
+import asyncio
+from aiostate import AsyncStateMachine
+
+# Create a state machine for a simple traffic light
+fsm = AsyncStateMachine('red')
+
+
+@fsm.transition('red', 'timer', 'green')
+async def red_to_green():
+    print("Light turns green")
+
+
+@fsm.transition('green', 'timer', 'yellow')
+async def green_to_yellow():
+    print("Light turns yellow")
+
+
+@fsm.transition('yellow', 'timer', 'red')
+async def yellow_to_red():
+    print("Light turns red")
+
+
+async def main():
+    print(f"Current state: {fsm.state}")  # red
+
+    await fsm.trigger('timer')  # red -> green
+    print(f"Current state: {fsm.state}")  # green
+
+    await fsm.trigger('timer')  # green -> yellow
+    print(f"Current state: {fsm.state}")  # yellow
+
+    await fsm.trigger('timer')  # yellow -> red
+    print(f"Current state: {fsm.state}")  # red
+
+
+asyncio.run(main())
+```
+
+## Advanced Usage
+
+### Entry and Exit Handlers
+
+```python
+fsm = AsyncStateMachine('idle')
+
+
+@fsm.on_enter('running')
+async def on_enter_running():
+    print("System is now running")
+    # Initialize resources, start monitoring, etc.
+
+
+@fsm.on_exit('running')
+async def on_exit_running():
+    print("System is stopping")
+    # Cleanup resources, save state, etc.
+
+
+@fsm.transition('idle', 'start', 'running')
+async def start_system():
+    print("Starting system...")
+    # Perform startup logic
+```
+
+### Guard Conditions
+
+```python
+fsm = AsyncStateMachine('locked')
+
+
+def has_valid_key(key):
+    return key == "secret123"
+
+
+@fsm.transition('locked', 'unlock', 'unlocked', guard=has_valid_key)
+async def unlock_door(key):
+    print(f"Door unlocked with key: {key}")
+
+
+# Usage
+success = await fsm.trigger('unlock', key="wrong_key")
+print(success)  # False - guard condition failed
+
+success = await fsm.trigger('unlock', key="secret123")
+print(success)  # True - transition successful
+```
+
+### Multiple Source States
+
+```python
+fsm = AsyncStateMachine('idle')
+
+
+# Transition from either 'running' or 'paused' to 'stopped'
+@fsm.transition({'running', 'paused'}, 'stop', 'stopped')
+async def stop_process():
+    print("Process stopped")
+
+
+# Wildcard transition - from any state to 'error'
+@fsm.transition('*', 'error', 'error')
+async def handle_error():
+    print("Error occurred, transitioning to error state")
+```
+
+### Async Guard Conditions
+
+```python
+async def async_guard(user_id):
+    # Simulate async database check
+    await asyncio.sleep(0.1)
+    return user_id in ['admin', 'user123']
+
+
+@fsm.transition('pending', 'approve', 'approved', guard=async_guard)
+async def approve_request(user_id):
+    print(f"Request approved by {user_id}")
+```
+
+## API Reference
+
+### AsyncStateMachine
+
+#### Constructor
+
+```python
+AsyncStateMachine(initial_state: T)
+```
+
+Creates a new state machine with the specified initial state.
+
+#### Properties
+
+- `state: T` - Current state (read-only)
+- `all_states: Set[T]` - All registered states (read-only)
+
+#### Methods
+
+- `is_state(state: T) -> bool` - Check if currently in specified state
+- `can_trigger(evt: T) -> bool` - Check if event can be triggered
+- `add_state(state: T) -> None` - Add state without transitions
+- `get_valid_events() -> Set[T]` - Get valid events for current state
+- `get_transition_graph() -> Dict[T, Dict[T, T]]` - Get complete transition graph
+- `trigger(evt: T, **kwargs) -> bool` - Trigger an event
+
+#### Decorators
+
+- `@transition(from_states, evt, to_state, guard=None)` - Define a transition
+- `@on_enter(state)` - Register enter handler
+- `@on_exit(state)` - Register exit handler
+
+## Error Handling
+
+The library raises `StateTransitionError` when:
+
+- No transition is defined for the current state and event
+- A guard condition fails during execution
+- An exit handler fails
+- A transition action fails
+
+```python
+from aiostate import StateTransitionError
+
+try:
+    await fsm.trigger('invalid_event')
+except StateTransitionError as e:
+    print(f"Transition failed: {e}")
+```
+
+## License
+
+This project is licensed under the MIT License.
+
+## Development
+
+### Setup
+
+```bash
+poetry install
+```
+
+### Running Tests
+
+```bash
+poetry run pytest
+```
+
+### Building
+
+```bash
+poetry build
+```

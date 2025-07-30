@@ -1,0 +1,87 @@
+cd /Users/les/Projects/jinja2-async-environment && pre-commit run --files jinja2_async_environment/loaders.py tests/test_template_rendering.py
+direnv: loading ~/Projects/jinja2-async-environment/.envrc                      
+direnv: export +PDM_ACTIVE ~PATH
+(jinja2-async-environment) [jinja2-async-environment] cd /Users/les/Projects/jinja2-async-environment && pre-commit run --files jinja2_async_environment/loaders.py tests/test_template_rendering.py
+pdm-lock-check.......................................(no files to check)Skipped
+trailing-whitespace......................................................Passed
+end-of-file-fixer........................................................Passed
+check-yaml...........................................(no files to check)Skipped
+check-toml...........................................(no files to check)Skipped
+check-added-large-files..................................................Passed
+ruff-format..............................................................Passed
+ruff.....................................................................Failed
+- hook id: ruff
+- exit code: 1
+
+jinja2_async_environment/loaders.py:160:9: C901 `__init__` is too complex (14 > 13)
+    |
+158 |     _template_root: AsyncPath
+159 |
+160 |     def __init__(
+    |         ^^^^^^^^ C901
+161 |         self,
+162 |         package_name: str,
+    |
+
+jinja2_async_environment/loaders.py:221:15: C901 `get_source_async` is too complex (14 > 13)
+    |
+219 |         self._template_root = template_root
+220 |
+221 |     async def get_source_async(self, template: str | AsyncPath) -> SourceType:
+    |               ^^^^^^^^^^^^^^^^ C901
+222 |         template_path: AsyncPath = (
+223 |             AsyncPath(template) if isinstance(template, str) else template
+    |
+
+tests/test_template_rendering.py:10:11: C901 `render_template` is too complex (24 > 13)
+   |
+10 | async def render_template(render_func: t.Any, context: t.Any) -> str:
+   |           ^^^^^^^^^^^^^^^ C901
+11 |     result = []
+   |
+
+Found 3 errors.
+
+vulture..................................................................Passed
+creosote.................................................................Passed
+flynt....................................................................Passed
+codespell................................................................Passed
+autotyping...............................................................Passed
+refurb...................................................................Passed
+bandit...................................................................Passed
+pyright..................................................................Passed
+ruff.....................................................................Failed
+- hook id: ruff
+- exit code: 1
+
+jinja2_async_environment/loaders.py:160:9: C901 `__init__` is too complex (14 > 13)
+    |
+158 |     _template_root: AsyncPath
+159 |
+160 |     def __init__(
+    |         ^^^^^^^^ C901
+161 |         self,
+162 |         package_name: str,
+    |
+
+jinja2_async_environment/loaders.py:221:15: C901 `get_source_async` is too complex (14 > 13)
+    |
+219 |         self._template_root = template_root
+220 |
+221 |     async def get_source_async(self, template: str | AsyncPath) -> SourceType:
+    |               ^^^^^^^^^^^^^^^^ C901
+222 |         template_path: AsyncPath = (
+223 |             AsyncPath(template) if isinstance(template, str) else template
+    |
+
+tests/test_template_rendering.py:10:11: C901 `render_template` is too complex (24 > 13)
+   |
+10 | async def render_template(render_func: t.Any, context: t.Any) -> str:
+   |           ^^^^^^^^^^^^^^^ C901
+11 |     result = []
+   |
+
+Found 3 errors.
+
+ruff-format..............................................................Passed
+(jinja2-async-environment) [jinja2-async-environment]                                                                                                        main  ✭ ✱

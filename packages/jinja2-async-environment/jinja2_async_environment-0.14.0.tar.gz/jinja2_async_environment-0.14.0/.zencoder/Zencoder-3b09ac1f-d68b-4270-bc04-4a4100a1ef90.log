@@ -1,0 +1,241 @@
+cd /Users/les/Projects/jinja2-async-environment && pdm run pytest tests/test_template_rendering.py -v
+direnv: loading ~/Projects/jinja2-async-environment/.envrc                      
+direnv: export +PDM_ACTIVE ~PATH
+ja2-async-environment && pdm run pytest tests/test_template_rendering.py -v
+========================================================================= test session starts =========================================================================
+platform darwin -- Python 3.13.3, pytest-8.3.5, pluggy-1.5.0 -- /Users/les/Projects/jinja2-async-environment/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/les/Projects/jinja2-async-environment
+configfile: pyproject.toml
+plugins: anyio-4.9.0, timeout-2.4.0, asyncio-0.26.0, mock-3.14.0, cov-6.1.1
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 7 items                                                                                                                                                     
+
+tests/test_template_rendering.py::TestTemplateRendering::test_render_simple_template PASSED                                                                     [ 14%]
+tests/test_template_rendering.py::TestTemplateRendering::test_render_template_with_inheritance FAILED                                                           [ 28%]
+tests/test_template_rendering.py::TestTemplateRendering::test_render_template_with_include FAILED                                                               [ 42%]
+tests/test_template_rendering.py::TestTemplateRendering::test_render_async_block FAILED                                                                         [ 57%]
+tests/test_template_rendering.py::TestTemplateRendering::test_render_async_include FAILED                                                                       [ 71%]
+tests/test_template_rendering.py::TestTemplateRendering::test_render_async_extends FAILED                                                                       [ 85%]
+tests/test_template_rendering.py::TestTemplateRendering::test_performance_with_large_template PASSED                                                            [100%]
+
+============================================================================== FAILURES ===============================================================================
+_____________________________________________________ TestTemplateRendering.test_render_template_with_inheritance _____________________________________________________
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x109de3b10>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x109ee8190>
+
+    @pytest.mark.asyncio
+    async def test_render_template_with_inheritance(
+        self, environment: AsyncEnvironment
+    ) -> None:
+>       template = await environment.get_template_async("child.html")
+
+tests/test_template_rendering.py:57: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+jinja2_async_environment/environment.py:44: in get_template_async
+    return await self._load_template_async(name, globals)
+jinja2_async_environment/environment.py:110: in _load_template_async
+    return await self._get_template_async(name, globals)
+jinja2_async_environment/environment.py:137: in _get_template_async
+    template = await self.loader.load_async(self, name, self.make_globals(globals))
+jinja2_async_environment/loaders.py:86: in load_async
+    code = environment.compile(source_str, name)
+.venv/lib/python3.13/site-packages/jinja2/environment.py:769: in compile
+    return self._compile(source, filename)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.environment.AsyncEnvironment object at 0x109ee8190>
+source = "from jinja2.runtime import LoopContext, Macro, Markup, Namespace, TemplateNotFound, TemplateReference, TemplateRuntim..._0_message is missing else l_0_message))\n    yield '</p>'\n\nblocks = {'content': block_content}\ndebug_info = '1=12'"
+filename = '<template>'
+
+    def _compile(self, source: str, filename: str) -> CodeType:
+        """Internal hook that can be overridden to hook a different compile
+        method in.
+    
+        .. versionadded:: 2.5
+        """
+>       return compile(source, filename, "exec")
+E         File "<template>", line 12
+E       SyntaxError: 'await' outside async function
+
+.venv/lib/python3.13/site-packages/jinja2/environment.py:709: SyntaxError
+_______________________________________________________ TestTemplateRendering.test_render_template_with_include _______________________________________________________
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x109dfb5c0>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x109ee82d0>
+
+    @pytest.mark.asyncio
+    async def test_render_template_with_include(
+        self, environment: AsyncEnvironment
+    ) -> None:
+>       template = await environment.get_template_async("include.html")
+
+tests/test_template_rendering.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+jinja2_async_environment/environment.py:44: in get_template_async
+    return await self._load_template_async(name, globals)
+jinja2_async_environment/environment.py:110: in _load_template_async
+    return await self._get_template_async(name, globals)
+jinja2_async_environment/environment.py:137: in _get_template_async
+    template = await self.loader.load_async(self, name, self.make_globals(globals))
+jinja2_async_environment/loaders.py:86: in load_async
+    code = environment.compile(source_str, name)
+.venv/lib/python3.13/site-packages/jinja2/environment.py:769: in compile
+    return self._compile(source, filename)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.environment.AsyncEnvironment object at 0x109ee82d0>
+source = "from jinja2.runtime import LoopContext, Macro, Markup, Namespace, TemplateNotFound, TemplateReference, TemplateRuntim...nder_func(template.new_context(context.get_all(), True, {})):\n        yield event\n\nblocks = {}\ndebug_info = '1=11'"
+filename = '<template>'
+
+    def _compile(self, source: str, filename: str) -> CodeType:
+        """Internal hook that can be overridden to hook a different compile
+        method in.
+    
+        .. versionadded:: 2.5
+        """
+>       return compile(source, filename, "exec")
+E         File "<template>", line 11
+E       SyntaxError: 'await' outside async function
+
+.venv/lib/python3.13/site-packages/jinja2/environment.py:709: SyntaxError
+____________________________________________________________ TestTemplateRendering.test_render_async_block ____________________________________________________________
+
+render_func = <function root at 0x109f24a40>
+context = <Context {'range': <class 'range'>, 'dict': <class 'dict'>, 'lipsum': <function generate_lorem_ipsum at 0x109bd4860>, ...r object TestTemplateRendering.test_render_async_block.<locals>.async_generator at 0x109ece200>} of 'async_block.html'>
+
+    async def render_template(render_func: t.Any, context: t.Any) -> str:
+        result = []
+        try:
+>           async for event in render_func(context):
+E           TypeError: 'async for' requires an object with __aiter__ method, got generator
+
+tests/test_template_rendering.py:13: TypeError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x109dfb490>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x109ee96d0>
+
+    @pytest.mark.asyncio
+    async def test_render_async_block(self, environment: AsyncEnvironment) -> None:
+        template = await environment.get_template_async("async_block.html")
+    
+        async def async_generator() -> AsyncIterator[str]:
+            for item in ("Item1", "Item2", "Item3"):
+                yield item
+    
+        context = template.new_context({"items": async_generator()})
+>       rendered = await render_template(template.root_render_func, context)
+
+tests/test_template_rendering.py:82: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_template_rendering.py:16: in render_template
+    for event in render_func(context):
+<template>:11: in root
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+context = <Context {'range': <class 'range'>, 'dict': <class 'dict'>, 'lipsum': <function generate_lorem_ipsum at 0x109bd4860>, ...r object TestTemplateRendering.test_render_async_block.<locals>.async_generator at 0x109ece200>} of 'async_block.html'>
+missing = missing, environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x109ee96d0>
+
+>   ???
+E   TypeError: 'async_generator' object is not iterable
+
+<template>:23: TypeError
+___________________________________________________________ TestTemplateRendering.test_render_async_include ___________________________________________________________
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x109e69eb0>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x109ee9bd0>
+
+    @pytest.mark.asyncio
+    async def test_render_async_include(self, environment: AsyncEnvironment) -> None:
+>       template = await environment.get_template_async("async_include.html")
+
+tests/test_template_rendering.py:87: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+jinja2_async_environment/environment.py:44: in get_template_async
+    return await self._load_template_async(name, globals)
+jinja2_async_environment/environment.py:110: in _load_template_async
+    return await self._get_template_async(name, globals)
+jinja2_async_environment/environment.py:137: in _get_template_async
+    template = await self.loader.load_async(self, name, self.make_globals(globals))
+jinja2_async_environment/loaders.py:86: in load_async
+    code = environment.compile(source_str, name)
+.venv/lib/python3.13/site-packages/jinja2/environment.py:769: in compile
+    return self._compile(source, filename)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.environment.AsyncEnvironment object at 0x109ee9bd0>
+source = "from jinja2.runtime import LoopContext, Macro, Markup, Namespace, TemplateNotFound, TemplateReference, TemplateRuntim...ew_context(context.get_all(), True, {})):\n        yield event\n    yield ' After'\n\nblocks = {}\ndebug_info = '1=12'"
+filename = '<template>'
+
+    def _compile(self, source: str, filename: str) -> CodeType:
+        """Internal hook that can be overridden to hook a different compile
+        method in.
+    
+        .. versionadded:: 2.5
+        """
+>       return compile(source, filename, "exec")
+E         File "<template>", line 12
+E       SyntaxError: 'await' outside async function
+
+.venv/lib/python3.13/site-packages/jinja2/environment.py:709: SyntaxError
+___________________________________________________________ TestTemplateRendering.test_render_async_extends ___________________________________________________________
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x109e89370>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x109eead50>
+
+    @pytest.mark.asyncio
+    async def test_render_async_extends(self, environment: AsyncEnvironment) -> None:
+>       template = await environment.get_template_async("async_extends.html")
+
+tests/test_template_rendering.py:99: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+jinja2_async_environment/environment.py:44: in get_template_async
+    return await self._load_template_async(name, globals)
+jinja2_async_environment/environment.py:110: in _load_template_async
+    return await self._get_template_async(name, globals)
+jinja2_async_environment/environment.py:137: in _get_template_async
+    template = await self.loader.load_async(self, name, self.make_globals(globals))
+jinja2_async_environment/loaders.py:86: in load_async
+    code = environment.compile(source_str, name)
+.venv/lib/python3.13/site-packages/jinja2/environment.py:769: in compile
+    return self._compile(source, filename)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.environment.AsyncEnvironment object at 0x109eead50>
+source = "from jinja2.runtime import LoopContext, Macro, Markup, Namespace, TemplateNotFound, TemplateReference, TemplateRuntim... pass\n        yield str(l_1_item)\n    l_1_item = missing\n\nblocks = {'content': block_content}\ndebug_info = '1=12'"
+filename = '<template>'
+
+    def _compile(self, source: str, filename: str) -> CodeType:
+        """Internal hook that can be overridden to hook a different compile
+        method in.
+    
+        .. versionadded:: 2.5
+        """
+>       return compile(source, filename, "exec")
+E         File "<template>", line 12
+E       SyntaxError: 'await' outside async function
+
+.venv/lib/python3.13/site-packages/jinja2/environment.py:709: SyntaxError
+=========================================================================== tests coverage ============================================================================
+__________________________________________________________ coverage: platform darwin, python 3.13.3-final-0 ___________________________________________________________
+
+Name                                      Stmts   Miss  Cover
+-------------------------------------------------------------
+jinja2_async_environment/bccache.py          45     20    56%
+jinja2_async_environment/compiler.py        114     44    61%
+jinja2_async_environment/environment.py      86     38    56%
+jinja2_async_environment/loaders.py         208    131    37%
+-------------------------------------------------------------
+TOTAL                                       453    233    49%
+======================================================================= short test summary info =======================================================================
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_render_template_with_inheritance -   File "<template>", line 12
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_render_template_with_include -   File "<template>", line 11
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_render_async_block - TypeError: 'async_generator' object is not iterable
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_render_async_include -   File "<template>", line 12
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_render_async_extends -   File "<template>", line 12
+===================================================================== 5 failed, 2 passed in 0.95s =====================================================================
+(jinja2-async-environment) [jinja2-async-environment]                                                                                                        main  ✭ ✱

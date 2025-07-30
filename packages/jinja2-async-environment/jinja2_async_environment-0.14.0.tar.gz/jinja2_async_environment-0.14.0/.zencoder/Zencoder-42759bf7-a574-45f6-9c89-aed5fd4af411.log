@@ -1,0 +1,109 @@
+[1m========================================================================= test session starts =========================================================================[0m
+platform darwin -- Python 3.13.5, pytest-8.4.0, pluggy-1.6.0 -- /Users/les/Projects/jinja2-async-environment/.venv/bin/python
+cachedir: .pytest_cache
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /Users/les/Projects/jinja2-async-environment
+configfile: pyproject.toml
+plugins: xdist-3.7.0, anyio-4.9.0, timeout-2.4.0, cov-6.2.1, mock-3.14.1, benchmark-5.1.0, asyncio-1.0.0
+timeout: 300.0s
+timeout method: thread
+timeout func_only: False
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0m[1mcollected 12 items                                                                                                                                                    [0m
+
+tests/test_bccache_additional.py::TestAsyncBytecodeCache::test_init [32mPASSED[0m[32m                                                                                      [  8%][0m
+tests/test_bccache_additional.py::TestAsyncBytecodeCache::test_get_cache_key [32mPASSED[0m[32m                                                                             [ 16%][0m
+tests/test_bccache_additional.py::TestAsyncBytecodeCache::test_get_source_checksum [32mPASSED[0m[32m                                                                       [ 25%][0m
+tests/test_bccache_additional.py::TestAsyncBytecodeCache::test_get_bucket_async [32mPASSED[0m[32m                                                                          [ 33%][0m
+tests/test_bccache_additional.py::TestAsyncBytecodeCache::test_set_bucket_async [32mPASSED[0m[32m                                                                          [ 41%][0m
+tests/test_bccache_additional.py::TestAsyncBytecodeCache::test_load_bytecode_not_implemented [32mPASSED[0m[32m                                                             [ 50%][0m
+tests/test_bccache_additional.py::TestAsyncBytecodeCache::test_dump_bytecode_not_implemented [32mPASSED[0m[32m                                                             [ 58%][0m
+tests/test_bccache_additional.py::TestAsyncBytecodeCache::test_clear_not_implemented [32mPASSED[0m[32m                                                                     [ 66%][0m
+tests/test_bccache_additional.py::TestAsyncBytecodeCache_Subclass::test_get_bucket_async_with_custom_cache [32mPASSED[0m[32m                                               [ 75%][0m
+tests/test_bccache_additional.py::TestAsyncBytecodeCache_Subclass::test_set_bucket_async_with_custom_cache [31mFAILED[0m[31m                                               [ 83%][0m
+tests/test_bccache_additional.py::TestAsyncBytecodeCache_Subclass::test_get_bucket_async_with_existing_bucket [31mFAILED[0m[31m                                            [ 91%][0m
+tests/test_bccache_additional.py::TestAsyncBytecodeCache_Subclass::test_clear_with_custom_cache [32mPASSED[0m[31m                                                          [100%][0m[31m[1m
+ERROR: Coverage failure: total of 22 is less than fail-under=42
+[0m
+
+============================================================================== FAILURES ===============================================================================
+[31m[1m_______________________________________________ TestAsyncBytecodeCache_Subclass.test_set_bucket_async_with_custom_cache _______________________________________________[0m
+
+self = <tests.test_bccache_additional.TestAsyncBytecodeCache_Subclass object at 0x10da89e50>
+custom_bccache = <tests.test_bccache_additional.TestAsyncBytecodeCache_Subclass.CustomAsyncBytecodeCache object at 0x10da8b750>
+async_env = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10da8b110>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_set_bucket_async_with_custom_cache[39;49;00m([96mself[39;49;00m, custom_bccache: CustomAsyncBytecodeCache, async_env: AsyncEnvironment) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test the set_bucket_async method with a custom cache implementation."""[39;49;00m[90m[39;49;00m
+        [90m# Get a bucket[39;49;00m[90m[39;49;00m
+        bucket = [94mawait[39;49;00m custom_bccache.get_bucket_async(async_env, [33m"[39;49;00m[33mtemplate.html[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mfilename.py[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33msource[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Compile some code[39;49;00m[90m[39;49;00m
+        bucket.code = [96mcompile[39;49;00m([33m"[39;49;00m[33ma = 1[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mfilename.py[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mexec[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Set the bucket[39;49;00m[90m[39;49;00m
+>       [94mawait[39;49;00m custom_bccache.set_bucket_async(bucket)[90m[39;49;00m
+
+[1m[31mtests/test_bccache_additional.py[0m:161: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31mjinja2_async_environment/bccache.py[0m:56: in set_bucket_async
+    [0m[96mself[39;49;00m.dump_bytecode(bucket)[90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <tests.test_bccache_additional.TestAsyncBytecodeCache_Subclass.CustomAsyncBytecodeCache object at 0x10da8b750>
+bucket = <jinja2.bccache.Bucket object at 0x10da8ae90>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mdump_bytecode[39;49;00m([96mself[39;49;00m, bucket: Bucket) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Dump bytecode to the cache."""[39;49;00m[90m[39;49;00m
+>       [96mself[39;49;00m.cache[bucket.key] = bucket.write_bytecode()[90m[39;49;00m
+                                 ^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE       TypeError: Bucket.write_bytecode() missing 1 required positional argument: 'f'[0m
+
+[1m[31mtests/test_bccache_additional.py[0m:124: TypeError
+[31m[1m_____________________________________________ TestAsyncBytecodeCache_Subclass.test_get_bucket_async_with_existing_bucket ______________________________________________[0m
+
+self = <tests.test_bccache_additional.TestAsyncBytecodeCache_Subclass object at 0x10da73490>
+custom_bccache = <tests.test_bccache_additional.TestAsyncBytecodeCache_Subclass.CustomAsyncBytecodeCache object at 0x10dbec190>
+async_env = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10dbec2d0>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_get_bucket_async_with_existing_bucket[39;49;00m([96mself[39;49;00m, custom_bccache: CustomAsyncBytecodeCache, async_env: AsyncEnvironment) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test the get_bucket_async method with an existing bucket in the cache."""[39;49;00m[90m[39;49;00m
+        [90m# Get a bucket and set it with some code[39;49;00m[90m[39;49;00m
+        bucket1 = [94mawait[39;49;00m custom_bccache.get_bucket_async(async_env, [33m"[39;49;00m[33mtemplate.html[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mfilename.py[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33msource[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        bucket1.code = [96mcompile[39;49;00m([33m"[39;49;00m[33ma = 1[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mfilename.py[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mexec[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+>       [94mawait[39;49;00m custom_bccache.set_bucket_async(bucket1)[90m[39;49;00m
+
+[1m[31mtests/test_bccache_additional.py[0m:173: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31mjinja2_async_environment/bccache.py[0m:56: in set_bucket_async
+    [0m[96mself[39;49;00m.dump_bytecode(bucket)[90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <tests.test_bccache_additional.TestAsyncBytecodeCache_Subclass.CustomAsyncBytecodeCache object at 0x10dbec190>
+bucket = <jinja2.bccache.Bucket object at 0x10db59ba0>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mdump_bytecode[39;49;00m([96mself[39;49;00m, bucket: Bucket) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Dump bytecode to the cache."""[39;49;00m[90m[39;49;00m
+>       [96mself[39;49;00m.cache[bucket.key] = bucket.write_bytecode()[90m[39;49;00m
+                                 ^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE       TypeError: Bucket.write_bytecode() missing 1 required positional argument: 'f'[0m
+
+[1m[31mtests/test_bccache_additional.py[0m:124: TypeError
+=========================================================================== tests coverage ============================================================================
+__________________________________________________________ coverage: platform darwin, python 3.13.5-final-0 ___________________________________________________________
+
+Name                                      Stmts   Miss  Cover
+-------------------------------------------------------------
+jinja2_async_environment/bccache.py          56     20    64%
+jinja2_async_environment/compiler.py        356    308    13%
+jinja2_async_environment/environment.py     121     86    29%
+jinja2_async_environment/loaders.py         320    252    21%
+-------------------------------------------------------------
+TOTAL                                       853    666    22%
+[31m[1mFAIL Required test coverage of 42% not reached. Total coverage: 21.92%
+[0m[36m[1m======================================================================= short test summary info =======================================================================[0m
+[31mFAILED[0m tests/test_bccache_additional.py::[1mTestAsyncBytecodeCache_Subclass::test_set_bucket_async_with_custom_cache[0m - TypeError: Bucket.write_bytecode() missing 1 required positional argument: 'f'
+[31mFAILED[0m tests/test_bccache_additional.py::[1mTestAsyncBytecodeCache_Subclass::test_get_bucket_async_with_existing_bucket[0m - TypeError: Bucket.write_bytecode() missing 1 required positional argument: 'f'
+[31m==================================================================== [31m[1m2 failed[0m, [32m10 passed[0m[31m in 0.55s[0m[31m =====================================================================[0m

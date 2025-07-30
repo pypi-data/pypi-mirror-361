@@ -1,0 +1,97 @@
+[1m========================================================================= test session starts =========================================================================[0m
+platform darwin -- Python 3.13.5, pytest-8.4.0, pluggy-1.6.0 -- /Users/les/Projects/jinja2-async-environment/.venv/bin/python
+cachedir: .pytest_cache
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /Users/les/Projects/jinja2-async-environment
+configfile: pyproject.toml
+plugins: xdist-3.7.0, anyio-4.9.0, timeout-2.4.0, cov-6.2.1, mock-3.14.1, benchmark-5.1.0, asyncio-1.0.0
+timeout: 300.0s
+timeout method: thread
+timeout func_only: False
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0m[1mcollected 30 items                                                                                                                                                    [0m
+
+tests/test_async_environment.py::TestAsyncEnvironmentBasics::test_init [32mPASSED[0m[32m                                                                                   [  3%][0m
+tests/test_async_environment.py::TestAsyncEnvironmentBasics::test_generate [32mPASSED[0m[32m                                                                               [  6%][0m
+tests/test_async_environment.py::TestAsyncEnvironmentBasics::test_compile_normal [32mPASSED[0m[32m                                                                         [ 10%][0m
+tests/test_async_environment.py::TestAsyncEnvironmentBasics::test_compile_with_syntax_error [32mPASSED[0m[32m                                                              [ 13%][0m
+tests/test_async_environment.py::TestAsyncEnvironmentBasics::test_compile_with_async_code [31mFAILED[0m[31m                                                                [ 16%][0m
+tests/test_async_environment.py::TestAsyncEnvironmentBasics::test_compile_with_yield_from_replacement [31mFAILED[0m[31m                                                    [ 20%][0m
+tests/test_async_environment.py::TestAsyncYieldFrom::test_async_yield_from_with_async_generator [32mPASSED[0m[31m                                                          [ 23%][0m
+tests/test_async_environment.py::TestAsyncYieldFrom::test_async_yield_from_with_regular_generator [32mPASSED[0m[31m                                                        [ 26%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_template_not_implemented [32mPASSED[0m[31m                                                             [ 30%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_select_template_not_implemented [32mPASSED[0m[31m                                                          [ 33%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_or_select_template_not_implemented [32mPASSED[0m[31m                                                   [ 36%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_template_async_with_template_object [31mFAILED[0m[31m                                                  [ 40%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_template_async_with_parent [32mPASSED[0m[31m                                                           [ 43%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_template_async_with_globals [32mPASSED[0m[31m                                                          [ 46%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_select_template_async_with_empty_list [32mPASSED[0m[31m                                                    [ 50%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_select_template_async_with_undefined [32mPASSED[0m[31m                                                     [ 53%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_select_template_async_with_template_object [31mFAILED[0m[31m                                               [ 56%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_select_template_async_with_parent [32mPASSED[0m[31m                                                        [ 60%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_select_template_async_not_found [32mPASSED[0m[31m                                                          [ 63%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_or_select_template_async_with_string [32mPASSED[0m[31m                                                 [ 66%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_or_select_template_async_with_template_object [31mFAILED[0m[31m                                        [ 70%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_or_select_template_async_with_list [32mPASSED[0m[31m                                                   [ 73%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_load_template_async_with_template_object [31mFAILED[0m[31m                                                 [ 76%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_load_template_async_with_string [32mPASSED[0m[31m                                                          [ 80%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_load_template_async_with_iterable [32mPASSED[0m[31m                                                        [ 83%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_load_template_async_with_iterable_all_not_found [32mPASSED[0m[31m                                          [ 86%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_template_no_loader [32mPASSED[0m[31m                                                                   [ 90%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_template_with_cache_hit [32mPASSED[0m[31m                                                              [ 93%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_template_with_cache_hit_and_globals [32mPASSED[0m[31m                                                  [ 96%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_template_with_cache_miss [32mPASSED[0m[31m                                                             [100%][0m
+INTERNALERROR> Traceback (most recent call last):
+INTERNALERROR>   File "/Users/les/Projects/jinja2-async-environment/.venv/lib/python3.13/site-packages/_pytest/main.py", line 289, in wrap_session
+INTERNALERROR>     session.exitstatus = doit(config, session) or 0
+INTERNALERROR>                          ~~~~^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/Users/les/Projects/jinja2-async-environment/.venv/lib/python3.13/site-packages/_pytest/main.py", line 343, in _main
+INTERNALERROR>     config.hook.pytest_runtestloop(session=session)
+INTERNALERROR>     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/Users/les/Projects/jinja2-async-environment/.venv/lib/python3.13/site-packages/pluggy/_hooks.py", line 512, in __call__
+INTERNALERROR>     return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+INTERNALERROR>            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/Users/les/Projects/jinja2-async-environment/.venv/lib/python3.13/site-packages/pluggy/_manager.py", line 120, in _hookexec
+INTERNALERROR>     return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+INTERNALERROR>            ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/Users/les/Projects/jinja2-async-environment/.venv/lib/python3.13/site-packages/pluggy/_callers.py", line 167, in _multicall
+INTERNALERROR>     raise exception
+INTERNALERROR>   File "/Users/les/Projects/jinja2-async-environment/.venv/lib/python3.13/site-packages/pluggy/_callers.py", line 139, in _multicall
+INTERNALERROR>     teardown.throw(exception)
+INTERNALERROR>     ~~~~~~~~~~~~~~^^^^^^^^^^^
+INTERNALERROR>   File "/Users/les/Projects/jinja2-async-environment/.venv/lib/python3.13/site-packages/_pytest/logging.py", line 801, in pytest_runtestloop
+INTERNALERROR>     return (yield)  # Run all the tests.
+INTERNALERROR>             ^^^^^
+INTERNALERROR>   File "/Users/les/Projects/jinja2-async-environment/.venv/lib/python3.13/site-packages/pluggy/_callers.py", line 139, in _multicall
+INTERNALERROR>     teardown.throw(exception)
+INTERNALERROR>     ~~~~~~~~~~~~~~^^^^^^^^^^^
+INTERNALERROR>   File "/Users/les/Projects/jinja2-async-environment/.venv/lib/python3.13/site-packages/_pytest/terminal.py", line 685, in pytest_runtestloop
+INTERNALERROR>     result = yield
+INTERNALERROR>              ^^^^^
+INTERNALERROR>   File "/Users/les/Projects/jinja2-async-environment/.venv/lib/python3.13/site-packages/pluggy/_callers.py", line 152, in _multicall
+INTERNALERROR>     teardown.send(result)
+INTERNALERROR>     ~~~~~~~~~~~~~^^^^^^^^
+INTERNALERROR>   File "/Users/les/Projects/jinja2-async-environment/.venv/lib/python3.13/site-packages/pytest_cov/plugin.py", line 346, in pytest_runtestloop
+INTERNALERROR>     self.cov_controller.finish()
+INTERNALERROR>     ~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+INTERNALERROR>   File "/Users/les/Projects/jinja2-async-environment/.venv/lib/python3.13/site-packages/pytest_cov/engine.py", line 57, in ensure_topdir_wrapper
+INTERNALERROR>     return meth(self, *args, **kwargs)
+INTERNALERROR>   File "/Users/les/Projects/jinja2-async-environment/.venv/lib/python3.13/site-packages/pytest_cov/engine.py", line 320, in finish
+INTERNALERROR>     self.cov.combine()
+INTERNALERROR>     ~~~~~~~~~~~~~~~~^^
+INTERNALERROR>   File "/Users/les/Projects/jinja2-async-environment/.venv/lib/python3.13/site-packages/coverage/control.py", line 864, in combine
+INTERNALERROR>     combine_parallel_data(
+INTERNALERROR>     ~~~~~~~~~~~~~~~~~~~~~^
+INTERNALERROR>         self._data,
+INTERNALERROR>         ^^^^^^^^^^^
+INTERNALERROR>     ...<4 lines>...
+INTERNALERROR>         message=self._message,
+INTERNALERROR>         ^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>     )
+INTERNALERROR>     ^
+INTERNALERROR>   File "/Users/les/Projects/jinja2-async-environment/.venv/lib/python3.13/site-packages/coverage/data.py", line 163, in combine_parallel_data
+INTERNALERROR>     with open(f, "rb") as fobj:
+INTERNALERROR>          ~~~~^^^^^^^^^
+INTERNALERROR> FileNotFoundError: [Errno 2] No such file or directory: '/Users/les/Projects/jinja2-async-environment/.coverage.les-pro.14598.XaxBiybx.c'
+
+[31m==================================================================== [31m[1m6 failed[0m, [32m24 passed[0m[31m in 1.12s[0m[31m =====================================================================[0m

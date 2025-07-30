@@ -1,0 +1,305 @@
+pdm run python -m crackerjack --ai-agent --verbose
+direnv: loading ~/Projects/jinja2-async-environment/.envrc                      
+direnv: export +PDM_ACTIVE ~PATH
+(jinja2-async-environment) [jinja2-async-environment] pdm run python -m crackerjack --ai-agent --verbose
+
+Crackerjacking...
+
+PDM installed: ✅
+
+
+Running pre-commit hooks...
+
+pdm-lock-check...........................................................Passed
+trailing-whitespace......................................................Passed
+end-of-file-fixer........................................................Passed
+check-yaml...............................................................Passed
+check-toml...............................................................Passed
+check-added-large-files..................................................Passed
+ruff-format..............................................................Passed
+ruff.....................................................................Passed
+vulture..................................................................Passed
+creosote.................................................................Passed
+flynt....................................................................Passed
+codespell................................................................Passed
+autotyping...............................................................Passed
+refurb...................................................................Failed
+- hook id: refurb
+- exit code: 1
+
+tests/test_redis_bccache.py:50:44 [FURB120]: Don't pass an argument if it is the same as the default value
+tests/test_redis_bccache.py:67:58 [FURB120]: Don't pass an argument if it is the same as the default value
+tests/test_template_rendering.py:71:25 [FURB109]: Replace `in [x, y, z]` with `in (x, y, z)`
+tests/test_template_rendering.py:86:25 [FURB109]: Replace `in [x, y, z]` with `in (x, y, z)`
+tests/test_template_rendering.py:101:25 [FURB109]: Replace `in [x, y, z]` with `in (x, y, z)`
+
+Run `refurb --explain ERR` to further explain an error. Use `--quiet` to silence this message
+
+bandit...................................................................Failed
+- hook id: bandit
+- exit code: 1
+
+[main]  INFO    profile include tests: None
+[main]  INFO    profile exclude tests: B301,B603,B704,B602,B311,B101,B403,B404,B607
+[main]  INFO    cli include tests: None
+[main]  INFO    cli exclude tests: None
+[main]  INFO    using config: pyproject.toml
+[main]  INFO    running on Python 3.13.3
+Run started:2025-05-09 10:57:37.743676
+
+Test results:
+>> Issue: [B701:jinja2_autoescape_false] By default, jinja2 sets autoescape to False. Consider using autoescape=True or use the select_autoescape function to mitigate XSS vulnerabilities.
+   Severity: High   Confidence: High
+   CWE: CWE-94 (https://cwe.mitre.org/data/definitions/94.html)
+   More Info: https://bandit.readthedocs.io/en/0.0.0/plugins/b701_jinja2_autoescape_false.html
+   Location: ./tests/test_redis_bccache.py:23:15
+22          def environment(self) -> Environment:
+23              return Environment()
+24      
+
+--------------------------------------------------
+
+Code scanned:
+        Total lines of code: 2049
+        Total lines skipped (#nosec): 0
+
+Run metrics:
+        Total issues (by severity):
+                Undefined: 0
+                Low: 0
+                Medium: 0
+                High: 1
+        Total issues (by confidence):
+                Undefined: 0
+                Low: 0
+                Medium: 0
+                High: 1
+Files skipped (0):
+
+pyright..................................................................Failed
+- hook id: pyright
+- exit code: 1
+
+/Users/les/Projects/jinja2-async-environment/tests/test_choice_loader.py
+  /Users/les/Projects/jinja2-async-environment/tests/test_choice_loader.py:70:36 - error: Argument of type "list[AsyncDictLoader | AsyncFileSystemLoader]" cannot be assigned to parameter "loaders" of type "list[AsyncBaseLoader]" in function "__init__"
+    "list[AsyncDictLoader | AsyncFileSystemLoader]" is not assignable to "list[AsyncBaseLoader]"
+      Type parameter "_T@list" is invariant, but "AsyncDictLoader | AsyncFileSystemLoader" is not the same as "AsyncBaseLoader"
+      Consider switching from "list" to "Sequence" which is covariant (reportArgumentType)
+  /Users/les/Projects/jinja2-async-environment/tests/test_choice_loader.py:79:17 - error: Variable "filename" is not accessed (reportUnusedVariable)
+  /Users/les/Projects/jinja2-async-environment/tests/test_choice_loader.py:87:17 - error: Variable "filename" is not accessed (reportUnusedVariable)
+  /Users/les/Projects/jinja2-async-environment/tests/test_choice_loader.py:96:17 - error: Variable "filename" is not accessed (reportUnusedVariable)
+  /Users/les/Projects/jinja2-async-environment/tests/test_choice_loader.py:111:17 - error: Variable "filename" is not accessed (reportUnusedVariable)
+/Users/les/Projects/jinja2-async-environment/tests/test_dict_loader.py
+  /Users/les/Projects/jinja2-async-environment/tests/test_dict_loader.py:90:9 - error: Variable "source" is not accessed (reportUnusedVariable)
+  /Users/les/Projects/jinja2-async-environment/tests/test_dict_loader.py:90:17 - error: Variable "filename" is not accessed (reportUnusedVariable)
+/Users/les/Projects/jinja2-async-environment/tests/test_function_loader.py
+  /Users/les/Projects/jinja2-async-environment/tests/test_function_loader.py:48:16 - error: Type "(template: str | Path) -> CoroutineType[Any, Any, SourceType | None]" is not assignable to return type "(str | Path) -> (Awaitable[SourceType] | None)"
+    Type "(template: str | Path) -> CoroutineType[Any, Any, SourceType | None]" is not assignable to type "(str | Path) -> (Awaitable[SourceType] | None)"
+      Function return type "CoroutineType[Any, Any, SourceType | None]" is incompatible with type "Awaitable[SourceType] | None"
+        Type "CoroutineType[Any, Any, SourceType | None]" is not assignable to type "Awaitable[SourceType] | None"
+          "CoroutineType[Any, Any, SourceType | None]" is not assignable to "Awaitable[SourceType]"
+            Type parameter "_T_co@Awaitable" is covariant, but "SourceType | None" is not a subtype of "SourceType"
+          "CoroutineType[Any, Any, SourceType | None]" is not assignable to "None" (reportReturnType)
+  /Users/les/Projects/jinja2-async-environment/tests/test_function_loader.py:63:27 - warning: Type of parameter "sync_load_func" is partially unknown
+    Parameter type is "(...) -> Unknown" (reportUnknownParameterType)
+  /Users/les/Projects/jinja2-async-environment/tests/test_function_loader.py:63:43 - error: Expected type arguments for generic class "Callable" (reportMissingTypeArgument)
+  /Users/les/Projects/jinja2-async-environment/tests/test_function_loader.py:67:28 - warning: Type of parameter "async_load_func" is partially unknown
+    Parameter type is "(...) -> Unknown" (reportUnknownParameterType)
+  /Users/les/Projects/jinja2-async-environment/tests/test_function_loader.py:67:45 - error: Expected type arguments for generic class "Callable" (reportMissingTypeArgument)
+  /Users/les/Projects/jinja2-async-environment/tests/test_function_loader.py:71:29 - warning: Type of parameter "string_load_func" is partially unknown
+    Parameter type is "(...) -> Unknown" (reportUnknownParameterType)
+  /Users/les/Projects/jinja2-async-environment/tests/test_function_loader.py:71:47 - error: Expected type arguments for generic class "Callable" (reportMissingTypeArgument)
+  /Users/les/Projects/jinja2-async-environment/tests/test_function_loader.py:80:25 - warning: Type of parameter "sync_load_func" is partially unknown
+    Parameter type is "(...) -> Unknown" (reportUnknownParameterType)
+  /Users/les/Projects/jinja2-async-environment/tests/test_function_loader.py:80:41 - error: Expected type arguments for generic class "Callable" (reportMissingTypeArgument)
+  /Users/les/Projects/jinja2-async-environment/tests/test_function_loader.py:154:38 - error: Argument of type "(template: str | Path) -> int" cannot be assigned to parameter "load_func" of type "(str | Path) -> (Awaitable[SourceType] | SourceType | None)" in function "__init__"
+    Type "(template: str | Path) -> int" is not assignable to type "(str | Path) -> (Awaitable[SourceType] | SourceType | None)"
+      Function return type "int" is incompatible with type "Awaitable[SourceType] | SourceType | None"
+        Type "int" is not assignable to type "Awaitable[SourceType] | SourceType | None"
+          "int" is incompatible with protocol "Awaitable[SourceType]"
+            "__await__" is not present
+          "int" is not assignable to "tuple[str | bytes, str | None, (() -> (bool | Awaitable[bool])) | None]"
+          "int" is not assignable to "None" (reportArgumentType)
+/Users/les/Projects/jinja2-async-environment/tests/test_package_loader.py
+  /Users/les/Projects/jinja2-async-environment/tests/test_package_loader.py:176:30 - error: "bool" is not awaitable
+    "bool" is incompatible with protocol "Awaitable[_T_co@Awaitable]"
+      "__await__" is not present (reportGeneralTypeIssues)
+  /Users/les/Projects/jinja2-async-environment/tests/test_package_loader.py:182:34 - error: "bool" is not awaitable
+    "bool" is incompatible with protocol "Awaitable[_T_co@Awaitable]"
+      "__await__" is not present (reportGeneralTypeIssues)
+  /Users/les/Projects/jinja2-async-environment/tests/test_package_loader.py:185:34 - error: "bool" is not awaitable
+    "bool" is incompatible with protocol "Awaitable[_T_co@Awaitable]"
+      "__await__" is not present (reportGeneralTypeIssues)
+/Users/les/Projects/jinja2-async-environment/tests/test_redis_bccache.py
+  /Users/les/Projects/jinja2-async-environment/tests/test_redis_bccache.py:28:23 - error: Cannot assign to attribute "code" for class "Bucket"
+    Type "Literal['test_bytecode']" is not assignable to type "CodeType | None"
+      "Literal['test_bytecode']" is not assignable to "CodeType"
+      "Literal['test_bytecode']" is not assignable to "None" (reportAttributeAccessIssue)
+/Users/les/Projects/jinja2-async-environment/tests/test_template_rendering.py
+  /Users/les/Projects/jinja2-async-environment/tests/test_template_rendering.py:37:39 - error: "Iterator[str]" is not iterable
+    "__aiter__" method not defined (reportGeneralTypeIssues)
+  /Users/les/Projects/jinja2-async-environment/tests/test_template_rendering.py:48:39 - error: "Iterator[str]" is not iterable
+    "__aiter__" method not defined (reportGeneralTypeIssues)
+  /Users/les/Projects/jinja2-async-environment/tests/test_template_rendering.py:61:39 - error: "Iterator[str]" is not iterable
+    "__aiter__" method not defined (reportGeneralTypeIssues)
+  /Users/les/Projects/jinja2-async-environment/tests/test_template_rendering.py:76:39 - error: "Iterator[str]" is not iterable
+    "__aiter__" method not defined (reportGeneralTypeIssues)
+  /Users/les/Projects/jinja2-async-environment/tests/test_template_rendering.py:91:39 - error: "Iterator[str]" is not iterable
+    "__aiter__" method not defined (reportGeneralTypeIssues)
+  /Users/les/Projects/jinja2-async-environment/tests/test_template_rendering.py:106:39 - error: "Iterator[str]" is not iterable
+    "__aiter__" method not defined (reportGeneralTypeIssues)
+  /Users/les/Projects/jinja2-async-environment/tests/test_template_rendering.py:128:39 - error: "Iterator[str]" is not iterable
+    "__aiter__" method not defined (reportGeneralTypeIssues)
+24 errors, 4 warnings, 0 informations
+
+ruff.....................................................................Passed
+ruff-format..............................................................Passed
+pdm-lock-check...........................................................Passed
+trailing-whitespace......................................................Passed
+end-of-file-fixer........................................................Passed
+check-yaml...............................................................Passed
+check-toml...............................................................Passed
+check-added-large-files..................................................Passed
+ruff-format..............................................................Passed
+ruff.....................................................................Passed
+vulture..................................................................Passed
+creosote.................................................................Passed
+flynt....................................................................Passed
+codespell................................................................Passed
+autotyping...............................................................Passed
+refurb...................................................................Failed
+- hook id: refurb
+- exit code: 1
+
+tests/test_redis_bccache.py:50:44 [FURB120]: Don't pass an argument if it is the same as the default value
+tests/test_redis_bccache.py:67:58 [FURB120]: Don't pass an argument if it is the same as the default value
+tests/test_template_rendering.py:71:25 [FURB109]: Replace `in [x, y, z]` with `in (x, y, z)`
+tests/test_template_rendering.py:86:25 [FURB109]: Replace `in [x, y, z]` with `in (x, y, z)`
+tests/test_template_rendering.py:101:25 [FURB109]: Replace `in [x, y, z]` with `in (x, y, z)`
+
+Run `refurb --explain ERR` to further explain an error. Use `--quiet` to silence this message
+
+bandit...................................................................Failed
+- hook id: bandit
+- exit code: 1
+
+[main]  INFO    profile include tests: None
+[main]  INFO    profile exclude tests: B602,B403,B301,B603,B704,B311,B404,B101,B607
+[main]  INFO    cli include tests: None
+[main]  INFO    cli exclude tests: None
+[main]  INFO    using config: pyproject.toml
+[main]  INFO    running on Python 3.13.3
+Run started:2025-05-09 10:57:56.554293
+
+Test results:
+>> Issue: [B701:jinja2_autoescape_false] By default, jinja2 sets autoescape to False. Consider using autoescape=True or use the select_autoescape function to mitigate XSS vulnerabilities.
+   Severity: High   Confidence: High
+   CWE: CWE-94 (https://cwe.mitre.org/data/definitions/94.html)
+   More Info: https://bandit.readthedocs.io/en/0.0.0/plugins/b701_jinja2_autoescape_false.html
+   Location: ./tests/test_redis_bccache.py:23:15
+22          def environment(self) -> Environment:
+23              return Environment()
+24      
+
+--------------------------------------------------
+
+Code scanned:
+        Total lines of code: 2049
+        Total lines skipped (#nosec): 0
+
+Run metrics:
+        Total issues (by severity):
+                Undefined: 0
+                Low: 0
+                Medium: 0
+                High: 1
+        Total issues (by confidence):
+                Undefined: 0
+                Low: 0
+                Medium: 0
+                High: 1
+Files skipped (0):
+
+pyright..................................................................Failed
+- hook id: pyright
+- exit code: 1
+
+/Users/les/Projects/jinja2-async-environment/tests/test_choice_loader.py
+  /Users/les/Projects/jinja2-async-environment/tests/test_choice_loader.py:70:36 - error: Argument of type "list[AsyncDictLoader | AsyncFileSystemLoader]" cannot be assigned to parameter "loaders" of type "list[AsyncBaseLoader]" in function "__init__"
+    "list[AsyncDictLoader | AsyncFileSystemLoader]" is not assignable to "list[AsyncBaseLoader]"
+      Type parameter "_T@list" is invariant, but "AsyncDictLoader | AsyncFileSystemLoader" is not the same as "AsyncBaseLoader"
+      Consider switching from "list" to "Sequence" which is covariant (reportArgumentType)
+  /Users/les/Projects/jinja2-async-environment/tests/test_choice_loader.py:79:17 - error: Variable "filename" is not accessed (reportUnusedVariable)
+  /Users/les/Projects/jinja2-async-environment/tests/test_choice_loader.py:87:17 - error: Variable "filename" is not accessed (reportUnusedVariable)
+  /Users/les/Projects/jinja2-async-environment/tests/test_choice_loader.py:96:17 - error: Variable "filename" is not accessed (reportUnusedVariable)
+  /Users/les/Projects/jinja2-async-environment/tests/test_choice_loader.py:111:17 - error: Variable "filename" is not accessed (reportUnusedVariable)
+/Users/les/Projects/jinja2-async-environment/tests/test_dict_loader.py
+  /Users/les/Projects/jinja2-async-environment/tests/test_dict_loader.py:90:9 - error: Variable "source" is not accessed (reportUnusedVariable)
+  /Users/les/Projects/jinja2-async-environment/tests/test_dict_loader.py:90:17 - error: Variable "filename" is not accessed (reportUnusedVariable)
+/Users/les/Projects/jinja2-async-environment/tests/test_function_loader.py
+  /Users/les/Projects/jinja2-async-environment/tests/test_function_loader.py:48:16 - error: Type "(template: str | Path) -> CoroutineType[Any, Any, SourceType | None]" is not assignable to return type "(str | Path) -> (Awaitable[SourceType] | None)"
+    Type "(template: str | Path) -> CoroutineType[Any, Any, SourceType | None]" is not assignable to type "(str | Path) -> (Awaitable[SourceType] | None)"
+      Function return type "CoroutineType[Any, Any, SourceType | None]" is incompatible with type "Awaitable[SourceType] | None"
+        Type "CoroutineType[Any, Any, SourceType | None]" is not assignable to type "Awaitable[SourceType] | None"
+          "CoroutineType[Any, Any, SourceType | None]" is not assignable to "Awaitable[SourceType]"
+            Type parameter "_T_co@Awaitable" is covariant, but "SourceType | None" is not a subtype of "SourceType"
+          "CoroutineType[Any, Any, SourceType | None]" is not assignable to "None" (reportReturnType)
+  /Users/les/Projects/jinja2-async-environment/tests/test_function_loader.py:63:27 - warning: Type of parameter "sync_load_func" is partially unknown
+    Parameter type is "(...) -> Unknown" (reportUnknownParameterType)
+  /Users/les/Projects/jinja2-async-environment/tests/test_function_loader.py:63:43 - error: Expected type arguments for generic class "Callable" (reportMissingTypeArgument)
+  /Users/les/Projects/jinja2-async-environment/tests/test_function_loader.py:67:28 - warning: Type of parameter "async_load_func" is partially unknown
+    Parameter type is "(...) -> Unknown" (reportUnknownParameterType)
+  /Users/les/Projects/jinja2-async-environment/tests/test_function_loader.py:67:45 - error: Expected type arguments for generic class "Callable" (reportMissingTypeArgument)
+  /Users/les/Projects/jinja2-async-environment/tests/test_function_loader.py:71:29 - warning: Type of parameter "string_load_func" is partially unknown
+    Parameter type is "(...) -> Unknown" (reportUnknownParameterType)
+  /Users/les/Projects/jinja2-async-environment/tests/test_function_loader.py:71:47 - error: Expected type arguments for generic class "Callable" (reportMissingTypeArgument)
+  /Users/les/Projects/jinja2-async-environment/tests/test_function_loader.py:80:25 - warning: Type of parameter "sync_load_func" is partially unknown
+    Parameter type is "(...) -> Unknown" (reportUnknownParameterType)
+  /Users/les/Projects/jinja2-async-environment/tests/test_function_loader.py:80:41 - error: Expected type arguments for generic class "Callable" (reportMissingTypeArgument)
+  /Users/les/Projects/jinja2-async-environment/tests/test_function_loader.py:154:38 - error: Argument of type "(template: str | Path) -> int" cannot be assigned to parameter "load_func" of type "(str | Path) -> (Awaitable[SourceType] | SourceType | None)" in function "__init__"
+    Type "(template: str | Path) -> int" is not assignable to type "(str | Path) -> (Awaitable[SourceType] | SourceType | None)"
+      Function return type "int" is incompatible with type "Awaitable[SourceType] | SourceType | None"
+        Type "int" is not assignable to type "Awaitable[SourceType] | SourceType | None"
+          "int" is incompatible with protocol "Awaitable[SourceType]"
+            "__await__" is not present
+          "int" is not assignable to "tuple[str | bytes, str | None, (() -> (bool | Awaitable[bool])) | None]"
+          "int" is not assignable to "None" (reportArgumentType)
+/Users/les/Projects/jinja2-async-environment/tests/test_package_loader.py
+  /Users/les/Projects/jinja2-async-environment/tests/test_package_loader.py:176:30 - error: "bool" is not awaitable
+    "bool" is incompatible with protocol "Awaitable[_T_co@Awaitable]"
+      "__await__" is not present (reportGeneralTypeIssues)
+  /Users/les/Projects/jinja2-async-environment/tests/test_package_loader.py:182:34 - error: "bool" is not awaitable
+    "bool" is incompatible with protocol "Awaitable[_T_co@Awaitable]"
+      "__await__" is not present (reportGeneralTypeIssues)
+  /Users/les/Projects/jinja2-async-environment/tests/test_package_loader.py:185:34 - error: "bool" is not awaitable
+    "bool" is incompatible with protocol "Awaitable[_T_co@Awaitable]"
+      "__await__" is not present (reportGeneralTypeIssues)
+/Users/les/Projects/jinja2-async-environment/tests/test_redis_bccache.py
+  /Users/les/Projects/jinja2-async-environment/tests/test_redis_bccache.py:28:23 - error: Cannot assign to attribute "code" for class "Bucket"
+    Type "Literal['test_bytecode']" is not assignable to type "CodeType | None"
+      "Literal['test_bytecode']" is not assignable to "CodeType"
+      "Literal['test_bytecode']" is not assignable to "None" (reportAttributeAccessIssue)
+/Users/les/Projects/jinja2-async-environment/tests/test_template_rendering.py
+  /Users/les/Projects/jinja2-async-environment/tests/test_template_rendering.py:37:39 - error: "Iterator[str]" is not iterable
+    "__aiter__" method not defined (reportGeneralTypeIssues)
+  /Users/les/Projects/jinja2-async-environment/tests/test_template_rendering.py:48:39 - error: "Iterator[str]" is not iterable
+    "__aiter__" method not defined (reportGeneralTypeIssues)
+  /Users/les/Projects/jinja2-async-environment/tests/test_template_rendering.py:61:39 - error: "Iterator[str]" is not iterable
+    "__aiter__" method not defined (reportGeneralTypeIssues)
+  /Users/les/Projects/jinja2-async-environment/tests/test_template_rendering.py:76:39 - error: "Iterator[str]" is not iterable
+    "__aiter__" method not defined (reportGeneralTypeIssues)
+  /Users/les/Projects/jinja2-async-environment/tests/test_template_rendering.py:91:39 - error: "Iterator[str]" is not iterable
+    "__aiter__" method not defined (reportGeneralTypeIssues)
+  /Users/les/Projects/jinja2-async-environment/tests/test_template_rendering.py:106:39 - error: "Iterator[str]" is not iterable
+    "__aiter__" method not defined (reportGeneralTypeIssues)
+  /Users/les/Projects/jinja2-async-environment/tests/test_template_rendering.py:128:39 - error: "Iterator[str]" is not iterable
+    "__aiter__" method not defined (reportGeneralTypeIssues)
+24 errors, 4 warnings, 0 informations
+
+ruff.....................................................................Passed
+ruff-format..............................................................Passed
+
+
+Pre-commit failed. Please fix errors.
+
+(jinja2-async-environment) [jinja2-async-environment]                                                                                                        main  ✭ ✱

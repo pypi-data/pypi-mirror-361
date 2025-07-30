@@ -1,0 +1,60 @@
+[project]
+name = "mcp-server-code-extractor"
+version = "0.2.1"
+description = "A Model Context Protocol (MCP) server that provides precise code extraction tools using tree-sitter parsing"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+    {name = "Christopher Toth", email = "q.alpha@gmail.com"}
+]
+maintainers = [
+    {name = "Christopher Toth", email = "q.alpha@gmail.com"}
+]
+license = "MIT"
+keywords = ["mcp", "model-context-protocol", "code-extraction", "tree-sitter", "ai-tools"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Text Processing :: Linguistic",
+    "Topic :: Software Development :: Code Generators",
+]
+dependencies = [
+    "mcp>=1.11.0",
+    "tree-sitter-languages>=1.10.2",
+    "tree-sitter==0.21.3",
+]
+
+[project.urls]
+Homepage = "https://github.com/ctoth/mcp_server_code_extractor"
+Repository = "https://github.com/ctoth/mcp_server_code_extractor"
+Issues = "https://github.com/ctoth/mcp_server_code_extractor/issues"
+Documentation = "https://github.com/ctoth/mcp-code-extractor#readme"
+
+[project.scripts]
+mcp-server-code-extractor = "mcp_server_code_extractor:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+]
+
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = ["mcp_server_code_extractor"]
+packages = ["code_extractor"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.1",
+]

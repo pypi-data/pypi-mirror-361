@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "solar-circuit"
+version = "0.1.2.dev1"
+description = "Solar Circuit CLI tools"
+authors = [
+  { name = "wandr", email = "wandr@example.com" }
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "typer[all]",
+  "rich",
+  "gitpython",
+  "python-frontmatter",
+  "google-generativeai",
+  "keyring",
+  "toml",
+  "watchdog"
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest",
+  "black",
+  "flake8"
+]
+
+[tool.setuptools]
+packages = ["sc_cli"]
+
+[project.scripts]
+sc = "sc_cli.main:app"
+
+[project.urls]
+Repository = "https://github.com/seishinshigo/solar_circuit_v2"
+Bug-Tracker = "https://github.com/seishinshigo/solar_circuit_v2/issues"

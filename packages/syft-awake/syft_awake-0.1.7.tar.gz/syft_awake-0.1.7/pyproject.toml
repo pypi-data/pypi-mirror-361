@@ -1,0 +1,61 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "syft-awake"
+version = "0.1.7"
+description = "Fast, secure network awakeness monitoring for SyftBox - ping members to see who's online and ready for interactive queries"
+readme = "README.md"
+license = "Apache-2.0"
+authors = [
+    {name = "Andrew Trask", email = "contact@andrewtrask.net"},
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "syft-core>=0.2.5",
+    "syft-event>=0.1.0",
+    "syft-rpc>=0.1.0",
+    "loguru>=0.7.0",
+    "pydantic>=2.0.0",
+    "typing-extensions>=4.0.0",
+    "pytest>=8.4.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.1.0",
+    "ruff>=0.3.0",
+]
+
+[project.scripts]
+syft-awake = "syft_awake.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/iamtrask/syft-awake"
+Repository = "https://github.com/iamtrask/syft-awake.git"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/syft_awake"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]

@@ -1,0 +1,75 @@
+{
+  "http://examplelab-chatbot-api-dev.us-west-1.elasticbeanstalk.com/webhook": {
+    "default": {
+      "replies": {
+        "text": "I'd be happy to help you! What would you like to know about our products?"
+      },
+      "thread_id": "thread_12345"
+    },
+    "patterns": [
+      {
+        "request_contains": {
+          "message": ".*product.*"
+        },
+        "response": {
+          "replies": {
+            "text": "Our main products include AI chatbots, automation tools, and analytics dashboards. Which one interests you most?"
+          },
+          "thread_id": "thread_12345"
+        }
+      },
+      {
+        "request_contains": {
+          "message": ".*pricing.*|.*cost.*|.*price.*"
+        },
+        "response": {
+          "replies": {
+            "text": "Our pricing starts at $99/month for the basic plan. Would you like me to send you detailed pricing information?"
+          },
+          "thread_id": "thread_12345"
+        }
+      },
+      {
+        "request_contains": {
+          "message": ".*demo.*|.*trial.*"
+        },
+        "response": {
+          "replies": {
+            "text": "I can set up a free demo for you! What's the best time to reach you?"
+          },
+          "thread_id": "thread_12345"
+        }
+      },
+      {
+        "request_contains": {
+          "message": ".*support.*|.*help.*|.*problem.*"
+        },
+        "response": {
+          "replies": {
+            "text": "I'm here to help! Can you tell me more about what you need assistance with?"
+          },
+          "thread_id": "thread_12345"
+        }
+      },
+      {
+        "request_contains": {
+          "message": ".*goodbye.*|.*bye.*|.*end.*"
+        },
+        "response": {
+          "replies": {
+            "text": "Thank you for chatting with us! Have a great day!"
+          },
+          "thread_id": "thread_12345"
+        }
+      }
+    ]
+  },
+  "https://api.example.com/chatbot": {
+    "default": {
+      "replies": {
+        "text": "This is a fallback response from the mock API."
+      },
+      "thread_id": "fallback_thread"
+    }
+  }
+}

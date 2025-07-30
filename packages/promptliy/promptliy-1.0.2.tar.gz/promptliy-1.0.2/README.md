@@ -1,0 +1,167 @@
+# promptliy-client
+
+A lightweight Python SDK to fetch and format AI prompts from [Promptliy.ai](https://promptliy.ai) using your project API key.
+
+---
+
+## Installation
+
+```bash
+pip install promptliy
+```
+
+> Optional (recommended for caching in long-running environments like servers):
+```bash
+pip install cachetools
+```
+
+---
+
+## What is Promptliy?
+
+[Promptliy](https://promptliy.ai) helps teams manage, version, and collaborate on production-ready AI prompts with live context, variables, version history, and client libraries for devs.
+
+---
+
+## Usage
+
+### 1. Initialize the client
+
+```python
+from promptliy import PromptliyClient
+
+promptliy_client = PromptliyClient(project_key="pl_sk_abc123yourkey")
+```
+
+### 2. Using a prompt with variables
+
+This is the most common use case. Your prompt on Promptliy.ai contains `{{placeholders}}`.
+
+```python
+# Fetches the "onboarding-email" prompt and formats it with the provided values
+output = promptliy_client.format("onboarding-email", {
+    "name": "Ava",
+    "product": "Promptliy"
+})
+
+print(output)
+# Output: "Subject: Welcome, Ava! Hey Ava, Thanks for joining Promptliy..."```
+
+### 3. Using a prompt without variables (static prompt)
+
+If your prompt has no variables, you can simply call `.format()` with an empty dictionary. If you are using the latest version of the SDK, the second argument is optional.
+
+```python
+# Fetches a static prompt, like a system instruction or a fixed message.
+# Both methods below are valid.
+
+# Method A: Passing an empty dictionary (works on all versions)
+system_prompt = promptliy_client.format("system-instruction", {})
+
+# Method B: Omitting the values (more convenient, recommended)
+system_prompt = promptliy_client.format("system-instruction")
+
+
+print(system_prompt)
+# Output: "You are a helpful AI assistant specializing in software development."
+```
+
+---
+
+## Example: Use with LLMs
+
+### OpenAI (ChatGPT, GPT-4)
+
+```python
+from openai import OpenAI
+client = OpenAI(api_key="sk-...")
+
+prompt_text = promptliy_client.format("chat-prompt", { "topic": "AI" })
+
+response = client.chat.completions.create(
+    model="gpt-4",
+    messages=[{"role": "user", "content": prompt_text}]
+)
+
+print(response.choices[0].message.content)
+```
+
+### Claude (Anthropic)
+
+```python
+from anthropic import Anthropic
+
+anthropic = Anthropic(api_key="your-anthropic-key")
+
+prompt_text = promptliy_client.format("claude-prompt", { "question": "What is PromptOps?" })
+
+response = anthropic.messages.create(
+    model="claude-3-opus-20240229",
+    max_tokens=500,
+    messages=[{"role": "user", "content": prompt_text}]
+)
+
+print(response.content)
+```
+
+### Google Gemini
+
+```python
+import google.generativeai as genai
+
+genai.configure(api_key="your-gemini-api-key")
+
+prompt_text = promptliy_client.format("gemini-prompt", { "question": "What is PromptOps?" })
+
+response = genai.GenerativeModel("gemini-1.5-pro").generate_content(prompt_text)
+print(response.text)
+```
+
+---
+
+## Features
+
+- Smart in-memory caching (via built-in dict or `cachetools`)
+- Background refresh loop (auto-syncs every 30 seconds)
+- Variable validation with `{{ name }}` support
+- Works with all LLM APIs (OpenAI, Claude, Gemini, etc.)
+
+---
+
+## Example Prompt Template
+
+```text
+Subject: Welcome, {{ name }}!
+
+Hey {{ name }},
+
+Thanks for joining {{ product }}. We're thrilled to have you on board!
+```
+
+---
+
+## Error Handling
+
+```python
+# ❌ Missing required variable
+promptliy_client.format("onboarding-email", { "name": "Leo" })
+# ➜ ValueError: Missing required variables: product
+```
+
+---
+
+## License
+
+This SDK is **commercial software** by Promptliy Inc.
+
+By using this package, you agree to the terms in [`LICENSE.txt`](./LICENSE.txt).
+
+- ✅ Free tier use is allowed
+- 🚫 Production use requires a paid subscription
+
+---
+
+## Contact
+
+- 🌐 [https://promptliy.ai](https://promptliy.ai)
+- 📧 support@promptliy.ai

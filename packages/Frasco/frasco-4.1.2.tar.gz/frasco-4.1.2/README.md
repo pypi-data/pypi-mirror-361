@@ -1,0 +1,5 @@
+# Frasco
+
+The underlying framework used by kantree.
+
+THIS IS MEANT TO BE REPLACED PARTIALLY BY OUTSIDE LIBS AND MERGED INSIDE KANTREE

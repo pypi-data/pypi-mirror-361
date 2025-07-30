@@ -1,0 +1,28 @@
+[project]
+name = "ytch"
+version = "0.2.0"
+description = "Chat, Transcript, and Summarize YouTube Videos with AI"
+readme = "README.md"
+authors = [{ name = "Kelvin Ng", email = "hoishing@gmail.com" }]
+requires-python = ">=3.12"
+dependencies = [
+    "click>=8.2.1",
+    "google-genai>=1.25.0",
+    "python-dotenv>=1.1.1",
+    "pytubefix>=9.3.0",
+    "streamlit>=1.46.1",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = ["pytest>=8.4.1", "watchdog>=6.0.0"]
+
+[tool.ruff]
+isort.no-sections = true
+extend-ignore = ["E203", "E402", "E501", "E712", "F401", "F811"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["ytch"]

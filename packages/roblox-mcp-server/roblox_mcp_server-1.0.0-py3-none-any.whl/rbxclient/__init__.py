@@ -1,0 +1,5 @@
+__title__ = 'roblox-mcp-server'
+__author__ = 'Yuchan Han'
+__license__ = 'MIT'
+__copyright__ = 'Copyright 2025-present Yuchan Han'
+__version__ = '1.0.0'

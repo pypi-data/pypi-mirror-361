@@ -1,0 +1,113 @@
+# Image Functions Library
+
+Library for image pre-processing, with functions to handle and prepare images for machine learning and image processing. This library accounts for functions to load and plot a group of images, pre-processing, choose ROI regions (even polygonal), choose points, get image properties, align and transform images (including rotate, scale, etc.), filter signals and images (2D data), among others. All the functions with GUI (stands for graphical user interface) have an interface to interact with the user.
+
+
+### 1. Functions to Load and Plot
+
+- `load_gray_images`: loads all images from a folder, in grayscale
+- `load_color_images`: loads all color images from a folder
+- `plot_gray_images`: prints all grayscale images from a variable 'I'
+- `plot_color_images`: prints all color images from a variable 'I'
+- `plot_gray`: prints a grayscale image
+- `plot_bgr`: prints a color image in BGR format
+- `list_folders`: list all folders inside a directory
+- `list_images`: list all images inside a folder
+- `read_lsm`: reading and mounting images of '.lsm' extension from Zeiss microscope 
+
+
+### 2. Pre-Processing for Machine Learning and Computer Vision
+
+#### 2.1. Labeling Data from Images
+
+- `label_sequence_points`: label points in profiles/sequences from images (interact with images choosing profiles and points to labeling) *
+- `label_image_segments`: label segments in folders with multiple images (with a GUI to interact with the images, very automated function!) *
+
+#### 2.2. ROI and Handling (*Most Important Ones*)
+
+- `polyroi`: GUI to create a polygonal region of interest (ROI)
+- `crop_image`: GUI to create a rectangular crop in an image
+- `crop_multiple`: crops multiple images using the same crop from 1st image
+- `crop_poly_multiple`: polygonal crop multiple images based on 1st cropping
+- `choose_points`: GUI to interact with the user to choose points in an image
+- `imchoose`: function to choose images in a given set of images (with GUI)
+- `imroiprop`: getting properties from an image ROI
+- `roi_stats`: get statistics from a region choosen by the user, for images of multiple experiments (important!)
+- `roi_stats_in_detph`: choose a region, and get the detailed statistics of this region, as a function of a given direction defined by the user. Applications: statistics of pixels from a tumor, from surface to the depth, e.g. in microscope fluorescence of histological slides (see an example in the next gif image):
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/MarlonGarcia/imfun/main/media/roi_stats_in_detph.gif" alt="me" width="320" />
+</p>
+    
+#### 2.3. Image Alignment and Transformation
+
+- `rotate2D`: rotate points by an angle about a center
+- `flat2im`: transforms a flat vector into a 2D image
+- `im2flat`: transforms a 2D image in a flat vector
+- `scale255`: scales an image to the [0, 255] range
+- `align_features`: Align images with Feature-Based algorithm, from OpenCV (maybe not working)
+- `align_ECC`: image alignment using ECC algorithm from OpenCV (diffuse image)
+- `imwarp`: function to warp a set of images using a warp matrix (maybe not working)
+    
+    
+### 3. Filtering Images and Signals
+
+- `filter_finder`: study and find which filter to use (for signals, 1D)
+- `highpass_gauss`: high-pass Gaussian filter for images (2D)
+- `highpass_fft`: high-pass image (2D) filter based on FFT
+- `lowpass_fft`: low-pass image (2D) filter based on FFT
+- `filt_hist`: filtering histograms with zero/null values (removing zeros)
+
+
+### 4. Bonus Functions
+
+- `beep`: making 'beeps' to help warn when a long algorithm has finished
+- `good_colormaps`: visualizing the best Matplotlib colormaps in an image
+- `improfile`: finds the pixels' intensity profile between two points (GUI) (maybe not working)
+
+
+
+### 5. Tutorials and Examples
+
+Inside the `tutorials` folder there are some examples of using the functions of this library. In this folder, the files with name `imex_name.py` present an example of using the function indicated by the `name` part.
+
+
+
+### 6. How to Install
+
+You can install using `pip`:
+
+```
+pip install image-functions==0.1.11
+```
+
+*OBS*: some functions use the 'pynput' and 'windsound' libraries, which may be difficult to install and do not works on non-windows platforms. Comment on these library imports if there are problems during installation or loading.
+
+
+If you have other versions of this library installed, please remove it first:
+```
+pip uninstall image-functions
+
+pip install image-functions==0.1.11
+```
+
+- author: Marlon Rodrigues Garcia
+- contact: marlon.garcia@unesp.br
+- institution: Sao Paulo State University (Unesp)
+- website1: https://sites.google.com/view/lab-biomedical-optics/
+- website2: https://www.ifsc.usp.br/~prata/php/index.php
+
+
+### 7. Scientific Research
+
+This work is the product of the research being conducted at two universities in Brazil:
+
+#### Sao Paulo State University (Unesp)
+- Dept. of Electronic and Telecommunication Engineering
+- School of Engineering, Campus of Sao Joao da Boa Vista
+- website: https://www.sjbv.unesp.br/
+
+#### University of São Paulo (USP)
+- Biophotonics Laboratory, Optics Group (GO)
+- São Carlos Institute of Physics (IFSC)
+- website: https://www2.ifsc.usp.br/english/

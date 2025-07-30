@@ -1,0 +1,19 @@
+SET dq3_error_json = (
+    SELECT
+        try_parse_JSON({{ dq3_log_select_artifact }})
+    FROM {{ dq3_view_identifier_artifact }} s
+    {{ dq3_log_lu_sink_source_join_artifact }}
+    WHERE {{ dq3_log_where_artifact }}
+)
+DECLARE @dq3_error_count int = (
+    SELECT
+        COUNT(1)
+    FROM {{ dq3_view_identifier_artifact }} s
+    {{ dq3_log_lu_sink_source_join_artifact }}
+    WHERE {{ dq3_log_where_artifact }}
+)
+IF $dq3_error_json IS NOT NULL
+INSERT INTO cloe_dwh.DQ3_Log (_Sourceobject, _DCR, Content_JSON, Error_Count)
+SELECT
+    '{{ dq3_view_identifier_artifact }}', SYSUTCDATETIME(), $dq3_error_json, $dq3_error_count
+ELSE '';

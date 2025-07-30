@@ -1,0 +1,7 @@
+CREATE OR ALTER VIEW {{ dq2_view_identifier_artifact }}
+AS
+SELECT
+    {{ dq2_view_select_as_raw_artifact }}
+    ,{{ "CASE WHEN (" ~ dq2_view_where_artifact ~ ") THEN 1 ELSE 0 END" if dq2_view_where_artifact else "0" }} AS _IsConvertError
+FROM {{ dq2_view_source_object_artifact }} s{% if include_dq1 %}
+WHERE _VALID_FG = 1{% endif %}

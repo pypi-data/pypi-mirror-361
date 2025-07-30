@@ -1,0 +1,11 @@
+INSERT INTO {{ sink_table_identifier_artifact }}
+	(BK
+	,{{ sink_insert_artifact }}
+	{{',' ~ lu_sink_insert_artifact if lu_sink_insert_artifact else '' }}
+	,_DCR, _Load_Datetime, _IsDeleted, _Deleted_Date)
+SELECT
+	{{ source_insert_artifact }}{{',' ~ lu_source_insert_artifact if lu_source_insert_artifact else '' }},
+	SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 0, NULL
+FROM {{ source_table_identifier_artifact }} s
+	{{ lu_sink_source_join_artifact if lu_sink_source_join_artifact else '' }}
+{% if include_dq2 %}WHERE s._isConvertError = 0{% elif include_dq1 %}WHERE s._VALID_FG = 1{% else %} {% endif %};

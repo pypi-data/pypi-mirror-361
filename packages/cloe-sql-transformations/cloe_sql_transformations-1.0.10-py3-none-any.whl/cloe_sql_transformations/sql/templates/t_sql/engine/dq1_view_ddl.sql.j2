@@ -1,0 +1,15 @@
+CREATE OR ALTER VIEW {{ dq1_view_identifier_artifact }}
+AS
+WITH cte_prepare_etl
+AS
+(
+	SELECT
+		{{ dq1_view_select_as_raw_artifact }}
+		,[_CountBK] = COUNT(1) OVER (PARTITION BY {{ bk_artifact }})
+		,[_RowNumber] = ROW_NUMBER() OVER (PARTITION BY {{ bk_artifact }} ORDER BY [_ID])
+	FROM {{ dq1_view_source_object_artifact }} s
+)
+SELECT
+	{{ dq1_view_select_as_name_artifact }}
+	,CONVERT(BIT, CASE WHEN [_RowNumber] = [_CountBK] THEN 1 ELSE 0 END) AS _VALID_FG
+FROM cte_prepare_etl s

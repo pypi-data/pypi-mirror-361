@@ -1,0 +1,17 @@
+SET dq2_error_json = (
+    SELECT
+        try_parse_JSON({{ dq2_log_select_artifact }})
+    FROM {{ dq2_view_identifier_artifact }} s
+    WHERE {{ dq2_log_where_artifact }}
+)
+DECLARE @dq2_error_count int = (
+    SELECT
+        COUNT(1)
+    FROM {{ dq2_view_identifier_artifact }} s
+    WHERE {{ dq2_log_where_artifact }}
+)
+IF $dq2_error_json IS NOT NULL
+INSERT INTO cloe_dwh.DQ2_Log (_Sourceobject, _DCR, Content_JSON, Error_Count)
+SELECT
+    '{{ dq2_view_identifier_artifact }}', SYSUTCDATETIME(), $dq2_error_json, $dq2_error_count
+ELSE '';

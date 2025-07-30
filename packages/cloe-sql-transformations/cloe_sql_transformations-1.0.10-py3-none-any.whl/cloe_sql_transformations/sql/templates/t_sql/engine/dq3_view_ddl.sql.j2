@@ -1,0 +1,8 @@
+CREATE OR ALTER VIEW {{ dq3_view_identifier_artifact }}
+AS
+SELECT
+    {{ dq3_view_select_as_raw_artifact }}
+FROM {{ dq3_view_source_object_artifact }} s
+{{ lu_sink_source_join_artifact }}{% if include_dq2 %}
+WHERE _IsConvertError = 0{% endif %}{% if include_dq1 and not include_dq2 %}
+WHERE _VALID_FG = 1{% endif %}

@@ -1,0 +1,37 @@
+merge into {{ sink_table_identifier_artifact }} t using (
+        SELECT
+            {{ source_lu_used_columns_artifact }}
+        FROM {{ source_table_identifier_artifact }} s
+        {% if lu_sink_source_join_artifact -%}
+        {{ lu_sink_source_join_artifact }}
+        {% endif -%}
+    ) s on t.BK = {{ bk_artifact }}
+    when matched
+    AND {{ sink_source_field_comparison_artifact }}
+    then update set
+        {{ sink_source_update_artifact }}
+        {% if lu_sink_source_update_artifact -%}
+        ,{{ lu_sink_source_update_artifact }}
+        {% endif -%}
+		,_DMR = CURRENT_TIMESTAMP()
+    when not matched {% if include_dq2 %} AND s._isConvertError = 0 {% elif include_dq1 %} AND s._VALID_FG = 1 {% endif -%}
+    then insert
+        (
+            BK
+            ,{{ sink_insert_artifact }}
+            {% if lu_sink_insert_artifact -%}
+            ,{{ lu_sink_insert_artifact }}
+            {% endif -%}
+            ,_DCR
+            ,_DMR
+        )
+        values
+        (
+            {{ bk_artifact }}
+            ,{{ source_insert_artifact }}
+            {% if lu_source_insert_artifact -%}
+            ,{{ lu_source_insert_artifact }}
+            {% endif -%}
+            ,CURRENT_TIMESTAMP()
+            ,CURRENT_TIMESTAMP()
+        );

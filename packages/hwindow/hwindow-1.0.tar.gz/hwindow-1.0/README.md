@@ -1,0 +1,1 @@
+*** A window library made in Qt. ***

@@ -1,0 +1,43 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "exiftool-wrapper"
+version = "0.2.0"
+description = "A lightweight wrapper for exiftool"
+authors = [{ name = "Nils Philippsen", email = "nils@tiptoe.de" }]
+requires-python = ">=3.12.0,<4"
+license = "LGPL-3.0-or-later"
+
+[dependency-groups]
+dev = [
+    "pillow>=9.0.1,<12",
+    "pytest>=6.2.5,<9",
+    "pytest-cov>=2.12.1,<7",
+    "coverage>=7.3.0,<8",
+    "toml>=0.10.2,<0.11",
+    "pytest-xdist>=3.6.1",
+    "ruff>=0.12.1",
+    "pytest-asyncio>=1.0.0",
+]
+
+[tool.pytest.ini_options]
+addopts = "--cov-config .coveragerc --cov=exiftool_wrapper --cov-report=term --cov-report=xml --cov-report=html"
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "S", "B", "RUF"]
+allowed-confusables = ["’"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101", "RUF012"]
+"**/__init__.py" = ["F401"]
+
+[tool.black]
+line-length=100

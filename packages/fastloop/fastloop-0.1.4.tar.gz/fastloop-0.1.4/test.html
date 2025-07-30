@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>FastLoop Pyodide Local Bundle Test</title>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.27.0/full/pyodide.js"></script>
+</head>
+<body>
+  <h2>FastLoop Pyodide Local Bundle Test</h2>
+  <input type="file" id="bundleInput" accept=".zip">
+  <button onclick="loadFastLoop()">Load and Run FastLoop App</button>
+  <br><br>
+  <button onclick="triggerPRReview()" id="prButton" disabled>Trigger PR Review Loop</button>
+  <pre id="output"></pre>
+
+  <script>
+    let pyodideInstance = null;
+
+    async function loadFastLoop() {
+      const output = document.getElementById('output');
+      const fileInput = document.getElementById('bundleInput');
+      const file = fileInput.files[0];
+
+      if (!file) {
+        output.textContent = "Please select your bundle.zip file first.";
+        return;
+      }
+
+      output.textContent = "Loading Pyodide...\n";
+      pyodideInstance = await loadPyodide();
+      output.textContent += "Pyodide loaded.\n";
+
+      // Install dependencies
+      output.textContent += "Installing dependencies...\n";
+      await pyodideInstance.loadPackage(['micropip']);
+      await pyodideInstance.runPythonAsync(`
+        import micropip
+        await micropip.install(["fastapi", "pydantic", "fastloop", "ssl", "httpx"], keep_going=True)
+      `);
+      output.textContent += "Dependencies installed.\n";
+
+      // Read your local bundle file
+      output.textContent += "Reading local bundle...\n";
+      const bundleData = await file.arrayBuffer();
+      await pyodideInstance.unpackArchive(bundleData, 'zip');
+      output.textContent += "Bundle unpacked.\n";
+
+      // Initialize your FastLoop app
+      output.textContent += "Initializing FastLoop app...\n";
+      await pyodideInstance.runPythonAsync(`
+        from entry import handle_request
+        print("FastLoop app loaded successfully!")
+      `);
+      output.textContent += "FastLoop app initialized.\n";
+
+      // Enable the PR review button
+      document.getElementById('prButton').disabled = false;
+      output.textContent += "Ready! Click 'Trigger PR Review Loop' to start a loop.\n";
+    }
+
+    async function triggerPRReview() {
+      if (!pyodideInstance) {
+        document.getElementById('output').textContent = "Please load the FastLoop app first.";
+        return;
+      }
+
+      const output = document.getElementById('output');
+      output.textContent += "\n--- Triggering PR Review Loop ---\n";
+
+      try {
+        const result = await pyodideInstance.runPythonAsync(`
+          handle_request(
+            'POST',
+            '/pr-review',
+            headers={'Content-Type': 'application/json'},
+            body='{"type": "pr_opened", "repo_url": "ok then", "sha1": "testmeout"}'
+          )
+        `);
+
+        output.textContent += "Response from FastLoop:\n" + JSON.stringify(result, null, 2) + "\n";
+        
+        // If the response indicates a loop was started, show additional info
+        if (result && result.status === 200) {
+          output.textContent += "\n✅ PR Review loop started successfully!\n";
+          output.textContent += "The loop should now be running in the background.\n";
+        }
+      } catch (error) {
+        output.textContent += "❌ Error triggering PR review: " + error.message + "\n";
+      }
+    }
+  </script>
+</body>
+</html>

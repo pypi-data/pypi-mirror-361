@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- Load styling copied from cgview-js -->
+        <!-- <link href="./cgview-js_code/docs/styles/bootstrap.min.css" rel="stylesheet"> -->
+        <link rel="stylesheet" href="./assets/styles/cgview.css" />
+        <link rel="stylesheet" href="./assets/styles/controls.css" />
+
+        <!-- Load custom styling -->
+        <link rel="stylesheet" href="./assets/styles/style.css">
+
+        <!-- Load scripts copied from cgview-js -->
+        <!-- <script src='./cgview-js_code/docs/scripts/marked.min.js'></script> -->
+        <script src="./assets/scripts/d3.min.js"></script>
+        <!-- <script src='./cgview-js_code/docs/scripts/general.js'></script> -->
+        <script src='./assets/scripts/cgview.min.js'></script>
+
+        <title>Proksee Batch</title>
+    </head>
+    <body>
+        <div class="banner">
+            <div class="logo">Proksee Batch</div>
+            <div class='banner-links'>
+                <a href='https://proksee-batch.readthedocs.io' target="_blank">Docs</a>
+                <a href='https://proksee.ca' target="_blank">Proksee</a>
+                <a href='https://github.com/stothard-group/proksee-batch' target="_blank"><img src='./assets/images/GitHub-Mark-Light-64px.png' /></a>
+            </div>
+        </div>
+        <div class="content-container">
+            <!-- Table Container -->
+            <div class="section-table">
+                <div class='run-summary'>
+                    <div class='batch-run'>Batch: <div class='run-name'></div></div>
+                    <div class='run-date'></div>
+                </div>
+                <div class='run-details'><table><tbody>
+                    <tr><td>Run Date:</td><td class='batch-run-date'></td></tr>
+                    <tr><td>Input Dir:</td><td class='batch-input-dir'></td></tr>
+                    <tr><td>Version:</td><td class='batch-version'></td></tr>
+                </tbody></table></div>
+                <div class="sort-bar">
+                    <span class="sort-label">Sort:</span>
+                    <div id="sort-name" class="sort-btn">Name</div>
+                    <div id="sort-length" class="sort-btn">Length</div>
+                    <div id="sort-contigs" class="sort-btn">Contigs</div>
+                    <div id="sort-gc" class="sort-btn">GC</div>
+                    <div id="sort-off" class="sort-btn">Off</div>
+                </div>
+                <div class="search-bar">
+                    <input type="text" id="search-input" placeholder="Search by name or description...">
+                    <button id="search-cancel">Cancel</button>
+                </div>
+                <div id="genome-count">Genome Count</div>
+                <div id="genome-list-container"></div>
+            </div>
+            <!-- Genome Viewer and Controls Container -->
+            <div class="section-map">
+                <div id="resize-bar"><div>&harr;</div><div>&harr;</div><div>&harr;</div></div>
+                <div class="map-genome-name"></div>
+                <div class="viewer-container">
+                    <!-- Genome Viewer -->
+                    <div id='viewer-or-message'>
+                        <div id='my-viewer'></div>
+                        <div id='my-viewer-message'><div id='message'></div></div>
+                    </div>
+                    <!-- Controls -->
+                    <div class='cgv-controls'>
+                        <div class='cgv-btn' id='btn-reset' title='Reset Map'></div>
+                        <div class='cgv-btn' id='btn-zoom-in' title='Zoom In'></div>
+                        <div class='cgv-btn' id='btn-zoom-out' title='Zoom Out'></div>
+                        <div class='cgv-btn' id='btn-move-left' title='Move Left/Counterclockwise'></div>
+                        <div class='cgv-btn' id='btn-move-right' title='Move Right/Clockwise'></div>
+                        <div class='cgv-btn' id='btn-toggle-format' title='Toggle Linear/Circular Format'></div>
+                        <div class='cgv-btn' id='btn-invert-colors' title='Invert Map Colors'></div>
+                        <div class='cgv-btn' id='btn-download' title='Download Map PNG'></div>
+                        <div class='cgv-btn' id='btn-toggle-labels' title='Toggle Labels'></div>
+                        <div class='cgv-btn' id='btn-toggle-legend' title='Toggle Legend'></div>
+                        <div class='cgv-btn disabled btn-proksee' id='btn-open-in-proksee' title='Create Proksee Project'>Create Proksee Project</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Load the table from JSON data in an external .js file -->
+        <script src='./data/table_data.js'></script>
+
+        <!-- Load code for the viewer buttons --> 
+        <!-- Note: These have to be loaded here in order for the viewer buttons to work -->
+        <script src="./assets/scripts/controls.js"></script>
+        <script src="./assets/scripts/batch.js"></script>
+    </body>
+</html>

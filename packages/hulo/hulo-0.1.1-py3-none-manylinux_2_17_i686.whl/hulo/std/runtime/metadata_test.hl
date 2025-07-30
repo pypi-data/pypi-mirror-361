@@ -1,0 +1,88 @@
+fn extend_class() {
+    return (cls: Class<User>) => {
+        echo "class initialize"
+
+        extension class User {
+            gender: 'male' | 'female'
+
+            fn to_str() -> str {
+                return "name: ${this.name}, age: ${this.age}, gender: ${this.gender}"
+            }
+        }
+    }
+}
+
+@extend_class
+class User {
+    name: str
+    age: num
+}
+
+/// Output:
+/// name: Alice, age: 20, gender: female
+fn test_class() {
+    let u = User(name: "Alice", age: 20, gender: 'female')
+    echo $u.to_str()
+}
+
+fn test_inject_cmd() {
+    @log {
+        try {
+            git clone "git@github.com:hulo-lang/docs.git"
+            cd "docs"
+            pnpm i
+            pnpm "docs:dev"
+        } catch (e: Error) {
+            echo $e
+        }
+    }
+}
+
+fn test_function() {
+    let say_hello = (name: str) => {
+        echo "Hello, $name!"
+    }
+
+    comptime {
+        let call = TypeOf($say_hello) as Function
+
+        assert_eq(${call.recv.len}, 1)
+
+        let stmts = []
+        loop $s in ${call.body.stmt} {
+            if typeof $s == ast.Command && $s.fun.to_str() == "echo" {
+                $s.recv = [ast.BasicLit("Hello, $name.\nThank you for using Hulo!")]
+            }
+            $stmts.add($s)
+        }
+
+        $call.body.stmt = $stmts
+    }
+
+    say_hello("ansurfen")
+}
+
+fn inject_thank() {
+    return (f: Function) {
+        assert_eq(${f.recv.len}, 1)
+
+        let stmts = []
+        loop $s in ${f.body.stmt} {
+            if typeof $s == ast.Command && $s.fun.to_str() == "echo" {
+                $s.recv = [ast.BasicLit("Hello, $name.\nThank you for using Hulo!")]
+            }
+            $stmts.add($s)
+        }
+
+        $f.body.stmt = $stmts
+    }
+}
+
+@inject_thank()
+fn say_hello(name: str) => {
+    echo "Hello, $name!"
+}
+
+fn test_function2() {
+    say_hello()
+}

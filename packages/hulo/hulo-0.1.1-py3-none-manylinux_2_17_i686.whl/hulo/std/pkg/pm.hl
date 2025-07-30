@@ -1,0 +1,183 @@
+@command
+cmd Package-Manager {
+    @command(alias: ["install", "i"])
+    cmd install {
+        @flag(alias: ["y", "yes"])
+        yes: bool
+
+        @flag(alias: ["f", "force"])
+        force: bool
+
+        // e.g. PackageManager install hulo@1.0 node@18
+        @param
+        targets: str[]
+    }
+
+    cmd uninstall {
+        
+    }
+
+    cmd search {
+
+    }
+
+    @command(alias: ["ls", "list"])
+    cmd list {
+        @flag(alias: ["v", "verbose"])
+        verbose: bool
+
+        @flag(alias: ["h", "help"])
+        help: bool
+
+        @flag(alias: ["f", "format"])
+        format: Format | str
+
+        @flag(alias: ["w", "where"])
+        where: PackageFilterRule[] | PackageFilterRule
+
+        list() {
+
+        }
+    }
+
+    cmd update {
+
+    }
+
+    cmd clean {
+
+    }
+
+    cmd info {
+
+    }
+
+    cmd source {
+    }
+}
+
+type PackageFilterRule = "installed" | "upgradable" | "available" | "all"
+
+type pm = PackageManager
+
+impl PackageManager for apt {
+    cmd list {
+        list() {
+            format.valid = false
+
+        }
+    }
+}
+
+use pm = apt
+
+try {
+    iwgetid -r | grep -E '(OEBB|WESTlan)'
+    echo "Skipping updates because of slow Wifi"
+    throw error::none
+} catch {}
+
+pm update
+
+// apt::Dpkg::Options::force-confold
+
+yes '' | pm upgrade -y -- -o [apt::Dpkg::Options('--force-confold'),
+    apt::Dpkg::Options('--force-confdef')] --alow-downgrades --allow-remove-essential
+
+pm clean -y --only-orphaned
+
+pub mod apt {
+    trait enum option {
+        format() -> str
+    }
+
+    enum APT impl option {
+        Install-Recommends(bool);
+        
+        fn format() -> str {
+            return ""
+        }
+    }
+
+    enum Acquire impl option {
+        Retries(num)
+    }
+
+    enum Dir impl option {
+        Cache(str),
+        Etc(k: 'sourcelist' | 'sourceparts', v: str);
+
+        fn format() -> str {
+            match (this) {
+                Cache(str) => {
+
+                },
+                Etc(k: 'sourcelist' | 'sourceparts', v: str) => {
+                    return "Dir::Etc::$k=$v"
+                }
+            }
+        }
+    }
+
+    enum Dpkg impl option {
+        Progress-Terminal(str),
+        Pre-Invoke(str),
+        Progress-Fancy(bool),
+        Options('--force-confold' | '--force-confdef');
+    }
+
+    pub mod Dpkg {
+        pub mod Options {
+            var force-confold = 
+        }
+    }
+}
+
+fn test() {
+    pm install node@18
+
+    use pm = yum
+    pm -- symbol("verify redis") // yum verify redis
+
+    use pm = apt
+
+    pm -- -o [apt::Dpkg::Options('--force-confold'), 
+        apt::Dpkg::Progress-Terminal("tty"),
+        apt::Dpkg::Pre-Invoke("/usr/local/bin/pre-dpkg.sh"),
+        apt::Dpkg::Progress-Fancy(true),
+        apt::Install-Recommends(true),
+        apt::Acquire::Retries(3),
+        apt::Dir::Cache("/path/to/cache")]
+    // 对于 -- 会调用 apt里面的原生flag执行，然后他又会调用 format格式化
+
+    pm upgrade -y -- --allow-downgrades --allow-remove-essential --allow-change-held-packages -o [
+        AptOption::Dpkg::OptionsForceConfold,
+        Dpkg::Pre-Invoke("/usr/local/bin/pre-dpkg.sh"),
+        Dpkg::Process-Fancy,
+    ]
+    // 允许 a-b 变量名? 不对不允许 这是 a - b
+
+    pm update
+
+    use pm = npm
+
+    pm list -v -f Format::json -w "installed" -- -g
+}
+
+impl PackageManager for npm {
+    // 对于 PackageManager 没有实现的通过 -- 扩展
+    @flag(alias: ["g", "global"])
+    global: bool
+
+
+}
+
+// strict 模式 对于不支持的flag直接抛出异常
+
+enum Format {
+    text("text"),
+    json("json"),
+    xml("xml");
+
+    value: str
+}

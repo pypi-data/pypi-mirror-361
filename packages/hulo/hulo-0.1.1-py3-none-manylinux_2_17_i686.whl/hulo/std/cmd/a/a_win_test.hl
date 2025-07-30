@@ -1,0 +1,45 @@
+fn test_adprep() {
+    try {
+        adprep --domainprep
+        adprep --domainprep-gprep
+    } catch (e: adprep::Error::Failure) {
+        echo "error happen: $e"
+    }
+}
+
+fn test_append() {
+    try {
+        append 
+        append --clear
+        append --x-option "on" --store-in-env ["C:\\Program Files", "D:\\Data\\2025"]
+    } catch {}
+}
+
+fn test_assign() {
+    try {
+        assign --letter 'e'
+    } catch {}
+}
+
+fn test_assoc() {
+    try {
+        assoc --ext "."
+        assoc --filetype "txtfile" // lack of ext, error happen
+    }
+}
+
+fn test_at() {
+    try {
+        at marketing
+    } catch {}
+}
+
+fn test_arp() {
+    try {
+        arp -a
+        arp -a IP("127.0.0.1") -n IP("10.10.0.8")
+        arp -gn IP("127.0.0.1")
+        arp -s (IP("127.0.0.1"), IP("127.0.0.2"))
+        arp -a -n IP("1.1.1.1") -g // conflict ?
+    } catch {}
+}

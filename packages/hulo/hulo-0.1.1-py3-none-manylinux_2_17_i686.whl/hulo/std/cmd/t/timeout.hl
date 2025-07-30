@@ -1,0 +1,16 @@
+// Pauses the command processor for the specified number of seconds. This command is typically used in batch files.
+@command
+pub class timeout {
+    // Specifies the decimal number of seconds (between -1 and 99999) to wait before the command processor continues processing.
+    // The value -1 causes the computer to wait indefinitely for a keystroke.
+    @flag(short: "t", long: "timeoutinseconds", format: "/t")
+    timeoutinseconds: num
+
+    // Specifies to ignore user key strokes.
+    @flag(format: "/nobreak")
+    nobreak: bool
+
+    // Displays help at the command prompt.
+    @flag(short: "h", long: "help", format: "/?")
+    help: bool
+}

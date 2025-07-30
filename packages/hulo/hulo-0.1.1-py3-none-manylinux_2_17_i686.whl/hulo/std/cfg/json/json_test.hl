@@ -1,0 +1,11 @@
+import "cfg/json"
+
+comptime fn test_marshal() {
+    let data = { "key1": "value1" }
+    assert_eq(json.marshal($data), "{\"key1\":\"value1\"}")
+}
+
+comptime fn test_unmarshal() {
+    let data = "{\"key1\":\"value1\"}"
+    assert_eq(json.unmarshal($data), { "key1": "value1" })
+}

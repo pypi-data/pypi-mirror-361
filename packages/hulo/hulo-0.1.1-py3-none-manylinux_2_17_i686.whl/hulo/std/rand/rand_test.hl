@@ -1,0 +1,12 @@
+import "rand"
+
+fn test_random() {
+    comptime { 
+        let r = rand.Random()
+        $r.number(min: 0, max: 10)
+        $r.string(minSize: 5, maxSize: 20)
+        $r.boolean()
+    }
+
+    echo! rand.double()
+}

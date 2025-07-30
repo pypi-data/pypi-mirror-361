@@ -1,0 +1,334 @@
+[1m========================================================================= test session starts =========================================================================[0m
+platform darwin -- Python 3.13.5, pytest-8.4.1, pluggy-1.6.0 -- /Users/les/Projects/starlette-async-jinja/.venv/bin/python
+cachedir: .pytest_cache
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /Users/les/Projects/starlette-async-jinja
+configfile: pyproject.toml
+testpaths: tests, starlette_async_jinja
+plugins: xdist-3.7.0, anyio-4.9.0, timeout-2.4.0, cov-6.2.1, mock-3.14.1, benchmark-5.1.0, asyncio-1.0.0
+timeout: 300.0s
+timeout method: thread
+timeout func_only: False
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0m[1mcollected 46 items / 42 deselected / 4 selected                                                                                                                       [0m
+
+tests/test_benchmarks.py::test_benchmark_json_response [32mPASSED[0m[32m                                                                                                   [ 25%][0m
+tests/test_benchmarks.py::test_benchmark_template_response [31mFAILED[0m[31m                                                                                               [ 50%][0m
+tests/test_benchmarks.py::test_benchmark_render_fragment [31mFAILED[0m[31m                                                                                                 [ 75%][0m
+tests/test_benchmarks.py::test_benchmark_context_processors [31mFAILED[0m[31m                                                                                              [100%][0m[31m[1m
+ERROR: Coverage failure: total of 38 is less than fail-under=42
+[0m
+
+============================================================================== FAILURES ===============================================================================
+[31m[1m__________________________________________________________________ test_benchmark_template_response ___________________________________________________________________[0m
+
+benchmark = <pytest_benchmark.fixture.BenchmarkFixture object at 0x104602990>
+
+    [0m[37m@pytest[39;49;00m.mark.benchmark[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_benchmark_template_response[39;49;00m(benchmark: BenchmarkFixture) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Benchmark the TemplateResponse rendering performance."""[39;49;00m[90m[39;49;00m
+        [90m# Create mock template[39;49;00m[90m[39;49;00m
+        mock_template = MagicMock(spec=Template)[90m[39;49;00m
+        mock_template.render_async = AsyncMock(return_value=[33m"[39;49;00m[33m<h1>Test Page</h1>[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Create templates with mock[39;49;00m[90m[39;49;00m
+        templates = AsyncJinja2Templates(directory=AsyncPath([33m"[39;49;00m[33mtemplates[39;49;00m[33m"[39;49;00m))[90m[39;49;00m
+        templates.get_template_async = AsyncMock(return_value=mock_template)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Create a mock request[39;49;00m[90m[39;49;00m
+        mock_request = MagicMock(spec=Request)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Create a sync wrapper for the async function[39;49;00m[90m[39;49;00m
+        [94mdef[39;49;00m[90m [39;49;00m[92msync_wrapper[39;49;00m() -> [96mstr[39;49;00m:[90m[39;49;00m
+            [94mreturn[39;49;00m asyncio.run(templates.TemplateResponse([90m[39;49;00m
+                request=mock_request,[90m[39;49;00m
+                name=[33m"[39;49;00m[33mtest.html[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                context={[33m"[39;49;00m[33mtitle[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mTest Page[39;49;00m[33m"[39;49;00m},[90m[39;49;00m
+            ))[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Run benchmark[39;49;00m[90m[39;49;00m
+>       result = benchmark(sync_wrapper)[90m[39;49;00m
+                 ^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_benchmarks.py[0m:54: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31m.venv/lib/python3.13/site-packages/pytest_benchmark/fixture.py[0m:156: in __call__
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m._raw(function_to_benchmark, *args, **kwargs)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/pytest_benchmark/fixture.py[0m:180: in _raw
+    [0mduration, iterations, loops_range = [96mself[39;49;00m._calibrate_timer(runner)[90m[39;49;00m
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/pytest_benchmark/fixture.py[0m:318: in _calibrate_timer
+    [0mduration = runner(loops_range)[90m[39;49;00m
+               ^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/pytest_benchmark/fixture.py[0m:109: in runner
+    [0mfunction_to_benchmark(*args, **kwargs)[90m[39;49;00m
+[1m[31mtests/test_benchmarks.py[0m:47: in sync_wrapper
+    [0m[94mreturn[39;49;00m asyncio.run(templates.TemplateResponse([90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+main = <coroutine object AsyncJinja2Templates.TemplateResponse at 0x1046c8320>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mrun[39;49;00m(main, *, debug=[94mNone[39;49;00m, loop_factory=[94mNone[39;49;00m):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Execute the coroutine and return the result.[39;49;00m
+    [33m[39;49;00m
+    [33m    This function runs the passed coroutine, taking care of[39;49;00m
+    [33m    managing the asyncio event loop, finalizing asynchronous[39;49;00m
+    [33m    generators and closing the default executor.[39;49;00m
+    [33m[39;49;00m
+    [33m    This function cannot be called when another asyncio event loop is[39;49;00m
+    [33m    running in the same thread.[39;49;00m
+    [33m[39;49;00m
+    [33m    If debug is True, the event loop will be run in debug mode.[39;49;00m
+    [33m    If loop_factory is passed, it is used for new event loop creation.[39;49;00m
+    [33m[39;49;00m
+    [33m    This function always creates a new event loop and closes it at the end.[39;49;00m
+    [33m    It should be used as a main entry point for asyncio programs, and should[39;49;00m
+    [33m    ideally only be called once.[39;49;00m
+    [33m[39;49;00m
+    [33m    The executor is given a timeout duration of 5 minutes to shutdown.[39;49;00m
+    [33m    If the executor hasn't finished within that duration, a warning is[39;49;00m
+    [33m    emitted and the executor is closed.[39;49;00m
+    [33m[39;49;00m
+    [33m    Example:[39;49;00m
+    [33m[39;49;00m
+    [33m        async def main():[39;49;00m
+    [33m            await asyncio.sleep(1)[39;49;00m
+    [33m            print('hello')[39;49;00m
+    [33m[39;49;00m
+    [33m        asyncio.run(main())[39;49;00m
+    [33m    """[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m events._get_running_loop() [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+            [90m# fail fast with short traceback[39;49;00m[90m[39;49;00m
+>           [94mraise[39;49;00m [96mRuntimeError[39;49;00m([90m[39;49;00m
+                [33m"[39;49;00m[33masyncio.run() cannot be called from a running event loop[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+[1m[31mE           RuntimeError: asyncio.run() cannot be called from a running event loop[0m
+
+[1m[31m/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/runners.py[0m:191: RuntimeError
+[31m[1m___________________________________________________________________ test_benchmark_render_fragment ____________________________________________________________________[0m
+
+benchmark = <pytest_benchmark.fixture.BenchmarkFixture object at 0x104603750>
+
+    [0m[37m@pytest[39;49;00m.mark.benchmark[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_benchmark_render_fragment[39;49;00m(benchmark: BenchmarkFixture) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Benchmark the render_fragment method performance."""[39;49;00m[90m[39;49;00m
+        [90m# Create mock template with blocks[39;49;00m[90m[39;49;00m
+        mock_template = MagicMock(spec=Template)[90m[39;49;00m
+        mock_template.blocks = {[33m"[39;49;00m[33mtest_block[39;49;00m[33m"[39;49;00m: MagicMock()}[90m[39;49;00m
+        mock_template.new_context = MagicMock(return_value=MagicMock())[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Create templates instance[39;49;00m[90m[39;49;00m
+        templates = AsyncJinja2Templates(directory=AsyncPath([33m"[39;49;00m[33mtemplates[39;49;00m[33m"[39;49;00m))[90m[39;49;00m
+        templates.get_template_async = AsyncMock(return_value=mock_template)[90m[39;49;00m
+        templates.env = MagicMock()[90m[39;49;00m
+        templates.env.concat = MagicMock(return_value=[33m"[39;49;00m[33m<div>Fragment content</div>[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Mock the async generator in block_render_func[39;49;00m[90m[39;49;00m
+        [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mmock_generator[39;49;00m() -> t.AsyncGenerator[[96mstr[39;49;00m, [94mNone[39;49;00m]:[90m[39;49;00m
+            [94myield[39;49;00m [33m"[39;49;00m[33mFragment content[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Set up the mock to return our generator[39;49;00m[90m[39;49;00m
+        mock_template.blocks[[90m[39;49;00m
+            [33m"[39;49;00m[33mtest_block[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        ].return_value.[92m__aiter__[39;49;00m.return_value = mock_generator()[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Create a sync wrapper for the async function[39;49;00m[90m[39;49;00m
+        [94mdef[39;49;00m[90m [39;49;00m[92msync_wrapper[39;49;00m() -> [96mstr[39;49;00m:[90m[39;49;00m
+            [94mreturn[39;49;00m asyncio.run(templates.render_fragment([90m[39;49;00m
+                [33m"[39;49;00m[33mtest.html[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mtest_block[39;49;00m[33m"[39;49;00m, {[33m"[39;49;00m[33mparam1[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mvalue1[39;49;00m[33m"[39;49;00m}[90m[39;49;00m
+            ))[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Run benchmark[39;49;00m[90m[39;49;00m
+>       result = benchmark(sync_wrapper)[90m[39;49;00m
+                 ^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_benchmarks.py[0m:88: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31m.venv/lib/python3.13/site-packages/pytest_benchmark/fixture.py[0m:156: in __call__
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m._raw(function_to_benchmark, *args, **kwargs)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/pytest_benchmark/fixture.py[0m:180: in _raw
+    [0mduration, iterations, loops_range = [96mself[39;49;00m._calibrate_timer(runner)[90m[39;49;00m
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/pytest_benchmark/fixture.py[0m:318: in _calibrate_timer
+    [0mduration = runner(loops_range)[90m[39;49;00m
+               ^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/pytest_benchmark/fixture.py[0m:109: in runner
+    [0mfunction_to_benchmark(*args, **kwargs)[90m[39;49;00m
+[1m[31mtests/test_benchmarks.py[0m:83: in sync_wrapper
+    [0m[94mreturn[39;49;00m asyncio.run(templates.render_fragment([90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+main = <coroutine object AsyncJinja2Templates.render_fragment at 0x10470c680>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mrun[39;49;00m(main, *, debug=[94mNone[39;49;00m, loop_factory=[94mNone[39;49;00m):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Execute the coroutine and return the result.[39;49;00m
+    [33m[39;49;00m
+    [33m    This function runs the passed coroutine, taking care of[39;49;00m
+    [33m    managing the asyncio event loop, finalizing asynchronous[39;49;00m
+    [33m    generators and closing the default executor.[39;49;00m
+    [33m[39;49;00m
+    [33m    This function cannot be called when another asyncio event loop is[39;49;00m
+    [33m    running in the same thread.[39;49;00m
+    [33m[39;49;00m
+    [33m    If debug is True, the event loop will be run in debug mode.[39;49;00m
+    [33m    If loop_factory is passed, it is used for new event loop creation.[39;49;00m
+    [33m[39;49;00m
+    [33m    This function always creates a new event loop and closes it at the end.[39;49;00m
+    [33m    It should be used as a main entry point for asyncio programs, and should[39;49;00m
+    [33m    ideally only be called once.[39;49;00m
+    [33m[39;49;00m
+    [33m    The executor is given a timeout duration of 5 minutes to shutdown.[39;49;00m
+    [33m    If the executor hasn't finished within that duration, a warning is[39;49;00m
+    [33m    emitted and the executor is closed.[39;49;00m
+    [33m[39;49;00m
+    [33m    Example:[39;49;00m
+    [33m[39;49;00m
+    [33m        async def main():[39;49;00m
+    [33m            await asyncio.sleep(1)[39;49;00m
+    [33m            print('hello')[39;49;00m
+    [33m[39;49;00m
+    [33m        asyncio.run(main())[39;49;00m
+    [33m    """[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m events._get_running_loop() [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+            [90m# fail fast with short traceback[39;49;00m[90m[39;49;00m
+>           [94mraise[39;49;00m [96mRuntimeError[39;49;00m([90m[39;49;00m
+                [33m"[39;49;00m[33masyncio.run() cannot be called from a running event loop[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+[1m[31mE           RuntimeError: asyncio.run() cannot be called from a running event loop[0m
+
+[1m[31m/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/runners.py[0m:191: RuntimeError
+[31m[1m__________________________________________________________________ test_benchmark_context_processors __________________________________________________________________[0m
+
+benchmark = <pytest_benchmark.fixture.BenchmarkFixture object at 0x10468efd0>
+
+    [0m[37m@pytest[39;49;00m.mark.benchmark[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_benchmark_context_processors[39;49;00m(benchmark: BenchmarkFixture) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Benchmark the performance impact of context processors."""[39;49;00m[90m[39;49;00m
+        [90m# Create mock template[39;49;00m[90m[39;49;00m
+        mock_template = MagicMock(spec=Template)[90m[39;49;00m
+        mock_template.render_async = AsyncMock(return_value=[33m"[39;49;00m[33m<h1>Test Page</h1>[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Create a context processor[39;49;00m[90m[39;49;00m
+        [94mdef[39;49;00m[90m [39;49;00m[92mcontext_processor[39;49;00m(request: Request) -> [96mdict[39;49;00m[[96mstr[39;49;00m, t.Any]:[90m[39;49;00m
+            [94mreturn[39;49;00m {[90m[39;49;00m
+                [33m"[39;49;00m[33mapp_name[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mTest App[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                [33m"[39;49;00m[33mversion[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33m1.0.0[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                [33m"[39;49;00m[33muser[39;49;00m[33m"[39;49;00m: {[33m"[39;49;00m[33mis_authenticated[39;49;00m[33m"[39;49;00m: [94mTrue[39;49;00m},[90m[39;49;00m
+                [33m"[39;49;00m[33msettings[39;49;00m[33m"[39;49;00m: {[90m[39;49;00m
+                    [33m"[39;49;00m[33mdebug[39;49;00m[33m"[39;49;00m: [94mTrue[39;49;00m,[90m[39;49;00m
+                    [33m"[39;49;00m[33menvironment[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mtesting[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                    [33m"[39;49;00m[33mfeatures[39;49;00m[33m"[39;49;00m: [[33m"[39;49;00m[33mfeature1[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mfeature2[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mfeature3[39;49;00m[33m"[39;49;00m],[90m[39;49;00m
+                },[90m[39;49;00m
+            }[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Create templates with context processor[39;49;00m[90m[39;49;00m
+        templates = AsyncJinja2Templates([90m[39;49;00m
+            directory=AsyncPath([33m"[39;49;00m[33mtemplates[39;49;00m[33m"[39;49;00m),[90m[39;49;00m
+            context_processors=[context_processor],[90m[39;49;00m
+        )[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Mock the get_template_async method[39;49;00m[90m[39;49;00m
+        templates.get_template_async = AsyncMock(return_value=mock_template)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Create a mock request[39;49;00m[90m[39;49;00m
+        mock_request = MagicMock(spec=Request)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Create a sync wrapper for the async function[39;49;00m[90m[39;49;00m
+        [94mdef[39;49;00m[90m [39;49;00m[92msync_wrapper[39;49;00m() -> t.Any:[90m[39;49;00m
+            [94mwith[39;49;00m patch([33m"[39;49;00m[33mstarlette_async_jinja.responses._TemplateResponse[39;49;00m[33m"[39;49;00m):[90m[39;49;00m
+                [94mreturn[39;49;00m asyncio.run(templates.TemplateResponse([90m[39;49;00m
+                    request=mock_request,[90m[39;49;00m
+                    name=[33m"[39;49;00m[33mtest.html[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                    context={[33m"[39;49;00m[33mtitle[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mTest Page[39;49;00m[33m"[39;49;00m},[90m[39;49;00m
+                ))[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Run benchmark[39;49;00m[90m[39;49;00m
+>       result = benchmark(sync_wrapper)[90m[39;49;00m
+                 ^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_benchmarks.py[0m:135: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31m.venv/lib/python3.13/site-packages/pytest_benchmark/fixture.py[0m:156: in __call__
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m._raw(function_to_benchmark, *args, **kwargs)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/pytest_benchmark/fixture.py[0m:180: in _raw
+    [0mduration, iterations, loops_range = [96mself[39;49;00m._calibrate_timer(runner)[90m[39;49;00m
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/pytest_benchmark/fixture.py[0m:318: in _calibrate_timer
+    [0mduration = runner(loops_range)[90m[39;49;00m
+               ^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m.venv/lib/python3.13/site-packages/pytest_benchmark/fixture.py[0m:109: in runner
+    [0mfunction_to_benchmark(*args, **kwargs)[90m[39;49;00m
+[1m[31mtests/test_benchmarks.py[0m:128: in sync_wrapper
+    [0m[94mreturn[39;49;00m asyncio.run(templates.TemplateResponse([90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+main = <coroutine object AsyncJinja2Templates.TemplateResponse at 0x1046ca5a0>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mrun[39;49;00m(main, *, debug=[94mNone[39;49;00m, loop_factory=[94mNone[39;49;00m):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Execute the coroutine and return the result.[39;49;00m
+    [33m[39;49;00m
+    [33m    This function runs the passed coroutine, taking care of[39;49;00m
+    [33m    managing the asyncio event loop, finalizing asynchronous[39;49;00m
+    [33m    generators and closing the default executor.[39;49;00m
+    [33m[39;49;00m
+    [33m    This function cannot be called when another asyncio event loop is[39;49;00m
+    [33m    running in the same thread.[39;49;00m
+    [33m[39;49;00m
+    [33m    If debug is True, the event loop will be run in debug mode.[39;49;00m
+    [33m    If loop_factory is passed, it is used for new event loop creation.[39;49;00m
+    [33m[39;49;00m
+    [33m    This function always creates a new event loop and closes it at the end.[39;49;00m
+    [33m    It should be used as a main entry point for asyncio programs, and should[39;49;00m
+    [33m    ideally only be called once.[39;49;00m
+    [33m[39;49;00m
+    [33m    The executor is given a timeout duration of 5 minutes to shutdown.[39;49;00m
+    [33m    If the executor hasn't finished within that duration, a warning is[39;49;00m
+    [33m    emitted and the executor is closed.[39;49;00m
+    [33m[39;49;00m
+    [33m    Example:[39;49;00m
+    [33m[39;49;00m
+    [33m        async def main():[39;49;00m
+    [33m            await asyncio.sleep(1)[39;49;00m
+    [33m            print('hello')[39;49;00m
+    [33m[39;49;00m
+    [33m        asyncio.run(main())[39;49;00m
+    [33m    """[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m events._get_running_loop() [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+            [90m# fail fast with short traceback[39;49;00m[90m[39;49;00m
+>           [94mraise[39;49;00m [96mRuntimeError[39;49;00m([90m[39;49;00m
+                [33m"[39;49;00m[33masyncio.run() cannot be called from a running event loop[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+[1m[31mE           RuntimeError: asyncio.run() cannot be called from a running event loop[0m
+
+[1m[31m/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/runners.py[0m:191: RuntimeError
+=========================================================================== tests coverage ============================================================================
+__________________________________________________________ coverage: platform darwin, python 3.13.5-final-0 ___________________________________________________________
+
+Name                                 Stmts   Miss  Cover
+--------------------------------------------------------
+starlette_async_jinja/responses.py     115     71    38%
+--------------------------------------------------------
+TOTAL                                  115     71    38%
+[31m[1mFAIL Required test coverage of 42% not reached. Total coverage: 38.26%
+[0m
+[33m------------------------------------------------------- benchmark: 1 tests ------------------------------------------------------[0m
+Name (time in us)                    Min       Max     Mean   StdDev   Median     IQR  Outliers  OPS (Kops/s)  Rounds  Iterations
+[33m---------------------------------------------------------------------------------------------------------------------------------[0m
+test_benchmark_json_response   [1m  19.2800[0m[1m  260.2790[0m[1m  26.0861[0m[1m  18.0018[0m[1m  20.4215[0m[1m  3.2270[0m     46;85[1m       38.3347[0m     572           1
+[33m---------------------------------------------------------------------------------------------------------------------------------[0m
+
+Legend:
+  Outliers: 1 Standard Deviation from Mean; 1.5 IQR (InterQuartile Range) from 1st Quartile and 3rd Quartile.
+  OPS: Operations Per Second, computed as 1 / Mean
+[36m[1m======================================================================= short test summary info =======================================================================[0m
+[31mFAILED[0m tests/test_benchmarks.py::[1mtest_benchmark_template_response[0m - RuntimeError: asyncio.run() cannot be called from a running event loop
+[31mFAILED[0m tests/test_benchmarks.py::[1mtest_benchmark_render_fragment[0m - RuntimeError: asyncio.run() cannot be called from a running event loop
+[31mFAILED[0m tests/test_benchmarks.py::[1mtest_benchmark_context_processors[0m - RuntimeError: asyncio.run() cannot be called from a running event loop
+[31m============================================================= [31m[1m3 failed[0m, [32m1 passed[0m, [33m42 deselected[0m[31m in 1.69s[0m[31m ==============================================================[0m
+/Users/les/Projects/starlette-async-jinja/.venv/lib/python3.13/site-packages/_pytest/unraisableexception.py:33: RuntimeWarning: coroutine 'AsyncJinja2Templates.TemplateResponse' was never awaited
+  gc.collect()
+RuntimeWarning: Enable tracemalloc to get the object allocation traceback
+/Users/les/Projects/starlette-async-jinja/.venv/lib/python3.13/site-packages/_pytest/unraisableexception.py:33: RuntimeWarning: coroutine 'AsyncJinja2Templates.render_fragment' was never awaited
+  gc.collect()
+RuntimeWarning: Enable tracemalloc to get the object allocation traceback
+<sys>:0: RuntimeWarning: coroutine 'AsyncJinja2Templates.TemplateResponse' was never awaited

@@ -1,0 +1,101 @@
+<style>
+.greyedOut {
+    color: darkgrey;
+    background-color: lightgrey;
+}
+.highblue {
+    background-color: #cceff6;
+}
+.highred {
+    background-color: #ffeeee;
+}
+.highlight {
+    background-color: #ffffdd;
+}
+
+</style>
+<div>
+  <ul>
+    {% set has_tie = false %}
+    {% set canddict = IRV_dict['canddict'] %}
+    {% set winner = IRV_dict['winner'] %}
+    {% set winnerstr = IRV_dict['winnerstr'] %}
+    {% set winnerintro = "IRV/RCV Winners (tie)" if winner | length > 1 else "IRV/RCV Winner" %}
+    {% set numrounds =  IRV_dict['rounds']|length %}
+    {% set startingqty = IRV_dict['roundmeta'][0]['startingqty'] %}
+    {% set majority = IRV_dict['roundmeta'][0]['startingqty'] // 2 + 1 %}
+    <li><b>{{winnerintro}}</b>: {{winnerstr}}</li>
+    <li>Number of rounds: {{numrounds}}</li>
+    <li>Total ballots: {{startingqty}}
+    <li>Majority of ballots: {{majority}}
+  </ul>
+  <div class="hscroll">
+  <table>
+    <tr>
+      {% for i in range(IRV_dict['rounds'] | length) %}
+      <th>Round {{ i + 1 }}</th>
+      {% endfor %}
+    </tr>
+    <tr>
+      {% set flags = namespace(overvote=false) %}
+      {% for i in range(IRV_dict['roundmeta'] | length) %}
+      <td><b>Overview</b>:<br>
+        {% set threshold=IRV_dict['roundmeta'][i]['countedqty'] // 2 + 1 %}
+        <small>Starting ballots: {{IRV_dict['roundmeta'][i]['startingqty'] }}<br/>
+          Exhausted ballots:
+                {{IRV_dict['roundmeta'][i]['exhaustedqty'] }}<br>
+          {% if IRV_dict['roundmeta'][i]['overvoteqty'] > 0 %}
+          Overvotes:
+            {{IRV_dict['roundmeta'][i]['overvoteqty'] }}<br>
+          {% set flags.overvote=true %}
+            {% endif %}
+            Counted ballots: {{IRV_dict['roundmeta'][i]['countedqty'] }}<br>
+          {% if threshold < majority %}
+          Minimum plurality: {{threshold}}<br/>
+          {% endif %}
+          {% if IRV_dict['roundmeta'][i]['bottomtie'] %}
+          TIE(†): {{ IRV_dict['roundmeta'][i]['bottomtie'] | join(", ") }} <br/>
+          {% endif %}
+        </small>
+      </td>
+      {% endfor %}
+    </tr>
+    {% for cand in IRV_dict['rounds'][0] | sort(attribute=IRV_dict['rounds'][0].get, reverse=True) %}
+    {% if cand in winner %}
+    {% set rowclass = "highlight" %}
+    {% else %}
+    {% set rowclass = "" %}
+    {% endif %}
+    <tr class="{{rowclass}}">
+      <td>{{ cand }}: {{ IRV_dict['rounds'][0].get(cand, ' ') }}</td>
+      {% for round_data in IRV_dict['rounds'][1:] %}
+      {% if cand in winner and (loop.index) == IRV_dict['rounds']|length %}
+      <td><b>IRV/RCV winner</b>:<br> {{ cand }}: {{ round_data.get(cand) }}</td>
+      {% elif
+      round_data.get(cand) and IRV_dict['roundmeta'][loop.index]
+      and cand in IRV_dict['roundmeta'][loop.index]['eliminated'] %}
+      <td class="highred">
+        {{ cand }}: {{ round_data.get(cand) }}
+        {% if IRV_dict['roundmeta'][loop.index]['batch_elim'] %}
+        (batch eliminated †)
+        {% elif cand in IRV_dict['roundmeta'][loop.index]['bottomtie'] %}
+        (randomly eliminated ††)
+        {% else %}
+        (eliminated)
+        {% endif %}
+      </td>
+      {% elif round_data.get(cand) %}
+      <td>{{ cand }}: {{ round_data.get(cand) }}</td>
+      {% else %}
+      <td class="greyedOut"><s>{{ cand }}</s></td>
+      {% endif %}
+      {% endfor %}
+    </tr>
+    {% endfor %}
+  </table>
+  {% if IRV_dict['has_tie'] %}
+  <span class="footnote">† - This example employs a limited form "batch elimination", where a batch of multiple candidates who (in sum total) do not have enough remaining top preferences to defeat the next highest candidate in the rankings.</span>
+  <span class="footnote">†† - When a tie occurs, per the laws in the City and County of San Francisco and the laws in the state of Maine, the losing candidate for the round is randomly eliminated.</span>
+  {% endif %}
+ </div>
+</div>

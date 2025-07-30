@@ -1,0 +1,108 @@
+Metadata-Version: 2.4
+Name: Arenz_Group_Python
+Version: 0.4.3
+Summary: a pip-installable package with function for Arenz Group
+Project-URL: Homepage, https://github.com/NanoElectroCatalysis/Arenz_Group_Python
+Project-URL: Documentation, https://nanoelectrocatalysis.github.io/Arenz_Group_Python
+Project-URL: Repository, https://github.com/NanoElectroCatalysis/Arenz_Group_Python
+Project-URL: Issues, https://github.com/NanoElectroCatalysis/Arenz_Group_Python
+Project-URL: Changelog, https://github.com/NanoElectroCatalysis/Arenz_Group_Python
+Author-email: Gustav Wiberg <gustav.wiberg@unibe.ch>
+Maintainer-email: Gustav Wiberg <gustav.wiberg@unibe.ch>
+License: MIT License
+        
+        Copyright (c) 2024 Gustav Wiberg
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+License-File: LICENSE
+Keywords: arenz group,python,tdms
+Classifier: Development Status :: 4 - Beta
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Requires-Python: >=3.11
+Requires-Dist: ec4py
+Requires-Dist: elabapi-python
+Requires-Dist: matplotlib
+Requires-Dist: nptdms
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: pathlib
+Requires-Dist: scipy
+Description-Content-Type: text/markdown
+
+# Arenz_Group_Python
+Python libs for NanoElectroCatalysis.
+
+## The aim
+ - Create a standard project folder structure.
+ - Easy transfer of data from server to local folder for work-up
+ - Load and save key-values-pairs
+ - Load and save key-values-pairs into tables.
+ - Path constants for easy access to data folders.
+
+
+
+
+## Documentation
+
+https://nanoelectrocatalysis.github.io/Arenz_Group_Python/
+
+# Get started
+In the project root folder, create a jupyter file.
+
+## Package installation or upgrade using Jupyter
+
+In order to install this package use the following line in a jupyter notebook: 
+```python
+%pip install arenz_group_python
+```
+In order to upgrade this package use the following line in a jupyter notebook: 
+
+```python
+%pip install arenz_group_python --upgrade
+```
+
+Restart the kernal.
+
+## Create the basic project folder structure.
+
+Create a jupyter notebook in the root folder of the project and run:
+```python
+from arenz_group_python import *
+create_project_structure(".")
+```
+This will create a standard folder structure and some standard files.
+
+
+## Import raw data files.
+Make sure that all the folders you want to import as a file called:
+<IDENTIFYIER>.tag 
+where <IDENTIFYIER> can be a project name, example: "project.tag"
+
+```python
+from arenz_group_python import Project_Paths
+pp = Project_Paths()
+project_name = 'projectname'
+user_initials = '' #This is optional, but it can speed up things
+path_to_server = 'X:/EXP_DB'
+pp.copyDirs(project_name, user_initials , path_to_server)
+```
+
+## Examples
+See documentation.

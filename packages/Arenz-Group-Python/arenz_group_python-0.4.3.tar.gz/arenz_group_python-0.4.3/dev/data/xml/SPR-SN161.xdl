@@ -1,0 +1,60 @@
+<?xdl version="2.0.0" ?>
+<XDL>
+	<File last_modified="2024-08-16	16:29:20	GMT(+02:00)" mod_program="Spray.exe" mod_prog_ver="13.0.1f2" mod_user="experiment">
+		<file_created>2024-08-16	16:29:10	GMT(+02:00)</file_created>
+		<author>Sven Nösberger</author>
+		<filename>SPR-SN161</filename>
+		<GUID>AD23DAFC-50B5-475F-8220-200D19702B8F</GUID>
+		<description>Data File for Chemical Processes</description>
+	</File>
+
+	<Blueprint id="Ink_58_Optimization_SN">
+		<Metadata>
+			<description>
+					
+			</description>
+		</Metadata>
+		<Hardware>
+			<Component type="vessel" id="Reactor 1#00" name="Reactor" role="VES00" />
+		</Hardware>
+		<Reagents>
+			<Reagent type="Catalyst" id="CCAT0007" name="TEC10E30E" role="catalyst" quantity="8.000E-4 g" molecular_weight="" />
+			<Reagent type="Chemical" id="AAI20001" name="Aquivion Dispersion D79-25BS" role="ionomer" quantity="1.392E-5 l" molecular_weight="" />
+			<Reagent type="Chemical" id="WATER" name="MilliQ Water" role="solvent 1" quantity="8.900E-5 l" molecular_weight="18.02" />
+			<Reagent type="Chemical" id="ISOPROPANOL" name="Isopropanol" role="solvent 2" quantity="3.810E-4 l" molecular_weight="60.1" />
+		</Reagents>
+		<Procedure>
+			<Reaction>
+				<Add vessel="Reactor 1" dropwise="FALSE" time="0.00 min" mass="8.000E-4 g" reagent="CCAT0007" disc="Add TEC10E30E( 800ug) to Reactor" />
+				<Add vessel="Reactor 1" dropwise="FALSE" time="0.00 min" volume="1.392E-5 l" reagent="AAI20001" disc="Add Aquivion Dispersion D79-25BS( 13.9ul) to Reactor" />
+				<Add vessel="Reactor 1" dropwise="FALSE" time="0.00 min" volume="8.900E-5 l" reagent="WATER" disc="Add MilliQ Water( 89.0ul) to Reactor" />
+				<Add vessel="Reactor 1" dropwise="FALSE" time="0.00 min" volume="3.810E-4 l" reagent="ISOPROPANOL" disc="Add Isopropanol( 381ul) to Reactor" />
+			</Reaction>
+		</Procedure>
+	</Blueprint>
+
+	<Synthesis>
+		<Metadata>
+
+		</Metadata>
+		<Hardware>
+			<Component type="stock" id="stock1" name="Container with stock Ink_58_Optimization_SN" role="V_Ink_58_Optimization_SN" />
+		</Hardware>
+		<Reagents>
+			<Reagent type="Catalyst" id="CCAT0007" name="TEC10E30E" role="stock: Ink_55_Optimization_SN" quantity="8.000E-4 g" molecular_weight="" />
+			<Reagent type="Chemical" id="AAI20001" name="Aquivion Dispersion D79-25BS" role="stock: Ink_55_Optimization_SN" quantity="1.392E-5 l" molecular_weight="" />
+			<Reagent type="Chemical" id="WATER" name="MilliQ Water" role="stock: Ink_55_Optimization_SN" quantity="8.900E-5 l" molecular_weight="18.02" />
+			<Reagent type="Chemical" id="ISOPROPANOL" name="Isopropanol" role="stock: Ink_55_Optimization_SN" quantity="3.810E-4 l" molecular_weight="60.1" />
+			<Reagent type="Substrate" id="SUBS0001" name="Freudenberg H23C8" role="Substrate" quantity="" molecular_weight="" />
+		</Reagents>
+		<Procedure>
+			<Prep>
+				<Ink_58_Optimization_SN id="stock1" description="stock" />
+			</Prep>
+			<Reaction>
+				<Transfer volume="0.000E+0 l" time="0.00 min" to_vessel="Reactor 1" from_vessel="stock1" disc="Transfer the content from V_Ink_58_Optimization_SN to Reactor" />
+				<Spray flow="3.3333E-8 s^-1 m^3" vessel="" time="15.70 min" volume="4.710E-4 l" substrate="SUBS0001" disc="Spray ( 471ul) onto Freudenberg H23C8. Gas flow at 2,00 ml/min" />
+			</Reaction>
+		</Procedure>
+	</Synthesis>
+</XDL>

@@ -1,0 +1,408 @@
+# CodeCheq
+
+A powerful library for analyzing code security using Large Language Models (LLMs). This tool helps identify potential security vulnerabilities, code smells, and best practice violations in your codebase.
+
+## Features
+
+- 🔍 Evidence-based code analysis using LLMs
+- 🛡️ Security vulnerability detection
+- 🔧 **Automatic vulnerability patching** (NEW!)
+- 🤖 **Multi-provider LLM support** (OpenAI GPT, Anthropic Claude)
+- 🔐 **Mandatory API Key Authentication** (NEW!)
+- 📊 Detailed analysis reports
+- 🔄 Support for multiple LLM providers (OpenAI, Anthropic)
+- 📝 Customizable analysis prompts
+- 🎯 Multiple output formats (JSON, HTML, Text)
+- 🚀 Easy-to-use CLI interface
+- 🔒 HIPAA and healthcare compliance analysis
+
+## Installation
+
+### From PyPI
+
+```bash
+pip install codecheq
+```
+
+### From Source
+
+```bash
+# Clone the repository
+git clone https://github.com/CalBearKen/aioniq_codecheq.git
+cd codecheq
+
+# Install in editable mode
+pip install -e .
+```
+
+## Quick Start
+
+### Prerequisites
+
+Before using CodeCheq, you need to set up authentication:
+
+1. **Get an OpenAI API Key** from [OpenAI Platform](https://platform.openai.com/api-keys)
+2. **Get a CodeCheq API Token** from the [API Token Portal](https://your-token-portal-url.com)
+
+### Using the Library
+
+```python
+from codecheq import CodeAnalyzer, VulnerabilityPatcher
+
+# Initialize the analyzer with OpenAI
+# Make sure OPENAI_API_KEY is set in environment variables
+analyzer_openai = CodeAnalyzer(provider="openai", model="gpt-4")
+
+# Initialize the analyzer with Claude
+# Make sure ANTHROPIC_API_KEY is set in environment variables
+analyzer_claude = CodeAnalyzer(provider="anthropic", model="claude-3-sonnet-20240229")
+
+# Analyze a file with OpenAI
+results_openai = analyzer_openai.analyze_file("path/to/your/file.py")
+
+# Analyze a file with Claude
+results_claude = analyzer_claude.analyze_file("path/to/your/file.py")
+
+# Print results
+for issue in results_openai.issues:
+    print(f"Severity: {issue.severity}")
+    print(f"Message: {issue.message}")
+    print(f"Location: {issue.location}")
+    print(f"Description: {issue.description}")
+    print(f"Recommendation: {issue.recommendation}")
+    print("---")
+
+# Automatically patch vulnerabilities with OpenAI (requires authentication)
+# Make sure OPENAI_API_KEY is set in environment variables
+patcher_openai = VulnerabilityPatcher(
+    provider="openai", 
+    model="gpt-4",
+    api_token="sk-your-codecheq-token-here",
+    token_portal_url="https://your-token-portal-url.com"
+)
+patch_result_openai = patcher_openai.patch_file("path/to/your/file.py", results_openai)
+
+# Automatically patch vulnerabilities with Claude (requires authentication)
+# Make sure ANTHROPIC_API_KEY is set in environment variables
+patcher_claude = VulnerabilityPatcher(
+    provider="anthropic", 
+    model="claude-3-sonnet-20240229",
+    api_token="sk-your-codecheq-token-here",
+    token_portal_url="https://your-token-portal-url.com"
+)
+patch_result_claude = patcher_claude.patch_file("path/to/your/file.py", results_claude)
+
+if patch_result_openai["success"]:
+    print(f"OpenAI patched file saved to: {patch_result_openai['output_file']}")
+    print(f"Fixed {len(patch_result_openai['issues_fixed'])} vulnerabilities")
+
+if patch_result_claude["success"]:
+    print(f"Claude patched file saved to: {patch_result_claude['output_file']}")
+    print(f"Fixed {len(patch_result_claude['issues_fixed'])} vulnerabilities")
+```
+
+### Using the CLI
+
+#### Basic Analysis (API Key Required)
+
+```bash
+# Set your OpenAI API key (required for LLM operations)
+export OPENAI_API_KEY="your-openai-api-key"
+
+# Set your Anthropic API key (for Claude models)
+export ANTHROPIC_API_KEY="your-anthropic-api-key"
+
+# Analyze a single file with OpenAI
+codecheq file.py
+
+# Analyze a single file with Claude
+codecheq file.py --provider anthropic --model claude-3-sonnet-20240229
+
+# Analyze a directory with OpenAI
+codecheq directory/
+
+# Analyze a directory with Claude
+codecheq directory/ --provider anthropic --model claude-3-sonnet-20240229
+
+# Generate HTML report with OpenAI
+codecheq file.py --format html --output report.html
+
+# Generate HTML report with Claude
+codecheq file.py --provider anthropic --model claude-3-sonnet-20240229 --format html --output report.html
+
+# Use specific OpenAI model
+codecheq file.py --model gpt-4
+
+# Use specific Claude model
+codecheq file.py --provider anthropic --model claude-3-sonnet-20240229
+```
+
+#### Patching (Authentication Required)
+
+**All patch operations now require BOTH provider API key AND CodeCheq API token:**
+
+```bash
+# Set your OpenAI API key (required for LLM operations)
+export OPENAI_API_KEY="your-openai-api-key"
+
+# Set your Anthropic API key (for Claude models)
+export ANTHROPIC_API_KEY="your-anthropic-api-key"
+
+# Patch a single file with OpenAI
+codecheq patch file.py --api-token sk-your-token-here --token-portal-url https://your-portal-url.com
+
+# Patch a single file with Claude
+codecheq patch file.py --provider anthropic --model claude-3-sonnet-20240229 --api-token sk-your-token-here --token-portal-url https://your-portal-url.com
+
+# Patch vulnerabilities in a directory with OpenAI
+codecheq patch directory/ --output-dir patched_code --api-token sk-your-token-here
+
+# Patch vulnerabilities in a directory with Claude
+codecheq patch directory/ --provider anthropic --model claude-3-sonnet-20240229 --output-dir patched_code --api-token sk-your-token-here
+
+# Patch with custom token portal URL using OpenAI
+codecheq patch file.py --api-token sk-your-token-here --token-portal-url https://your-custom-portal.com
+
+# Patch with custom token portal URL using Claude
+codecheq patch file.py --provider anthropic --model claude-3-sonnet-20240229 --api-token sk-your-token-here --token-portal-url https://your-custom-portal.com
+```
+
+#### Verify Your Token
+
+```bash
+# Verify your CodeCheq API token
+codecheq verify-token sk-your-token-here --token-portal-url https://your-portal-url.com
+```
+
+## Configuration
+
+The library can be configured using environment variables or a configuration file:
+
+```bash
+# Environment variables
+export OPENAI_API_KEY="your-openai-api-key"
+export ANTHROPIC_API_KEY="your-anthropic-api-key"
+export CODECHEQ_MODEL="gpt-4"
+export CODECHEQ_API_TOKEN="sk-your-codecheq-token-here"
+export CODECHEQ_TOKEN_PORTAL_URL="https://your-token-portal-url.com"
+```
+
+Or create a `.env` file:
+
+```env
+OPENAI_API_KEY=your-openai-api-key
+ANTHROPIC_API_KEY=your-anthropic-api-key
+CODECHEQ_MODEL=gpt-4
+CODECHEQ_API_TOKEN=sk-your-codecheq-token-here
+CODECHEQ_TOKEN_PORTAL_URL=https://your-token-portal-url.com
+```
+
+## Advanced Usage
+
+### Custom Analysis Prompts
+
+```python
+from codecheq import CodeAnalyzer, PromptTemplate
+
+# Create custom prompt
+custom_prompt = PromptTemplate(
+    template="""Analyze the following code for {analysis_type}:
+    {code}
+    
+    Focus on:
+    {focus_areas}
+    """,
+    variables=["analysis_type", "code", "focus_areas"]
+)
+
+# Use custom prompt
+# Make sure OPENAI_API_KEY is set in environment variables
+analyzer = CodeAnalyzer(prompt=custom_prompt)
+```
+
+### Batch Analysis
+
+```python
+from codecheq import BatchAnalyzer
+
+# Initialize batch analyzer
+# Make sure OPENAI_API_KEY is set in environment variables
+batch = BatchAnalyzer()
+
+# Add files to analyze
+batch.add_file("file1.py")
+batch.add_file("file2.py")
+batch.add_directory("src/")
+
+# Run analysis
+results = batch.analyze()
+
+# Export results
+results.export_html("report.html")
+```
+
+### API Key Authentication
+
+CodeCheq now **requires** API key authentication for all patch operations. This feature integrates with the API Token Portal to verify users before allowing any code modifications.
+
+#### Setup Authentication
+
+1. **Get a CodeCheq API Token:**
+   - Visit your API Token Portal (e.g., https://your-token-portal-url.com)
+   - Sign in with your account
+   - Go to the API Tokens section
+   - Create a new token
+   - Copy the token (starts with 'sk-')
+
+2. **Configure CodeCheq:**
+   ```bash
+   # Set environment variables
+   export OPENAI_API_KEY="your-openai-api-key"
+   export CODECHEQ_API_TOKEN="sk-your-token-here"
+   export CODECHEQ_TOKEN_PORTAL_URL="https://your-token-portal-url.com"
+   
+   # Or use command line parameters
+   codecheq patch --api-token "sk-your-token-here" --token-portal-url "https://your-portal-url.com" --openai-api-key "your-openai-api-key" file.py
+   ```
+
+#### Using Authentication
+
+```python
+from codecheq import VulnerabilityPatcher, TokenVerifier
+
+# Verify token before using
+verifier = TokenVerifier(base_url="https://your-token-portal-url.com")
+result = verifier.verify_token("sk-your-token-here")
+print(f"Authenticated as: {result['user']['email']}")
+
+# Use patcher with authentication (now required)
+# Make sure OPENAI_API_KEY is set in environment variables
+patcher = VulnerabilityPatcher(
+    provider="openai",
+    model="gpt-4",
+    api_token="sk-your-token-here",
+    token_portal_url="https://your-token-portal-url.com",
+    output_dir="patched_code"
+)
+
+# Patch with authentication
+patch_result = patcher.patch_file("vulnerable_file.py", analysis_result)
+```
+
+#### CLI Authentication
+
+```bash
+# Verify your token
+codecheq verify-token sk-your-token-here --token-portal-url https://your-portal-url.com
+
+# Patch with authentication (required)
+codecheq patch --api-token sk-your-token-here --token-portal-url https://your-portal-url.com file.py
+
+# Patch with environment variables
+export OPENAI_API_KEY="your-openai-api-key"
+export CODECHEQ_API_TOKEN="sk-your-token-here"
+export CODECHEQ_TOKEN_PORTAL_URL="https://your-portal-url.com"
+codecheq patch file.py
+```
+
+**Authentication Features:**
+- 🔐 **Mandatory token verification** for all patch operations
+- 🤖 **OpenAI API key required** for LLM operations
+- ⚡ Token caching for performance
+- 🛡️ Secure integration with Token Portal
+- 🔄 Real-time token validation
+- 📊 User information and token status display
+- 🚫 **No patch operations without valid authentication**
+
+### Automatic Vulnerability Patching
+
+The patcher automatically fixes security vulnerabilities found by CodeCheq. **All patch operations now require authentication:**
+
+```python
+from codecheq import VulnerabilityPatcher
+
+# Initialize patcher with OpenAI (requires authentication)
+# Make sure OPENAI_API_KEY is set in environment variables
+patcher_openai = VulnerabilityPatcher(
+    provider="openai",
+    model="gpt-4",
+    api_token="sk-your-token-here",
+    token_portal_url="https://your-token-portal-url.com",
+    output_dir="patched_code"
+)
+
+# Initialize patcher with Claude (requires authentication)
+# Make sure ANTHROPIC_API_KEY is set in environment variables
+patcher_claude = VulnerabilityPatcher(
+    provider="anthropic",
+    model="claude-3-sonnet-20240229",
+    api_token="sk-your-token-here",
+    token_portal_url="https://your-token-portal-url.com",
+    output_dir="patched_code"
+)
+
+# Patch a single file with OpenAI
+patch_result_openai = patcher_openai.patch_file("vulnerable_file.py", analysis_result)
+
+# Patch a single file with Claude
+patch_result_claude = patcher_claude.patch_file("vulnerable_file.py", analysis_result)
+
+# Patch multiple files with OpenAI
+patch_results_openai = patcher_openai.patch_directory("src/", analysis_results_dict)
+
+# Patch multiple files with Claude
+patch_results_claude = patcher_claude.patch_directory("src/", analysis_results_dict)
+
+# Generate patch report
+report_openai = patcher_openai.create_patch_report(patch_results_openai)
+report_claude = patcher_claude.create_patch_report(patch_results_claude)
+print(report_openai)
+print(report_claude)
+```
+
+**Key Features:**
+- 🔧 Automatically fixes SQL injection, command injection, and other vulnerabilities
+- 🛡️ Preserves code functionality while improving security
+- 📁 Saves patched files to a separate directory
+- 📊 Generates detailed patching reports
+- ⚠️ Skips fixes that require broader codebase context
+- 🔐 **Mandatory API key authentication for all patch operations**
+
+## Security Notes
+
+- **Patch operations require authentication**: All code modification operations now require a valid CodeCheq API token
+- **OpenAI API key required**: All LLM operations (analysis and patching) require a valid OpenAI API key
+- **Token verification**: Tokens are verified against the Token Portal before any patch operations
+- **No authentication bypass**: There is no way to disable authentication for patch operations
+- **Secure token handling**: Tokens are handled securely and not logged or stored in plain text
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+### Development Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/codecheq.git
+cd codecheq
+
+# Create a virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install development dependencies
+pip install -e ".[dev]"
+
+# Run tests
+pytest
+```
+
+## License
+
+This project is licensed under the Apache License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- Thanks to all the contributors who have helped shape this project
+- Inspired by various code analysis tools and security best practices 

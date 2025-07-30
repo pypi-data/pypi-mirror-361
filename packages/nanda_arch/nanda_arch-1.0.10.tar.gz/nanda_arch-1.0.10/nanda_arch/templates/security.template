@@ -1,0 +1,94 @@
+from datetime import datetime, timedelta, timezone
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
+from jose import JWTError, jwt
+from passlib.context import CryptContext
+from pydantic import BaseModel
+
+# Imports settings from the project's settings file
+from system.settings import (
+    JWT_SECRET_KEY,
+    JWT_ALGORITHM,
+    JWT_ACCESS_TOKEN_EXPIRE_MINUTES
+)
+
+# --- Password Hashing Setup ---
+# Uses bcrypt as the default hashing algorithm
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+# --- OAuth2 Scheme ---
+# This tells FastAPI's docs where to go to get a token.
+# You'll need to create this endpoint (e.g., in an 'auth' app).
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
+
+
+# --- Pydantic model for data inside the JWT ---
+class TokenData(BaseModel):
+    username: str
+    roles: list[str] = []
+
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Verifies if a plain text password matches a hashed password."""
+    return pwd_context.verify(plain_password, hashed_password)
+
+
+def get_password_hash(password: str) -> str:
+    """Generates a hash for a given password."""
+    return pwd_context.hash(password)
+
+
+def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
+    """Creates a new JWT access token."""
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.now(timezone.utc) + expires_delta
+    else:
+        expire = datetime.now(timezone.utc) + timedelta(minutes=JWT_ACCESS_TOKEN_EXPIRE_MINUTES)
+
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM)
+    return encoded_jwt
+
+
+# --- Main Security Dependency ---
+async def get_current_user(token: str = Depends(oauth2_scheme)) -> TokenData:
+    """
+    Decodes the JWT token and returns the user data (payload).
+    This is the dependency you'll use in most protected routes.
+    """
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
+        # The 'sub' (subject) claim is standard for the user identifier
+        username: str | None = payload.get("sub")
+        roles: list[str] = payload.get("roles", [])
+        if username is None:
+            raise credentials_exception
+        token_data = TokenData(username=username, roles=roles)
+    except JWTError:
+        raise credentials_exception
+    return token_data
+
+
+# --- Role-Based Access Control (RBAC) Dependency Factory ---
+def require_role(required_role: str):
+    """
+    Returns a dependency that checks if the current user has the required role.
+    Usage: `Depends(require_role('admin'))`
+    """
+    async def role_checker(current_user: TokenData = Depends(get_current_user)) -> None:
+        """
+        This inner function is the actual dependency that will be executed by FastAPI.
+        """
+        if required_role not in current_user.roles:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Operation not permitted. Requires '{required_role}' role.",
+            )
+
+    return role_checker

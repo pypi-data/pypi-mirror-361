@@ -1,0 +1,76 @@
+[tool.poetry]
+name = "async-customerio"
+version = "1.6.0"
+description = "Async CustomerIO Client - a Python client to interact with CustomerIO in an async fashion."
+license = "MIT"
+authors = [
+    "Aleksandr Omyshev <oomyshev@healthjoy.com>"
+]
+maintainers = [
+    "Healthjoy Developers <developers@healthjoy.com>",
+    "Aleksandr Omyshev <oomyshev@healthjoy.com>"
+]
+readme = "README.md"
+repository = "https://github.com/healthjoy/async-customerio"
+keywords = [
+    "async", "asyncio", "customerio", "messaing", "python3", "data-driven-emails", "push notifications",
+    "in-app messages", "SMS",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+
+[tool.poetry.dependencies]
+python = ">=3.7.15,<3.14"
+
+httpx = "<1.0.0"
+typing_extensions = { version = "^4.7.1", python = "^3.7" }
+importlib-metadata = { version = "^4.0.0", python = "<3.8" }
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "~2.21"
+faker = "~8.14"
+
+# tests
+pytest = "~7.3"
+pytest-asyncio = "~0.21"
+pytest-benchmark = "~4.0.0"
+pytest-cov = "~4.0.0"
+pytest-freezegun = "~0.4.2"
+pytest-httpx = "~0.22"
+black =  "^22.10.0"
+mypy = "~0.991"
+
+[tool.isort]
+atomic = true
+known_third_party = [
+    "faker", "httpx", "pytest", "pytest_httpx", "typing_extensions"
+]
+sections = [
+    "FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"
+]
+known_first_party = ["async_customerio", "tests"]
+no_lines_before = "STDLIB"
+default_section = "FIRSTPARTY"
+lines_after_imports = 2
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+line_length = 120
+ensure_newline_before_comments = true
+
+[build-system]
+requires = ["poetry>=1.0"]
+build-backend = "poetry.masonry.api"

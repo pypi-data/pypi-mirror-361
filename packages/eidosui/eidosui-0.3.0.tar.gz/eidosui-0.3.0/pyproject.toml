@@ -1,0 +1,76 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "eidosui"
+version = "0.3.0"
+description = "A modern, Tailwind CSS-based UI library for air development"
+readme = "README.md"
+license = "MIT"
+authors = [
+    {name = "Isaac Flath"},
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+]
+keywords = ["ui", "web", "tailwind", "css", "components", "fastapi", "air"]
+requires-python = ">=3.10"
+
+dependencies = [
+    "air>=0.12",
+    "fastapi[standard]",
+    "uvicorn",
+]
+
+[project.optional-dependencies]
+markdown = [
+    "markdown>=3.4",
+]
+dev = [
+    "pytest",
+    "black",
+    "isort",
+    "mypy",
+    "ruff",
+]
+
+[project.urls]
+Homepage = "https://github.com/isaac-flath/EidosUI"
+Repository = "https://github.com/isaac-flath/EidosUI"
+Issues = "https://github.com/isaac-flath/EidosUI/issues"
+Documentation = "https://github.com/isaac-flath/EidosUI#readme"
+
+[tool.hatch.build.targets.wheel]
+packages = ["eidos"]
+include = [
+    "eidos/css/**/*.css",
+    "eidos/plugins/markdown/css/*.css",
+]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/eidos",
+    "/README.md",
+    "/pyproject.toml",
+]
+
+# UV-specific configuration
+[tool.uv]
+dev-dependencies = [
+    "pytest",
+    "pytest-cov",
+    "black",
+    "isort",
+    "mypy",
+    "ruff",
+]

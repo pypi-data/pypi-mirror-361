@@ -1,0 +1,59 @@
+[project]
+name = "dgraphrag"
+version = "0.0.3"
+description = """
+End-to-end GraphRAG toolkit that takes you from raw documents to a knowledge graph and then to retrieval-augmented generation (RAG) with large language models.
+
+Key features:
+• Modular ingestion pipeline: loaders, splitters, and multiple extractors (advanced regex, spaCy/stanza dependency parsing, LLM-based).
+• Pluggable graph adapters: in-memory, Neo4j, ArangoDB, TigerGraph, with a clean `BaseGraphAdapter` interface for custom back-ends.
+• Indexers & retrievers: Faiss vector index, path / multi-hop graph traversal, hybrid search.
+• CLI & Python API: `dgrag ingest`, `dgrag ask`, and fine-grained modules for programmatic use.
+• Optional extras keep the core lightweight—install only what you need via `dgraphrag[neo4j,openai]` etc.
+
+Open-sourced by D-Robotics (https://d-robotics.cc/) and maintained by the community. Contributions welcome!
+"""
+authors = [{ name = "Longtao Wu", email = "eustancewu@gmail.com" }]
+maintainers = [{ name = "Longtao Wu", email = "eustancewu@gmail.com" }]
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.9"
+dependencies = [
+    "networkx>=2.8",
+    "pydantic>=2.5"
+]
+keywords = ["graph", "rag", "knowledge-graph", "retrieval", "llm"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "License :: OSI Approved :: MIT License",
+    "Intended Audience :: Developers",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.urls]
+Homepage = "https://github.com/eust-w/dgraphrag"
+Repository = "https://github.com/eust-w/dgraphrag"
+Issues = "https://github.com/eust-w/dgraphrag/issues"
+
+[project.scripts]
+dgrag = "dgraphrag.cli:main"
+
+[project.optional-dependencies]
+neo4j = ["neo4j>=5.0"]
+arangodb = ["python-arango>=7.5"]
+tigergraph = ["pyTigerGraph>=1.0"]
+vector = ["faiss-cpu>=1.7"]
+spacy = ["spacy>=3.7"]
+stanza = ["stanza>=1.7"]
+openai = ["openai>=1.6"]
+
+dev = [
+    "pytest>=7.0",
+    "ruff>=0.4",
+    "black>=24.4"
+]
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"

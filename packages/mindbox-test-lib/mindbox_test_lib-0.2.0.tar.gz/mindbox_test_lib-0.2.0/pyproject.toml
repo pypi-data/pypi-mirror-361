@@ -1,0 +1,35 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["setuptools"]
+
+[project]
+authors = [
+  {name = "@SivikGosh", email = "sivik@protonmail.com"},
+]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+description = "Тестовое задание для Mindbox (№1)."
+license = {text = "MIT"}
+name = "mindbox-test-lib"
+readme = "mindbox_shapes/README.md"
+requires-python = ">=3.12"
+version = "0.2.0"
+
+[project.optional-dependencies]
+dev = ["isort", "flake8", "mypy"]
+test = ["pytest"]
+
+[tool.setuptools.packages.find]
+where = ["mindbox_shapes"]
+
+[tool.flake8]
+exclude = ["build", "dist", "venv", "__pycache__"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+ignore_missing_imports = true
+exclude = "build|dist|venv"

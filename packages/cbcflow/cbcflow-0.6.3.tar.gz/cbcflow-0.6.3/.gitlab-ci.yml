@@ -1,0 +1,80 @@
+include:
+  - project: computing/gitlab-ci-templates
+    file:
+      - python.yml
+
+stages:
+  - initial
+  - test
+  - pre-docs
+  - docs
+  - deploy
+
+precommit:
+  stage: initial
+  extends:
+    - .python:base
+  script:
+    - pip install pre-commit
+    - pre-commit run --all-files --verbose --show-diff-on-failure
+
+integration-test:
+  stage: test
+  extends:
+    - .python:base
+  script:
+    - pip install jsonschema
+    - jsonschema -i tests/files_for_testing/cbc-meta-data-example.json schema/cbc-meta-data-v3.schema
+
+unit-test:
+  image: python:3.11-bookworm
+  stage: test
+  extends:
+    - .python:pytest
+  script:
+    - pip install .
+    - pytest --cov cbcflow --cov-report xml
+
+schema-html:
+  image: python:3.11-bookworm
+  stage: pre-docs
+  extends:
+    - .python:base
+  script:
+    - python -m pip install .
+    - python -m pip install json-schema-for-humans
+    - mkdir schema/visualization
+    - cd schema/visualization/
+    - generate-schema-doc ../cbc-meta-data-v3.schema cbc-meta-data-schema.html --link-to-reused-ref
+    - cd ../..
+    - mkdir docs/source/schema_visualization/
+    - mv schema/visualization/* docs/source/schema_visualization/
+  artifacts:
+    paths:
+    - docs/source/schema_visualization/
+
+docs:
+  image: python:3.11-bookworm
+  stage: docs
+  extends:
+    - .python:base
+  script:
+    - pip install .
+    - cd docs/
+    - python -m pip install -r requirements.txt
+    - make html
+  artifacts:
+    paths:
+      - docs/_build/html/
+
+pages:
+  stage: deploy
+  script:
+    - mkdir public/
+    - mv docs/_build/html/* public/
+  artifacts:
+    paths:
+      - public
+    expire_in: 30 days
+  only:
+    - documentation

@@ -1,0 +1,56 @@
+# LXu_leetcode
+
+**LXu_leetcode** is a Python utility package that provides reusable algorithm templates and patterns commonly used in solving LeetCode problems. It is designed to help you write cleaner, faster, and more efficient code by importing tried-and-tested patterns directly into your problem-solving workflow.
+
+##  Features
+
+-  Binary Search (standard, lower bound, upper bound)
+-  Sliding Window (fixed and variable size)
+-  Two Pointers (e.g., palindrome check, duplicates removal)
+-  Prefix Sum (range queries, subarray sum)
+-  Union Find (disjoint set operations)
+-  Tree and Graph Traversals (DFS, BFS)
+-  Dynamic Programming (1D, 2D, Knapsack, etc.)
+-  Trie (prefix trees)
+-  Backtracking (subsets, permutations)
+-  Greedy Techniques (e.g., jump game)
+-  Heap Utilities (e.g., top-K elements)
+-  Monotonic Stack (e.g., next greater elements)
+
+## Installation
+
+Install from PyPI:
+
+```bash
+pip install LXu_leetcode
+```
+
+## Usage
+```
+from LXu_leetcode.binary_search import binary_search
+
+nums = [1, 3, 5, 7, 9]
+target = 5
+index = binary_search(nums, target)
+print(index)  # Output: 2
+```
+
+## Folder Structure
+```
+LXu_leetcode/
+├── binary_search.py
+├── sliding_window.py
+├── two_pointers.py
+├── prefix_sum.py
+├── union_find.py
+├── graph_algorithms.py
+├── dp_templates.py
+├── trie.py
+├── backtracking.py
+├── greedy.py
+├── heap_utils.py
+├── monotonic_stack.py
+```
+
+## Author
+LaoXu

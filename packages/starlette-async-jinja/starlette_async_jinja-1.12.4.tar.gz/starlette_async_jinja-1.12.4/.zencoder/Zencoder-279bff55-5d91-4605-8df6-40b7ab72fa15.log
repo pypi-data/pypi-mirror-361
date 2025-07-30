@@ -1,0 +1,44 @@
+[1m========================================================================= test session starts =========================================================================[0m
+platform darwin -- Python 3.13.5, pytest-8.4.1, pluggy-1.6.0 -- /Users/les/Projects/starlette-async-jinja/.venv/bin/python
+cachedir: .pytest_cache
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /Users/les/Projects/starlette-async-jinja
+configfile: pyproject.toml
+testpaths: tests, starlette_async_jinja
+plugins: xdist-3.7.0, anyio-4.9.0, timeout-2.4.0, cov-6.2.1, mock-3.14.1, benchmark-5.1.0, asyncio-1.0.0
+timeout: 300.0s
+timeout method: thread
+timeout func_only: False
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0m[1mcollected 46 items / 42 deselected / 4 selected                                                                                                                       [0m
+
+tests/test_benchmarks.py::test_benchmark_json_response [32mPASSED[0m[32m                                                                                                   [ 25%][0m
+tests/test_benchmarks.py::test_benchmark_template_mock [32mPASSED[0m[32m                                                                                                   [ 50%][0m
+tests/test_benchmarks.py::test_benchmark_render_fragment_mock [32mPASSED[0m[32m                                                                                            [ 75%][0m
+tests/test_benchmarks.py::test_benchmark_context_processors_mock [32mPASSED[0m[32m                                                                                         [100%][0m[31m[1m
+ERROR: Coverage failure: total of 29 is less than fail-under=42
+[0m
+
+=========================================================================== tests coverage ============================================================================
+__________________________________________________________ coverage: platform darwin, python 3.13.5-final-0 ___________________________________________________________
+
+Name                                 Stmts   Miss  Cover
+--------------------------------------------------------
+starlette_async_jinja/responses.py     115     82    29%
+--------------------------------------------------------
+TOTAL                                  115     82    29%
+[31m[1mFAIL Required test coverage of 42% not reached. Total coverage: 28.70%
+[0m
+[33m------------------------------------------------------------------------------------------------------------ benchmark: 4 tests -----------------------------------------------------------------------------------------------------------[0m
+Name (time in ns)                                  Min                     Max                   Mean                 StdDev                 Median                   IQR              Outliers  OPS (Kops/s)            Rounds  Iterations
+[33m-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------[0m
+test_benchmark_render_fragment_mock      [32m[1m     168.1400 (1.0)    [0m[1m   16,026.0500 (1.61)   [0m[32m[1m     202.0821 (1.0)    [0m[32m[1m     135.1991 (1.0)    [0m[32m[1m     174.7400 (1.0)    [0m[32m[1m      6.2500 (1.0)    [0m   1859;5459[32m[1m    4,948.4843 (1.0)    [0m   35779         100
+test_benchmark_template_mock             [1m     173.5356 (1.03)   [0m[32m[1m    9,974.8929 (1.0)    [0m[1m     208.2322 (1.03)   [0m[1m     154.2155 (1.14)   [0m[1m     182.3929 (1.04)   [0m[1m      6.6785 (1.07)   [0m  5329;24887[1m    4,802.3314 (0.97)   [0m  188680          28
+test_benchmark_context_processors_mock   [1m   1,194.9996 (7.11)   [0m[1m  154,179.0007 (15.46)  [0m[1m   1,610.2295 (7.97)   [0m[1m   2,517.2903 (18.62)  [0m[1m   1,306.9985 (7.48)   [0m[1m    112.0025 (17.92)  [0m  1193;11880[1m      621.0295 (0.13)   [0m   81156           1
+test_benchmark_json_response             [31m[1m  18,996.9978 (112.98) [0m[31m[1m  344,402.0003 (34.53)  [0m[31m[1m  29,087.5768 (143.94) [0m[31m[1m  20,455.4105 (151.30) [0m[31m[1m  21,891.9995 (125.28) [0m[31m[1m  7,391.2506 (>1000.0)[0m     131;254[31m[1m       34.3789 (0.01)   [0m    1647           1
+[33m-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------[0m
+
+Legend:
+  Outliers: 1 Standard Deviation from Mean; 1.5 IQR (InterQuartile Range) from 1st Quartile and 3rd Quartile.
+  OPS: Operations Per Second, computed as 1 / Mean
+[32m================================================================== [32m[1m4 passed[0m, [33m42 deselected[0m[32m in 4.94s[0m[32m ===================================================================[0m

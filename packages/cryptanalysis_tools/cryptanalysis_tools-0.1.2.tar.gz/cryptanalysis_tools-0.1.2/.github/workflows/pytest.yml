@@ -1,0 +1,39 @@
+name: Pytest
+
+on: [push]
+
+permissions:
+  contents: write
+
+jobs:
+  deploy-test-coverage-report:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+        cache: 'pip' # caching pip dependencies
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install .
+        pip install coverage
+
+    - name: Fuck, wasted my whole day !!!
+      # so coverage html will genernate .gitignore to ignore all files in htmlcov dir
+      # but ignore file can not deploy to github pages
+      run: |
+        mkdir -p htmlcov && touch htmlcov/.gitignore
+
+    - name: Analysing the code with unittest and coverage
+      run: |
+        coverage run tests/test.py
+        coverage html
+
+    - name: Deploy python unittests coverage html report
+      uses: JamesIves/github-pages-deploy-action@v4.7.3
+      with:
+        folder: htmlcov
+        branch: coverage-report

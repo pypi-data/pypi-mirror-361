@@ -1,0 +1,70 @@
+Metadata-Version: 2.4
+Name: bnvd
+Version: 1.0.0
+Summary: Cliente Python para a API do Banco Nacional de Vulnerabilidades Digitais bnvd.org
+Home-page: https://github.com/azurejoga/bnvd
+Author: Juan Mathews Rebello Santos
+Author-email: contato@bnvd.org
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: license
+Requires-Dist: requests
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+### README.md
+
+````markdown
+# BNVD Python Client
+
+Cliente Python para a API do Banco Nacional de Vulnerabilidades Digitais (BNVD).
+
+## Instalação
+
+```bash
+pip install bnvd
+````
+
+## Uso básico
+
+```python
+from bnvd.client import BNVDClient
+
+client = BNVDClient()
+
+# Buscar vulnerabilidades recentes
+recentes = client.get_recent(days=5, per_page=10)
+for vul in recentes:
+    print(f"{vul['cve_id']} - {vul.get('title', 'Sem título')}")
+
+# Buscar vulnerabilidade específica
+detalhes = client.get_vulnerability("CVE-2025-12345")
+print(detalhes)
+```
+
+## Funcionalidades
+
+* Listar vulnerabilidades com filtros (ano, severidade, vendor)
+* Buscar vulnerabilidade por CVE ID
+* Buscar vulnerabilidades recentes
+* Buscar estatísticas do banco de dados
+
+## Contribuição
+
+Contribuições são bem-vindas! Abra uma issue ou pull request no GitHub.
+
+## Licença
+
+Este projeto está licenciado sob a Licença MIT - veja o arquivo LICENSE para detalhes.
+

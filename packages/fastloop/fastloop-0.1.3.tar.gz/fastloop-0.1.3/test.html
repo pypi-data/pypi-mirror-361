@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>FastLoop Pyodide Local Bundle Test</title>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+</head>
+<body>
+  <h2>FastLoop Pyodide Local Bundle Test</h2>
+  <input type="file" id="bundleInput" accept=".zip">
+  <button onclick="loadFastLoop()">Load and Run FastLoop App</button>
+  <pre id="output"></pre>
+
+  <script>
+    async function loadFastLoop() {
+      const output = document.getElementById('output');
+      const fileInput = document.getElementById('bundleInput');
+      const file = fileInput.files[0];
+
+      if (!file) {
+        output.textContent = "Please select your my_fastloop_bundle.zip file first.";
+        return;
+      }
+
+      output.textContent = "Loading Pyodide...\n";
+      const pyodide = await loadPyodide();
+      output.textContent += "Pyodide loaded.\n";
+
+      // Install dependencies
+      output.textContent += "Installing dependencies...\n";
+      await pyodide.loadPackage(['micropip']);
+      await pyodide.runPythonAsync(`
+        import micropip
+        await micropip.install(["fastapi", "pydantic", "fastloop"])
+      `);
+      output.textContent += "Dependencies installed.\n";
+
+      // Read your local bundle file
+      output.textContent += "Reading local bundle...\n";
+      const bundleData = await file.arrayBuffer();
+      await pyodide.unpackArchive(bundleData, 'zip');
+      output.textContent += "Bundle unpacked.\n";
+
+      // Initialize your FastLoop app
+      output.textContent += "Initializing FastLoop app...\n";
+      await pyodide.runPythonAsync(`
+        from entry import handle_request
+        print("FastLoop app loaded successfully!")
+      `);
+      output.textContent += "FastLoop app initialized.\n";
+
+      // Example call to your FastLoop endpoint
+      output.textContent += "Calling FastLoop endpoint...\n";
+      const result = await pyodide.runPythonAsync(`
+        handle_request(
+          'POST',
+          '/pr-review',
+          headers={'Content-Type': 'application/json'},
+          body='{"type": "pr_opened", "repo_url": "https://github.com/example/repo", "sha1": "abc123"}'
+        )
+      `);
+
+      output.textContent += "Response from FastLoop:\n" + JSON.stringify(result, null, 2);
+    }
+  </script>
+</body>
+</html>

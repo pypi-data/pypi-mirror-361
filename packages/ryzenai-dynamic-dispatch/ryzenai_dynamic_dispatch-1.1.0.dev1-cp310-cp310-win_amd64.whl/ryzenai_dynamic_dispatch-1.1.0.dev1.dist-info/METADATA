@@ -1,0 +1,40 @@
+Metadata-Version: 2.2
+Name: ryzenai-dynamic-dispatch
+Version: 1.1.0.dev1
+Summary: Dynamic dispatch on AMD IPU with RyzenAI
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Science/Research
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Natural Language :: English
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Programming Language :: C++
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Topic :: Scientific/Engineering
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.9
+Requires-Dist: onnx-tool
+Description-Content-Type: text/markdown
+Author-email: "Advanced Micro Devices, Inc." <help@amd.com>
+
+# Dynamic Dispatch
+
+## Overview
+
+Dynamic dispatch aims to merge BD schedules for multiple operators into a single BD schedule for execution on NPU.
+
+Dynamic dispatch supports executing ML models on NPU if individual operators required for the model are implemented and available. For illustration, let us take the example of MLP block from llama2.
+
+![llama2-mlp](./docs/llm-Llama2-MLP.png)
+
+If all the operators required for MLP are available, dynamic dispatch merges the instructions from individual operators and issues one NPU execution kernel call. For llama2-mlp to be supported, following operator support is required.
+1. Matmul shapes - 1x4096x11008, 1x11008x4096
+2. Silu - 1x11008
+3. Elementwise mul - 1x11008
+
+To execute an operator on NPU, buffers must be allocated, copied with the correct data, setup instruction buffers, issue a NPU kernel run (XRT run), wait for completion of kernel execution and read data from the output buffer.
+

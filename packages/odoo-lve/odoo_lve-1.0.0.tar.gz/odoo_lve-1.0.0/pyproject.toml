@@ -1,0 +1,69 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "odoo_lve"
+version = "1.0.0"
+description = "Venezuela Location module for Odoo"
+readme = "README.md"
+license = {text = "LGPL-3"}
+authors = [
+    {name = "Carlos Parada", email = "cparada@erpya.com"},
+]
+maintainers = [
+    {name = "ERP Consultores y Asociados", email = "cparada@erpya.com"},
+]
+keywords = ["odoo", "venezuela", "location", "tributary", "withholding"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Office/Business :: Financial :: Accounting",
+]
+requires-python = ">=3.8"
+dependencies = [
+    # Odoo is not available on PyPI, it should be installed separately
+    # "odoo>=16.0,<18.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/erpcya/odoo_lve"
+Documentation = "https://github.com/erpcya/odoo_lve#readme"
+Repository = "https://github.com/erpcya/odoo_lve"
+"Bug Tracker" = "https://github.com/erpcya/odoo_lve/issues"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "black>=22.0",
+    "flake8>=5.0",
+    "mypy>=1.0",
+    "pre-commit>=2.0",
+]
+
+
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --cov=odoo_lve --cov-report=term-missing" 

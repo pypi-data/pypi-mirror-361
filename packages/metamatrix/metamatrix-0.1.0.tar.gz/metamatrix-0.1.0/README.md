@@ -1,0 +1,146 @@
+# MetaMatrix
+This python class provides a visual containing 3 matrices:
+- [A] a heatmap
+- [B] a matrix aligned on the right of the heatmap, containing metadata for each row
+- [C] a matrix aligned at the bottom of the heatmap, containing metadata for each column
+
+## Usage
+
+### Minimal example:
+```python
+x = MetaMatrix(df_A, df_B, df_C)
+mo.Html(x.to_svg())
+```
+
+### Interactive sorting (in marimo):
+```python
+selector_column_order = mo.ui.dropdown(options=config['features']['column'])
+selector_row_order = mo.ui.dropdown(options=config['features']['row'])
+```
+
+```python
+x = MetaMatrix(df_A, df_B, df_C,
+               column_order=selector_column_order.selected_key,
+               row_order=selector_row_order.selected_key,
+               cell_width=5,
+               features={
+                    'row': {
+                        'Family': 'categorical',
+                        'Order': 'categorical',
+                    },
+                    'column': {
+                        'Category': 'categorical',
+                        'Location': 'categorical',
+                        'Type': 'categorical',
+                        'MP': 'categorical'
+                    }}
+              )
+```
+
+```python
+mo.vstack([mo.hstack([selector_column_order,selector_row_order], justify="start"), mo.Html(x.to_svg())])
+
+```
+
+### Parameters
+
+- `features` (default `{'row': {}, 'column': {}}`):
+  - The metadata features to draw from matrices B (row metadata) and C (column metadata), including if they are `categorical` or `numeric`.
+- `column_order` (default `undefined`):
+  - Column metadata feature to sort the data columns.
+- `row_order` (default `undefined`):
+  - Row metadata feature to sort the data rows.
+- `padding_top` (default 120):
+  - Defines how much the complete SVG should be shifted down.
+- `padding_left` (default 80):
+  - Defines how much the complete SVG should be shifted to the right.
+- `cell_width` (default 5):
+  - Width of the heatmap cells.
+- `cell_height` (default 15):
+  - Height of the heatmap cells.
+- `row_metadata_cell_width` (default 20):
+  - Width of the row metadata cells.
+- `column_metadata_cell_height` (default 20):
+  - Height of the column metadata cells.
+- `column_labels` (default `False`):
+  - Whether or not to show the column labels. Useful if either is too small to show text.
+- `row_labels` (default `True`):
+  - Whether or not to show the row labels.
+
+## Input data
+### Heatmap data (dataframe `df_A`)
+```csv
+,N1,N2,N3,N4,N5,N6,N7,N8,N9,N10,N11,N12,N13,N14,N15,N16,N17,N18,N19,N20
+asv1,7202,11359,26,634,2516,118,153,2179,1062,448,912,377,5376,0,208,696,0,64,210,21
+asv2,3975,6078,0,271,1118,114,552,1263,469,169,298,209,802,0,23,90,60,2244,3310,31
+asv3,0,0,5,0,0,0,0,47,0,0,8,2,0,0,0,674,0,20,728,0
+asv4,747,1217,0,153,615,37,52,547,242,87,149,74,23,0,0,83,0,20,0,0
+asv5,0,0,50,84,0,156,1140,524,291,233,37,38,0,61,0,2082,0,1252,1283,0
+asv6,3364,1875,0,231,904,55,55,722,382,171,295,122,3321,96,0,21,0,14,0,110
+asv7,0,0,217,71,0,44,0,0,0,0,0,46,0,2,0,26,0,50,0,0
+asv8,66,358,53,145,504,0,128,410,231,135,111,94,939,211,428,1647,0,286,887,35
+asv9,28,54,0,0,73,0,1457,92,91,43,0,0,104,916,20,163,79,1306,2131,71
+asv10,0,0,0,0,200,0,0,209,57,0,0,0,0,0,18,59,0,0,26,0
+asv11,0,132,0,31,61,0,1412,573,1152,447,129,0,37,341,57,213,1918,452,1478,0
+asv12,0,0,0,45,353,25,11,388,134,24,58,23,0,4,0,207,0,0,5,0
+asv13,0,0,197,80,9,0,144,82,3182,1229,4,12,0,55,0,0,0,0,0,11
+asv14,0,0,0,140,407,41,0,469,158,58,123,85,0,0,0,0,0,0,0,0
+asv15,0,0,683,66,0,24,797,542,776,241,0,33,0,201,43,24,58,1130,0,0
+asv16,0,0,0,0,0,0,0,5,0,0,54,0,0,0,0,0,0,0,0,0
+asv17,0,0,0,7,78,0,0,38,16,0,7,6,0,0,42,19,0,0,21,0
+asv18,0,0,0,0,9,0,1133,367,363,175,30,67,0,24,6,57,0,1497,1641,547
+asv19,0,0,160,31,0,43,236,96,0,0,0,15,0,0,0,22,0,680,0,0
+```
+
+### Row metadata (dataframe `df_B`)
+```csv
+"","Kingdom","Phylum","Class","Order","Family","Genus","Species"
+"asv1","Bacteria","Proteobacteria","Gammaproteobacteria","Burkholderiales","T34",NA,NA
+"asv2","Bacteria","Bacteroidota","Bacteroidia","Flavobacteriales","Flavobacteriaceae","Flavobacterium","terrigena"
+"asv3","Bacteria","Proteobacteria","Gammaproteobacteria","Pseudomonadales","Moraxellaceae","Acinetobacter",NA
+"asv4","Bacteria","Firmicutes","Bacilli",NA,NA,NA,NA
+"asv5","Bacteria","Actinobacteriota","Actinobacteria","Micrococcales","Microbacteriaceae","Candidatus Limnoluna",NA
+"asv6","Bacteria","Proteobacteria","Gammaproteobacteria","Burkholderiales","Comamonadaceae","Limnohabitans",NA
+"asv7","Bacteria","Proteobacteria","Alphaproteobacteria","SAR11 clade","Clade III",NA,NA
+"asv8","Bacteria","Proteobacteria","Gammaproteobacteria","Burkholderiales","Comamonadaceae",NA,NA
+"asv9","Bacteria","Bacteroidota","Bacteroidia","Cytophagales","Spirosomaceae","Pseudarcicella",NA
+"asv10","Bacteria","Firmicutes","Bacilli",NA,NA,NA,NA
+"asv11","Bacteria","Bacteroidota","Bacteroidia","Flavobacteriales","Flavobacteriaceae","Flavobacterium",NA
+"asv12","Bacteria","Firmicutes","Bacilli","Mycoplasmatales","Mycoplasmataceae","Candidatus Bacilloplasma",NA
+"asv13","Bacteria","Bacteroidota","Bacteroidia","Flavobacteriales","Crocinitomicaceae","Fluviicola",NA
+"asv14","Bacteria","Bacteroidota","Bacteroidia","Flavobacteriales","Flavobacteriaceae","Flavobacterium",NA
+"asv15","Bacteria","Bacteroidota","Bacteroidia","Chitinophagales","Chitinophagaceae","Sediminibacterium",NA
+"asv16","Bacteria","Verrucomicrobiota","Verrucomicrobiae","Verrucomicrobiales","DEV007",NA,NA
+"asv17","Bacteria","Proteobacteria","Alphaproteobacteria","Sphingomonadales","Sphingomonadaceae","Sphingomonas",NA
+"asv18","Bacteria","Bacteroidota","Bacteroidia","Sphingobacteriales","NS11-12 marine group",NA,NA
+"asv19","Bacteria","Actinobacteriota","Actinobacteria","Frankiales","Sporichthyaceae","Candidatus Planktophila",NA
+```
+
+### Column metadata (dataframe `df_C`)
+```csv
+sample_name;Category;Location;Type;MP
+N1;Natural pond;LRV;Daphnia;Low
+N2;Natural pond;LRV;Daphnia;Low
+N3;Natural pond;LRV;Daphnia;Low
+N4;Natural pond;LRV;Daphnia;Low
+N5;Natural pond;LRV;Daphnia;Low
+N6;Natural pond;LRV;Daphnia;Low
+N7;Natural pond;LRV;Daphnia;Low
+N8;Natural pond;LRV;Daphnia;Low
+N9;Natural pond;LRV;Daphnia;Low
+N10;Natural pond;LRV;Daphnia;Low
+N11;Natural pond;LRV;Daphnia;Low
+N12;Natural pond;LRV;Daphnia;Low
+N13;Natural pond;LRV;Daphnia;Low
+N14;Natural pond;LRV;Daphnia;Low
+N15;Natural pond;LRV;Daphnia;Low
+N16;Natural pond;LRV;Daphnia;Low
+N17;Natural pond;LRV;Daphnia;Low
+N18;Natural pond;LRV;Daphnia;Low
+N19;Natural pond;LRV;Daphnia;Low
+N20;Natural pond;LRV;Daphnia;Low
+```
+
+### Dataframe requirements
+- The index of `df_B` (row metadata) should be the same as the index of `df_A` (heatmap data). It is allowed that some index values in `df_B` are not present in the index of `df_A`.
+- The index of `df_C` (column metadata) should be the same as the column names of `df_A` (heatmap data). It is allowed that some column names in `df_C` are not present in the column names of `df_A`.

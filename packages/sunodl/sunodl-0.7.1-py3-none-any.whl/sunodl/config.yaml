@@ -1,0 +1,48 @@
+# Users shouldn't normally have to mess with the config file. The suno
+# endpoint urls are configurable to make it easier to update if they
+# move them. Logging is configurable to ease debugging.
+
+endpoints:
+  clip: https://studio-api.prod.suno.com/api/clip/{id}/
+  song: https://studio-api.prod.suno.com/api/clip/{id}/  # sic
+  playlist: https://studio-api.prod.suno.com/api/playlist/{id}/
+  mp3: https://cdn1.suno.ai/{id}.mp3
+
+# TODO: It seems less likely that suno would make breaking changes to
+# the json structures returned by the endpoints above, but if they do,
+# consider making the json -> id3 mapping also configurable. Something
+# like this:
+#
+# id3_data_paths:
+#   album: playlist.name
+#   cover: playlist.image_url
+#   albumartist: playlist.user_display_name
+#   tracknumber: playlist.songs.index(song)
+#   title: song.title
+#   artist: song.display_name
+#   date: song.created_at
+#   lyrics: song.metadata.prompt
+#   illustration: song.image_url
+
+logging:
+  version: 1
+  disable_existing_loggers: false
+  formatters:
+    bare:
+      format: "%(message)s"
+  handlers:
+    stderr:
+      class: logging.StreamHandler
+      stream: ext://sys.stderr
+      formatter: bare
+    stdout:
+      class: logging.StreamHandler
+      stream: ext://sys.stdout
+      formatter: bare
+  root:
+    level: warning
+    handlers: [stderr]
+
+debug:
+  # Any options here are for development testing; don't use them.
+  sleep: 0  # sleep between songs; used to test progbar w/dryrun

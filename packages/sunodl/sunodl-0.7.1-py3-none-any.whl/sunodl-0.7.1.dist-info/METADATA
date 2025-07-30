@@ -1,0 +1,109 @@
+Metadata-Version: 2.4
+Name: sunodl
+Version: 0.7.1
+Summary: Simple downloader for Suno songs
+Author-email: Andrew Vant <ajvant@gmail.com>
+License-Expression: GPL-3.0-or-later
+Project-URL: Homepage, https://gitlab.com/ajvant/sunodl
+Project-URL: Documentation, https://gitlab.com/ajvant/sunodl/-/blob/master/README.md
+Project-URL: Repository, https://gitlab.com/ajvant/sunodl.git
+Project-URL: Issues, https://gitlab.com/ajvant/sunodl/-/issues
+Project-URL: Changelog, https://gitlab.com/ajvant/sunodl/-/commits/master
+Keywords: suno
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE.txt
+Requires-Dist: addict>=2
+Requires-Dist: appdirs
+Requires-Dist: docopt
+Requires-Dist: mutagen
+Requires-Dist: pyyaml>=3.10
+Requires-Dist: requests
+Requires-Dist: tqdm
+Provides-Extra: dev
+Requires-Dist: setuptools-scm>=8; extra == "dev"
+Requires-Dist: wheel; extra == "dev"
+Provides-Extra: test
+Requires-Dist: pytest-subtests; extra == "test"
+Requires-Dist: tox; extra == "test"
+Dynamic: license-file
+
+# SunoDL
+
+`sunodl` is a simple command-line program that downloads songs and
+playlists from Suno, applying appropriate filenames and ID3 tags as it
+goes, so that you can listen to them in your media player of choice.
+This is annoying to do from Suno’s own site; as I understand it, Suno
+*used* to have a “download” button, but it no longer exists. Hence this
+program.
+
+This is not a general-purpose interface to Suno’s API. If you’re
+looking for that, you are in the wrong place.
+
+`sunodl` has only been tested on my own narrow use cases and may break
+the moment it is off my system. You have been warned.
+
+## Installation
+
+You can install sunodl with any python package-management tool; this
+example uses [pipx][] because that’s what I use:
+
+`pipx install sunodl`
+
+After installing, check that `sunodl --help` does the Right Thing.
+
+## Usage
+
+On Suno’s site, navigate to the playlist or song you want to download,
+then copy/paste the URL as an argument to sunodl:
+
+```console
+$ sunodl https://suno.com/playlist/${UUID}/
+```
+
+By default, songs download to the current directory with a file name of
+`{title}.mp3`. If the url is for a playlist, a subdirectory is created
+named after the playlist, and the output filenames are prefixed with a
+track number. You can override the output path with the `--output`
+option.
+
+Where possible, upstream metadata is used to populate any corresponding
+ID3 tags, so music players can display things like title, artist, cover
+image, etc.
+
+## Configuration
+
+While there is a configuration directory, you shouldn’t need to touch it
+unless you are debugging `sunodl` itself. That said, you can view the
+default configuration and the user directory path in the output of
+`sunodl --debug`. The path varies by OS. Any .yaml files in the
+configuration directory will be read, and values in them will override
+the defaults.
+
+## Troubleshooting
+
+`sunodl` has several debugging options; see `sunodl --help` for a list.
+
+Annoyingly, Suno’s [API documentation][api] specifies endpoints for
+*uploading* and *generating* music, but not for *retrieving the
+resulting files*. The endpoints that `sunodl` relies on are, as far as I
+can tell, undocumented, and `sunodl` will break if Suno moves or changes
+them -- which they may well do.
+
+If that happens, and if you don’t want to wait on a code update, in
+theory you can update the endpoint urls yourself using the config
+directory mentioned above. However, *finding* the new endpoint urls is
+your problem. You can start by looking at your browser’s
+network-monitoring tools for json requests associated with a particular
+playlist/song.
+
+## License
+
+This program is distributed under GPLv3+. See LICENSE.txt for the
+complete license.
+
+[pipx]: https://pipx.pypa.io/stable/
+[api]: https://docs.sunoapi.org/

@@ -1,0 +1,88 @@
+Metadata-Version: 2.4
+Name: pmodels
+Version: 0.4
+Summary: Predictions of polymer systems properties
+Home-page: https://github.com/mirekslouf/pmodels/
+Author: Mirek Slouf
+Author-email: mirek.slouf@gmail.com
+License: MIT
+Project-URL: Documentation, https://mirekslouf.github.io/pmodels/
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENCE
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: project-url
+Dynamic: requires-python
+Dynamic: summary
+
+PModels :: Predictive models for polymer systems
+------------------------------------------------
+
+* PModels can predict properties of polymer blends and composites.
+* Input: properties of the components + composition + additional parameters.
+* Output: property of the final system (i.e. of the polymer blend or composite).
+
+
+Principle
+---------
+
+```
+>>> # Standard import of PModels package
+>>> import pmodels as pm
+>>>
+>>> # Estimate arbitrary property P of a polymer blend
+>>> # (P1,P2) = properties of components, v2 = vol.fraction of component 2
+>>> P = pm.lin.P(P1=1, P2=3, v2=0.5)
+>>>
+>>> # Estimate elastic modulus, E, and yield stress, Y, of a polymer blend
+>>> # (E1,E2 and Y1,Y2) = props of the components, v2 = vol.fract., A = adhesion 
+>>> E = pm.ebm.E(E1=1, E2=3, v2=0.5)
+>>> Y = pm.ebm.Y(Y1=20, Y2=100, v2=0.5, A=1)
+```
+
+
+Installation
+------------
+
+* Requirement: Python with sci-modules = numpy, matplotlib, scipy, pandas
+* `pip install pmodels` = PModels package itself (uses all packages above)
+
+
+Quick start
+-----------
+
+* [Worked example](https://www.dropbox.com/scl/fi/g6no7oqrjbp8u0ozb5jr7/ex1.nb.html.pdf?rlkey=7p6dumlv9dnr8lku8p87eqd0v&st=g26oyck5&dl=0)
+  = basic calculations with PModels.
+* [DropBox folder](https://www.dropbox.com/scl/fo/snk6pk906r2mhxnptke2s/AIUI14eefWObZJH84k5kyyU?rlkey=tzpkdqx4lnecufo636jr6wnvf&st=hmnbgeag&dl=0)
+  with more examples, including test data.
+
+
+Documentation, help and examples
+--------------------------------
+
+* [PyPI](https://pypi.org/project/pmodels) repository -
+  the stable version to install.
+* [GitHub](https://github.com/mirekslouf/pmodels) repository - 
+  the current version under development.
+* [GitHub Pages](https://mirekslouf.github.io/pmodels)
+  with [examples](https://mirekslouf.github.io/pmodels/docs)
+  and [complete package documentation](https://mirekslouf.github.io/pmodels/docs/pdoc.html/pmodels.html).
+
+
+Versions of PModels
+-------------------
+
+* Version 0.1 = key calculations
+* Version 0.2 = basic docstrings added
+* Version 0.3 = improved init file = simple API
+* Version 0.4 = standard docstrings, improved code, deployed in GitHub

@@ -1,0 +1,127 @@
+Metadata-Version: 2.4
+Name: DmDSLab
+Version: 0.0.0
+Summary: Data Science Laboratory Toolkit
+Home-page: https://github.com/Dmatryus/DmDSLab
+Author: Dmatryus Detry
+Author-email: dmatryus.sqrt49@yandex.ru
+License: Apache-2.0
+Project-URL: Documentation, https://github.com/Dmatryus/DmDSLab/wiki
+Project-URL: Source, https://github.com/Dmatryus/DmDSLab
+Keywords: data-science machine-learning preprocessing
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Classifier: Intended Audience :: Science/Research
+Classifier: Topic :: Scientific/Engineering
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pandas>=1.3.0
+Requires-Dist: numpy>=1.21.0
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license
+Dynamic: license-file
+Dynamic: project-url
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+ # DmDSLab: библиотека инструментов для Data Science  
+**DmDSLab** — набор готовых решений для автоматизации рутинных задач в Data Science проектах.  
+
+---
+
+## Модули
+### Модуль структур данных (data)
+Модуль предоставляет вспомогательные структуры данных для работы с наборами данных в ML-пайплайнах.
+
+**Основные компоненты:**
+- `ModelData` — именованный кортеж для хранения признаков (`features`) и целевого значения (`target`).
+- `DataSplit` — именованный кортеж для разделения данных на обучающую (`train`), валидационную (`tuning`) и тестовую (`test`) выборки.
+
+**Преимущества:**
+- Упрощает организацию данных в проектах Data Science.
+- Обеспечивает неизменяемость структур через `namedtuple`.
+- 
+Пример использования:
+```python
+from dmdslab.data import ModelData, DataSplit
+
+# Создание экземпляра ModelData
+data = ModelData(features=X, target=y)
+
+# Разделение данных
+split = DataSplit(train=train_data, tuning=val_data, test=test_data)
+```
+
+
+## Модуль загрузки данных (download)
+
+Модуль предоставляет инструменты для загрузки данных из различных источников, с акцентом на работу с SQL-базами данных.
+
+**Основные компоненты:**
+- `DataLoader` — абстрактный класс для загрузки данных, который определяет базовый интерфейс.
+- `SQLLoader` — реализация `DataLoader` для работы с SQL-запросами, поддерживающая параметризованные запросы и разделение данных на партиции.
+
+**Преимущества:**
+- Абстракция процесса загрузки данных.
+- Поддержка сложных запросов с возможностью разделения на партиции.
+- Автоматическая конкатенация результатов из разных запросов.
+- Гибкая настройка через параметры конструктора.
+
+Пример использования:
+```python
+from dmdslab.download import SQLLoader
+
+# Создание экземпляра SQLLoader
+loader = SQLLoader(
+    connect=your_db_connection,
+    query="SELECT * FROM table WHERE {}",
+    template_field="date_column",
+    partitions=[(None, "2023-01-01"), ("2023-01-01", "2023-12-31")]
+)
+
+# Загрузка данных
+data = loader.download()
+```
+
+## Модуль предобработки данных (cleaning)
+
+Модуль предоставляет функции для предобработки данных, включая удаление почти пустых строк, почти константных столбцов и дубликатов.
+
+**Основные компоненты:**
+- `drop_almost_empty_rows` — удаляет строки, содержащие более определённого процента пустых значений.
+- `drop_almost_const_columns` — удаляет столбцы, содержащие более определённого процента константных значений.
+- `drop_duplicates` — удаляет дубликаты строк или столбцов в зависимости от заданного режима.
+
+**Преимущества:**
+- Упрощает предобработку данных.
+- Повышает качество данных за счёт удаления ненужных строк и столбцов.
+- Гибкая настройка через параметры функций.
+
+Пример использования:
+```python
+from dmdslab.cleaning import drop_almost_empty_rows, drop_almost_const_columns, drop_duplicates
+
+# Создание экземпляра SQLLoader
+df = pd.DataFrame(...)  # Ваша DataFrame
+
+# Удаление почти пустых строк
+df = drop_almost_empty_rows(df, threshold=0.8)
+
+# Удаление почти константных столбцов
+df = drop_almost_const_columns(df, threshold=0.9)
+
+# Удаление дубликатов
+df = drop_duplicates(df, mode='all')
+```
+
+**Лицензия**: Apache 2.0.  
+**Автор**: [Dmatryus Detry](https://github.com/Dmatryus).  

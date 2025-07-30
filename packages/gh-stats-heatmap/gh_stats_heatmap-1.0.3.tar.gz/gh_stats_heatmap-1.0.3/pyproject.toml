@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gh-stats-heatmap"
+version = "1.0.3"
+description = "GitHub Contribution Graph in your terminal — for hackers who prefer Unicode over UI"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Gizmet", email = "gizmet@example.com"}
+]
+maintainers = [
+    {name = "Gizmet", email = "gizmet@example.com"}
+]
+keywords = ["github", "terminal", "heatmap", "contributions", "cli", "rich"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Terminals",
+    "Topic :: Utilities",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "requests>=2.25.0",
+    "rich>=10.0.0",
+    "typer>=0.4.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "black>=21.0",
+    "flake8>=3.8",
+]
+
+[project.urls]
+Homepage = "https://github.com/Gizmet/github-contribution-heatmap-viewer"
+Documentation = "https://github.com/Gizmet/github-contribution-heatmap-viewer#readme"
+Repository = "https://github.com/Gizmet/github-contribution-heatmap-viewer"
+"Bug Tracker" = "https://github.com/Gizmet/github-contribution-heatmap-viewer/issues"
+
+[project.scripts]
+ghstats = "ghstats:main"
+
+[tool.setuptools]
+packages = ["plugins"]
+py-modules = ["ghstats", "github_api", "heatmap", "render", "utils"] 

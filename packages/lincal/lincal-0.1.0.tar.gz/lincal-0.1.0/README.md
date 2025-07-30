@@ -1,0 +1,166 @@
+# LinCal - Linear Calendar
+
+A web application that displays Linear issues on a calendar interface. Similar to lincal.app, this app allows you to visualize your Linear tasks in a calendar view.
+
+## Features
+
+- View Linear issues on a calendar by due date
+- Filter issues by team and state
+- View detailed information about each issue
+- Link directly to issues in Linear
+- Responsive design
+
+## Setup (Using UV - Recommended)
+
+1. Clone this repository
+2. Install UV if you don't have it already:
+   ```
+   pip install uv
+   ```
+3. Create and activate a virtual environment:
+   ```
+   uv venv
+   # On Windows
+   .venv\Scripts\activate
+   # On macOS/Linux
+   source .venv/bin/activate
+   ```
+4. Install dependencies:
+   ```
+   uv pip install -e .
+   ```
+5. Create a `.env` file by copying `.env.example`:
+   ```
+   cp .env.example .env
+   ```
+6. Add your Linear API key and optional port to the `.env` file:
+   ```
+   LINEAR_API_KEY=lin_api_xxxxxxxxxxxx
+   PORT=5000
+   ```
+   > You can generate an API key in Linear by going to Settings > API > Personal API Keys
+   > The PORT is optional and defaults to 5001 if not specified
+
+## Setup (Using pip - Legacy)
+
+1. Clone this repository
+2. Install dependencies:
+   ```
+   pip install -r requirements.txt
+   ```
+3. Follow steps 5-6 above for environment setup.
+
+## Running the Application
+
+Start the Flask development server with UV (recommended):
+
+```
+uv python app.py
+```
+
+Or with standard Python:
+
+```
+python app.py
+```
+
+The application will be available at http://localhost:5000
+
+## Development
+
+### Project Structure
+
+```
+linear-cal/
+├── app.py                # Flask application
+├── requirements.txt      # Python dependencies
+├── .env                  # Environment variables (not committed)
+├── templates/
+│   └── index.html        # Main HTML template
+└── static/
+    ├── css/
+    │   └── styles.css    # Application styles
+    └── js/
+        └── calendar.js   # Calendar functionality
+```
+
+### API Endpoints
+
+- `/api/issues` - Get Linear issues within a date range
+- `/api/teams` - Get all teams from Linear
+
+## Distribution and Deployment
+
+### Distribution with UV
+
+To distribute this application so others can install it, you have several options:
+
+#### 1. GitHub Repository (Recommended)
+
+Share your GitHub repository URL. Users can install directly from GitHub:
+
+```bash
+# Install UV if not already installed
+pip install uv
+
+# Create and activate a virtual environment
+uv venv
+# On Windows
+.venv\Scripts\activate
+# On macOS/Linux
+source .venv/bin/activate
+
+# Install the app directly from GitHub
+uv pip install git+https://github.com/yourusername/linear-cal.git
+```
+
+#### 2. PyPI Publication
+
+Publish to PyPI for installation with UV:
+
+```bash
+# Build the package
+uv pip install build
+python -m build
+
+# Upload to PyPI
+uv pip install twine
+twine upload dist/*
+```
+
+Users can then install with:
+```bash
+uv pip install linear-cal
+```
+
+### Deployment
+
+This application can be deployed to platforms like Heroku, Render, or any service that supports Python web applications.
+
+Make sure to set the `LINEAR_API_KEY` environment variable in your deployment environment.
+
+#### Deployment with UV
+
+If deploying to a custom server, install UV and use it for dependency management:
+
+```bash
+# On your server
+pip install uv
+uv venv
+source .venv/bin/activate
+uv pip install git+https://github.com/yourusername/linear-cal.git
+
+# Set environment variable
+export LINEAR_API_KEY=your_api_key
+
+# Run with gunicorn (for production)
+uv pip install gunicorn
+gunicorn app:app
+```
+
+## Technologies Used
+
+- Backend: Flask (Python)
+- Frontend: HTML, CSS, JavaScript
+- Calendar: FullCalendar
+- API Integration: Linear GraphQL API

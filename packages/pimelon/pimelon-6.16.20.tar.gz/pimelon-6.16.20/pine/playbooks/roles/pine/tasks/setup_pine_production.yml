@@ -1,0 +1,28 @@
+---
+- name: Setup production
+  become: yes
+  become_user: root
+  command: pine setup production {{ melon_user }} --yes
+  args:
+    chdir: '{{ pine_path }}'
+
+- name: Setup Sudoers
+  become: yes
+  become_user: root
+  command: pine setup sudoers {{ melon_user }}
+  args:
+    chdir: '{{ pine_path }}'
+
+- name: Set correct permissions on pine.log
+  file:
+    path: '{{ pine_path }}/logs/pine.log'
+    owner: '{{ melon_user }}'
+    group: '{{ melon_user }}'
+  become: yes
+  become_user: root
+
+- name: Restart the pine
+  command: pine restart
+  args:
+    chdir: '{{ pine_path }}'
+...

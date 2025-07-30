@@ -1,0 +1,25 @@
+---
+- name: Install deps
+  yum:
+    name:
+      - policycoreutils-python
+      - selinux-policy-devel
+    state: present
+  when: ansible_distribution == 'CentOS'
+
+- name: Check enabled SELinux modules
+  shell: semanage module -l
+  register: enabled_modules
+  when: ansible_distribution == 'CentOS'
+
+- name: Copy melon_selinux policy
+  copy: src=melon_selinux.te dest=/root/melon_selinux.te
+  register: dest_melon_selinux_te
+  when: ansible_distribution == 'CentOS'
+
+- name: Compile melon_selinux policy
+  shell: "make -f /usr/share/selinux/devel/Makefile melon_selinux.pp && semodule -i melon_selinux.pp"
+  args:
+    chdir: /root/
+  when: "ansible_distribution == 'CentOS' and enabled_modules.stdout.find('melon_selinux') == -1 or dest_melon_selinux_te.changed"
+...

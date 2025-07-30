@@ -1,0 +1,12 @@
+[Unit]
+Description="{{ pine_name }}-redis-cache"
+PartOf={{ pine_name }}-redis.target
+
+[Service]
+User={{ user }}
+Group={{ user }}
+Restart=always
+ExecStart={{ redis_server }} {{ redis_cache_config }}
+StandardOutput=file:{{ pine_dir }}/logs/redis-cache.log
+StandardError=file:{{ pine_dir }}/logs/redis-cache.error.log
+WorkingDirectory={{ sites_dir }}

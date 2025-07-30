@@ -1,0 +1,54 @@
+Metadata-Version: 2.4
+Name: argparse-type-helper
+Version: 0.1.0
+Summary: an easy-to-integrate typed argument parser
+Author-email: lljbash <lljbash@gmail.com>
+Project-URL: Homepage, https://github.com/lljbash/targs
+Project-URL: Bug Tracker, https://github.com/lljbash/targs/issues
+Keywords: argparse,typing,argument parser,type hints,typed arguments
+Classifier: Development Status :: 3 - Alpha
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: POSIX
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Topic :: Software Development :: Libraries
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: license-file
+
+# Argparse Type Helper
+
+A lightweight helper that lets you leverage type hints with `argparse`.
+
+## Features
+
+- **Class-based schema**
+  Bundle all your arguments in a single `@targs`-decorated class.
+- **Identical API**
+  Each field uses the same parameters as `argparse.add_argument` (`help`, `action`, `nargs`, etc.).
+- **Automatic registration**
+  One call to `register_targs(parser, YourArgs)` wires up all arguments on your `ArgumentParser`.
+- **Typed extraction**
+  After `parse_args()`, call `extract_targs()` to get a fully-typed instance of your class.
+- **Hybrid usage**
+  Mix native `parser.add_argument(...)` calls with class-based definitions in the same parser.
+- **Docstring support**
+  Use docstrings to automatically generate help text for your arguments.
+
+## Installation
+
+```bash
+pip install argparse-type-helper
+```
+
+## Usage
+
+See [example.py](/tests/example.py).
+
+## Why not [typed-argparse](https://typed-argparse.github.io/typed-argparse/)?
+
+typed-argparse is a great library, but it replaces the familiar `argparse.add_argument` API with its own argument-definition interface, which can be a hurdle when integrating into an existing codebase.
+
+argparse-type-helper, by contrast, is a simple helper that allows you to use type hints with argparse with minimal learning curve. It uses the same `argparse` API you’re already familiar with, and you can even mix native `argparse` usage with class-based definitions in the same parser.

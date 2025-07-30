@@ -1,0 +1,66 @@
+<a href="https://flomoapp.com/"><img src="https://raw.githubusercontent.com/Benature/flomo/main/flomo/media/logo-192x192.png" height="100" align="right"></a>
+
+# flomo 浮墨
+
+[![PyPI](https://img.shields.io/pypi/v/flomo)](https://pypi.org/project/flomo/)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/flomo)
+[![GitHub stars](https://img.shields.io/github/stars/Benature/flomo)](https://github.com/Benature/flomo)
+
+一个非官方的 API python 玩具盒 👀
+
+> *prefer python3.7+*  
+> 欢迎 Star 🌟、Fork 🍴、Issue 💬、PR. 一起让 flomo 用的更加得心应手
+
+最新版在 dev 分支
+
+## Usage 使用
+
+```shell
+pip install -U flomo
+```
+
+### Python 封装
+
+```python
+from flomo import Flomo, Parser
+authorization = "Bearer xxxxxxxxxxx"
+flomo = Flomo(authorization)
+memos = flomo.get_all_memos()
+
+memo = Parser(memos[-1])
+print(memo.text) # memo 纯文本
+print(memo.url)  # memo 链接
+print(memo.tags)
+```
+
+或参考 `main_simple.py` (by [MarkShawn2020](https://github.com/MarkShawn2020))
+
+`authorization` 是用户 flomo 登录后获取的 token，可在浏览器的开发者工具中查看。
+
+### CLI 命令行
+
+```shell
+# 配置token
+flomo config --token 'your_token'
+
+# 列出前5条备忘录，表格格式
+flomo list -l 5 -f table
+
+# 搜索包含关键词的备忘录
+flomo search "知识管理" -f markdown
+```
+
+credit to [MarkShawn2020](https://github.com/MarkShawn2020)
+
+## Local Install 本地安装
+
+```shell
+git clone https://github.com/Benature/flomo.git
+make all
+```
+
+
+## Relative Project 相关项目
+
+- workflow: [Benature/flomo workflow](https://github.com/Benature/flomo-workflow)
+- npm: [geekdada/flomo api helper](https://github.com/geekdada/flomo-api-helper)

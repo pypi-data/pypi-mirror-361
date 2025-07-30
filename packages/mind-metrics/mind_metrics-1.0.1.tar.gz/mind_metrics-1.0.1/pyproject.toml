@@ -1,0 +1,233 @@
+[build-system]
+requires = ["hatchling>=1.21.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mind-metrics"
+dynamic = ["version"]
+description = "Workplace Mental Health Analytics - A comprehensive data analysis application for mental health survey data"
+readme = "README.md"
+license = {file = "LICENSE.md"}
+requires-python = ">=3.9"
+authors = [
+    {name = "Mind Metrics Team", email = "team@mindmetrics.dev"},
+]
+maintainers = [
+    {name = "Lead Developer", email = "lead@mindmetrics.dev"},
+]
+keywords = [
+    "mental-health",
+    "workplace-analytics", 
+    "burnout-analysis",
+    "data-visualization",
+    "statistics",
+    "employee-wellbeing",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Healthcare Industry",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Typing :: Typed",
+]
+dependencies = [
+    "click>=8.1.0",
+    "pandas>=2.0.0",
+    "numpy>=1.24.0",
+    "matplotlib>=3.7.0",
+    "seaborn>=0.12.0",
+    "plotly>=5.17.0",
+    "scipy>=1.10.0",
+    "scikit-learn>=1.3.0",
+    "openpyxl>=3.1.0",
+    "requests>=2.31.0",
+    "pydantic>=2.5.0",
+    "rich>=13.7.0",
+    "typer>=0.9.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "pytest-xdist>=3.3.0",
+    "pytest-mock>=3.12.0",
+    "black>=23.9.0",
+    "ruff>=0.1.0",
+    "mypy>=1.6.0",
+    "pre-commit>=3.5.0",
+    "isort>=5.12.0",
+    "bandit>=1.7.0",
+]
+test = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "pytest-xdist>=3.3.0",
+    "pytest-mock>=3.12.0",
+    "hypothesis>=6.88.0",
+    "factory-boy>=3.3.0",
+]
+docs = [
+    "mkdocs>=1.5.0",
+    "mkdocs-material>=9.4.0",
+    "mkdocstrings[python]>=0.24.0",
+    "mkdocs-gen-files>=0.5.0",
+    "mkdocs-literate-nav>=0.6.0",
+    "mkdocs-section-index>=0.3.0",
+]
+
+[project.urls]
+Documentation = "https://your-team.gitlab.io/mind-metrics/"
+Repository = "https://gitlab.com/your-team/mind-metrics"
+"Bug Tracker" = "https://gitlab.com/your-team/mind-metrics/-/issues"
+Changelog = "https://gitlab.com/your-team/mind-metrics/-/blob/main/CHANGELOG.md"
+"PyPI" = "https://test.pypi.org/project/mind-metrics/"
+
+[tool.hatch.version]
+path = "mind_metrics/__init__.py"
+
+[project.scripts]
+mind-metrics = "mind_metrics.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["mind_metrics"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/mind_metrics",
+    "/tests",
+    "/docs",
+    "/examples",
+    "README.md",
+    "LICENSE.md",
+    "CITATION.cff",
+    "CONTRIBUTING.md",
+]
+
+# Black configuration
+[tool.black]
+line-length = 88
+target-version = ['py39']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+    # directories
+    \.eggs
+    | \.git
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | build
+    | dist
+)/
+'''
+
+
+# Ruff configuration
+[tool.ruff]
+target-version = "py39"
+line-length = 88
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "C4", "UP", "ARG001"]
+ignore = ["E501", "B008", "C901"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+"tests/**/*" = ["ARG001"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["mind_metrics"]
+
+# MyPy configuration
+[tool.mypy]
+python_version = "3.9"
+check_untyped_defs = false
+disallow_any_generics = false
+disallow_incomplete_defs = false
+disallow_untyped_defs = false
+no_implicit_optional = false
+warn_redundant_casts = false
+warn_unused_ignores = false
+warn_return_any = false
+strict_equality = false
+warn_unused_configs = false
+ignore_errors = true  # Add this
+disable_error_code = ["attr-defined", "index", "assignment", "arg-type", "var-annotated"]  # Add this
+
+[[tool.mypy.overrides]]
+module = [
+    "matplotlib.*",
+    "seaborn.*",
+    "plotly.*",
+    "scipy.*",
+    "sklearn.*",
+    "pandas.*",
+    "requests.*",
+    "mind_metrics.*",
+]
+ignore_missing_imports = true
+ignore_errors = true  
+
+# Pytest configuration
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--strict-config",
+    "--cov=mind_metrics",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+    "--cov-fail-under=20",
+]
+testpaths = ["tests"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+    "cli: marks tests for CLI functionality",
+]
+filterwarnings = [
+    "error",
+    "ignore::FutureWarning",
+    "ignore::UserWarning", 
+    "ignore::DeprecationWarning",
+    "ignore::PendingDeprecationWarning",
+]
+
+# Coverage configuration
+[tool.coverage.run]
+source = ["mind_metrics"]
+omit = [
+    "tests/*",
+    "mind_metrics/__main__.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+# Bandit security linting
+[tool.bandit]
+exclude_dirs = ["tests", "docs"]
+skips = ["B101", "B601"]

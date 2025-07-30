@@ -1,0 +1,53 @@
+[build-system]
+requires = ["hatchling", "uv-dynamic-versioning"]
+build-backend = "hatchling.build"
+
+[project]
+name = "openmemory-mcp-bridge"
+dynamic = ["version"]
+description = "MCP bridge for OpenMemory SSE endpoints"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Ankit Pasi"},
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "httpx>=0.24.0",
+    "click>=8.0.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/TensorBlast/mem0"
+"Repository" = "https://github.com/TensorBlast/mem0"
+"Bug Tracker" = "https://github.com/TensorBlast/mem0/issues"
+
+[project.scripts]
+openmemory-mcp-bridge = "openmemory_mcp_bridge.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/openmemory_mcp_bridge"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/README.md",
+    "/pyproject.toml",
+]
+
+[tool.hatch.version]
+source = "uv-dynamic-versioning"
+
+[tool.uv-dynamic-versioning]
+fallback-version = "0.0.0" 

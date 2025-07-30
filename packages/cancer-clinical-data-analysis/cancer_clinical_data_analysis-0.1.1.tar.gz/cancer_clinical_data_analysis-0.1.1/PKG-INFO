@@ -1,0 +1,342 @@
+Metadata-Version: 2.4
+Name: cancer-clinical-data-analysis
+Version: 0.1.1
+Summary: A comprehensive Python package for cancer clinical data analysis including data processing, statistical analysis, survival modeling, and visualization
+Project-URL: Homepage, https://codebase.helmholtz.cloud/tud-rse-pojects-2025/group-10
+Project-URL: Repository, https://codebase.helmholtz.cloud/tud-rse-pojects-2025/group-10
+Author-email: Zaeem Asghar <zaeem.asghar@mailbox.tu-dresden.de>, Zoha Rashid <zoha.rashid@mailbox.tu-dresden.de>
+License: MIT License
+        
+        Copyright (c) 2025 Zoha Rashid, Zaeem Asghar
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+License-File: LICENSE.md
+Keywords: bioinformatics,cancer,clinical-data,machine-learning,survival-analysis
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Healthcare Industry
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Scientific/Engineering :: Bio-Informatics
+Classifier: Topic :: Scientific/Engineering :: Medical Science Apps.
+Requires-Python: >=3.11
+Requires-Dist: click>=8.1.0
+Requires-Dist: lifelines>=0.27.0
+Requires-Dist: matplotlib>=3.6.0
+Requires-Dist: numpy>=2.3.1
+Requires-Dist: pandas>=2.3.1
+Requires-Dist: pytest>=8.4.1
+Requires-Dist: requests>=2.28.0
+Requires-Dist: scikit-learn>=1.2.0
+Requires-Dist: scipy>=1.10.0
+Requires-Dist: seaborn>=0.12.0
+Provides-Extra: dev
+Requires-Dist: bandit>=1.7.0; extra == 'dev'
+Requires-Dist: black>=23.1.0; extra == 'dev'
+Requires-Dist: pre-commit>=3.0.0; extra == 'dev'
+Requires-Dist: pytest-cov>=4.0.0; extra == 'dev'
+Requires-Dist: pytest-mock>=3.10.0; extra == 'dev'
+Requires-Dist: pytest>=7.2.0; extra == 'dev'
+Requires-Dist: ruff>=0.1.0; extra == 'dev'
+Provides-Extra: docs
+Requires-Dist: sphinx-rtd-theme>=1.2.0; extra == 'docs'
+Requires-Dist: sphinx>=6.0.0; extra == 'docs'
+Provides-Extra: jupyter
+Requires-Dist: ipython>=8.0.0; extra == 'jupyter'
+Requires-Dist: jupyter>=1.0.0; extra == 'jupyter'
+Requires-Dist: plotly>=5.13.0; extra == 'jupyter'
+Requires-Dist: statsmodels>=0.13.0; extra == 'jupyter'
+Description-Content-Type: text/markdown
+
+# Cancer Clinical Data Analysis
+
+## Project Description
+
+This project provides a comprehensive command-line interface (CLI) tool for performing survival analysis on clinical cancer data. It is designed to fetch, clean, analyze, and visualize data obtained from [cBioPortal] (https://www.cbioportal.org) (a standard open-source data platform for clinical cancer datasets) with a focus on survival prediction and cohort characterization.
+
+Survival analysis in cancer research helps assess how long patients survive after diagnosis or treatment and what factors influence those survival outcomes. Key variables used include:
+
+- ```os_months```: Time to death or last follow-up (in months)
+
+- ```os_event```: Binary indicator (1 = death, 0 = censored/alive)
+
+- Demographics: ```age_at_diagnosis```, ```gender```, ```race```, ```ethnicity```
+
+- Clinical/pathological features
+
+For this project we specifically chose the TCGA-LUAD cohort (lung adenocarcinoma) with study ID (**luad_tcga_gdc**) but the pipeline is generic and can be reused for other studies from CBioPortal provided the required data columns are available. It supports data cleaning, statistical summaries, logistic regression survival analysis, Kaplan-Merier survival curves and visualizations of results.
+
+The figure below illustrates the end-to-end workflow for data loading, preprocessing, modeling, and visualization of our project and sample results:
+
+![Cancer Clinical Data Analysis Workflow](images/project_flow_3.png)
+
+## Installation
+
+1. **Clone the repository:**
+
+```bash
+git clone https://gitlab.com/your-username/cancer-clinical-data-analysis.git
+cd group-10
+```
+
+2. **Create and activate a virtual environment:**
+
+```bash
+python -m venv .venv
+```
+
+- On Unix/macOS:
+
+```bash  
+source venv/bin/activate
+```
+
+- On Windows:
+
+```bash
+venv\Scripts\activate
+```
+
+3. **Install dependencies using uv:**
+
+```bash
+uv pip install -r requirements.txt
+```
+or
+
+```bash
+pip install -e
+```
+- Make sure uv is installed and added to your PATH. If not:
+
+```bash
+pip install uv
+```
+
+4. **Verify installation:**
+
+```bash
+python main.py --help
+```
+
+## Usage
+
+This project is run through the CLI via:
+
+```bash
+python main.py [COMMAND] [OPTIONS]
+```
+
+You can either run the full pipeline: process → summary → model → visualize or individual tasks from the project as follows:
+
+### 1. Data Processing (`process`):
+This step loads raw clinical data from cBioPortal, preprocesses and cleans the data to obtain required columns and reports missing data.
+
+```bash
+python main.py process [OPTIONS]
+```
+
+**Options:**
+- `--source TEXT`: Study ID to load from cBioPortal (default: `luad_tcga_gdc`)
+- `--output-dir TEXT`: Directory to save results (default: `results`)
+
+**Example:**
+```bash
+python main.py process --source luad_tcga_gdc --output-dir my_results
+```
+
+### 2. Statistical Summaries (`statistical_summary`):
+This step generates a statistical summary including mean, standard deviation, frequencies, entropies for all the categorical and nummerical columns.
+
+```bash
+python main.py --statistical-summary
+```
+
+**Options:**
+- `--data-file TEXT`: Path to clinical data file (default: `results/clinical_data.csv`)
+- `--output-dir TEXT`: Directory to save results (default: `results`)
+
+**Example:**
+```bash
+python main.py statistical_summary --data-file results/clinical_data.csv --output-dir results
+```
+
+### 3. Survival Modeling (`model`)
+This step trains and evaluates logistic regression and random forest models for for survival prediction (```os_event```) variable and generates classification results and plots:
+- Feature importance bar plot
+- Confusion matrix
+
+```bash
+python main.py model [OPTIONS]
+```
+
+**Options:**
+- `--data-file TEXT`: Path to clinical data file (default: `results/clinical_data.csv`)
+- `--output-dir TEXT`: Directory to save model results (default: `results`)
+- `--target TEXT`: Target variable for prediction (default: `os_event`)
+
+**Example:**
+```bash
+python main.py model --data-file results/clinical_data.csv --target os_event --output-dir model_results
+```
+
+### 4. Data Visualization (`visualize`)
+This step generates comprehensive visualizations of clinical data including demographics, age distribution, and Kaplan-Meier survival curves.
+
+```bash
+python main.py visualize [OPTIONS]
+```
+
+**Options:**
+- `--data-file TEXT`: Path to clinical data file (default: `results/clinical_data.csv`)
+- `--output-dir TEXT`: Directory to save visualizations (default: `results`)
+
+**Example:**
+```bash
+python main.py visualize --data-file results/clinical_data.csv --output-dir plots
+```
+
+### 5. Complete Analysis Pipeline (`analyze`)
+TO run the complete analysis pipeline including data processing, statistics, visualization, and modeling.
+
+```bash
+python main.py analyze [OPTIONS]
+```
+
+**Options:**
+- `--study-id TEXT`: Specific study ID to analyze (uses default if not specified)
+- `--output-dir TEXT`: Directory to save all results (default: `results`)
+
+**Example:**
+```bash
+python main.py analyze --study-id luad_tcga_gdc --output-dir complete_analysis
+```
+
+## Global Options
+
+Available for all commands:
+
+- `-v, --verbose`: Increase output verbosity
+  - `-v`: Info level logging
+  - `-vv`: Debug level logging
+  - `-vvv`: Maximum verbosity
+
+**Example:**
+```bash
+python main.py -vv process --source luad_tcga_gdc
+```
+
+### Working with Different Studies
+
+The toolkit works with any cBioPortal study ID. Common examples:
+
+- `luad_tcga_gdc`: Lung Adenocarcinoma (TCGA, Firehose Legacy)
+- `brca_tcga`: Breast Invasive Carcinoma (TCGA, Firehose Legacy)
+- `prad_tcga`: Prostate Adenocarcinoma (TCGA, Firehose Legacy)
+- `coadread_tcga`: Colorectal Adenocarcinoma (TCGA, Firehose Legacy)
+
+Visit [cBioPortal](https://www.cbioportal.org/) to find more study IDs.
+
+```bash
+# Analyze breast cancer data
+python main.py analyze --study-id brca_tcga --output-dir brca_analysis
+
+# Process prostate cancer data
+python main.py process --source prad_tcga --output-dir prostate_data
+```
+
+## Output Files
+
+The toolkit generates the following output files:
+
+- `clinical_data.csv`: Processed clinical data
+- `pathology_data.csv`: Processed pathology data
+- `statistical_summary.txt`: Comprehensive statistical summary
+- `feature_importance.csv`: Model feature importance rankings
+- Various visualization files (PNG format):
+  - `demographics.png`: Patient demographics
+  - `age_distribution.png`: Age distribution plots
+  - `kaplan_meier.png`: Survival curves
+  - `confusion_matrix.png`: Model performance
+  - `feature_importance.png`: Feature importance plots
+
+## Project Structure
+
+```
+├── main.py                    # CLI entry point
+├── cancer_analysis/           # Main package
+│   ├── data/                  # Data loading and preprocessing
+│   ├── analysis/              # Statistical analysis and visualization
+│   ├── models/                # Machine learning models
+│   └── utils/                 # Utility functions
+├── results/                   # Default output directory
+├── tests/                     # Test files
+└── docs/                      # Documentation
+```
+
+## Contributing
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+
+## Publication
+[![DOI](https://sandbox.zenodo.org/badge/DOI/10.5072/zenodo.288798.svg)](https://handle.stage.datacite.org/10.5072/zenodo.288798)
+[![PyPI - Version](https://img.shields.io/badge/Test%20PyPI-v0.1.1-blue)](https://test.pypi.org/project/cancer-clinical-data-analysis/0.1.1/)
+
+## Package on Test PyPI
+You can install the package from the Test PyPI repository for testing purposes:
+
+```bash
+pip install --index-url https://test.pypi.org/simple/ cancer-clinical-data-analysis==0.1.1
+```
+
+## Citation
+
+You can cite the project using the following BibTeX:
+
+```bibtex 
+@misc{cancer_clinical_data_analysis, author = {Zoha Rashid and Zaeem Asghar}, title = {Cancer Clinical Data Analysis}, month = jul, year = 2025, doi = {10.5072/zenodo.288798}, url = {https://handle.stage.datacite.org/10.5072/zenodo.288798} } 
+```
+
+
+## License
+
+This project is licensed under the [MIT License](LICENSE.md). You are free to use, modify, and distribute the code under the terms of the license.
+
+> **Note:** While this code interacts with data from [cBioPortal](https://www.cbioportal.org/) and TCGA (e.g., LUAD cohort), the data itself is not redistributed with this repository.  
+> Users must adhere to cBioPortal and TCGA's respective [data use policies](https://www.cbioportal.org/terms) when accessing or using any clinical datasets.
+
+**Data Use Disclaimer**  
+This project fetches clinical data from public repositories like cBioPortal and TCGA. The data is used for educational and non-commercial research purposes only.  
+Please verify your own institutional and ethical guidelines before using the data.
+
+## Authors
+
+- **Zaeem Asghar** - zaeem.asghar@mailbox.tu-dresden.de
+- **Zoha Rashid** - zoha.rashid@mailbox.tu-dresden.de
+
+## Support
+
+If you encounter any issues or have questions, please:
+
+1. Check the command help: `python main.py <command> --help`
+2. Run with verbose output: `python main.py -v <command>`
+3. Review the generated log files in your output directory

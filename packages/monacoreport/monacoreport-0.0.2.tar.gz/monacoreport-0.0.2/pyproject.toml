@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "monacoreport"
+version = "0.0.2"
+authors = [
+    { name = "Oleksandr Bohatyi", email = "alexbogplay@gmail.com" },
+]
+description = "Race report package"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: OS Independent",
+]
+license = "MIT"
+license-files = ["LICENSE"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["monacoreport"]
+
+[project.scripts]
+monacoreport = "monacoreport.report:race_report_cli"
+
+[tool.hatch.build]
+include = [
+    "src",
+    "README.md",
+    "LICENSE"
+]

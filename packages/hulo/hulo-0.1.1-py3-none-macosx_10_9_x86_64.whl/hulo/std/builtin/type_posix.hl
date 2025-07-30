@@ -1,0 +1,9 @@
+// @hulo-build posix
+
+class float {
+    operator +(other: float) -> float {
+        return {
+            $(awk 'BEGIN { printf \"%.2f\", {{&this}} - {{&other}} }')
+        } as float
+    }
+}

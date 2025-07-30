@@ -1,0 +1,93 @@
+/// Replaces all occurrences of a pattern in the content with the provided replace text.
+pub fn replace(source: str, search: str, replace: str) -> str
+
+/// Replaces the first occurrence of a pattern in the content with the provided replace text.
+pub fn replace_one(source: str, search: str, replace: str)-> str
+
+/// Replaces all occurrences of a regex pattern in the content with the provided replace text.
+///
+/// Function uses `sed`
+pub fn replace_regex(source: str, search: str, replace: str, extended: bool = false) -> str
+
+/// Splits the input `text` into an array of substrings using the specified `delimiter`.
+pub fn split(text: str, delimiter: str) -> str[]
+
+/// Splits a `text` into an array of substrings based on newline characters.
+pub fn split_lines(text: str) -> str[]
+
+/// Splits a `text` into an array of substrings based on space character.
+pub fn split_words(text: str) -> str[]
+
+/// Merges text using the delimiter specified.
+pub fn join(list: str[], delimiter: str) -> str
+
+/// Trims the spaces at top of the text using `sed`.
+pub fn trim_left(text: str) -> str
+
+/// Trims the spaces at end of the text using `sed`.
+pub fn trim_right(text: str): str
+
+/// Trims the spaces from the text input.
+pub fn trim(text: str) -> str
+
+/// Makes the text input lowercase using `tr`.
+pub fn lowercase(text: str) -> str
+
+/// Makes the text input uppercase using `tr`.
+pub fn uppercase(text: str) -> str
+
+/// Attempts to parse a given text into a number, returning the parsed number or zero if parsing fails.
+pub fn parse_number(text: str) -> num?
+
+/// Splits a text into an array of individual characters.
+pub fn split_chars(text: str) -> str[]
+
+/// Checks if some text contains a value.
+pub fn text_contains(text: str, phrase: str) -> bool
+
+/// Checks if an array value is in the text.
+pub fn text_contains_any(text: str, terms: str[]) -> bool
+
+/// Checks if all the arrays values are in the string
+pub fn text_contains_all(text: str, terms: str[]) -> bool
+
+/// Match all occurences of a regex pattern.
+///
+/// Function uses `sed`
+pub fn match_regex(source: str, search: str, extended: bool = false) -> bool
+
+/// Checks if an array value (with regular expression) is in the text.
+pub fn match_regex_any(text: str, terms: str[]) -> bool
+
+/// Reverses text using `rev`.
+pub fn reversed(text: str) -> str
+
+/// Checks if text starts with a value.
+pub fn starts_with(text: str, prefix: str) -> bool
+
+/// Checks if text ends with a value.
+pub fn ends_with(text: str, suffix: str) -> bool
+
+/// Returns a substring from `text` starting at the given `index` (0-based).
+///
+/// If `index` is negative, the substring starts from the end of `text` based on the absolute value of `index`.
+/// If `length` is provided, the substring will include `length` characters; otherwise, it slices to the end of `text`.
+/// If `length` is negative, an empty string is returned.
+pub fn slice(text: str, index: num, length: num = 0) -> str
+
+/// Returns the character from `text` at the specified `index` (0-based).
+///
+/// If `index` is negative, the substring starts from the end of `text` based on the absolute value of `index`.
+pub fn char_at(text: str, index: num) -> str
+
+/// Capitalize the first letter of the given `text`.
+pub fn capitalized(text: str) -> str
+
+/// Pads `text` with the specified `pad` character on left until it reaches the desired `length`.
+pub fn lpad(text: str, pad: str, length: num) -> str
+
+/// Pads `text` with the specified `pad` character on the right until it reaches the desired `length`.
+pub fn rpad(text: str, pad: str, length: num) -> str
+
+/// Pads `text` with zeros on the left until it reaches the desired `length`.
+pub fn zfill(text: str, length: num) -> str

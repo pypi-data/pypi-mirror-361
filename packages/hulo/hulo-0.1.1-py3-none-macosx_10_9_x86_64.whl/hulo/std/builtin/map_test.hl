@@ -1,0 +1,18 @@
+fn test_map() {
+    let capitals: map<str, str> = {
+        "China": "Beijing",
+        "Japan": "Tokyo"
+    }
+
+    assert_eq(#capitals, 2)
+    assert_eq($capitals.keys(), ["China", "Japan"])
+    
+    $capitals["USA"] = "Washington"
+    assert("USA" in $capitals)
+
+    delete $capitals["Japan"]
+    assert($capitals["Japan"] == null)
+
+    $capitals.clear()
+    assert($capitals.is_empty())
+}

@@ -1,0 +1,16 @@
+fn test_triple() {
+    let person: [str, num] = ["Alice", 30]
+
+    let point: (x: num, y: num) = (10, 20)
+
+    assert_eq($person.0, "Alice")
+    assert_eq($point.y, 20)
+
+    let (name: str, age: num) = $person
+    assert($name == "Alice" && $age == 30)
+
+    $person.0 = "Bob"
+    $person.with(1, 20)
+
+    assert($person.0 == "Bob" && $person.1 == 20)
+}

@@ -1,0 +1,280 @@
+import * from "constant"
+
+// Range: 0 to 255
+type Byte = num
+
+// Range: True or False
+type Boolean = bool
+
+// Range: -32,768 to 32,767
+type Integer = num
+
+// Range: -2,147,483,648 to 2,147,483,647.
+type Long = num
+
+// Range: -3.402823E38 to -1.401298E-45 for negative values; 1.401298E-45 to 3.402823E38 for positive values.
+type Single = num
+
+// Range: -1.79769313486232E308 to -4.94065645841247E-324 for negative values; 4.94065645841247E-324 to 1.79769313486232E308 for positive values.
+type Double = num
+
+// Range: -922,337,203,685,477.5808 to 922,337,203,685,477.5807.
+type Currency = num
+
+// Range: January 1, 100 to December 31, 9999, inclusive.
+type Date = any
+
+// Any Object reference
+type Object = object
+
+// Variable-length strings may range in length from 0 to approximately 2 billion characters.
+type String = str
+
+type Function = (...args: any[]) -> any
+
+type Sub = Function
+
+/**
+ * Returns a Variant containing an array.
+ *
+ * The required arglist argument is a comma-delimited list of values that are assigned to the elements of an array contained with the Variant.
+ * If no arguments are specified, an array of zero length is created.
+ *
+ * Example:
+ * ```hulo
+ * let arr = Array(10, 20, 30)
+ * echo $arr[2] // 30
+ * echo Array() // []
+ * ```
+ */
+declare fn Array(...args: any[]) -> any[]
+
+/**
+ * Returns an expression that has been converted to a Variant of subtype Boolean.
+ *
+ * If expression is zero, False is returned; otherwise, True is returned.
+ * If expression can't be interpreted as a numeric value, a run-time error occurs.
+ * The following example uses the CBool function to convert an expression to a Boolean.
+ * If the expression evaluates to a nonzero value, CBool returns True; otherwise, it returns False.
+ *
+ * ```hulo
+ * $a := 5
+ * $b := 5
+ * echo CBool($a == $b) // true
+ * $a = 0
+ * echo CBool($a) // false
+ * ```
+ */
+declare fn CBool(
+    // The expression argument is any valid expression.
+    expr: any) -> Boolean
+
+/**
+ * Returns an expression that has been converted to a Variant of subtype Byte.
+ *
+ * In general, you can document your code using the subtype conversion functions to show that the result of some operation should be expressed as a particular data type rather than the default data type. For example, use CByte to force byte arithmetic in cases where currency, single-precision, double-precision, or integer arithmetic normally would occur.
+ * Use the CByte function to provide internationally aware conversions from any other data type to a Byte subtype.
+ * For example, different decimal separators are properly recognized depending on the locale setting of your system, as are different thousand separators.
+ * If expression lies outside the acceptable range for the Byte subtype, an error occurs. The following example uses the CByte function to convert an expression to a byte:
+ * ```hulo
+ * echo CByte(125.5678) // 126
+ * ```
+ */
+declare fn CByte(expr: any) -> Byte
+
+/**
+ * Returns an expression that has been converted to a Variant of subtype Currency.
+ *
+ * In general, you can document your code using the subtype conversion functions to show that the result of some operation should be expressed as a particular data type rather than the default data type.
+ * For example, use CCur to force currency arithmetic in cases where integer arithmetic normally would occur.
+ * You should use the CCur function to provide internationally aware conversions from any other data type to a Currency subtype.
+ * For example, different decimal separators and thousands separators are properly recognized depending on the locale setting of your system.
+ * The following example uses the CCur function to convert an expression to a Currency:
+ * ```hulo
+ * $n := 543.214588
+ * echo CCur($n * 2) // 1086.4292
+ * ```
+ */
+declare fn CCur(expr: any) -> Currency
+
+/**
+ * Returns an expression that has been converted to a Variant of subtype Date.
+ *
+ * Use the IsDate function to determine if date can be converted to a date or time.
+ * CDate recognizes date literals and time literals as well as some numbers that fall within the range of acceptable dates.
+ * When converting a number to a date, the whole number portion is converted to a date.
+ * Any fractional part of the number is converted to a time of day, starting at midnight.
+ * CDate recognizes date formats according to the locale setting of your system.
+ * The correct order of day, month, and year may not be determined if it is provided in a format other than one of the recognized date settings.
+ * In addition, a long date format is not recognized if it also contains the day-of-the-week string.
+ * The following example uses the CDate function to convert a string to a date.
+ * In general, hard coding dates and times as strings (as shown in this example) is not recommended.
+ * Use date and time literals (such as #10/19/1962#, #4:45:23 PM#) instead.
+ * Example:
+ * ```hulo
+ * let dt = "October 19, 1962" // Define date
+ * assert(typeof $dt == Date)
+ * let tm = "4:35:47 PM" // Define time
+ * assert(typeof $tm == Date)
+ * ```
+ */
+declare fn CDate(v: String) -> Date
+
+// Returns an expression that has been converted to a Variant of subtype Double.
+declare fn CDbl(v: num) -> Double
+
+// Returns the character associated with the specified ANSI character code.
+declare fn Chr(v: num) -> Byte
+
+// Returns an expression that has been converted to a Variant of subtype Integer.
+declare fn CInt(v: num) -> Integer
+
+// Returns an expression that has been converted to a Variant of subtype Long.
+declare fn CLng(v: num) -> Long
+
+// Returns an expression that has been converted to a Variant of subtype String.
+/**
+ *  Value           CStr returns
+ *  Boolean         A String containing True or False.
+ *  Date            A String containing a date in the short-date format of your system.
+ *  Null            A run-time error.
+ *  Empty           A zero-length String ("").
+ *  Error           A String containing the word Error followed by the error number.
+ *  Other numeric   A String containing the number.
+ */
+declare fn CStr(v: any) -> String
+
+// Creates and returns a reference to an Automation object.
+declare fn CreateObject(
+    // The name of the application providing the object.
+    servername: String,
+    // The type or class of the object to create.
+    typename: String,
+    // The name of the network server where the object is to be created. This feature is available in version 5.1 or later.
+    location?: String
+) -> Object
+
+// Returns the integer portion of a number.
+declare fn Int(v: num) -> num
+
+// Returns the integer portion of a number.
+declare fn Fix(v: num) -> num
+
+// Returns a reference to an Automation object from a file.
+declare fn GetObject(
+    // Full path and name of the file containing the object to retrieve. If pathname is omitted, class is required.
+    pathname?: String,
+    // Class of the object
+    class_?: String) -> Object
+
+// Returns a reference to a procedure that can be bound to an event.
+declare fn GetRef(procname: str) -> Function | Sub
+
+/**
+ * Returns a string representing the hexadecimal value of a number.
+ * If number is not already a whole number, it is rounded to the nearest whole number before being evaluated.
+ *
+ * If number is        Hex returns
+ * Null                Null
+ * Empty               0
+ * Any other number    Up to eight hexadecimal characters.
+ *
+ * Examples:
+ * ```hulo
+ * assert_eq(Hex(5), 0x5)
+ * assert_eq(Hex(10), 0xA)
+ * assert_eq(Hex(459), 0x1CB)
+ * ```
+ */
+declare fn Hex(v: num) -> num
+
+// Returns a Boolean value indicating whether a variable is an array.
+declare fn IsArray(v: any) -> Boolean
+
+// Returns a Boolean value indicating whether an expression can be converted to a date.
+declare fn IsDate(v: any) -> Boolean
+
+// Returns a Boolean value indicating whether a variable has been initialized.
+declare fn IsEmpty(v: any) -> Boolean
+
+// Returns a Boolean value that indicates whether an expression contains no valid data (Null).
+declare fn IsNull(v: any) -> Boolean
+
+// Returns a Boolean value indicating whether an expression can be evaluated as a number.
+declare fn IsNumberic(v: any) -> Boolean
+
+// Returns a Boolean value indicating whether an expression references a valid Automation object.
+declare fn IsObject(v: any) -> Boolean
+
+// Returns a string representing the octal value of a number.
+declare fn Oct(v: num) -> str
+
+// Returns a whole number representing an RGB color value.
+declare fn RGB(red: num, green: num, blue: num) -> num
+
+// Returns a string that provides Variant subtype information about a variable.
+declare fn TypeName(v: any) -> str
+
+// Returns a value indicating the subtype of a variable.
+declare fn VarType(v: any) -> num
+
+/// VarType Constants
+declare {
+    // Uninitialized (default)
+    const vbEmpty = 0;
+
+    // Contains no valid data
+    const vbNull = 1;
+
+    // Integer subtype
+    const vbInteger = 2;
+
+    // Long subtype
+    const vbLong = 3;
+
+    // Single subtype (single-precision float)
+    const vbSingle = 4;
+
+    // Double subtype (double-precision float)
+    const vbDouble = 5;
+
+    // Currency subtype
+    const vbCurrency = 6;
+
+    // Date subtype
+    const vbDate = 7;
+
+    // String subtype
+    const vbString = 8;
+
+    // Object
+    const vbObject = 9;
+
+    // Error subtype
+    const vbError = 10;
+
+    // Boolean subtype
+    const vbBoolean = 11;
+
+    // Variant (used only for arrays of variants)
+    const vbVariant = 12;
+
+    // Data access object
+    const vbDataObject = 13;
+
+    // Decimal subtype
+    const vbDecimal = 14;
+
+    // Byte subtype
+    const vbByte = 17;
+
+    // Array
+    const vbArray = 8192;
+}
+
+// TODO
+// extension type Boolean {
+//     operator as() {
+//         ${CBool({{&this}})}
+//     }
+// }

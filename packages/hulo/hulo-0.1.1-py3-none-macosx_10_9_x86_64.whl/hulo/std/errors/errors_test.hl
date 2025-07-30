@@ -1,0 +1,54 @@
+import * from "errors"
+
+fn expect_error(func: () -> void, expected_error: Error) {
+    let caught = false
+    try {
+        func()
+    } catch (e: Error) {
+        assert_eq($e.code, $expected_error.code)
+        $caught = true
+    }
+    assert(!$caught, "Expected error ${expected_error.msg} was not thrown")
+}
+
+fn test_division_by_zero() {
+    expect_error(
+        () => { let _ = 1 / 0 }, 
+        Error::DivisionByZero
+    )
+}
+
+fn test_arithmetic_overflow() {
+    expect_error(
+        () => { let _ = num::MAX + 1 },
+        Error::ArithmeticOverflow
+    )
+}
+
+fn test_index_out_of_bounds() {
+    let arr = [1, 2, 3]
+    expect_error(
+        () => { let _ = $arr[4] },
+        Error::IndexOutOfBounds
+    )
+}
+
+fn test_negative_index() {
+    let vec = Vector::from([1, 2, 3])
+    expect_error(
+        () => { let _ = $vec[-1] },
+        Error::IndexOutOfBounds
+    )
+}
+
+class MyClass {
+    fn method() => echo "this is a method"
+}
+
+fn test_uninitialized_object() {
+    let obj: MyClass
+    expect_error(
+        () => { $obj.method() },
+        Error::UninitializedObject
+    )
+}

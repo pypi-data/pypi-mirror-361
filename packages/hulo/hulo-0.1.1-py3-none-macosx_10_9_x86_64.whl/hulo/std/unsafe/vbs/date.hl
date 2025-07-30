@@ -1,0 +1,161 @@
+import * from "type"
+
+type DateInterval = 'yyyy' // Year
+    | 'q' // Quarter
+    | 'm' // Month
+    | 'y' // Day of year
+    | 'd' // Day
+    | 'w' // Weekday
+    | 'ww' // Week of year
+    | 'h' // Hour
+    | 'n' // Minute
+    | 's' //Second
+    ;
+
+type FirstDayOfWeek = Byte
+
+type FirstWeekOfYear = Byte
+
+/// Date Constants
+declare {
+    // Use National Language Support (NLS) API setting.
+    const vbUseSystem: FirstDayOfWeek = 0
+
+    // Sunday (default)
+    const vbSunday: FirstDayOfWeek = 1
+
+    // Monday
+    const vbMonday: FirstDayOfWeek = 2
+
+    // Tuesday
+    const vbTuesday: FirstDayOfWeek = 3
+
+    // Wednesday
+    const vbWednesday: FirstDayOfWeek = 4
+
+    // Thursday
+    const vbThursday: FirstDayOfWeek = 5
+
+    // Friday
+    const vbFriday: FirstDayOfWeek = 6
+
+    // Saturday
+    const vbSaturday: FirstDayOfWeek = 7
+}
+
+/// Time Constants
+declare {
+    // Use National Language Support (NLS) API setting.
+    const vbUseSystem: FirstWeekOfYear = 0
+
+    // Start with the week in which January 1 occurs (default).
+    const vbFirstJan1: FirstWeekOfYear = 1
+
+    // Start with the week that has at least four days in the new year.
+    const vbFirstFourDays: FirstWeekOfYear = 2
+
+    // Start with the first full week of the new year.
+    const vbFirstFullWeek: FirstWeekOfYear = 3
+}
+
+type DateFormat = Byte
+
+/// Date Format Constants
+declare {
+    // Display a date and/or time. For real numbers, display a date and time.
+    // If there is no fractional part, display only a date.
+    // If there is no integer part, display time only.
+    // Date and time display is determined by your system settings.
+    const vbGeneralDate: DateFormat = 0
+
+    // Display a date using the long date format specified in your computer's regional settings.
+    const vbLongDate: DateFormat = 1
+
+    // Display a date using the short date format specified in your computer's regional settings.
+    const vbShortDate: DateFormat = 2
+
+    // Display a time using the time format specified in your computer's regional settings.
+    const vbLongTime: DateFormat = 3
+
+    // Display a time using the 24-hour format (hh:mm).
+    const vbShortTime: DateFormat = 4
+}
+
+// Returns the current system date.
+declare fn Date() -> Date
+
+// Returns a date to which a specified time interval has been added.
+declare fn DateAdd(interval: DateInterval, number: num, date: Date) -> Date
+
+// Returns the number of intervals between two dates.
+declare fn DateDiff(interval: DateInterval, date1: Date, date2: Date, firstdayofweek?: FirstDayOfWeek, firstweekofyear?: FirstWeekOfYear) -> Date
+
+// Returns the specified part of a given date.
+declare fn DatePart(interval: DateInterval, date: Date, firstdayofweek?: FirstDayOfWeek, firstweekofyear?: FirstWeekOfYear) -> Date
+
+// Returns a Variant of subtype Date for a specified year, month, and day.
+declare fn DateSerial(year: num, month: num, day: num) -> Date
+
+// Returns a Variant of subtype Date.
+// Examples:
+// ```hulo
+// let d = DateValue("September 11, 1963")
+// assert(d is Date)
+// ```
+declare fn DateValue(v: String) -> Date
+
+// Returns a whole number between 1 and 31, inclusive, representing the day of the month.
+// Examples:
+// ```hulo
+// let d = Day("October 19, 1962")
+// assert_eq(d, 19)
+// ```
+declare fn Day(v: Date) -> Integer
+
+/**
+ * Returns a whole number between 0 and 23, inclusive, representing the hour of the day.
+ * If the input is Null, the function returns Null.
+ *
+ * Examples:
+ * ```hulo
+ * let t = Now()
+ * let h = Hour(t)
+ * assert(h >= 0 && h <= 23)
+ * ```
+ */
+declare fn Hour(time: Date) -> Integer
+
+// Returns a whole number between 0 and 59, inclusive, representing the minute of the hour.
+declare fn Minute(date: Date) -> Integer
+
+// Returns a whole number between 1 and 12, inclusive, representing the month of the year.
+declare fn Month(date: Date) -> Integer
+
+// Returns a string indicating the specified month.
+declare fn MonthName(month: num, abbreviate?: bool)
+
+// Returns the current date and time according to the setting of your computer's system date and time.
+declare fn Now() -> Date
+
+// Returns a whole number between 0 and 59, inclusive, representing the second of the minute.
+declare fn Second(date: Date) -> num
+
+// Returns a Variant of subtype Date indicating the current system time.
+declare fn Time() -> Date
+
+// Returns the number of seconds that have elapsed since 12:00 AM (midnight).
+declare fn Timer() -> num
+
+// Returns a Variant of subtype Date containing the time for a specific hour, minute, and second.
+declare fn TimeSerial(hour: num, minute: num, second: num) -> Date
+
+// Returns a Variant of subtype Date containing the time.
+declare fn TimeValue(time: Date) -> Date
+
+// Returns a whole number representing the day of the week.
+declare fn Weekday(date: Date, firstdayofweek?: FirstDayOfWeek) -> num
+
+declare fn WeekdayName(weekday: num, abbreviate: bool?, firstdayofweek: FirstDayOfWeek) -> str
+
+// Returns a whole number representing the year.
+declare fn Year(date: Date) -> num

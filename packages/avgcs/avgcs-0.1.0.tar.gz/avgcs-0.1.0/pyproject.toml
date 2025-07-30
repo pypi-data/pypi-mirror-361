@@ -1,0 +1,124 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "avgcs"
+version = "0.1.0"
+description = "Audio-Visual Game Control System - Real-time motion tracking and game control"
+readme = "README.md"
+license = "MIT"
+authors = [
+    {name = "AVGCS Team", email = "team@avgcs.dev"}
+]
+maintainers = [
+    {name = "AVGCS Team", email = "team@avgcs.dev"}
+]
+keywords = ["motion-tracking", "game-control", "mediapipe", "opencv", "computer-vision"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Games/Entertainment",
+    "Topic :: Multimedia :: Video",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "opencv-python>=4.5.0",
+    "numpy>=1.20.0",
+    "mediapipe>=0.8.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov>=2.0",
+    "black>=22.0",
+    "flake8>=4.0",
+    "mypy>=0.900",
+]
+demo = [
+    "pygame>=2.0.0",
+]
+docs = [
+    "sphinx>=4.0",
+    "sphinx-rtd-theme>=1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/avgcs/avgcs"
+Documentation = "https://avgcs.readthedocs.io/"
+Repository = "https://github.com/avgcs/avgcs.git"
+"Bug Tracker" = "https://github.com/avgcs/avgcs/issues"
+
+[project.scripts]
+avgcs-demo = "avgcs.examples.basic_demo:main"
+avgcs-pygame = "avgcs.examples.pygame_demo:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["avgcs*"]
+
+[tool.setuptools.package-data]
+avgcs = ["configs/*.json"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--cov=avgcs",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+]
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = [
+    "cv2.*",
+    "mediapipe.*",
+    "pygame.*",
+]
+ignore_missing_imports = true 

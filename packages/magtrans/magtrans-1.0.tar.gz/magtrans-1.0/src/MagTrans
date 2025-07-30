@@ -1,0 +1,209 @@
+#!/usr/bin/env python
+"""
+MATE – Magnetic Transition Estimator
+
+MATE is a unified framework that:
+  • Enumerates collinear magnetic configurations,
+  • Performs ab initio relaxations, static and SOC calculations,
+  • Fits a Heisenberg + anisotropy Hamiltonian, and
+  • Runs Monte Carlo simulations to determine magnetic transition temperatures 
+    (Curie and Néel) in 1D, 2D, and 3D systems.
+
+Author:
+    Chinedu Ekuma
+    Department of Physics, Lehigh University, Bethlehem, PA, USA
+    Emails: cekuma1@gmail.com, che218@lehigh.edu
+
+Copyright (c) 2025, Lehigh University, Department of Physics.  
+All rights reserved.
+
+License: [Insert License Here: e.g., MIT, BSD, GPL, etc.]
+
+Version: 1.0
+
+Description:
+    This code provides a complete workflow for magnetic transition analysis by 
+    combining enumeration of magnetic configurations, ab initio relaxations, 
+    Hamiltonian fitting, and Monte Carlo simulation in systems of varying dimensionality.
+
+Usage:
+   mate [--only-mc] [--jij]
+
+Options:
+   --only-mc, --jij    Skip structure generation and DFT runs.  Just do the Monte Carlo part or generate exchange parameters for use in Vampire.
+"""
+
+import argparse
+import os
+import sys
+import numpy as np
+from time import time
+import logging
+
+#
+import warnings
+warnings.filterwarnings("ignore", category=EncodingWarning)
+from pymatgen.io.vasp.sets import BadInputSetWarning
+warnings.filterwarnings("ignore", category=BadInputSetWarning)
+logging.getLogger('custodian').setLevel(logging.CRITICAL)
+
+
+
+from run_CurieD import (root_path, start_time_global, potential_symlink, rep_DFT)
+import run_CurieD
+from exchange_generator import ExchangeFileGenerator
+###############################################################################
+#  main()
+###############################################################################
+import argparse
+
+def main():
+    """
+    Parses arguments and runs either the full workflow or only the Monte Carlo simulation.
+    """
+    
+    run_CurieD.parse_input()  # Input files
+
+
+    log_path = os.path.join(root_path, run_CurieD.log_file)
+    if os.path.exists(log_path):
+        os.remove(log_path)
+        
+    #run_CurieD.log(msg)
+    #msg = (' Curie2D code: Precision Spin Modeling and Curie Temperature Analysis ***')
+    #run_CurieD.log(msg)
+    #msg = '*'*150
+    #run_CurieD.log(msg)
+    #msg = (' Curie2D code: Precision Spin Modeling and Curie Temperature Analysis ***')
+    #run_CurieD.log(msg)
+    
+
+   
+    msg = ("\n"
+        "========================================================================================\n"
+        "    Curie2D Code: Precision Spin Modeling and Curie Temperature Analysis\n"
+        "-----------------------------------------------------------------------------------------\n"
+        "    Author    : [Chinedu Ekuma]\n"
+        "    Contact   : [Department of Physics, Lehigh University, Bethlehem PA]\n"
+        "    Version   : v1.0.0\n"
+        "    License   : MIT License\n"
+        "    Purpose   :\n"
+        "      - High-precision spin simulations for magnetic systems\n"
+        "      - Automated estimation of Curie/Neel temperature using first-principles data\n"
+        "-----------------------------------------------------------------------------------------\n"
+        "    For more information, please refer to the documentation or contact\n"
+        "    the author. All contributions and feedback are welcome!\n"
+        "==========================================================================\n"
+    )
+        
+    
+    # Log key variables for debugging.
+    run_CurieD.log(msg)
+    run_CurieD.log("Parsed structure_file: " + str(run_CurieD.struct_file))
+    run_CurieD.log("Parsed Supercell: " + str(run_CurieD.rep_DFT))
+    
+    msg = '*'*120
+    run_CurieD.log(msg)
+    run_CurieD.log(f"Input parameters used in calculations:\n {run_CurieD.parse_input()}")
+    #run_CurieD.log(run_CurieD.parse_input())
+    run_CurieD.log(msg)
+    
+    
+    parser = argparse.ArgumentParser(
+        usage="mate [-h] [--only-mc] [--jij] [--exc_type {isotropic,tensorial}]",
+        description="Curie2D: Run full workflow or only Monte Carlo simulation"
+    )
+    parser.add_argument(
+        "--only-mc",
+        action="store_true",
+        help="Skip structure generation and DFT calculations; run only Monte Carlo"
+    )
+    
+    parser.add_argument(
+        "--jij", "--exchange", 
+        action="store_true",
+        help="Run only the exchange (Jij) generation as a post-processing step."
+    )
+    
+    # New argument contracted to --exc_type.
+    parser.add_argument(
+        "--exc_type",
+        choices=["isotropic", "tensorial"],
+        help="Optional: Specify the exchange type (isotropic or tensorial) to override the default."
+    )
+    
+    args = parser.parse_args()
+    
+    # Enforce that --exc_type is used only with --jij.
+    if args.exc_type and not args.jij:
+        parser.error("--exc_type must be used together with --jij")
+    
+    # If an exchange type is provided, override the default.
+    if args.exc_type:
+        run_CurieD.exchange_type = args.exc_type
+    
+    if args.jij:
+        from pymatgen.core import Structure
+        structure = Structure.from_file(run_CurieD.struct_file)
+        materialname = structure.composition.reduced_formula
+        run_CurieD.log("Running only exchange generation (Jij file) post-processing.")
+        # Create an instance of the generator using rep_DFT from the input and reading exchange parameters from input_MC.
+        generator = ExchangeFileGenerator(
+            input_mc_file="input_MC",
+            rep_DFT=run_CurieD.rep_DFT,
+            structure_file=run_CurieD.struct_file, 
+            exch_type=run_CurieD.exchange_type,
+            outfile=f"{materialname}_Jij.txt"
+        )
+        generator.run()
+        sys.exit(0)
+        
+        
+
+
+    if args.only_mc:
+        run_CurieD.log("Skipping structure generation and DFT calculations. Running only Monte Carlo simulation.")
+
+        # Instead of checking globals() locally, explicitly set the variables
+        if not hasattr(run_CurieD, "struct_mag_stable") or not hasattr(run_CurieD, "ds_stable"):
+            try:
+                from pymatgen.core import Structure
+                run_CurieD.log("struct_mag_stable or ds_stable not defined. Attempting to generate default structure from structure_file.")
+                default_struct = Structure.from_file(run_CurieD.struct_file)
+                # Assign to run_CurieD module globals:
+                run_CurieD.struct_mag_stable = default_struct.copy()
+                run_CurieD.struct_mag_stable.make_supercell(run_CurieD.rep_DFT)
+                run_CurieD.ds_stable = run_CurieD.dist_neighbors(run_CurieD.struct_mag_stable)
+                run_CurieD.log("Default struct_mag_stable and ds_stable generated successfully from " + run_CurieD.struct_file)
+            except Exception as e:
+                run_CurieD.log("Error generating default structure and neighbor mapping: " + str(e))
+                sys.exit(1)
+                
+        run_CurieD.run_monte_carlo()
+     
+    else:
+    #    log_path = os.path.join(root_path, run_CurieD.log_file)   
+    #    if os.path.exists(log_path):
+    #       os.remove(log_path)
+
+        
+        
+        run_CurieD.run_full_workflow()       
+
+
+        end_time_global2 = time()
+        time_global2 = np.around(end_time_global2 - start_time_global, 2)
+        msg = 'Whole end-to-end calculation took '+str(time_global2)+' s'
+        run_CurieD.log(msg)
+        
+        run_CurieD.remove_potential_symlink(potential_symlink)
+
+###############################################################################
+# Program start
+###############################################################################
+if __name__=="__main__":
+    if "--init" in sys.argv or "--0" in sys.argv:
+        run_CurieD.generate_default_input()
+        sys.exit(0)
+    main()
+

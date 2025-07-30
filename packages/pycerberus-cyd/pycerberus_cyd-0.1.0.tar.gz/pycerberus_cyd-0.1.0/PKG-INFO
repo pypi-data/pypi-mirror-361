@@ -1,0 +1,267 @@
+Metadata-Version: 2.4
+Name: pycerberus-cyd
+Version: 0.1.0
+Summary: Python client and CLI for the Cerberus server
+Author-email: Cyber-Detect <team@cyber-detect.com>
+License-Expression: MIT
+License-File: LICENSE.txt
+Requires-Python: >=3.8
+Requires-Dist: aiohttp==3.10.10
+Requires-Dist: pydantic==2.9.2
+Requires-Dist: requests==2.32
+Requires-Dist: typer[all]
+Description-Content-Type: text/markdown
+
+# PyCerberus
+
+**PyCerberus** is a Python client library and command-line interface (CLI) for interacting with [Cerberus](https://gitlab-cyd.lhs.loria.fr/gorille/cerberus) server — the Cyber-Detect engine manager used by Gorille Server and other Cyber-Detect internal tools.
+
+- 🧰 The `cerberus` CLI tool for quick Cerberus queries directly from your shell
+- 📦 The `pycerberus` Python library to easily interact with Cerberus with sync and async methods directly from your other Python projects
+
+---
+
+
+## 🚀 Quick Start
+
+### The `cerberus` CLI tool
+
+```bash
+cerberus --help
+cerberus magic myfile.bin
+```
+
+### The `pycerberus` Python library
+
+```python
+from pycerberus import Cerberus
+
+cerberus = Cerberus(host="localhost", port=55222)
+response = cerberus.magic("myfile.bin")
+print(response)
+```
+
+
+## 🧰 The `cerberus` command line tool
+
+The CLI tool is powered by Typer, so it comes with help and autocompletion.
+
+```bash
+# Clone the repo
+git clone https://gitlab-cyd.lhs.loria.fr/gorille/pycerberus
+cd pycerberus
+
+# Install PyCerberus in editable mode from this local directory.
+# This lets you make changes and test them immediately without reinstalling.
+pipx install -e .
+
+# Now you can use the CLI command from anywhere
+cerberus --help
+```
+
+## 📦 The `pycerberus` Python library
+
+### Why using this Python library
+
+PyCerberus allows you to easily interact with Cerberus from your other Python projects.
+
+Library key features:
+
+* Sync and async methods thanks to aiohttp module:
+    * Each exposed method of Cerberus are exposed with both a sync and an async function. It means that if your Python project is smart enough to run async code then you can use the async functions of the library to take advantage of this feature.
+* Data validation thanks to Pydantic module:
+    * Each returned JSON of Cerberus is automatically parsed by Pydantic to "match" a specific Pydantic model. It means that if the format of a Cerberus response change, you need to adjust the model to match with the response structure. It's a data validation feature, it's like a blueprint.
+* Cerberus responses as Python objects, Python dictionaries or JSON strings:
+    * Thanks to Pydantic, you can use Cerberus responses in the format that fit your needs: a real Python object, a dict or a JSON (see example bellow).
+* Cerberus error handling with Python exception:
+    * The correct way to trigger, detect and handle errors in Python is to use Python Exceptions. With this library, if the JSON response of Cerberus contains an error, a `CerberusError` Python exception will be raised. Thanks to this behaviour, you can call Cerberus methods inside a classic try/catch to detect if Cerberus response is an error (see example bellow).
+
+### How to import the library in your project
+
+If you want to use PyCerberus in your Python project the recommended approach is to add it as a Git submodule. This keeps your codebase clean and allows you to edit PyCerberus independently.
+
+#### 1. Add PyCerberus as a Git submodule
+
+```bash
+git submodule add https://gitlab-cyd.lhs.loria.fr/gorille/pycerberus external/pycerberus
+```
+
+This clones PyCerberus inside your project under `external/pycerberus`.
+
+#### 2. Add the submodule as an editable dependency in your requirements.txt
+
+In your main project’s requirements.txt, add the line:
+
+```txt
+-e external/pycerberus
+```
+
+#### 3. Initialize submodules and install dependencies
+
+After cloning your main project repository, run:
+
+```bash
+# cd to the root of your Python project
+git submodule update --init --recursive
+pip install -r requirements.txt
+```
+
+This installs PyCerberus in editable mode from the local submodule directory.
+
+### 4. Import and use PyCerberus in your code
+
+You can now import Cerberus:
+
+```python
+from pycerberus import Cerberus
+cerberus = Cerberus(host="localhost", port=55222)
+```
+
+### How to use the library inside your project
+
+#### Simple usage
+
+```python
+# Import Cerberus main class from cerberus lib
+from pycerberus import Cerberus
+
+# Create your cerberus object one time with the IP/host and port of your Cerberus server
+cerberus = Cerberus("1.2.3.4", 55222)
+
+# Perform a request (e.g. Magic)
+magic_result = cerberus.magic("foo.exe")
+
+# If your code support async feature, you can use the async version of this method with:
+magic_result = await cerberus.magic_async("foo.exe")
+
+# The returned variable result is not a dict, it's a Pydantic model (a CerberusMagic instance in this specific case).
+# Because it's a Python object, you can access any attribute of this object (e.g. magic format attribute).
+# Also, thanks to the auto completion feature of your IDE you can directly see the exposed attributes of each Cerberus model.
+# See Python files in the "models" folder for more details.
+
+# Check the type of the response:
+print(repr(magic_result))
+# CerberusMagic(time=CerberusTime(handling_request=2, waiting_available_worker=0), raw='PE32+ executable (DLL) (console) x86-64, for MS Windows, 6 sections', arch='x86_64', format='PE', tags=['DLL'], version='544')
+
+# Access a specific attribute:
+print(magic_result.format)
+# PE
+
+# Export the response as a dict:
+print(magic_result.model_dump())
+# {'time': {'handling_request': 2, 'waiting_available_worker': 0}, 'raw': 'PE32+ executable (DLL) (console) x86-64, for MS Windows, 6 sections', 'arch': 'x86_64', 'format': 'PE', 'tags': ['DLL'], 'version': '544'}
+
+# Export the response as a valid JSON string:
+print(magic_result.model_dump_json())
+# {"time":{"handling_request":2,"waiting_available_worker":0},"raw":"PE32+ executable (DLL) (console) x86-64, for MS Windows, 6 sections","arch":"x86_64","format":"PE","tags":["DLL"],"version":"544"}
+
+# For more information about Pydantic models see here:
+# https://docs.pydantic.dev/latest/concepts/models/
+```
+
+#### Using a Cerberus instance from different locations
+
+In a big project you may need to interact with Cerberus from multiple locations but you don't want to create a new `Cerberus` instance each time you want to request a Cerberus analysis.
+For this kind of usage you can use a Cerberus shared session like in the example above.
+
+```python
+# File: main.py
+
+from pycerberus import init_cerberus_session
+
+# Let's say you project entry point is in the main.py file.
+# You can create your Cerberus instance from here
+def main():
+    init_cerberus_session("127.0.0.1", 55222)
+```
+
+
+```python
+# File: module1.py
+
+from pycerberus import get_cerberus_session
+
+# Then, in any other module, you can access your Cerberus instance created previously.
+# Because the instance already exists, you don't need to provide the host and port of Cerberus
+async def my_fun():
+    cerberus = get_cerberus_session()
+    magic_analysis = await cerberus.magic_async("/path/foo.exe")
+    print(magic_analysis.arch)
+
+
+# Of course, you can also use a classic sync function
+def my_fun_sync():
+    cerberus = get_cerberus_session()
+    magic_analysis = cerberus.magic("/path/foo.exe")
+    print(magic_analysis.arch)
+```
+
+
+#### Handling Cerberus errors
+
+If something is wrong on Cerberus side it will returns an `error` field in the returned JSON.
+With the Python library, if Cerberus returns an error, a `CerberusError` exception will be raised and this exception contains special attributes with the details of the Cerberus error.
+See the example below in order to detect and handle Cerberus errors:
+
+```python
+from pycerberus import Cerberus
+
+cerberus = Cerberus("1.2.3.4", 55222)
+
+try:
+    magic_result = cerberus.magic("/wrong/path/foo.exe")
+except CerberusError as e:
+    # If we are here, it means that Cerberus returned a JSON with "error" field
+
+    print(e)
+    # Error code: -1, Error message: unknown, Error details: File '/wrong/path/foo.exe' not found on cerberus server
+
+    # Use e.raw_error to access the original JSON returned by Cerberus
+    print(e.raw_error)
+    # {'error': {'code': -1, 'message': 'unknown', 'details': "File '/wrong/path/foo.exe' not found on cerberus server"}}
+
+    # Or use special attributes if you need to access specific field of the error
+    print(e.error_code)
+    # -1
+
+    print(e.error_message)
+    # unknown
+
+    print(e.error_details)
+    # File '/wrong/path/foo.exe' not found on cerberus server
+```
+
+### Pimp your Pydantic models with useful methods
+
+Thanks to Pydantic model classes, you can add needed methods to models.
+Let's say I always want if a file is a .NET executable. Instead of defining an utility function in my project, I can simply put it in the library so that any user can use it.
+For example, see the `is_dot_net()` method in the `models/magic.py`, you can use it like that:
+
+
+```python
+from pycerberus import Cerberus
+
+cerberus = Cerberus("1.2.3.4", 55222)
+
+magic_result = cerberus.magic("foo.exe")
+
+if magic_result.is_dot_net():
+    print("foo.exe is a .NET file")
+else:
+    print("foo.exe is NOT a .NET file")
+```
+
+
+## 🧱 Project Structure
+
+```graphql
+pycerberus/
+├── pycerberus/
+│   ├── __init__.py
+│   ├── client.py         # Python API wrapper
+│   ├── models            # Pydantic models
+│   └── cli.py            # CLI tool using Typer
+├── pyproject.toml        # Packaging config
+├── README.md
+└── ...
+```

@@ -1,0 +1,50 @@
+# Package Overview
+package_name: titanic_survival_model
+
+# Data Files
+training_data_file: train.csv
+test_data_file: 
+
+# Variables
+# The variable we are attempting to predict (sale price)
+target: survived
+
+pipeline_name: survival_predictor
+pipeline_save_file: survival_predictor_v
+
+# Will cause syntax errors since they begin with numbers
+# variables_to_rename:
+#   1stFlrSF: FirstFlrSF
+#   2ndFlrSF: SecondFlrSF
+#   3SsnPorch: ThreeSsnPortch
+
+features:
+  - age
+  - fare
+  - sex
+  - cabin
+  - embarked
+  - title
+
+
+# set train/test split
+test_size: 0.1
+
+# to set the random seed
+random_state: 0
+
+alpha: 0.0005
+
+
+cabin: cabin  
+
+numerical_vars:
+  - age
+  - fare
+
+categorical_vars:
+  - sex
+  - title
+  - cabin
+  - embarked
+

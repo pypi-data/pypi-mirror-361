@@ -1,0 +1,24 @@
+version: "3"
+env:
+    OUTPUT: publish
+tasks:
+    test:
+        cmds:
+            - pytest --verbosity=2 --capture=no
+    build:
+        cmds:
+            - cd {{.OUTPUT}} && rm "*" --force
+            - python -m build --no-isolation --outdir {{.OUTPUT}}
+    publish:
+        cmds:
+            - python3 -m twine upload {{.OUTPUT}}/* --verbose
+    dev:
+        cmds:
+            - pip install --break-system-packages --no-build-isolation --editable .
+    install:
+        deps:
+            - build
+        cmds:
+            - pwd
+            - find *.whl | tail -1 | xargs -n 1 -- pip install --break-system-packages --force-reinstall
+        dir: "{{.OUTPUT}}"

@@ -1,0 +1,93 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/gtfintechlab/ConfReady/main/confready/public/confready.png" alt="ConfReady's Logo"/>
+</p>
+<p align="center"><b>ConfReady</b>: AI-powered tool to parse your paper and help fill out conference checklists.</p>
+<p align="center">
+<img alt="version" src="https://img.shields.io/badge/version-0.2.0-green">
+<img alt="python" src="https://img.shields.io/badge/python-3.11-blue">
+<img alt="license" src="https://img.shields.io/badge/license-AGPL%20v3-blue">
+</p>
+<div align="center">
+<hr>
+
+[Installation](#installation) | [Usage](#usage) | [API Keys](#api-keys) | [Documentation](https://confready-docs.vercel.app/docs/introduction)
+
+<hr>
+</div>
+
+# Overview
+
+**ConfReady** is an easy-to-use web application powered by Llama and GPT models. It helps authors reflect on their work and assists with filling out conference checklists (e.g., ACL, NeurIPS). The tool is highly flexible, supporting prompt customization and extensibility for additional conferences.
+
+- **AI-powered**: Uses LLMs for checklist assistance and document analysis.
+- **Web interface**: Simple, modern React frontend.
+- **Multiple checklists**: Supports ACL, NeurIPS, and more.
+- **Customizable**: Easily adapt prompts and add new conferences.
+
+See an [overview video](https://youtu.be/ZLtdtoR75GU?si=WWv7Z4L6c4zoDaPf).
+
+# Installation
+
+## Prerequisites
+
+- **Python 3.11+**
+- **NPM** (Node.js):
+  - Install [Node.js & NPM](https://nodejs.org/) if you want to use the web interface.
+
+## Install from PyPI
+
+Install ConfReady using pip:
+
+```bash
+pip install confready
+```
+
+This will install all required Python dependencies. If you want to use the web interface, make sure you have NPM installed as well.
+
+# API Keys
+
+ConfReady requires API keys for LLM inference:
+
+- `TOGETHERAI_API_KEY`
+- `OPENAI_API_KEY`
+
+You will be prompted to enter your API keys if they are missing. The CLI will save them to the appropriate `.env` file for you.
+
+# Usage
+
+To start ConfReady, simply run:
+
+```bash
+confready run
+```
+
+This command will automatically launch both the backend (Flask server) and the frontend (React web interface):
+
+- The backend will run on [http://localhost:8080](http://localhost:8080)
+- The frontend will run on [http://localhost:3000](http://localhost:3000)
+
+**Note:**
+- Make sure that ports 8080 and 3000 are free before running `confready run` to ensure a smooth local deployment.
+- The first time you run the command, you will be prompted to enter your API keys if they are missing. The CLI will save them to the appropriate `.env` file for you.
+
+# Features
+
+- Upload LaTeX documents (`.tex`, `.zip`, `.tar.gz`) for checklist analysis
+- Supports ACL, NeurIPS, and other conference checklists
+- Advanced retrieval and reranking for accurate responses
+- Extensible for new conferences and custom prompts
+
+# Troubleshooting
+
+- Ensure you have both Python 3.11+ and NPM installed and available in your PATH.
+- If you encounter issues with missing dependencies, reinstall with `pip install --upgrade --force-reinstall confready`.
+- Make sure your API keys are correct and present in the `.env` file.
+
+# Documentation & Contribution
+
+- Full documentation: [https://confready-docs.vercel.app/docs/introduction](https://confready-docs.vercel.app/docs/introduction)
+- We welcome contributions! Please read the docs and submit a pull request.
+
+---
+
+© 2024 ConfReady. Licensed under AGPL v3.

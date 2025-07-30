@@ -1,0 +1,67 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "easytranscribe"
+version = "0.1.1"
+description = "Easy speech-to-text transcription from audio files or live microphone input using Whisper."
+authors = [
+    { name = "akhshyganesh" }
+]
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.8"
+keywords = ["speech-to-text", "whisper", "transcription", "audio", "ai"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers", 
+    "Topic :: Multimedia :: Sound/Audio :: Speech",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9", 
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "openai-whisper>=20240930",
+    "sounddevice>=0.4.6",
+    "numpy>=1.21.0,<2.3"
+]
+
+[project.urls]
+Homepage = "https://github.com/akhshyganesh/voice-assistant-transcriber"
+"Bug Reports" = "https://github.com/akhshyganesh/voice-assistant-transcriber/issues"
+"Source Code" = "https://github.com/akhshyganesh/voice-assistant-transcriber"
+
+[project.scripts]
+easytranscribe = "easytranscribe.cli:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov",
+    "black",
+    "flake8",
+    "mypy"
+]
+
+[tool.setuptools]
+packages = ["easytranscribe"]
+
+[tool.setuptools.package-data]
+easytranscribe = ["*.md"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.mypy]
+python_version = "0.1.1"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true

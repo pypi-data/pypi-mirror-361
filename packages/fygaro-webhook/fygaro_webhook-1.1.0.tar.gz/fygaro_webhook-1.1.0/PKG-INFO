@@ -1,0 +1,131 @@
+Metadata-Version: 2.4
+Name: fygaro-webhook
+Version: 1.1.0
+Summary: Webhook signature verification for Fygaro
+Author-email: Fygaro <support@fygaro.com>
+License: MIT License
+        
+        Copyright (c) 2025 Fygaro
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Keywords: fygaro,webhook,signature
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: license-file
+
+# fygaro-webhook
+
+> **Webhook signature verification for Fygaro — pure Python stdlib, zero runtime deps**
+
+This helper validates the `Fygaro-Signature` header of incoming webhooks.
+It supports secret rotation (multiple active secrets), deterministic unit‑testing, and is ready for future
+hash algorithms.
+
+---
+
+## Installation
+
+```bash
+pip install fygaro-webhook
+```
+
+*Requires Python ≥ 3.8.*
+
+---
+
+## Quick start
+
+```python
+from fygaro.webhook import FygaroWebhookValidator
+
+validator = FygaroWebhookValidator(
+    secrets=[
+        "my-primary-secret",  # str or bytes
+        # "my-previous-secret",   # include during rotation windows
+    ],
+    # max_age=300,          # optional (default = 5 min)
+)
+
+if not validator.verify_signature(
+    signature_header=request.headers["Fygaro-Signature"],
+    body=request.body,  # raw bytes exactly as sent
+):
+    raise ValueError("Invalid signature")
+
+# …process JSON, return 200…
+```
+
+---
+
+## API reference
+
+### `class FygaroWebhookValidator`
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `secrets` | `Sequence[str \| bytes]` | ✔ | — | One or more active webhook secrets. Provide **all currently valid** secrets during a rotation window. Each secret can be a UTF‑8 `str` or raw `bytes`. |
+| `max_age` | `int` | ✖ | `300` | Maximum allowable clock skew (in seconds) between the timestamp in the header and the server time. A low value mitigates replay attacks |
+| `unsafe_skip_ts_validation` | `bool` | ✖ | `False` | **Test only.** When `True`, the timestamp‑freshness check is skipped and a `RuntimeWarning` is emitted on instantiation. Never enable in production. |
+
+---
+
+#### `validator.verify_signature(signature_header: str, body: bytes) -> bool`
+
+| Argument | Type | Description |
+|----------|------|-------------|
+| `signature_header` | `str` | The exact value of the incoming **Fygaro‑Signature** HTTP header. |
+| `body` | `bytes` | The unmodified request body (raw bytes). **Do not** `.decode()` or re‑serialize. |
+
+Return value:
+
+* `True` — signature is valid **and** timestamp is within `max_age` (unless skipped).
+* `False` — signature mismatch, stale timestamp, or malformed header.
+
+---
+
+## Writing deterministic unit tests
+
+To keep fixtures stable you can bypass the timestamp‑freshness check **without** touching production code:
+
+```python
+validator = FygaroWebhookValidator(
+    secrets=[b"test-secret"],
+    unsafe_skip_ts_validation=True,  # ← test‑only flag
+)
+```
+
+*The first instance created with `unsafe_skip_ts_validation=True` emits a
+`RuntimeWarning` to remind you that this path is unsafe for live traffic.*
+
+---
+
+## Changelog
+
+See [`CHANGELOG.md`](CHANGELOG.md) for release notes.
+
+---
+
+## License
+
+MIT © Fygaro — support: [support@fygaro.com](mailto:support@fygaro.com)

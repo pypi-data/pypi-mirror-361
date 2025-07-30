@@ -1,0 +1,162 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "localsets"
+version = "0.1.4"
+description = "Local Pokemon random battle sets (auto-updating) and Smogon competitive sets"
+readme = "README.md"
+authors = [
+    {name = "Pokemon RandBats Team"}
+]
+keywords = ["pokemon", "battle", "data", "random", "showdown", "smogon", "competitive"]
+license = {text = "MIT"}
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Games/Entertainment",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+requires-python = ">=3.8"
+dependencies = [
+    "requests>=2.25.0",
+    "appdirs>=1.4.0",
+]
+
+[project.optional-dependencies]
+# RandBats extras
+gen1-randbats = ["gen1randombattle",]
+gen2-randbats = ["gen2randombattle"]
+gen3-randbats = ["gen3randombattle"]
+gen4-randbats = ["gen4randombattle"]
+gen5-randbats = ["gen5randombattle"]
+gen6-randbats = ["gen6randombattle"]
+gen7-randbats = ["gen7randombattle"]
+gen8-randbats = ["gen8randombattle"]
+gen9-randbats = ["gen9randombattle"]
+classic-randbats = ["gen1randombattle", "gen2randombattle", "gen3randombattle", "gen4randombattle"]
+modern-randbats = ["gen8randombattle", "gen9randombattle"]
+doubles-randbats = ["gen8randomdoublesbattle", "gen9randomdoublesbattle"]
+letsgo-randbats = ["gen7letsgorandombattle"]
+bdsp-randbats = ["gen8bdsprandombattle"]
+baby-randbats = ["gen9babyrandombattle"]
+randbats-all = ["gen1randombattle", "gen2randombattle", "gen3randombattle", "gen4randombattle", "gen5randombattle", "gen6randombattle", "gen7letsgorandombattle", "gen7randombattle", "gen8bdsprandombattle", "gen8randombattle", "gen8randomdoublesbattle", "gen9babyrandombattle", "gen9randombattle", "gen9randomdoublesbattle"]
+
+# Smogon extras
+ou = ["gen9ou", "gen8ou", "gen7ou", "gen6ou", "gen5ou", "gen4ou", "gen3ou", "gen2ou", "gen1ou"]
+uu = ["gen9uu", "gen8uu", "gen7uu", "gen6uu", "gen5uu", "gen4uu", "gen3uu", "gen2uu", "gen1uu"]
+ru = ["gen9ru", "gen8ru", "gen7ru", "gen6ru", "gen5ru", "gen4ru", "gen3ru", "gen2ru", "gen1ru"]
+nu = ["gen9nu", "gen8nu", "gen7nu", "gen6nu", "gen5nu", "gen4nu", "gen3nu", "gen2nu", "gen1nu"]
+pu = ["gen9pu", "gen8pu", "gen7pu", "gen6pu", "gen5pu", "gen4pu", "gen3pu", "gen2pu", "gen1pu"]
+ubers = ["gen9ubers", "gen8ubers", "gen7ubers", "gen6ubers", "gen5ubers", "gen4ubers", "gen3ubers", "gen2ubers", "gen1ubers"]
+smogon-doubles = ["gen9doublesou", "gen8doublesou", "gen7doublesou", "gen6doublesou", "gen5doublesou", "gen4doublesou", "gen3doublesou", "gen2doublesou", "gen1doublesou"]
+vgc = ["gen9vgc2024", "gen8vgc2022", "gen8vgc2023", "gen7vgc2017", "gen7vgc2018", "gen7vgc2019", "gen6vgc2014", "gen6vgc2015", "gen6vgc2016", "gen5vgc2011", "gen5vgc2012", "gen5vgc2013", "gen4vgc2009", "gen4vgc2010"]
+gen9-smogon = ["gen9ou", "gen9uu", "gen9ru", "gen9nu", "gen9pu", "gen9ubers", "gen9doublesou", "gen9vgc2024"]
+gen8-smogon = ["gen8ou", "gen8uu", "gen8ru", "gen8nu", "gen8pu", "gen8ubers", "gen8doublesou", "gen8vgc2022", "gen8vgc2023"]
+gen7-smogon = ["gen7ou", "gen7uu", "gen7ru", "gen7nu", "gen7pu", "gen7ubers", "gen7doublesou", "gen7vgc2017", "gen7vgc2018", "gen7vgc2019"]
+gen6-smogon = ["gen6ou", "gen6uu", "gen6ru", "gen6nu", "gen6pu", "gen6ubers", "gen6doublesou", "gen6vgc2014", "gen6vgc2015", "gen6vgc2016"]
+gen5-smogon = ["gen5ou", "gen5uu", "gen5ru", "gen5nu", "gen5pu", "gen5ubers", "gen5doublesou", "gen5vgc2011", "gen5vgc2012", "gen5vgc2013"]
+gen4-smogon = ["gen4ou", "gen4uu", "gen4nu", "gen4pu", "gen4ubers", "gen4doublesou", "gen4vgc2009", "gen4vgc2010"]
+gen3-smogon = ["gen3ou", "gen3uu", "gen3nu", "gen3pu", "gen3ubers", "gen3doublesou"]
+gen2-smogon = ["gen2ou", "gen2uu", "gen2nu", "gen2pu", "gen2ubers", "gen2doublesou"]
+gen1-smogon = ["gen1ou", "gen1uu", "gen1nu", "gen1pu", "gen1ubers", "gen1doublesou"]
+smogon-all = ["gen9ou", "gen9uu", "gen9ru", "gen9nu", "gen9pu", "gen9ubers", "gen9doublesou", "gen9vgc2024", "gen8ou", "gen8uu", "gen8ru", "gen8nu", "gen8pu", "gen8ubers", "gen8doublesou", "gen8vgc2022", "gen8vgc2023", "gen7ou", "gen7uu", "gen7ru", "gen7nu", "gen7pu", "gen7ubers", "gen7doublesou", "gen7vgc2017", "gen7vgc2018", "gen7vgc2019", "gen6ou", "gen6uu", "gen6ru", "gen6nu", "gen6pu", "gen6ubers", "gen6doublesou", "gen6vgc2014", "gen6vgc2015", "gen6vgc2016", "gen5ou", "gen5uu", "gen5ru", "gen5nu", "gen5pu", "gen5ubers", "gen5doublesou", "gen5vgc2011", "gen5vgc2012", "gen5vgc2013", "gen4ou", "gen4uu", "gen4nu", "gen4pu", "gen4ubers", "gen4doublesou", "gen4vgc2009", "gen4vgc2010", "gen3ou", "gen3uu", "gen3nu", "gen3pu", "gen3ubers", "gen3doublesou", "gen2ou", "gen2uu", "gen2nu", "gen2pu", "gen2ubers", "gen2doublesou", "gen1ou", "gen1uu", "gen1nu", "gen1pu", "gen1ubers", "gen1doublesou"]
+
+# Combined extras
+gen9-all = ["gen9randombattle", "gen9ou", "gen9uu", "gen9ru", "gen9nu", "gen9pu", "gen9ubers", "gen9doublesou", "gen9vgc2024"]
+gen8-all = ["gen8randombattle", "gen8ou", "gen8uu", "gen8ru", "gen8nu", "gen8pu", "gen8ubers", "gen8doublesou", "gen8vgc2022", "gen8vgc2023"]
+gen7-all = ["gen7randombattle", "gen7ou", "gen7uu", "gen7ru", "gen7nu", "gen7pu", "gen7ubers", "gen7doublesou", "gen7vgc2017", "gen7vgc2018", "gen7vgc2019"]
+gen6-all = ["gen6randombattle", "gen6ou", "gen6uu", "gen6ru", "gen6nu", "gen6pu", "gen6ubers", "gen6doublesou", "gen6vgc2014", "gen6vgc2015", "gen6vgc2016"]
+gen5-all = ["gen5randombattle", "gen5ou", "gen5uu", "gen5ru", "gen5nu", "gen5pu", "gen5ubers", "gen5doublesou", "gen5vgc2011", "gen5vgc2012", "gen5vgc2013"]
+gen4-all = ["gen4randombattle", "gen4ou", "gen4uu", "gen4nu", "gen4pu", "gen4ubers", "gen4doublesou", "gen4vgc2009", "gen4vgc2010"]
+gen3-all = ["gen3randombattle", "gen3ou", "gen3uu", "gen3nu", "gen3pu", "gen3ubers", "gen3doublesou"]
+gen2-all = ["gen2randombattle", "gen2ou", "gen2uu", "gen2nu", "gen2pu", "gen2ubers", "gen2doublesou"]
+gen1-all = ["gen1randombattle", "gen1ou", "gen1uu", "gen1nu", "gen1pu", "gen1ubers", "gen1doublesou"]
+all = ["gen1randombattle", "gen2randombattle", "gen3randombattle", "gen4randombattle", "gen5randombattle", "gen6randombattle", "gen7letsgorandombattle", "gen7randombattle", "gen8bdsprandombattle", "gen8randombattle", "gen8randomdoublesbattle", "gen9babyrandombattle", "gen9randombattle", "gen9randomdoublesbattle", "gen9ou", "gen9uu", "gen9ru", "gen9nu", "gen9pu", "gen9ubers", "gen9doublesou", "gen9vgc2024", "gen8ou", "gen8uu", "gen8ru", "gen8nu", "gen8pu", "gen8ubers", "gen8doublesou", "gen8vgc2022", "gen8vgc2023", "gen7ou", "gen7uu", "gen7ru", "gen7nu", "gen7pu", "gen7ubers", "gen7doublesou", "gen7vgc2017", "gen7vgc2018", "gen7vgc2019", "gen6ou", "gen6uu", "gen6ru", "gen6nu", "gen6pu", "gen6ubers", "gen6doublesou", "gen6vgc2014", "gen6vgc2015", "gen6vgc2016", "gen5ou", "gen5uu", "gen5ru", "gen5nu", "gen5pu", "gen5ubers", "gen5doublesou", "gen5vgc2011", "gen5vgc2012", "gen5vgc2013", "gen4ou", "gen4uu", "gen4nu", "gen4pu", "gen4ubers", "gen4doublesou", "gen4vgc2009", "gen4vgc2010", "gen3ou", "gen3uu", "gen3nu", "gen3pu", "gen3ubers", "gen3doublesou", "gen2ou", "gen2uu", "gen2nu", "gen2pu", "gen2ubers", "gen2doublesou", "gen1ou", "gen1uu", "gen1nu", "gen1pu", "gen1ubers", "gen1doublesou"]
+
+dev = [
+    "pytest>=6.0.0",
+    "pytest-cov>=2.10.0",
+    "black>=21.0.0",
+    "flake8>=3.8.0",
+    "mypy>=0.800",
+    "twine>=3.0.0",
+    "wheel>=0.36.0",
+]
+
+[project.scripts]
+localsets = "localsets.cli:main_cli"
+
+[project.urls]
+Homepage = "https://github.com/colefoster/localsets"
+Repository = "https://github.com/colefoster/localsets"
+Documentation = "https://github.com/colefoster/localsets#readme"
+
+[tool.setuptools]
+packages = ["localsets"]
+
+[tool.setuptools.package-data]
+localsets = ["data/*.json", "metadata/*.json", "smogon/data/*.json"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--cov=localsets",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+]
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = [
+    "click.*",
+    "rich.*",
+    "appdirs.*",
+]
+ignore_missing_imports = true 

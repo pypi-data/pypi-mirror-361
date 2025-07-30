@@ -1,0 +1,161 @@
+[build-system]
+requires = ["setuptools>=61.0",
+            "wheel",
+            "build"
+            ]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "country_converter"
+authors = [
+    {name = "Konstantin Stadler", email = "konstantin.stadler@ntnu.no"},
+]
+description = "The country converter (coco) - a Python package for converting country names between different classifications schemes"
+readme = "README.md"
+keywords = ["country", "ISO 3166"]
+version = "1.3.1"
+license = {text = "GNU General Public License v3 (GPLv3)"}
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Utilities",
+]
+requires-python = ">=3.9"
+dependencies = [
+  "pandas >=1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pdbpp",
+  "ipython",
+  "jupyterlab == 3.*",
+  "jupytext",
+  "pynvim",
+  "ipykernel",
+  "poethepoet",
+]
+test = [
+  "coveralls",
+  "pytest >=5.4.0",
+  "pytest-cov >=2.7.0",
+  "pytest-datadir",
+  "pytest-mypy",
+  "pytest-ruff>=0.5",
+  "pytest-xdist[psutil]",
+]
+
+[project.scripts]
+coco = "country_converter.country_converter:main"
+
+[project.urls]
+Repository = "https://github.com/IndEcol/country_converter"
+
+[tool.setuptools]
+packages = ["country_converter"]
+
+[tool.setuptools.package-data]
+country_converter = ["country_data.tsv"]
+
+
+[tool.coverage.run]
+source = ["country_converter"]  
+relative_files = true
+
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "def __str__",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:"
+]
+
+
+[tool.ruff]
+target-version = "py39"
+line-length = 120
+extend-exclude = ["*.ipynb", "doc/source/**/*.py"]
+
+[tool.ruff.lint]
+# Default: pycodestyle (E, W) and Pyflakes (F) rules.
+extend-select = [
+    "B",   # flake8-bugbear: Finds potential bugs and design problems.
+    "C",   # flake8-comprehensions: Promotes pythonic list/set/dict comprehensions.
+    "W",   # PyCodeStyle warnings
+    "E",   # PyCodeStyle errors
+    "D",   # pydocstyle: Enforces docstring conventions.
+    "F",   # Pyflakes rules
+    "I",   # isort: Sorts and organizes imports automatically.
+    "UP",  # pyupgrade: Helps upgrade syntax to newer Python versions.
+    "PD",  # pandas-vet: Checks for common mistakes in pandas usage.
+    "C4",  # Catch incorrect use of comprehensions, dict, list, etc
+    "ISC", # String concatenation
+    "RUF",    # Ruff lint
+    # "RET", # Good return practices #TODO
+    # "SIM", # Common simplification rules #TODO
+    # "PTH",      # Use pathlib instead of os.path
+    # "TD",       # Be diligent with TODO comments
+    # "NPY",      # Some numpy-specific things #TODO
+    "TID", # Some good import practices
+]
+ignore = [
+    "D100",  # Missing docstring in public module
+    "D104",  # Missing docstring in public package
+    "PD013", # pandas: replace stack by melt
+    "PD010", # pandas: replace stack by pivot
+]
+# These codes are ignored by the linter (e.g., flake8, pydocstyle, or pandas-vet)
+
+[tool.ruff.lint.mccabe]
+max-complexity = 50
+
+[tool.ruff.lint.pydocstyle]
+# Specify the docstring convention to follow. "google" and "numpy" are common in data science.
+convention = "numpy"
+
+[tool.ruff.format]
+# Sets the style for quotes. Can be "single", "double", or "preserve".
+quote-style = "double"
+
+[tool.poe.tasks.sync]
+help = "Sync all dependencies"
+cmd = "uv sync --all-extras"
+
+[tool.poe.tasks.format]
+help = "Format all files"
+cmd = "ruff format"
+
+[tool.poe.tasks.check]
+help = "Ruff check, accept --fix and all other arguments"
+cmd  = "ruff check ${args}"
+
+[tool.poe.tasks.fulltest]
+help = "Run the full test suite"
+shell  = """
+coverage erase
+coverage run -m pytest --ruff --ruff-format
+coverage report 
+"""
+
+[tool.poe.tasks.test]
+help = "Fast testing"
+cmd  = "pytest -n auto"
+
+[tool.poe.tasks.build]
+help = "Format, test with coverage and build docs"
+sequence = ["format", "fulltest"]

@@ -1,0 +1,50 @@
+Metadata-Version: 2.4
+Name: hydragram
+Version: 2.0
+Summary: An enhanced Pyrogram-like filter and handler system using Pyrogram.
+Home-page: https://github.com/Endtrz/hasnainkk
+Author: Endtrz
+Author-email: endtrz@gmail.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pyrogram>=2.0.106
+Requires-Dist: tgcrypto>=1.2.5
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# hasnainkk
+
+An enhanced Pyrogram-like filter and handler system built on Kurigram.
+
+## Installation
+
+```bash
+pip install hydragram==2.0
+
+```
+### How to use it
+
+```python
+from hydragram.client import Client
+from hydragram.handler import handler
+from hydragram.filters import command, group
+
+client = Client("mybot", api_id=12345, api_hash="xyz", bot_token="TOKEN")
+
+@handler("start")
+async def start(client, message):
+    await message.reply_text("Hello!")
+
+client.run()

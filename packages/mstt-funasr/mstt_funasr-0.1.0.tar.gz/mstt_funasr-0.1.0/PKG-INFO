@@ -1,0 +1,73 @@
+Metadata-Version: 2.3
+Name: mstt-funasr
+Version: 0.1.0
+Summary: mstt_funasr-A plugin for mstt to add support for FunASR models.
+Author: Yunfeng Wang
+Author-email: Yunfeng Wang <wyf.brz@gmail.com>
+License: Apache-2.0
+Requires-Dist: mstt>=0.2.0
+Requires-Dist: funasr
+Requires-Dist: torchaudio
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+
+# MSTT FunASR Plugin
+
+This repository contains the `mstt-funasr` plugin for the Modern Speech-to-Text (MSTT) library. This plugin provides integration with the [FunASR](https://github.com/modelscope/FunASR) models, allowing MSTT to leverage FunASR's capabilities for high-performance speech-to-text transcription.
+
+## Features
+
+- Integrates FunASR models with the MSTT unified API.
+- Supports various FunASR models for different languages and tasks.
+- Provides efficient and accurate speech transcription.
+
+## Installation
+
+To use this plugin, you need to have MSTT installed first. Then, you can install `mstt-funasr` using `pip`:
+
+```bash
+pip install mstt-funasr
+```
+
+This will also install the necessary `funasr` library as a dependency.
+
+## Usage
+
+Once installed, the `funasr` model will be automatically available through the MSTT library. You can use it by specifying `model_id="<funasr_model>"` when initializing the MSTT client, `<funasr_model>` can be one of:
+- funasr/iic/SenseVoiceSmall
+- sensevoice_small
+- funasr/iic/speech_paraformer-large-vad-punc_asr_nat-zh-cn-16k-common-vocab8404-pytorch
+- paraformer-zh
+- funasr/iic/speech_paraformer-large-vad-punc_asr_nat-en-16k-common-vocab10020
+- paraformer-en
+- funasr/iic/speech_conformer_asr-en-16k-vocab4199-pytorch
+- conformer-en
+- funasr/iic/Whisper-large-v3
+- whisper-large-v3
+- funasr/iic/Whisper-large-v3-turbo
+- whisper-large-v3-turbo
+
+
+```python
+from mstt import get_model
+
+asr_model = get_model("<funasr_model>")
+result = asr_model.transcribe("path/to/your/audio.wav")
+```
+
+### Example with CLI
+
+You can also use the `funasr` model via the MSTT command-line interface:
+
+```bash
+mstt transcribe --model <funasr_model>  path/to/your/audio.wav
+```
+
+## Contributing
+
+Contributions to the `mstt-funasr` plugin are welcome! Please refer to the main MSTT repository's contributing guidelines for more information.
+
+## License
+
+
+This project is licensed under the Apache License, Version 2.0 - see the LICENSE file for details.

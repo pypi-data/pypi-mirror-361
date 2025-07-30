@@ -1,0 +1,30 @@
+[project]
+name = "mstt_funasr"
+version = "0.1.0"
+description = "mstt_funasr-A plugin for mstt to add support for FunASR models."
+authors = [{ name = "Yunfeng Wang", email = "wyf.brz@gmail.com" }]
+license = { text = "Apache-2.0" }
+readme = "README.md"
+requires-python = ">=3.10"
+
+dependencies = ["mstt>=0.2.0", "funasr", "torchaudio"]
+
+[project.entry-points.mstt]
+funasr = "mstt_funasr.register"
+
+
+[tool.black]
+line-length = 128
+
+[tool.ruff]
+line-length = 128
+select = ["E", "W", "F", "I", "UP", "C4", "B"]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = ["tests"]
+
+[build-system]
+requires = ["uv_build>=0.7.19,<0.8.0"]
+build-backend = "uv_build"

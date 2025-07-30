@@ -1,0 +1,40 @@
+[PYG-401] 😏Skip unpacking of edges.  (#492)
+
+# Description
+
+**Reviewer**: +43 lines the rest is generated.
+
+**Context** The QueryExecutor is used by Atlas to do queries against the
+knowledge graph. It is in alpha and thus we can do breaking changes
+without bumping the major.
+
+Given the views
+<img width="852" height="322" alt="image"
+src="https://github.com/user-attachments/assets/fedf97b2-e756-4adf-9f39-97d5ebe64c8d"
+/>
+
+Today, the query executor will work as follows when fetching edges
+<img width="1706" height="675" alt="image"
+src="https://github.com/user-attachments/assets/1c37380a-1048-4877-94d3-450e6314909d"
+/>
+
+This PR allows the user to set `unpack_edges` to `skip` 
+<img width="1245" height="608" alt="image"
+src="https://github.com/user-attachments/assets/52c8a3fe-6c3d-45ac-9081-f206936598b7"
+/>
+
+
+
+
+## Bump
+
+- [x] Patch
+- [ ] Minor
+- [ ] Skip
+
+## Changelog
+### Added
+
+- [alpha] The `QueryExetutor` allows you to control how to handle edges.
+You can set `include_edges` to `skip` to not include any edge properties
+in the results. This is now the new default.

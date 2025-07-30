@@ -1,0 +1,43 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "video-transcription-server"
+version = "0.1.2"
+description = "MCP server for video transcription using Whisper"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+    { name = "Jairo", email = "jairo.goncalves90@gmail.com" }
+]
+keywords = ["mcp", "whisper", "transcription", "video", "audio"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "mcp>=0.1.0",
+    "openai-whisper",
+    "yt-dlp",
+    "python-dotenv",
+    "anyio",
+    "numpy<2.0",  # Whisper requer numpy < 2.0
+    "imageio-ffmpeg",  # Dependência do moviepy
+]
+
+[project.urls]
+Homepage = "https://github.com/jairodrigues/video-transcription-server"
+Repository = "https://github.com/jairodrigues/video-transcription-server"
+Issues = "https://github.com/jairodrigues/video-transcription-server/issues"
+
+[project.scripts]
+video-transcription-server = "video_transcription_server.server:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/video_transcription_server"]

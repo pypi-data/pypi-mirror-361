@@ -1,0 +1,42 @@
+name: "multitalk_conversation_test"
+description: "Replicate MultiTalk multi-person conversation generation with real assets"
+prompt: "In a casual, intimate setting, a man and a woman are engaged in a heartfelt conversation inside a car"
+
+steps:
+  - type: "replicate_multitalk"
+    model: "zsxkib/multitalk:0bd2390c40618c910ffc345b36c8fd218fd8fa59c9124aa641fea443fa203b44"
+    params:
+      image: "https://replicate.delivery/pbxt/NHF6Y7EeJGK6pp4rDODjJS8m0nk9rj32iuaVQs8IfOl7S4vJ/multi1.png"
+      first_audio: "https://replicate.delivery/pbxt/NHF6XifveoBBNUVcYdrkqkiLqq2vDI7g322dYXadTtF4BFZ9/1.WAV"
+      second_audio: "https://replicate.delivery/pbxt/NHF6Y526MirDQ9byxeuIxcnrnW5CeISX11fWxr78FP9d3gut/2.WAV"
+      prompt: "In a casual, intimate setting, a man and a woman are engaged in a heartfelt conversation inside a car. The man, sporting a denim jacket over a blue shirt, sits attentively with a seatbelt fastened, his gaze fixed on the woman beside him. The woman, wearing a black tank top and a denim jacket draped over her shoulders, smiles warmly, her eyes reflecting genuine interest and connection. The car's interior, with its beige seats and simple design, provides a backdrop that emphasizes their interaction. The scene captures a moment of shared understanding and connection, set against the soft, diffused light of an overcast day. A medium shot from a slightly angled perspective, focusing on their expressions and body language"
+      num_frames: 81
+      turbo: true
+      sampling_steps: 10
+
+cost_estimate: "$0.50-2.00 (variable based on processing time)"
+test_notes: |
+  This test demonstrates Replicate MultiTalk's multi-person conversation capabilities:
+  
+  Real Assets Used:
+  - Image: Car scene with man and woman (from Replicate delivery)
+  - First Audio: Person 1 speech audio (WAV format)
+  - Second Audio: Person 2 speech audio (WAV format)
+  - Detailed cinematic prompt describing the scene
+  
+  Features Tested:
+  - Multi-person conversation support (2 people)
+  - Audio-driven lip-sync and facial expressions
+  - Real image and audio file processing
+  - Turbo mode for faster generation
+  - Optimized sampling steps (10 for speed)
+  
+  Model Version: zsxkib/multitalk:0bd2390c40618c910ffc345b36c8fd218fd8fa59c9124aa641fea443fa203b44
+  
+  Requirements:
+  - Valid Replicate API token (REPLICATE_API_TOKEN)
+  - Internet connection for remote asset access
+
+output_dir: "output"
+temp_dir: "temp"
+cleanup_temp: true

@@ -1,0 +1,35 @@
+name: "gen4_cinematic_test"
+description: "Runway Gen4 multi-reference portrait generation"
+prompt: "a close up portrait of @woman and @man standing in @park, hands in pockets, looking cool. She is wearing her pink sweater and bangles."
+
+steps:
+  - type: "text_to_image"
+    model: "gen4"
+    params:
+      resolution: "1080p"
+      aspect_ratio: "4:3"
+      seed: 42
+      reference_images:
+        - "https://replicate.delivery/pbxt/NHVhGWPplgrmOE8EGTVhbeSqWuZBcZLHyMQrgrTH4Hpa1ljU/m4hjkmbk79rma0cqrnxt67cqnw.jpg"
+        - "https://replicate.delivery/pbxt/NHVhFhdxAAmuXKUyT4r10KIalYrXf9vp5B40CmAeXlPieuOs/w99em95b01rmc0cqrny8chf49w.jpg"
+        - "https://replicate.delivery/pbxt/NHVhGE5GSJlAfL9RkGFvUbx70KVl7l7KamUNLHOAUd1sQVuF/psjdbkzgm1rmc0cqrnysbg93cm.jpg"
+      reference_tags:
+        - "park"     # Tag for park setting
+        - "woman"    # Tag for woman reference
+        - "man"      # Tag for man reference
+
+cost_estimate: "$0.08"
+test_notes: |
+  This test demonstrates Runway Gen4's unique multi-reference capabilities:
+  
+  Reference Images:
+  1. Cyberpunk cityscape (tagged: "cityscape") - Overall composition guide
+  2. Neon lighting setup (tagged: "lighting") - Lighting style reference
+  3. Night street atmosphere (tagged: "atmosphere") - Mood and ambiance
+  
+  The model will use these 3 reference images with their respective tags
+  to guide the generation while following the text prompt.
+
+output_dir: "output"
+temp_dir: "temp"
+cleanup_temp: true

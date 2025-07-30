@@ -1,0 +1,95 @@
+{
+  "execution_summary": {
+    "chain_name": "detailed_image_analysis",
+    "execution_id": "exec_1752029598",
+    "timestamp": "2025-07-09T12:53:18.722242",
+    "status": "failed",
+    "input_data": "A vintage travel poster featuring a serene mountain landscape with a lake and pine trees, with bold text reading 'VISIT NATURE PARADISE' at the top and 'Escape to Tranquility' at the bottom",
+    "input_type": "text",
+    "total_steps": 2,
+    "completed_steps": 0,
+    "total_cost_usd": 0.0,
+    "total_processing_time_seconds": 0.0,
+    "error": "Step 1 failed: FAL generator not available"
+  },
+  "step_execution_details": [
+    {
+      "step_number": 1,
+      "step_name": "step_1_text_to_image",
+      "step_type": "text_to_image",
+      "model": "seedream_v3",
+      "status": "failed",
+      "processing_time": 5.245208740234375e-06,
+      "cost": 0.0,
+      "output_files": {},
+      "download_links": {},
+      "metadata": null,
+      "error": "FAL generator not available",
+      "input_prompt": "A vintage travel poster featuring a serene mountain landscape with a lake and pine trees, with bold text reading 'VISIT NATURE PARADISE' at the top and 'Escape to Tranquility' at the bottom",
+      "generation_params": {
+        "image_size": "landscape_16_9"
+      }
+    }
+  ],
+  "final_outputs": {
+    "local_files": {},
+    "download_links": {}
+  },
+  "cost_breakdown": {
+    "by_step": [
+      {
+        "step": "1_text_to_image",
+        "model": "seedream_v3",
+        "cost_usd": 0.0
+      }
+    ],
+    "total_cost_usd": 0.0
+  },
+  "performance_metrics": {
+    "by_step": [
+      {
+        "step": "1_text_to_image",
+        "processing_time_seconds": 5.245208740234375e-06,
+        "status": "failed"
+      }
+    ],
+    "total_time_seconds": 0.0,
+    "average_time_per_step": 0.0
+  },
+  "metadata": {
+    "chain_config": {
+      "name": "detailed_image_analysis",
+      "steps": [
+        {
+          "type": "text_to_image",
+          "model": "seedream_v3",
+          "params": {
+            "image_size": "landscape_16_9"
+          },
+          "enabled": true,
+          "retry_count": 0
+        },
+        {
+          "type": "image_understanding",
+          "model": "gemini_detailed",
+          "params": {
+            "analysis_prompt": "Provide a comprehensive analysis of this landscape"
+          },
+          "enabled": true,
+          "retry_count": 0
+        }
+      ],
+      "description": "Detailed image analysis with object detection",
+      "prompt": "A vintage travel poster featuring a serene mountain landscape with a lake and pine trees, with bold text reading 'VISIT NATURE PARADISE' at the top and 'Escape to Tranquility' at the bottom",
+      "output_dir": "output",
+      "temp_dir": "temp",
+      "cleanup_temp": true,
+      "save_intermediates": true
+    },
+    "pipeline_version": "1.0.0",
+    "models_used": [
+      "seedream_v3",
+      "gemini_detailed"
+    ]
+  }
+}

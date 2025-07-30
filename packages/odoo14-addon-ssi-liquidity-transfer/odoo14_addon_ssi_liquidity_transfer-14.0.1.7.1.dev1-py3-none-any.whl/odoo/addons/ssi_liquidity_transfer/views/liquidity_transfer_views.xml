@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--Copyright 2024 OpenSynergy Indonesia-->
+<!--Copyright 2024 PT. Simetri Sinergi Indonesia-->
+<!--License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).-->
+<odoo>
+<record id="liquidity_transfer_view_tree" model="ir.ui.view">
+    <field name="name">liquidity_transfer - Tree</field>
+    <field name="model">liquidity_transfer</field>
+    <field name="inherit_id" ref="ssi_transaction_mixin.mixin_transaction_view_tree" />
+    <field name="mode">primary</field>
+    <field name="arch" type="xml">
+        <data>
+            <xpath expr="field[@name='company_id']" position="after">
+                <field name="date" />
+                <field name="type_id" />
+                <field name="journal_id" />
+                <field name="currency_id" />
+                <field name="account_id" />
+                <field name="transfer_amount" />
+                <field name="custodian_id" />
+                <field name="debit_realized" optional="hide" />
+                <field name="credit_realized" optional="hide" />
+            </xpath>
+        </data>
+    </field>
+</record>
+
+<record id="liquidity_transfer_view_search" model="ir.ui.view">
+    <field name="name">liquidity_transfer - Search</field>
+    <field name="model">liquidity_transfer</field>
+    <field
+            name="inherit_id"
+            ref="ssi_transaction_mixin.mixin_transaction_view_search"
+        />
+    <field name="mode">primary</field>
+    <field name="arch" type="xml">
+        <data />
+    </field>
+</record>
+
+<record id="liquidity_transfer_view_form" model="ir.ui.view">
+    <field name="name">liquidity_transfer - Form</field>
+    <field name="model">liquidity_transfer</field>
+    <field name="inherit_id" ref="ssi_transaction_mixin.mixin_transaction_view_form" />
+    <field name="mode">primary</field>
+    <field name="arch" type="xml">
+        <data>
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="company_currency_id" invisible="1" />
+                <field name="type_id" />
+                <field
+                        name="allowed_account_ids"
+                        widget="many2many_tags"
+                        invisible="1"
+                    />
+                <field
+                        name="allowed_journal_ids"
+                        widget="many2many_tags"
+                        invisible="1"
+                    />
+                <field
+                        name="allowed_partner_ids"
+                        widget="many2many_tags"
+                        invisible="1"
+                    />
+                <field name="transfer_amount_method" invisible="1" />
+                <field name="journal_id" domain="[('id','in',allowed_journal_ids)]" />
+                <field name="journal_account_id" invisible="1" />
+                <field name="currency_id" invisible="1" />
+                <field name="account_id" domain="[('id','in',allowed_account_ids)]" />
+                <field name="custodian_id" domain="[('id','in',allowed_partner_ids)]" />
+            </xpath>
+            <xpath expr="//group[@name='header_right']" position="inside">
+                <field name="date" />
+                <field
+                        name="transfer_amount"
+                        attrs="{'invisible':[('transfer_amount_method','!=','free')]}"
+                    />
+                <field
+                        name="aml_amount"
+                        attrs="{'invisible':[('transfer_amount_method','!=','aml')]}"
+                    />
+            </xpath>
+            <xpath expr="//page[1]" position="before">
+                <page
+                        name="aml"
+                        string="Journal Items"
+                        attrs="{'invisible':[('transfer_amount_method','!=','aml')]}"
+                    >
+                    <field
+                            name="reference_move_line_ids"
+                            widget="many2many"
+                            domain="[('journal_id','=',journal_id),('liquidity_transfer_id','=',False),('account_id','!=',journal_account_id),('account_id','!=',account_id),('move_id.state','=','posted')]"
+                        />
+                    <group name="aml_1" colspan="4" col="2" invisible="1">
+                        <group name="aml_1_1" colspan="1" col="2">
+                        </group>
+                        <group name="aml_1_2" colspan="1" col="2">
+                        </group>
+                    </group>
+                </page>
+                <page name="accounting" string="Accounting">
+                    <group name="accounting_1" colspan="4" col="2">
+                        <group name="accounting_1_1" colspan="1" col="2">
+                            <field name="move_id" />
+                        </group>
+                        <group name="accounting_1_2" colspan="1" col="2">
+
+                            <field name="debit_result_move_line_id" />
+                            <field name="debit_realized" />
+                            <field name="credit_result_move_line_id" />
+                            <field name="credit_realized" />
+                            <field name="debit_credit_realized" />
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </data>
+    </field>
+</record>
+
+<record id="liquidity_transfer_action" model="ir.actions.act_window">
+    <field name="name">Liquidity Transfers</field>
+    <field name="res_model">liquidity_transfer</field>
+    <field name="view_mode">tree,form</field>
+</record>
+
+
+<menuitem
+        id="liquidity_transfer_menu"
+        name="Liquidity Transfers"
+        parent="ssi_financial_accounting.menu_bank_cash"
+        groups="liquidity_transfer_viewer_group"
+        action="liquidity_transfer_action"
+        sequence="220"
+    />
+</odoo>

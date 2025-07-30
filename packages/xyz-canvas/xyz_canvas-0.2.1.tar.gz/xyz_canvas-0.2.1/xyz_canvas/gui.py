@@ -1,0 +1,84 @@
+
+import matplotlib.pyplot as plt
+from matplotlib.backend_bases import MouseButton
+from matplotlib.widgets import Button
+
+class xyz_buttons:
+    def __init__(self, plt, fig, on_change_cb, buttons):
+        self.plt = plt
+        self.fig = fig
+        self.on_change_cb = on_change_cb
+        self.buttons = []
+
+        # Layout settings
+        button_height = 0.05
+        button_width = 0.12
+        spacing = 0.01
+        start_y = 0.9
+
+        for i, (label, action) in enumerate(buttons):
+            ax = fig.add_axes([0.01, start_y - i*(button_height + spacing), button_width, button_height])
+            btn = Button(ax, label)
+            btn.on_clicked(lambda event, act=action: self.on_change_cb(act))
+            self.buttons.append(btn)
+
+
+class xyz_mouse:
+
+    def __init__(self, plt, ax, on_click_cb, on_move_cb):
+        self.plt = plt
+        self.ax = ax
+        self.on_click_cb = on_click_cb
+        self.on_move_cb = on_move_cb
+        self.in_axes_range_prev = False
+        self.plt.connect('motion_notify_event', self.on_move)
+    
+    def on_move(self, event):
+        global in_axes_range_prev
+        if event.inaxes:
+            s = self.ax.format_coord(event.xdata, event.ydata)
+            p = self._get_pane_coords(s)
+            in_axes_range_now = self._in_axes_range(p)
+            self.movedto_xyz = p
+            self.on_move_cb(p)
+            if(not (in_axes_range_now == self.in_axes_range_prev)):
+                if in_axes_range_now:
+                    self.ax.mouse_init(rotate_btn=0)
+                    self.plt.connect('button_press_event', self.on_click)
+                else:
+                    self.plt.disconnect(self.on_click)
+                    self.ax.mouse_init(rotate_btn=1)
+                    event.button = None
+                self.in_axes_range_prev = in_axes_range_now
+     
+    def on_click(self, event):
+        if event.button is MouseButton.LEFT:
+            s = self.ax.format_coord(event.xdata, event.ydata)
+            p = self._get_pane_coords(s)
+            if(self._in_axes_range(p)):
+                self.on_click_cb(p)
+            
+    def _get_pane_coords(self, s):
+        # gets x,y,z of mouse position from s=ax.format_coord(event.xdata, event.ydata)
+        s=s.split(",")
+        if('elevation' in s[0]):
+            return None
+        xyz=[0,0,0]
+        for valstr in s:
+            valstr=valstr.replace(' pane','')
+            ordinate = valstr.split("=")[0].strip()
+            i = ['x','y','z'].index(ordinate)
+            xyz[i]=float(valstr.split("=")[1].replace('−','-'))
+        return xyz
+
+    def _in_axes_range(self, p):
+        # determines if x,y and z are all in the axis ranges
+        if p == None:
+            return False
+        x_in = self.ax.get_xlim()[0] <= p[0] <= self.ax.get_xlim()[1]
+        y_in = self.ax.get_ylim()[0] <= p[1] <= self.ax.get_ylim()[1]
+        z_in = self.ax.get_zlim()[0] <= p[2] <= self.ax.get_zlim()[1]
+        return (x_in and y_in and z_in)
+
+
+

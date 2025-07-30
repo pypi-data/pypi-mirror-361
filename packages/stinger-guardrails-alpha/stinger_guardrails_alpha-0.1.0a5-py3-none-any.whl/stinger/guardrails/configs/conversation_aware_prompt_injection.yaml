@@ -1,0 +1,51 @@
+# Conversation-Aware Prompt Injection Filter Configuration
+# Enhanced with multi-turn pattern detection capabilities
+
+name: "conversation_aware_prompt_injection"
+type: "ai_prompt_injection"
+enabled: true
+
+# AI model configuration
+model:
+  provider: "openai"
+  model: "gpt-4"
+  temperature: 0.1
+  max_tokens: 500
+
+# Basic risk thresholds
+risk_threshold: 70
+block_levels: ["high", "critical"]
+warn_levels: ["medium"]
+on_error: "allow"
+
+# Conversation awareness settings
+conversation_awareness:
+  enabled: true
+  context_strategy: "mixed"  # "recent", "suspicious", "mixed"
+  max_context_turns: 5
+  max_context_tokens: 2000
+  suspicious_indicators:
+    - "ignore"
+    - "forget"
+    - "pretend"
+    - "trust"
+    - "friend"
+    - "you are"
+    - "act as"
+    - "bypass"
+    - "safety"
+    - "rules"
+    - "jailbreak"
+    - "system prompt"
+    - "override"
+    - "disregard"
+
+# Multi-turn pattern detection weights
+pattern_detection:
+  trust_building_weight: 0.3
+  role_playing_weight: 0.25
+  context_manipulation_weight: 0.25
+  instruction_evolution_weight: 0.2
+
+# Backward compatibility
+legacy_mode: false  # Disable conversation awareness if needed 

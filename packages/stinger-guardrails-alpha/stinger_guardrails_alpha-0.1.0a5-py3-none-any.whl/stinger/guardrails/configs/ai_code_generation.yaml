@@ -1,0 +1,21 @@
+# Phase 5a: AI-Based Code Generation Filter Configuration
+# This configuration uses OpenAI for high-accuracy code generation detection
+
+guardrails:
+  - name: "ai_code_generation"
+    type: "ai_code_generation"
+    enabled: true
+    api_key: "${OPENAI_API_KEY}"
+    confidence_threshold: 0.6
+    on_error: "block"  # Recommended: block for security-critical applications
+
+# Configuration Options:
+# - api_key: OpenAI API key (can use environment variable ${OPENAI_API_KEY})
+# - confidence_threshold: Minimum confidence to block content (0.0 to 1.0)
+# - on_error: Action when AI fails (block, allow, warn)
+#   - block: Fail hard for safety when AI unavailable
+#   - warn: Allow content with prominent warning
+#   - allow: Allow content with minimal logging
+# 
+# Note: No automatic fallback - use simple_code_generation for non-AI alternative
+# Model is automatically configured from src/core/configs/models.yaml (uses gpt-4.1-nano) 

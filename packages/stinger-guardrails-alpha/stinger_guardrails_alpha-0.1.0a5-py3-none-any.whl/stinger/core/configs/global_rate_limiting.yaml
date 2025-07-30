@@ -1,0 +1,48 @@
+# Global Rate Limiting Configuration
+# This configuration defines global rate limits for API keys and users
+
+enabled: true
+backend: "memory"  # "memory", "redis", "database" (future)
+
+# Default rate limits for all keys (can be overridden per key)
+default_limits:
+  requests_per_minute: 60
+  requests_per_hour: 1000
+  requests_per_day: 10000
+
+# Per-key rate limits (overrides defaults)
+key_limits:
+  # Example: Premium API key with higher limits
+  "premium_key_123":
+    requests_per_minute: 120
+    requests_per_hour: 2000
+    requests_per_day: 20000
+  
+  # Example: Free tier with lower limits
+  "free_key_456":
+    requests_per_minute: 30
+    requests_per_hour: 500
+    requests_per_day: 5000
+
+# Rate limiting behavior
+behavior:
+  action: "block"  # "block", "warn", "log"
+  cleanup_interval: 3600  # seconds
+  max_age_seconds: 86400  # 24 hours
+
+# Monitoring and logging
+monitoring:
+  log_rate_limit_events: true
+  log_rate_limit_details: false  # Set to true for debugging
+  track_rate_limit_metrics: true
+
+# Integration settings
+integration:
+  # Whether to integrate with conversation rate limiting
+  integrate_with_conversation: true
+  
+  # Whether to check global rate limits before conversation rate limits
+  check_global_first: true
+  
+  # Whether to record requests even when conversation rate limits are exceeded
+  record_on_conversation_limit: false 

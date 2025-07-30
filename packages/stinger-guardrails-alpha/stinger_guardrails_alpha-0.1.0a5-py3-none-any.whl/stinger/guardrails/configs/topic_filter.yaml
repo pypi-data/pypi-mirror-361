@@ -1,0 +1,121 @@
+# Topic Filter Configuration
+# This filter provides content-based filtering using allow/deny lists for topics or categories
+
+type: topic_filter
+name: topic_filter
+enabled: true
+
+# Filter mode: "allow" (whitelist), "deny" (blacklist), "both" (both lists with deny priority)
+mode: deny
+
+# Case sensitivity for topic matching
+case_sensitive: false
+
+# Whether to treat topics as regex patterns
+use_regex: false
+
+# Minimum confidence threshold for blocking (0.0 to 1.0)
+confidence_threshold: 0.5
+
+# List of allowed topics (whitelist mode)
+allow_topics:
+  - "customer service"
+  - "technical support"
+  - "billing"
+  - "account management"
+  - "product information"
+  - "general inquiry"
+
+# List of denied topics (blacklist mode)
+deny_topics:
+  - "politics"
+  - "religion"
+  - "gambling"
+  - "adult content"
+  - "illegal activities"
+  - "personal attacks"
+  - "spam"
+  - "phishing"
+
+# Example configurations for different use cases:
+
+# Customer Service (whitelist mode)
+customer_service_whitelist:
+  type: topic_filter
+  name: customer_service_whitelist
+  enabled: true
+  mode: allow
+  case_sensitive: false
+  use_regex: false
+  confidence_threshold: 0.7
+  allow_topics:
+    - "account"
+    - "billing"
+    - "support"
+    - "help"
+    - "service"
+    - "payment"
+    - "refund"
+    - "technical"
+    - "login"
+    - "password"
+
+# Content Moderation (blacklist mode)
+content_moderation_blacklist:
+  type: topic_filter
+  name: content_moderation_blacklist
+  enabled: true
+  mode: deny
+  case_sensitive: false
+  use_regex: false
+  confidence_threshold: 0.6
+  deny_topics:
+    - "hate speech"
+    - "violence"
+    - "harassment"
+    - "discrimination"
+    - "threats"
+    - "bullying"
+    - "inappropriate"
+    - "offensive"
+
+# Academic Content (both mode)
+academic_content:
+  type: topic_filter
+  name: academic_content
+  enabled: true
+  mode: both
+  case_sensitive: false
+  use_regex: false
+  confidence_threshold: 0.8
+  allow_topics:
+    - "research"
+    - "study"
+    - "education"
+    - "learning"
+    - "academic"
+    - "scholarly"
+    - "university"
+    - "college"
+    - "course"
+    - "assignment"
+  deny_topics:
+    - "cheating"
+    - "plagiarism"
+    - "academic dishonesty"
+    - "unauthorized help"
+
+# Regex-based filtering example
+regex_filter:
+  type: topic_filter
+  name: regex_filter
+  enabled: true
+  mode: deny
+  case_sensitive: false
+  use_regex: true
+  confidence_threshold: 0.9
+  deny_topics:
+    - r"\b(spam|scam|phishing)\b"
+    - r"\b(click here|free money|lottery)\b"
+    - r"\b(viagra|cialis|weight loss)\b"
+    - r"\b(bitcoin|crypto|investment)\b" 

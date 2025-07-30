@@ -1,0 +1,28 @@
+"""
+Trinity Agent Monitoring SDK
+
+A comprehensive monitoring solution for AI agents with Langfuse integration.
+"""
+
+__version__ = "0.1.2"
+__author__ = "Team Trinity"
+__email__ = "support@giggso.com"
+
+from .agent_monitor import (
+    TrinityAgentMonitor,
+    create_monitor,
+    get_monitor,
+    set_monitor,
+    LANGFUSE_AVAILABLE
+)
+
+__all__ = [
+    "TrinityAgentMonitor",
+    "create_monitor", 
+    "get_monitor",
+    "set_monitor",
+    "LANGFUSE_AVAILABLE",
+    "__version__",
+    "__author__",
+    "__email__"
+]

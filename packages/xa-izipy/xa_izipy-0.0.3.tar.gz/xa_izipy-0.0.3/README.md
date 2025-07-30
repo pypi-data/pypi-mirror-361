@@ -1,0 +1,55 @@
+# xa_izipy Lib
+
+**🎯 Target:** Make Python easier (izi) 😎🔥
+
+This library provides a few simple functions to simplify Python scripting — from detecting paths to importing built-in modules faster.
+
+---
+
+## 🛠️ Function List
+
+- `help(choice="en")` – Shows info about the library in selected language  
+  - `"en"` by default  
+  - `"ru"` for Russian  
+  - Example: `help("ru")`
+
+- `getdirectory()` – Returns the full path to the script location 📂
+
+- `fast_import(show_loading=True)` – Automatically imports common Python libraries (`os`, `time`, `random`, `logging`, `json`)  
+  - Set `show_loading=False` to disable import messages
+
+- `get_platform_info()` – Returns detailed system information as a dictionary:  
+  - `os` — Operating system name (e.g., Windows, Linux, macOS)  
+  - `release` — OS version or release number (e.g., 10, 11, kernel version)  
+  - `arch` — CPU architecture (e.g., x86_64, AMD64, ARM)  
+  - `hostname` — Network name of the computer (PC name)  
+  - `ram_total_GB` — Total RAM in gigabytes (rounded to 2 decimals)  
+  - `ram_available_GB` — Available/free RAM in gigabytes (rounded to 2 decimals)  
+
+---
+
+## 💻 Example usage
+
+```python
+from xa_izipy import getdirectory, help, fast_import, get_platform_info
+
+print(f"This directory: {getdirectory()}")  # Output full path of script
+
+help()         # Show info in English
+help("ru")     # Show info in Russian
+
+fast_import()  # Import default modules with logs
+
+info = get_platform_info()  # Get base information as system
+
+# Return a dictionary with system info:
+# - 'os'       : Operating system name (e.g., Windows, Linux, Darwin/macOS)
+# - 'release'  : OS version or release number (e.g., 10, 11, or specific Linux kernel)
+# - 'arch'     : CPU architecture (e.g., x86_64, AMD64, ARM)
+# - 'hostname' : Network name of your computer (PC name or device name)
+# - 'ram_total_GB'     : Total RAM in gigabytes (rounded to 2 decimals)
+# - 'ram_available_GB' : Available/free RAM in gigabytes (rounded to 2 decimals)
+
+print("System info:")
+for key, value in info.items():
+    print(f" - {key}: {value}")

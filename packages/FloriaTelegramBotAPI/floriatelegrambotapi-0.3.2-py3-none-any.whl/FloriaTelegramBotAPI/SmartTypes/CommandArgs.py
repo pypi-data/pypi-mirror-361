@@ -1,0 +1,1 @@
+class CommandArgs(list[str]): pass

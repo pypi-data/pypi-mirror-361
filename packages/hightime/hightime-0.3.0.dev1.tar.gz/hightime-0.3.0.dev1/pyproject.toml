@@ -1,0 +1,84 @@
+[build-system]
+requires = ["poetry-core>=1.8"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "hightime"
+version = "0.3.0-dev1"
+license = "MIT"
+description = "Hightime Python API"
+authors = ["NI <opensource@ni.com>"]
+maintainers = ["NI <opensource@ni.com>"]
+readme = "README.md"
+repository = "https://github.com/ni/hightime"
+documentation = "https://hightime.readthedocs.io"
+keywords = ["hightime"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Manufacturing",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+[tool.poetry.group.docs]
+optional = true
+
+[tool.poetry.group.docs.dependencies]
+Sphinx = { version = ">=8.2", python = "^3.11" }
+sphinx-rtd-theme = ">=1.0.0"
+sphinx-autoapi = ">=1.8.4"
+m2r2 = ">=0.3.2"
+toml = ">=0.10.2"
+
+[tool.poetry.group.lint.dependencies]
+bandit = { version = ">=1.7", extras = ["toml"] }
+ni-python-styleguide = ">=0.4.1"
+mypy = ">=1.0"
+pyright = { version = ">=1.1.400", extras = ["nodejs"] }
+
+
+[tool.poetry.group.test.dependencies]
+pytest = ">=7.2"
+pytest-cov = ">=4.0"
+tox = ">=4.0"
+
+[tool.black]
+extend_exclude = '\.tox/|setup\.py'
+line-length = 100
+
+[tool.ni-python-styleguide]
+extend_exclude = '.tox/,setup.py'
+
+[tool.mypy]
+files = "hightime/,tests/"
+check_untyped_defs = true
+implicit_reexport = false
+warn_redundant_casts = true
+warn_unreachable = true
+warn_unused_configs = true
+
+[tool.pytest.ini_options]
+addopts = "--cov hightime -svv --strict --doctest-glob=README.md --doctest-modules"
+testpaths = ["hightime", "tests", "README.md"]
+
+[tool.bandit]
+skips = [
+  "B101", # assert_used
+]
+
+[tool.pyright]
+include = ["hightime/", "tests/"]

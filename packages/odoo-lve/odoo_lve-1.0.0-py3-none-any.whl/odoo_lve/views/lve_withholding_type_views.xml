@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Search View-->
+    <record id="lve_withholding_type_view_search" model="ir.ui.view">
+        <field name="name">lve_withholding_type_view.search</field>
+        <field name="model">lve_withholding_type</field>
+        <field name="arch" type="xml">
+            <search string="Tributary Unit">
+                <field name="code"/>
+                <field name="name"/>
+                <separator/>
+                <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
+                <filter string="Active" name="inactive" domain="[('active', '=', True)]"/>
+            </search>
+        </field>
+    </record>
+    <!--Form View-->
+    <record id="lve_withholding_type_view_form" model="ir.ui.view">
+        <field name="name">lve_withholding_type.form</field>
+        <field name="model">lve_withholding_type</field>
+        <field name="arch" type="xml">
+            <form string="Withholding Type">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+     <!--List View-->
+    <record id="lve_withholding_type_view_list" model="ir.ui.view">
+        <field name="name">lve_withholding_type.list</field>
+        <field name="model">lve_withholding_type</field>
+        <field name="arch" type="xml">
+            <list string="Name">
+                <field name="code"/>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+    <!--Action -->
+    <record id="lve_withholding_type_model_action" model="ir.actions.act_window">
+        <field name="name">Withholding Type</field>
+        <field name="res_model">lve_withholding_type</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

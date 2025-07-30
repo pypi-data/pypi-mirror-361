@@ -1,0 +1,27 @@
+{
+    "name": "Venezuela Location",
+    "version": "1.0",
+    "author": "Carlos Parada",
+    "category": "Sales",
+    "website": "https://erpya.com",
+    "summary": "Venezuela Location",
+    "installable": True,
+    "application": True,
+    "auto_install": False,
+    "maintainer": "ERP Consultores y Asociados",
+    "depends": [
+        "base_setup",
+        "base_import_module",
+    ],
+    "data": [
+        "data/lve_tributary_units.xml",
+        "data/lve_withholding_types.xml",
+        "data/lve_withholding_concepts.xml",
+        "security/ir.model.access.csv",
+        "views/lve_tributary_unit_views.xml",
+        "views/lve_withholding_type_views.xml",
+        "views/lve_withholding_concept_views.xml",
+        "views/lve_menus.xml",
+    ],
+    "license": "LGPL-3",
+}

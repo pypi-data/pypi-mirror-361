@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Search View-->
+    <record id="lve_tributaryunit_view_search" model="ir.ui.view">
+        <field name="name">lve_tributaryunit_view.search</field>
+        <field name="model">lve_tributaryunit</field>
+        <field name="arch" type="xml">
+            <search string="Tributary Unit">
+                <field name="name"/>
+                <field name="description"/>
+                <field name="valid_from"/>
+                <separator/>
+                <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
+                <filter string="Active" name="inactive" domain="[('active', '=', True)]"/>
+            </search>
+        </field>
+    </record>
+    <!--Form View-->
+    <record id="lve_tributaryunit_view_form" model="ir.ui.view">
+        <field name="name">lve_tributaryunit.form</field>
+        <field name="model">lve_tributaryunit</field>
+        <field name="arch" type="xml">
+            <form string="Tributary Unit">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="description"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="valid_from"/>
+                            <field name="amount"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!--List View-->
+    <record id="lve_tributaryunit_view_list" model="ir.ui.view">
+        <field name="name">lve_tributaryunit.list</field>
+        <field name="model">lve_tributaryunit</field>
+        <field name="arch" type="xml">
+            <list string="Name">
+                <field name="name"/>
+                <field name="description"/>
+                <field name="valid_from"/>
+                <field name="amount"/>
+            </list>
+        </field>
+    </record>
+    <!--Action -->
+    <record id="lve_tributaryunit_model_action" model="ir.actions.act_window">
+        <field name="name">Tributary Unit</field>
+        <field name="res_model">lve_tributaryunit</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

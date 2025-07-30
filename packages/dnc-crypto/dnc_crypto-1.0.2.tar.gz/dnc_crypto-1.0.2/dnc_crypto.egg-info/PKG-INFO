@@ -1,0 +1,110 @@
+Metadata-Version: 2.1
+Name: dnc_crypto
+Version: 1.0.2
+Summary: An innovative, multi-layered dynamic network cipher.
+Author: Mohammadmoein Pisodeh
+Author-email: mmoeinp3@gmail.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Security :: Cryptography
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy
+Requires-Dist: cryptography
+Requires-Dist: networkx
+
+# DNC-Crypto: A Modern & Experimental Cipher Library
+
+![Python Version](https://img.shields.io/pypi/pyversions/dnc-crypto)
+![PyPI Version](https://img.shields.io/pypi/v/dnc-crypto)
+![License](https://img.shields.io/pypi/l/dnc-crypto)
+
+Hey there! Welcome to **DNC-Crypto**, my personal project to build a seriously tough, next-generation encryption library. I wanted to create something that wasn't just another clone of existing algorithms, but a fresh take on modern cryptography.
+
+This library implements a unique, multi-layered encryption scheme designed from the ground up for extreme security and theoretical resilience.
+
+**Disclaimer:** This is an experimental, one-person project. It's built on solid cryptographic principles, but it hasn't undergone the years of public scrutiny that standards like AES have. **Please do not use this for critical, life-or-death applications.** Use it for personal projects, learning, or when you need something that feels... different.
+
+## Key Features
+
+*   **Paranoid-Level Security:** Utilizes an 8-layer cascading encryption protocol. Your data is encrypted not once, but eight times, with a different derived key for each layer.
+*   **Future-Proof Key Sizes:** Supports **256-bit** (the current standard) and **512-bit** keys, making it theoretically resistant to quantum brute-force attacks.
+*   **Simple, No-Fuss API:** A clean and straightforward interface. Generate a key, encrypt, decrypt. That's it.
+*   **Zero Dependencies (Almost):** Built on top of well-known libraries like `numpy` and `cryptography` but introduces its own unique logic.
+
+## Installation
+
+Getting started is as simple as it gets. Just use pip:
+
+```bash
+pip install dnc-crypto
+```
+
+## Quick Start
+
+Here’s how you can protect your data in just a few lines of code.
+
+```python
+from dnc_crypto import DNCCrypto, DecryptionError
+import os
+
+# The file where your secret key will be stored
+KEY_FILE = "my_super_secret.key"
+
+# --- 1. Key Generation & Loading ---
+# The library handles creating a key file for you if it doesn't exist.
+try:
+    crypto = DNCCrypto(key_path=KEY_FILE)
+    print("✅ Successfully loaded the existing key.")
+except FileNotFoundError:
+    print(f"⚠️ Key file not found. Creating a new one at '{KEY_FILE}'...")
+    # You can choose between 256-bit (default) and 512-bit keys.
+    # For maximum security, let's go with 512.
+    DNCCrypto.generate_key(key_path=KEY_FILE, key_size_bits=512)
+    crypto = DNCCrypto(key_path=KEY_FILE)
+    print("✅ New 512-bit key generated and loaded.")
+
+
+# --- 2. Encrypt Your Data ---
+plaintext = b"This is my secret data, and it's for your eyes only."
+print(f"\nOriginal message: {plaintext}")
+
+ciphertext = crypto.encrypt(plaintext)
+print(f"Encrypted (hex): {ciphertext.hex()}")
+
+
+# --- 3. Decrypt It Back ---
+try:
+    decrypted = crypto.decrypt(ciphertext)
+    print(f"Decrypted message: {decrypted}")
+
+    # Verify that everything worked perfectly
+    assert plaintext == decrypted
+    print("\n🎉 Success! The original message was recovered.")
+
+except DecryptionError:
+    print("\n❌ Decryption failed! The key is wrong or the data is corrupt.")
+
+finally:
+    # Clean up the key file for this example
+    if os.path.exists(KEY_FILE):
+        os.remove(KEY_FILE)
+
+```
+
+## How It Works (Without Spilling the Secret Sauce)
+
+Instead of relying on a single, static algorithm, DNC-Crypto uses a layered approach. The core engine is a custom-built, dynamic block cipher. On top of that, the `ChainedEncryptor` protocol runs this engine multiple times, creating a cascade of cryptographic transformations.
+
+This means your data isn't just locked in a safe; it's locked in a safe, which is inside another safe, which is inside another... you get the idea. And each safe has a different key.
+
+## Contributing
+
+This is a personal journey for now, but feel free to open an issue on the [GitHub repository](https://github.com/your_username/dnc_crypto) if you find a bug or have a suggestion!
+
+---
+
+Built with passion and a healthy dose of paranoia. Enjoy!

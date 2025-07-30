@@ -1,0 +1,66 @@
+[project]
+name = "uiua"
+version = "0.1.0"
+description = "Python bindings for the Uiua array programming language"
+readme = "README.md"
+authors = [{ name = "Jiří Klimeš", email = "jiri@klimes.dev" }]
+requires-python = ">=3.13"
+dependencies = []
+
+
+[dependency-groups]
+dev = [
+    "maturin>=1.7.4",
+    "maturin[patchelf]>=1.8.3",
+    "pip>=24.3.1",
+    "pre-commit>=4.0.1",
+    "pyright>=1.1.402",
+    "pytest>=8.4.1",
+]
+
+[build-system]
+requires = ["maturin>=1.7.4"]
+build-backend = "maturin"
+
+[tool.maturin]
+skip-install = false
+features = ["pyo3/extension-module"]
+manifest-path = "uiualib/Cargo.toml"
+module-name = "uiua.lib"
+python-source = "."
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["*.py"]
+
+[tool.ruff]
+target-version = "py313"
+include = ["uiua"]
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "W",
+    "I",
+    "N",
+    "UP",
+    "B",
+    "A",
+    "C4",
+    "ICN",
+    "PIE",
+    "T20",
+    "SIM",
+    "ERA",
+    "PL",
+    "RUF",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"examples/**/*.py" = ["T201"]
+
+[tool.pyright]
+include = ["uiua", "tests"]
+pythonVersion = "3.13"
+typeCheckingMode = "standard"

@@ -1,0 +1,32 @@
+type Tristate = num
+
+/// Tristate Constants
+declare {
+    // True
+    const vbTrue: Tristate = -1
+
+    // False
+    const vbFalse: Tristate = 0
+
+    // Use default from computer's regional settings.
+    const vbUseDefault: Tristate = -2
+}
+
+// Returns an expression formatted as a currency value using the currency symbol defined in the system control panel.
+declare fn FormatCurrency(
+    // Expression to be formatted.
+    Expression: num,
+    NumDigitsAfterDecimal?: num,
+    IncludeLeadingDigit?: Tristate,
+    UseParensForNegativeNumbers?: Tristate,
+    GroupDigits?: Tristate
+) -> String
+
+// Returns an expression formatted as a date or time.
+declare fn FormatDateTime(Date: Date, NamedFormat: DateFormat = vbGeneralDate) -> Date
+
+// Returns an expression formatted as a number.
+declare fn FormatNumber(Expression: num, NumDigitsAfterDecimal: num = -1, IncludeLeadingDigit: Tristate, UseParensForNegativeNumbers: Tristate, GroupDigits: Tristate) -> num
+
+// Returns an expression formatted as a percentage (multiplied by 100) with a trailing % character.
+declare fn FormatPercent(Expression: num, NumDigitsAfterDecimal: num = -1, IncludeLeadingDigit: Tristate, UseParensForNegativeNumbers: Tristate, GroupDigits: Tristate) -> str

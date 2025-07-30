@@ -1,0 +1,35 @@
+declare comptime class Logger {
+    Logger({level: LoggerLevel}) {}
+
+    fn with_field(key: str, value: any) -> Logger
+
+    fn with_error(err: error) -> Logger
+
+    fn debug()
+
+    fn info()
+
+    fn warn()
+
+    fn error()
+
+    fn fatal()
+}
+
+type LoggerLevel = 'debug' | 'info' | 'warn' | 'error' | 'fatal'
+
+declare comptime {
+    fn with_field(key: str, value: any) -> Logger
+
+    fn with_error(err: error) -> Logger
+
+    fn debug()
+
+    fn info()
+
+    fn warn()
+
+    fn error()
+
+    fn fatal()
+}

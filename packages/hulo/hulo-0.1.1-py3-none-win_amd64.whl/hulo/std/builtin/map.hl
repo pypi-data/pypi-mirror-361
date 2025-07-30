@@ -1,0 +1,24 @@
+pub comptime class map<T, U> {
+    static fn from(entries: list) -> map<T, U>
+
+    fn len() -> num
+    fn is_empty() -> bool
+    fn has(key: T) -> bool
+    fn get(key: T) -> U?
+
+    operator #() -> num
+    operator [](key: T) -> U?
+    operator in(key: T) -> bool
+
+    fn insert(key: T, value: U) -> U  // 返回旧值（如果有）
+    fn remove(key: T) -> U          // 返回被删除的值
+    fn clear()
+
+    operator []=(key: T, value: U)
+    operator delete(key: T)
+    
+    fn keys() -> T[]
+    fn values() -> U[]
+
+    fn to_str() -> str
+}

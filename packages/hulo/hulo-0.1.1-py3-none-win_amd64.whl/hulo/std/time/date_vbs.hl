@@ -1,0 +1,32 @@
+// @hulo-build vbs
+
+pub class DateTime {
+    DateTime(
+        year: num, month: num, day: num,
+        hour?: num = 0, minute?: num = 0, 
+        second?: num = 0, millisec?: num = 0, 
+        nanosec?: num = 0
+    ) {
+        return unsafe { DateSerial({{$year}}, {{$month}}, {{$day}}) }
+    }
+
+    DateTime.now() {
+        return unsafe { Date };
+    }
+
+    operator -(other: DateTime) {
+        return unsafe { DateDiff("d", {{$other}}, {{$this}}) };
+    }
+
+    operator +(other: DateTime) {
+        return $this.add($other);
+    }
+
+    fn add(d: DateTime) -> DateTime {
+        return match {
+            $d.day > 0 => unsafe { DateAdd("d", {{$days}}, {{$this}}) }
+            $d.year > 0 => unsafe { DateAdd("yyyy", {{$years}}, {{$this}}) }
+            _ => throw Error::Unimplemented
+        }
+    }
+}

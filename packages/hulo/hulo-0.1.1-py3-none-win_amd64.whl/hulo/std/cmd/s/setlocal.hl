@@ -1,0 +1,23 @@
+// Starts localization of environment variables in a batch file. Localization continues until a matching endlocal command is encountered or the end of the batch file is reached.
+@command("setlocal [enableextensions | disableextensions] [enabledelayedexpansion | disabledelayedexpansion]")
+pub class setlocal {
+    // Enables the command extensions until the matching endlocal command is encountered, regardless of the setting before the setlocal command was run.
+    @option
+    enableextensions: bool
+
+	// Disables the command extensions until the matching endlocal command is encountered, regardless of the setting before the setlocal command was run.
+    @option
+    disableextensions: bool
+    
+    // Enables the delayed environment variable expansion until the matching endlocal command is encountered, regardless of the setting before the setlocal command was run.
+    @option
+    enabledelayedexpansion: bool
+
+	// Disables the delayed environment variable expansion until the matching endlocal command is encountered, regardless of the setting before the setlocal command was run.
+    @option
+    disabledelayedexpansion: bool
+
+    // Displays help at the command prompt.
+    @flag(short: "h", long: "help", format: "/?")
+    help: bool
+}

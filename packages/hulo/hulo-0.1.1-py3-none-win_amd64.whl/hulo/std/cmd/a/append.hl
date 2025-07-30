@@ -1,0 +1,49 @@
+/**
+ * Allows programs to open data files in specified directories as if they were in the current directory.
+ * When used without parameters, displays the appended directory list.
+ * 
+ * Note: This command is not supported in Windows 10.
+ */
+@command("append [paths] [FLAGS]")
+class append {
+    /**
+     * Specifies a drive and directory to append.
+     */
+    @option(bind: "paths")
+    paths: str[]
+
+    /**
+     * Controls application of appended directories:
+     * - on: Applies to file searches and launching applications
+     * - off: Applies only to file open requests (default)
+     */
+    @flag(format: "/x:{}")
+    x-option: "on" | "off" = "off"
+
+    /**
+     * Controls path handling behavior:
+     * - on: Applies appended directories to requests with existing paths (default)
+     * - off: Disables path application
+     */
+    @flag(format: "/path:{}")
+    path-option: "on" | "off" = "on"
+
+    /**
+     * Stores the appended directory list in the APPEND environment variable.
+     * Can only be used during the first append call after system startup.
+     */
+    @flag(format: "/e")
+    store-in-env: bool
+
+    /**
+     * Clears the appended directory list when specified alone.
+     */
+    @flag(format: ";")
+    clear: bool
+
+    /**
+     * Displays help information.
+     */
+    @flag(format: "/?")
+    help: bool
+}

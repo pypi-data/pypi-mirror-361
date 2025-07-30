@@ -1,0 +1,41 @@
+// @hulo-build windows
+
+/**
+ * Adds volumes to the set of volumes that are to be shadow copied, 
+ * or adds aliases to the alias environment. 
+ * If used without subcommands, add lists the current volumes and aliases.
+ */
+@command("add")
+class add {
+    /**
+     * Adds volumes to the Shadow Copy Set, which is the set of volumes to be shadow copied.
+     * When a shadow copy is created, an environment variable links the alias to the shadow ID, so the alias can then be used for scripting.
+     * Volumes are added one at a time. 
+     * Each time a volume is added, it's checked to make sure VSS supports shadow copy creation for that volume.
+     * This check can be invalidated by later use of the set context command.
+     * This command is necessary to create shadow copies. 
+     * If used without parameters, add volume displays help at the command prompt.
+     */
+    @command("volume volumename [provider]")
+    class volume {
+        @option(bind: "volumename")
+        volumename: str
+
+        @option(bind: "provider")
+        provider: symbol
+    }
+
+    /**
+     * Adds aliases to the alias environment. 
+     * If used without parameters, add alias displays help at the command prompt. 
+     * Aliases are saved in the metadata file and will be loaded with the load metadata command.
+     */
+    @command("alias aliasname aliasvalue")
+    class alias {
+        @option(bind: "aliasname")
+        aliasname: str
+
+        @option(bind: "aliasvalue")
+        aliasvalue: str
+    }
+}

@@ -1,0 +1,221 @@
+Metadata-Version: 2.4
+Name: jayden-opensearch-retriever
+Version: 0.1.1
+Summary: OpenSearch 기반 검색 및 검색 결과 검색 도구
+Author-email: Jayden <jayden.kim@nxtcloud.kr>
+Maintainer-email: Jayden <jayden.kim@nxtcloud.kr>
+Project-URL: Homepage, https://github.com/yourusername/opensearch-retriever
+Project-URL: Repository, https://github.com/yourusername/opensearch-retriever
+Project-URL: Documentation, https://opensearch-retriever.readthedocs.io/
+Project-URL: Bug Tracker, https://github.com/yourusername/opensearch-retriever/issues
+Keywords: opensearch,search,retriever,elasticsearch
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Internet :: WWW/HTTP :: Indexing/Search
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests>=2.25.0
+Requires-Dist: opensearch-py>=2.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Dynamic: license-file
+
+# OpenSearch 벡터 검색 리트리버
+
+OpenSearch 기반 부모-자식 문서 벡터 검색 도구입니다.
+
+## 기능
+
+- OpenSearch 클러스터에 연결
+- 임베딩 벡터를 이용한 유사도 검색
+- 부모-자식 관계의 문서 검색 (Child 인덱스에서 검색 후 Parent 문서 반환)
+- 쿼리 임베딩 생성
+
+## 설치 방법
+
+### 1. 개발 설치 (로컬 개발용)
+
+```bash
+# 저장소 클론
+git clone https://github.com/nxtcloud-org/opensearch_retriever
+cd opensearch-retriever
+
+# 가상환경 생성 (권장)
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# venv\Scripts\activate  # Windows
+
+# 개발 모드로 설치
+pip install -e .
+
+# 또는 개발 의존성과 함께 설치
+pip install -e ".[dev]"
+```
+
+### 2. PyPI 설치 (배포 후)
+
+```bash
+pip install opensearch-retriever
+```
+
+### 3. requirements.txt에서 설치
+
+```bash
+pip install -r requirements.txt
+```
+
+## 사용법
+
+### 기본 설정
+
+```python
+from opensearch_retriever import ParentChildRetriever
+from langchain_core.embeddings import Embeddings
+
+# 임베딩 모델 준비 (예: HuggingFace, OpenAI 등)
+# embedding_model = YourEmbeddingModel()
+
+# ParentChildRetriever 초기화
+retriever = ParentChildRetriever(
+    host="localhost",
+    port=9200,
+    username="admin",  # 선택사항
+    password="admin",  # 선택사항
+    use_ssl=False,
+    verify_certs=True,
+    embedding_model=embedding_model
+)
+```
+
+### 벡터 검색
+
+```python
+# 부모-자식 관계 문서 벡터 검색
+results = retriever.vector_search(
+    child_index="child-documents",    # 자식 문서 인덱스 (벡터 검색 대상)
+    parent_index="parent-documents",  # 부모 문서 인덱스 (결과 반환 대상)
+    query="검색할 질문이나 내용",
+    k=3,        # 벡터 검색에서 고려할 상위 문서 수
+    fields=["title", "content"]  # 선택사항
+)
+
+# 검색 결과 처리
+for document in results:
+    print(f"문서 내용: {document}")
+```
+
+### 쿼리 임베딩
+
+```python
+# 쿼리를 벡터로 변환
+query_vector = retriever.embed_query("임베딩할 텍스트")
+print(f"임베딩 벡터 차원: {len(query_vector)}")
+```
+
+## 인덱스 구조
+
+이 도구는 부모-자식 관계의 문서 구조를 가정합니다:
+
+### Child 인덱스 (벡터 검색용)
+```json
+{
+  "vector": [0.1, 0.2, 0.3, ...],  // 임베딩 벡터
+  "metadata": {
+    "parent_id": "parent_doc_1",    // 부모 문서 ID
+    "chunk_id": "chunk_1"           // 청크 ID
+  },
+  "content": "실제 텍스트 내용"
+}
+```
+
+### Parent 인덱스 (결과 반환용)
+```json
+{
+  "title": "문서 제목",
+  "content": "전체 문서 내용",
+  "metadata": {
+    "source": "파일 경로",
+    "created_at": "2024-01-01"
+  }
+}
+```
+
+## 검색 과정
+
+1. **쿼리 임베딩**: 입력된 쿼리를 벡터로 변환
+2. **벡터 검색**: Child 인덱스에서 KNN 검색 수행
+3. **부모 ID 추출**: 검색된 child 문서들에서 parent_id 수집
+4. **부모 문서 조회**: Parent 인덱스에서 해당 부모 문서들을 조회
+5. **결과 반환**: 최종 부모 문서들을 리스트로 반환
+
+## 개발 환경 설정
+
+### 의존성 설치
+
+```bash
+# 개발 의존성 설치
+pip install -e ".[dev]"
+
+# 또는 개별 설치
+pip install pytest pytest-cov black flake8 mypy pre-commit
+```
+
+### 테스트 실행
+
+```bash
+# 모든 테스트 실행
+pytest
+
+# 특정 테스트 파일 실행
+pytest tests/test_retriever.py
+
+# 커버리지와 함께 테스트 실행
+pytest --cov=opensearch_retriever
+```
+
+## 패키지 빌드 및 배포
+
+### 패키지 빌드
+
+```bash
+# 빌드 도구 설치
+pip install build
+
+# 패키지 빌드
+python -m build
+```
+
+### PyPI 배포
+
+```bash
+# 배포 도구 설치
+pip install twine
+
+# TestPyPI에 배포 (테스트용)
+twine upload --repository testpypi dist/*
+
+# 실제 PyPI에 배포
+twine upload dist/*
+```
+
+## 요구사항
+
+- Python >= 3.9
+- requests >= 2.25.0
+- opensearch-py >= 2.0.0
+- langchain-core (임베딩 모델용)
+
+## 주의사항
+
+- 임베딩 모델(`embedding_model`)을 반드시 제공해야 합니다
+- Child 인덱스에는 벡터 필드와 parent_id 메타데이터가 필요합니다
+- Parent 인덱스는 실제 문서 내용을 담고 있어야 합니다
+- OpenSearch에서 KNN 검색이 활성화되어 있어야 합니다

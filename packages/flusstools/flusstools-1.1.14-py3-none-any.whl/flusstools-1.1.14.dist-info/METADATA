@@ -1,0 +1,116 @@
+Metadata-Version: 2.4
+Name: flusstools
+Version: 1.1.14
+Summary: A Python toolbox for river and floodplain analysis.
+Project-URL: Homepage, https://github.com/ecohydraulics/flusstools-docs
+Project-URL: Bug Tracker, https://github.com/ecohydraulics/flusstools-pckg/issues
+Author-email: FlussTeam / Hydro‑Informatics <schwindt.water@gmail.com>
+License: BSD 3-Clause License
+        
+        Copyright (c) 2020, Eco-hydraulics
+        All rights reserved.
+        
+        Redistribution and use in source and binary forms, with or without
+        modification, are permitted provided that the following conditions are met:
+        
+        1. Redistributions of source code must retain the above copyright notice, this
+           list of conditions and the following disclaimer.
+        
+        2. Redistributions in binary form must reproduce the above copyright notice,
+           this list of conditions and the following disclaimer in the documentation
+           and/or other materials provided with the distribution.
+        
+        3. Neither the name of the copyright holder nor the names of its
+           contributors may be used to endorse or promote products derived from
+           this software without specific prior written permission.
+        
+        THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+        AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+        IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+        DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+        FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+        DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+        SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+        CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+        OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+        OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+License-File: LICENSE
+Keywords: Python,QGIS,geospatial,gis,hydraulic‑engineering,hydroinformatics,hydro‑morphology,numerical,rivers,schwindt,simulations
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Scientific/Engineering :: GIS
+Requires-Python: >=3.10
+Requires-Dist: alphashape>=1.3.1
+Requires-Dist: earthpy>=0.9.4
+Requires-Dist: geojson>=3.2
+Requires-Dist: geopandas>=1.1
+Requires-Dist: h5py>=3.14
+Requires-Dist: laspy>=2.6
+Requires-Dist: mapclassify>=2.9
+Requires-Dist: matplotlib>=3.10
+Requires-Dist: networkx>=3.5
+Requires-Dist: numpy>=2.3
+Requires-Dist: openpyxl>=3.1
+Requires-Dist: pandas>=2.3
+Requires-Dist: pyshp>=2.3.1
+Requires-Dist: rasterio>=1.4
+Requires-Dist: rasterstats>=0.20
+Requires-Dist: scipy>=1.16
+Requires-Dist: shapely>=2.1
+Requires-Dist: tabulate>=0.9
+Provides-Extra: docs
+Requires-Dist: myst-parser>=2.0; extra == 'docs'
+Requires-Dist: sphinx-book-theme>=1.1; extra == 'docs'
+Requires-Dist: sphinx>=7.3; extra == 'docs'
+Requires-Dist: sphinxcontrib-bibtex>=2.6; extra == 'docs'
+Provides-Extra: style
+Requires-Dist: pre-commit>=3.7; extra == 'style'
+Requires-Dist: ruff>=0.4; extra == 'style'
+Provides-Extra: test
+Requires-Dist: pytest-cov>=5.0; extra == 'test'
+Requires-Dist: pytest-xdist>=3.5; extra == 'test'
+Requires-Dist: pytest>=8.0; extra == 'test'
+Description-Content-Type: text/markdown
+
+## FlussTools
+
+Head for Python scripts for river analyses.
+
+The full documentation is available at [https://flusstools.readthedocs.io](https://flusstools.readthedocs.io/en/latest/).
+
+### Issues
+
+We depend on GDAL and GDAL installation is buggy. To enable cross-platform support, we currently need to enforce numpy<2.0.0 because most Linux derivatives run on GDAL v3.6 but numpy2 requires GDAL>=3.9.1.
+
+### Create Requirements.txt
+
+`pip-tools` helps to manage `requirements.txt` with more control. It separates direct dependencies from transitive ones.
+
+1. **Install `pip-tools`**:
+
+```sh
+pip install pip-tools
+```
+
+2. **Create `requirements.in`**:
+
+   List your direct dependencies in a `requirements.in` file. For example:
+
+```plaintext
+requests
+numpy
+```
+
+3. **Compile `requirements.txt`**:
+
+   Run `pip-compile` to generate `requirements.txt` from `requirements.in`:
+
+```sh
+pip-compile requirements.in
+```
+
+

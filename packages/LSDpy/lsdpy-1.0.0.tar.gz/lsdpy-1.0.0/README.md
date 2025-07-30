@@ -1,0 +1,154 @@
+# LSDpy
+Least Squares Deconvolution in Python for analysis of stellar spectra.
+
+## Installation
+LSDpy is available through both PyPI and Github.  To install from PyPI you can use:
+```
+pip install LSDpy
+```
+Or you can download the source files, and some example input files, from [https://github.com/folsomcp/LSDpy](https://github.com/folsomcp/LSDpy).
+
+## Basic use
+### Running the installed version
+If LSDpy has been installed using pip, you can run the code from the terminal like:
+```
+lsdpy [observation_file] [output_profile] -m [line_mask]
+```
+This should generate an output LSD profile (if output name not specified defaults to prof.dat).  The output file will have columns of velocity Stokes I, error on Stokes I, Stokes V, error on Stokes V, the null (N1), and error on the null.
+You can get some additional help information with:
+```
+lsdpy -h
+```
+
+LSDpy expects an input file of control parameters called `inlsd.dat`.  If that file does not exist then the program will generate new inlsd.dat file and halt.  You will need to modify that file for your particular use case, then re-run the code.  The input parameters in inlsd.dat are described below
+
+### Using the installed package
+LSDpy can also be used inside Jupyter notebooks and other Python scripts.  If it has been installed with pip you can run the main interface function with:
+```
+import LSDpy
+prof = LSDpy.lsd(observation='obs.s', mask='mask.dat', outName='prof.dat',
+                 velStart=-200., velEnd=+200., velPixel=1.8,
+                 normDepth=0.2, normLande=1.2, normWave=500.)
+```
+This will save the LSD profile to `prof.dat`.  The function arguments should be modified for your use case.  You can print a full list of arguments from `help("LSDpy.lsd")`.  You can do further processing on the result like:
+```
+profVel, profI, profIerr, profV, profVerr, profN, profNerr, profHeader = prof
+```
+
+### Running the source files
+The main executable is lsdpy.py, in the LSDpy folder.  There are a set of control parameters specified in the file inlsd.dat
+
+You can edit the file inlsd.dat, specify the observation file to process, the line mask to use, and any other parameters you need to modify.  Then run lsdpy.py and it should generate an output LSD profile called prof.dat.  If all went well the prof.dat file will have columns of velocity, Stokes I, error on Stokes I, Stokes V, error on Stokes V, the null (N1), and errors on the null.
+
+You can run the code from the command line like:
+```
+python LSDpy/lsdpy.py [observation_file] [output_profile] -m [line_mask]
+```
+Other parameters will be still read from the inlsd.dat file.  The observation and line mask can optionally be specified with inlsd.dat rather than the command line.
+
+## Input parameters
+The full set of input parameters are specified in the `inlsd.dat` file.
+
+### Input observation
+The input observation file name, this can include a path to the file.
+
+The observation file is assumed to have columns of either: wavelength, I/Ic, V/Ic, Null1/Ic, Null2/Ic, uncertainty, or alternately: wavelength, I/Ic, uncertainty.  All normalized to the continuum.  This follows the output of the Libre-ESPRIT data reduction pipeline.  The second polarimetric Null is usually not used.  The uncertainties should be 1 sigma, ideally from propagating uncertainties through the data reduction.
+
+### Line mask
+The line mask file name, this can include a path to the file. 
+
+This file should have columns of wavelength, species code (atomic number + ionization state/100, where neutrals have an ionization of 0), line depth at the line center (depth from the continuum), excitation potential of the lower level (in eV), effective Lande factor, and a flag for whether the line is used (1=use, 0=don't).  The code expects to have 1 line of header, usually the number of lines in the mask, but that is not currently read or used for anything.  The excitation potential is never actually used.  The observation wavelength needs to be in the same units as the line mask wavelengths. 
+
+### Start and end velocity (km/s) for LSD profile
+The range that the LSD profile will span, in velocity units.  
+
+### Pixel size in velocity (km/s)
+The size of a pixel in the LSD profile, in velocity units.
+
+Usually a good choice is the average pixel size of the observation (in km/s), which the code will print to terminal as a diagnostic. 
+
+Choosing a pixel size that is too small may cause oscillations in the LSD profile, usually when the pixel size is smaller than the mean observation pixel size.  This is essentially a sampling rate problem.  Since the observed spectrum pixels are roughly (although not exactly) the same size in velocity, sampling it with model LSD pixels that are too small effectively aliases some power into high frequencies, creating that oscillation.
+
+Using LSD pixels larger than the observed pixels generally seems to be safe, although I recommend multiples of the observed pixel size when larger LSD pixels are desired.
+
+### Mask/profile normalization parameters
+Normalizing line depth, Lande factor, and wavelength (nm)
+
+These parameters scale the LSD profile, or equivalently normalize the line mask, by those values.  Just depth (the 1st value) is used for Stokes I, and (depth)x(Lande_factor)x(wavelength) for Stokes V.  The LSD profile amplitudes depend on the scaling of the weights in the LSD mask, and mathematically that scaling is arbitrary.  These parameters control that scaling explicitly.  For a detailed explanation see Kochukhov et al. (2010, A&A 524, A5), particularly Sect 2.5 and 2.6.
+
+The most important point is that the LSD profile should theoretically behave like a line with these parameters for Lande factor, wavelength, and central depth (of an unbroadened line), to the extent that the approximations in LSD hold true.  A popular choice is to set those parameters to the average from the line mask, but one can also use some round 'reasonable' values.  Just remember what you used when you measure longitudinal fields or attempt ZDI.  
+
+### Remove continuum polarization
+This removes continuum polarization in the Stokes V profile by forcing the average of Stokes V to be 0.  Set the flag to 1 to enable this, 0 to disable.  In a well behaved observation this should not be necessary, but instrumental or data reduction errors may introduce an offset in Stokes V.  Be a bit careful with this, as it is usually an imperfect correction for an error that occurred elsewhere.
+
+### Remove very closely spaced lines
+Flag to modify the mask by removing lines that are too closely spaced (by default less than 1 pixel apart), 1 = yes, 0 = no.
+
+Very closely spaced lines in the mask can cause problems.  Most notably, in real spectra strong lines do not add linearly due to saturation effects.  Turning this on can help by removing the multiple components of strong lines.  For weaker lines (a depth < 0.6 by default) the depths are added to make one deeper line (up to a depth of 0.6 by default), effectively merging them.  In most cases this provides a small improvement to the LSD profile.  
+
+### Sigma clip to reject bad pixels
+A sigma clipping routine can be applied to the observation, if the number of iterations is 0 it is disable entirely.  Uses the sigma value (number of sigma discrepancy between a model and observed pixel) beyond which a pixel is rejected, and and a number of iterations to repeat the sigma clipping.  
+
+The sigma clipping routine may help improve the line profile shape in Stokes I.  However, the more iterations the slower the code runs.  And if too many points in the observation get rejected in the sigma clipping (too small a sigma clipping limit) it reduces the SNR in Stokes V.
+
+For most issues it is better to fine tune the line mask (e.g. rejecting problematic lines, or lines in problem regions of the observation) rather than relying on this sigma clipping routine.  If you do need to use it, it is often good to start with the sigma clipping turned off, then turn it on to fine tune the profile.  The LSD code prints how many pixels it has reject to the terminal.  Often rejecting some pixels helps, but rejecting more than 5% of pixels may be a bad idea (or a sign that you need a better line mask).  
+
+### Interpolation mode
+Flag for how the model is interpolated onto observed wavelengths, 1=linear interpolation (recommended!), 0=nearest neighbor interpolation.
+
+A somewhat experimental feature to change how the model LSD spectrum is interpolated on to the wavelengths of the observed spectrum.  The code can linearly interpolate between two model points to get the exact wavelength for an observed point (this is the usual way of doing things).  But the code can also just take the nearest model point in wavelength to the observed point ('nearest neighbor interpolation').  Doing that seems to increase the effective SNR of the LSD profile, but also seems to smear the profile by a fraction of a pixel.  Unless you are interested in experimenting, just leave the flag at 1 and stick with linear interpolation.
+
+If you set the "interpolation mode" flag to 0 (for nearest neighbor), that can mitigate the problem of oscillations in the profile due to too small LSD pixels.  But it doesn't completely solve it, so choosing a better pixel size is usually the better approach.
+
+### Save LSD model spectrum?
+Controls if and where to save the LSD fit to the observation, 1 = save 0 = don't save, followed by a file name.
+
+The model spectrum produced by LSD is the convolution of the LSD profile and the line mask.  It is the best fit in a least squares sense, although generally does a poor job of fully reproducing the Stokes I spectrum.  The file has columns of wavelength, I/Ic, V/Ic, Null1/Ic.  This can be useful for evaluating the quality of a line mask by comparing this to the observation.
+
+### Plot LSD profile?
+The code can optionally plot the LSD profile with matplotlib.  The values are a flag to plot the profile (1 = yes, 0 = no), a flag to optionally save the plot (1 = yes, 0 = no), and a file name for the saved plot (only used if save plot = 1).  The save plot file name needs to end with a suffix recognized by matplotlib (usually .png .eps or .pdf).  If matplotlib is not installed, the code should still run if you set the plotting to 0.  
+
+
+## Terminal output
+A partial description of some text output to the terminal.  The output is mostly self explanatory, I hope.
+
+The average pixel sized of the observed spectrum, in velocity units, is provided.
+
+The mean mask parameters output are simple unweighted averages.
+
+For each iteration of the sigma clipping routine the number of rejected pixels and number of considered pixels is printed (sigma clip rejecting xxx points of yyy)
+
+Stokes I, V, and N error bars are re-scaled by the square root of the reduced chi^2 of the fit to the observation, if this would increase the errorbar (if the reduced chi^2 is > 1).  The reduced chi^2 and re-scaling value are printed to the terminal ("Rescaling error bars by: ", or "Not re-scaling error bars" if the scaling value is less than 1.0).  This typically leads to substantially increased error bars for Stokes I.
+
+The continuum polarization level is printed for V and N "note, profile continuum pol:"
+
+An estimate of the velocity range that the line spans is printed "line range estimate".  It is based on Stokes I, if the line shape or continuum are particularly strange then the estimate may be wrong.  The line range is taken to be where the profile drops 4 sigma below the continuum level.  The continuum level is estimated from the first and last 20 points in the profile.  The line range is used to compute detections statistics.
+
+The detections statistics are printed for Stokes V, and then N.  The chi^2 of the null model (a flat line) fit to the observation, for the portion inside the line, is printed.  The code also prints the detection probability, and false alarm probability, for that chi^2.  The detection probability is the probability that the null model disagrees with the observation.  Then the code prints the same information calculated outside the line, as a diagnostic test.  This is then repeated for the null.  When operating well, there would be a detection inside the line for Stokes V, but no detection outside the line in V, inside the line in N or outside the line in N.  Currently the code uses detection probabilities of 0.0-0.99 as "non-detection", 0.99-0.9999 as "marginal detections", and > 0.9999 as "definite detections". 
+
+
+## Change Log
+
+1.0.0 Considering this a stable version of the package for a full release.  Changed the plotting of the LSD profile to not show a smoothed profile, only the regular unmodified profile.  (The old plot with both the unmodified points and a smoothed line can still be generated by setting the plot mode to 2.)
+
+0.4.6 & 0.4.7 Reorganized the files to work more conveniently with SetupTools and the PyPI server, for eventual distribution with pip.  Renamed the lsdpy.main function to lsdpy.lsd.  Added a feature to generate a template inlsd.dat file if one does not exist, when LSDpy is ran from the command line.
+
+0.4.5 Added an \_\_init\_\_.py file, for more convenient importing LSDpy as a package.  Added the LSD file header as another return value to the lsdpy.main function.
+
+0.4.4 Added an option to save the LSD model 'spectrum' with a command line argument.  Also fixed a bug where the model spectrum wasn't saved even though the flag in inlsd.dat was set.
+
+0.4.3 When calling LSDpy as function inside another Python script, added an option to return the model 'spectrum' (convolution of the LSD profile and line mask).
+
+0.4.2 Improved support for calling LSDpy as a function inside another Python script.  Now all parameters can be set through function arguments (making inlsd.dat optional for scripts).
+
+0.4.1 Now saves the line mask normalizing depth walvength and Lande factor to the header of the LSD profile.  This is added to the end of any existing header from the observation file.
+
+0.4.0 Added a feature for removing lines from a mask that are very close together.  Added support for calling LSDpy as a function in other Python scripts.  The comment line in the header of .s spectra should now be included in the LSD profile, alternately spectra with no header are supported.
+
+0.3.3 Changed to using Python 3 by default.
+
+0.3.2 Added the option of using command line parameters for the observation, mask, and output profile files.
+
+0.3.1 Added support for observed spectra files with only 3 columns (only Stokes I).
+
+0.3.0 Optimized the code some.  Added a basic option for sigma clipping for bad observed pixels.  Added an experimental option for nearest neighbour interpolation in generating the model spectrum.  Added some error checking.

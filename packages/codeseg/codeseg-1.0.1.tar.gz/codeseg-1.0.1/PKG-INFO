@@ -1,0 +1,60 @@
+Metadata-Version: 2.1
+Name: codeseg
+Version: 1.0.1
+Summary: CoDeSEG Community Detection Package
+Home-page: https://github.com/Kust-lp/CoDeSEG
+Author: Pu Li
+Author-email: lipu2024626@gmail.com
+Keywords: community detection,graph clustering
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Intended Audience :: Science/Research
+Classifier: Topic :: Scientific/Engineering :: Information Analysis
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+
+# Community Detection in Large-Scale Complex Networks via Structural Entropy Game (CoDeSEG)
+
+CoDeSEG supports undirected, directed, weighted, unweighted, overlapping, non-overlapping, and dynamic community detection. The relevant parameter descriptions are as follows:
+
+| Parameter      | Description                                    | Type    | Default  | Required |
+|----------------|------------------------------------------------|---------|----------|----------|
+| `in_path`      | Input file of graph edge list                  | file    | None     | Yes      |
+| `out_path`     | Output file of communities                     | file    | None     | Yes      |
+| `ground_truth` | Ground truth file                              | file    | No       | No       |
+| `weighted`     | Weighted graph                                 | bool    | false    | No       |
+| `directed`     | directed graph                                 | bool    | false    | No       |
+| `dynamic`      | dynamic graph                                  | bool    | false    | No       |
+| `overlap`      | Overlapping communities                        | bool    | false    | No       |
+| `gamma`        | Overlapping detecting factor                   | float   | 1.0      | No       |
+| `tau`          | Non-overlapping entropy threshold              | float   | 0.3      | No       |
+| `r`            | Stable round threshold for dynamic detection   | int     | 2        | No       |
+| `it`           | Maximum number of iterations                   | int     | 10       | No       |
+| `parallel`     | Number of threads                              | int     | 1        | No       |
+| `verbose`      | Print detection iteration messages             | bool    | false    | No       |
+
+
+## Note
+### Build Requirements
+- CMake >= 3.22
+- python >= 3.8
+
+### data format
+The format of the input edge list is as follows:
+```text
+   1 \t 2 \n
+   1 \t 3 \n
+   2 \t 3 \n
+``` 
+For dynamic graphs, the input should be a file containing edge lists of multiple network snapshots, stored in the `/data/ntwk` directory. The file structure is as follows:
+```text
+data(your dataset)/ 
+├── ntwk 
+    ├── 1.txt
+    ├── 2.txt
+    ├── 3.txt
+    ...
+``` 

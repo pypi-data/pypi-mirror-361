@@ -1,0 +1,196 @@
+name: CI
+on:
+  push:
+    branches: [master]
+    tags: ['v*']
+  pull_request: { branches: [master] }
+  schedule: [ cron: '4 3 6 * *' ]  # At 03:04 on 6th
+
+jobs:
+  lint:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup
+      - run: pip install -U --pre flake8
+      - run: flake8
+      - run: scripts/lint-qt-imports.sh
+      - run: scripts/check-unicode-version.sh
+
+  test-linux:
+    timeout-minutes: 5
+    needs: lint
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ 3.9, 3.12 ]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - run: pip install -U --pre -e .[dev] pyqt6 pyside6 pyqt5
+      - run: sudo apt-get update
+      - run: sudo apt-get install -y --no-install-recommends glibc-tools xvfb flwm xdotool libnotify-bin fonts-noto-color-emoji
+        # There deps were obtained by running with env: QT_DEBUG_PLUGINS=1
+      - run: sudo apt-get install -y --no-install-recommends libegl1 libxkbcommon-x11-0 libxcb1 libxcb-*{0,1,2,4}
+      - run: QT_API=pyqt6 .github/scripts/ci-linux-run-tests.sh
+      - run: QT_API=pyqt5 .github/scripts/ci-linux-run-tests.sh
+      - run: QT_API=pyside6 .github/scripts/ci-linux-run-tests.sh
+      - run: coverage report
+
+  test-windows:
+    timeout-minutes: 5
+    needs: test-linux
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup
+
+      - run: pip install -U --pre -e .[dev] pyqt6 pyside6
+      - run: coverage run -m efck.tests -v
+        env: { QT_API: pyqt6 }
+      - run: coverage run -m efck.tests -v
+        env: { QT_API: pyside6 }
+      - run: coverage report
+
+  test-macos:
+    timeout-minutes: 5
+    needs: test-linux
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup
+
+      - run: pip install --pre -e .[dev] pyqt6 pyside6
+      - run: .github/scripts/prepare-macos-runner.sh
+      - run: QT_API=pyqt6 coverage run -m efck.tests -v
+      - run: QT_API=pyside6 coverage run -m efck.tests -v
+      - run: coverage report
+
+
+  package-linux:
+    timeout-minutes: 5
+    needs: [ test-linux, test-macos, test-windows ]
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup
+
+      - run: sudo apt-get install -y --no-install-recommends xvfb libegl1 libxkbcommon-x11-0 libxcb1 libxcb-*{0,1,2,4}
+      - run: pip install -e .[dev] pyqt6 wheel
+      - run: python setup.py sdist -d sdist && python setup.py bdist_wheel -d sdist
+      - run: scripts/download-emoji-font.py
+      - run: xvfb-run -a -- pyinstaller packaging/pyinstaller.spec
+      - run: cd dist && tree
+      - run: cd dist && du -ah | sort -h
+      - run: xvfb-run -a -- $(find dist -type f -executable -name 'efck*') --help  # smoke test
+      - run: find dist -name '*.so.*' -o -name '*.so' | xargs chmod -x
+      - run: cd dist && tar -czvf EFCK-Chat-Keyboard.Linux-x64.tar.gz *
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Linux archive
+          path: dist/*.tar.gz
+      - uses: softprops/action-gh-release@v2
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        with:
+          files: dist/*.tar.gz
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+        with:
+          verbose: true
+          packages_dir: ./sdist
+          password: ${{ secrets.PYPI_API_TOKEN }}
+
+  package-debian:
+    timeout-minutes: 10
+    needs: [ test-linux, test-macos, test-windows ]
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup
+
+      - run: sudo apt-get install -y --no-install-recommends devscripts equivs
+      - run: pip install setuptools && python setup.py sdist
+      - run: cd dist && tar xvzf *.tar.gz && rm *.tar.gz
+      - run: for dir in dist/efck*; do mv -v $dir ${dir//efck/efck-chat-keyboard}; done
+      - run: cd dist/efck* && cp -rv packaging/debian . && dch --create --fromdirname
+        env: { EDITOR: echo, EMAIL: efck-chat-keyboard@users.noreply.github.com }
+      - run: cd dist/efck* && sudo mk-build-deps -ir && dpkg-buildpackage -nc --no-sign
+      - run: sudo dpkg -i dist/*.deb || sudo apt-get install -y --no-install-recommends -f
+      - run: dpkg --contents dist/*.deb
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Debian Ubuntu DEB
+          path: dist/*.deb
+      - uses: softprops/action-gh-release@v2
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        with:
+          files: dist/*.deb
+
+  package-windows:
+    timeout-minutes: 5
+    needs: [ test-linux, test-macos, test-windows ]
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup
+
+      - run: pip install -e .[dev] pyqt6
+      - run: python packaging/win/png2icobmp.py
+      - run: pyinstaller packaging/pyinstaller.spec
+      - run: cd dist && tree /f /a
+      - run: cd dist && du -ah | sort -h
+        shell: bash
+      - run: dist/efck-chat-keyboard/efck-chat-keyboard.exe --help  # smoke test
+      - run: choco install InnoSetup && iscc packaging/win/installer.iss
+      # FIXME: /verysilent not respected? The window shows, hangs.
+      #- run: dist/*.exe /verysilent /log=installer.log && type installer.log
+      #  shell: bash
+
+      - run: packaging/win/create-portable-zip.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Windows installer
+          path: dist/*.exe
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Windows portable
+          path: dist/*.zip
+      - uses: softprops/action-gh-release@v2
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            dist/*.exe
+            dist/*.zip
+
+  package-macos:
+    timeout-minutes: 10
+    needs: [ test-linux, test-macos, test-windows ]
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup
+
+      - run: pip install -e '.[dev]' pyqt6
+      - run: pyinstaller packaging/pyinstaller.spec
+      - run: brew update && brew install tree && cd dist && tree -h *.app
+      - run: cd dist && du -ah *.app | sort -h
+      - run: cp dist/*/*/Info.plist . && plutil -convert xml1 Info.plist && cat Info.plist
+      - run: dist/Efck\ Chat\ Keyboard.app/Contents/MacOS/efck-chat-keyboard --help  # smoke test
+      - run: brew install create-dmg && packaging/macos/create-dmg.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macOS package
+          path: dist/*.dmg
+      - uses: softprops/action-gh-release@v2
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        with:
+          files: dist/*.dmg

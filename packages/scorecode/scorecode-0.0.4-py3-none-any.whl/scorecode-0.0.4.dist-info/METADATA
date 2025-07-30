@@ -1,0 +1,95 @@
+Metadata-Version: 2.4
+Name: scorecode
+Version: 0.0.4
+Summary: A package to fetch data from OpenSSF Scorecard API
+Home-page: https://github.com/aboutcode-org/scorecode
+Author: nexB. Inc. and others
+License: Apache-2.0
+Keywords: Scorecard,ScoreCode,OpenSSF,OSSF,Vulnerablity Analysis
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Utilities
+Classifier: Typing :: Typed
+Requires-Python: >=3.8
+License-File: LICENSE
+Requires-Dist: commoncode
+Requires-Dist: attrs>=23.2.0
+Requires-Dist: urllib3>=2.2.2
+Requires-Dist: requests>=2.7.0
+Provides-Extra: docs
+Requires-Dist: Sphinx>=5.0.2; extra == "docs"
+Requires-Dist: sphinx-rtd-theme>=1.0.0; extra == "docs"
+Requires-Dist: sphinx-reredirects>=0.1.2; extra == "docs"
+Requires-Dist: doc8>=0.11.2; extra == "docs"
+Requires-Dist: sphinx-autobuild; extra == "docs"
+Requires-Dist: sphinx-rtd-dark-mode>=1.3.0; extra == "docs"
+Requires-Dist: sphinx-copybutton; extra == "docs"
+Provides-Extra: testing
+Requires-Dist: pytest!=7.0.0,>=6; extra == "testing"
+Requires-Dist: pytest-rerunfailures; extra == "testing"
+Requires-Dist: pytest-xdist>=2; extra == "testing"
+Requires-Dist: isort; extra == "testing"
+Requires-Dist: black>=22.6.0; extra == "testing"
+Requires-Dist: pycodestyle>=2.8.0; extra == "testing"
+Requires-Dist: twine; extra == "testing"
+Dynamic: license-file
+
+=============================
+ScoreCode
+=============================
+
+ScoreCode is a tool for assessing the security and compliance of software projects. It
+evaluates various aspects of a project's security posture and generates a scorecard to help organizations understand the security risks associated with the software.
+
+**Features:**
+- Automated security assessment
+- Comprehensive scoring based on multiple criteria
+- Easy integration with existing workflows
+- Supports various platforms and repositories
+
+Installation
+------------
+
+To install Scorecard, you can use pip:
+
+.. code-block:: bash
+
+    pip install scorecode
+
+Usage
+-----
+
+To use Scorecard, you need to call the `fetch_scorecard` function with the appropriate parameters. Below is a basic usage example:
+
+.. code-block:: python
+
+    from scorecode.ossf_scorecard import fetch_scorecard
+
+    # Fetch the scorecard data for a specific platform org and repo
+    data = fetch_scorecard(platform="github.com", org="nexB", repo="scancode-toolkit")
+
+    # Print the results
+    print("Scoring Tool:", data.scoring_tool)
+    print("Scoring Tool Version:", data.scoring_tool_version)
+    print("Score Date:", data.score_date)
+    print("Score:", data.score)
+    print("Documentation URL:", data.scoring_tool_documentation_url)
+
+
+Testing
+-------
+
+To run the tests, use pytest. Ensure that all dependencies are installed and then execute:
+
+.. code-block:: bash
+
+    make test

@@ -1,0 +1,73 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "iocparser-tool"
+version = "1.0.1"
+description = "A tool for extracting Indicators of Compromise from security reports"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Marc Rivero"}
+]
+maintainers = [
+    {name = "Marc Rivero"}
+]
+keywords = ["security", "ioc", "malware", "threat-intelligence", "pdf", "html", "parser"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Security",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Text Processing :: Filters",
+]
+requires-python = ">=3.6"
+dependencies = [
+    "colorama>=0.4.0",
+    "python-magic>=0.4.0",
+    "requests>=2.25.0",
+    "tqdm>=4.60.0",
+    "pdfplumber>=0.10.0",
+    "beautifulsoup4>=4.9.0",
+    "lxml>=4.6.0",
+    "regex>=2023.0.0",
+    "pdfminer.six>=20201018",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov>=2.0",
+    "black>=21.0",
+    "flake8>=3.8",
+    "mypy>=0.800",
+]
+
+[project.urls]
+Homepage = "https://github.com/seifreed/iocparser"
+Documentation = "https://github.com/seifreed/iocparser#readme"
+Repository = "https://github.com/seifreed/iocparser"
+"Bug Tracker" = "https://github.com/seifreed/iocparser/issues"
+
+[project.scripts]
+iocparser = "iocparser.main:main"
+
+[tool.setuptools.packages.find]
+include = ["iocparser*"]
+
+[tool.setuptools.package-data]
+iocparser = ["modules/data/*.json"]
+
+[tool.setuptools_scm]
+write_to = "iocparser/_version.py" 

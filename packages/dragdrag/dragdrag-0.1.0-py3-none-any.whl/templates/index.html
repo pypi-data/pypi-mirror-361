@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>局域网文件传输</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        #drop-area {
+            border: 2px dashed #ccc;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto 20px auto;
+            padding: 40px;
+            text-align: center;
+            color: #888;
+        }
+        #desktop {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            min-height: 400px;
+            background: #f8f8f8;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .file-tile {
+            width: 120px;
+            height: 140px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 10px 5px 5px 5px;
+            cursor: grab;
+            position: relative;
+            user-select: none;
+        }
+        .file-tile.dragging {
+            opacity: 0.5;
+        }
+        .file-thumb {
+            width: 64px;
+            height: 64px;
+            object-fit: contain;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            background: #f0f0f0;
+        }
+        .file-name {
+            font-size: 14px;
+            text-align: center;
+            word-break: break-all;
+            margin-bottom: 6px;
+        }
+        .file-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .file-actions button, .file-actions a {
+            font-size: 12px;
+            padding: 2px 8px;
+            border: none;
+            border-radius: 4px;
+            background: #e0e7ef;
+            color: #333;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .file-actions button:hover, .file-actions a:hover {
+            background: #bcd4f6;
+        }
+    </style>
+</head>
+<body>
+    <h2>局域网文件传输</h2>
+    <div id="drop-area">
+        <p>拖拽文件到此处上传，或 <input type="file" id="fileElem" multiple style="display:none" onchange="handleFiles(this.files)"><button onclick="document.getElementById('fileElem').click()">选择文件</button></p>
+    </div>
+    <div id="desktop"></div>
+    <div id="upload-progress"></div>
+    <script>
+        const dropArea = document.getElementById('drop-area');
+        const uploadProgress = document.getElementById('upload-progress');
+        dropArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropArea.style.borderColor = '#3b82f6';
+        });
+        dropArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dropArea.style.borderColor = '#ccc';
+        });
+        dropArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropArea.style.borderColor = '#ccc';
+            handleFiles(e.dataTransfer.files);
+        });
+        function handleFiles(files) {
+            for (let i = 0; i < files.length; i++) {
+                uploadFileWithProgress(files[i]);
+            }
+        }
+        function uploadFileWithProgress(file) {
+            const progressId = 'progress-' + Math.random().toString(36).slice(2);
+            const progressBar = document.createElement('div');
+            progressBar.innerHTML = `
+                <div style="margin:8px 0;display:flex;align-items:center;gap:10px;">
+                    <span style="width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${file.name}</span>
+                    <progress id="${progressId}" value="0" max="100" style="width:200px;"></progress>
+                    <span id="${progressId}-text">0%</span>
+                </div>
+            `;
+            uploadProgress.appendChild(progressBar);
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '/upload', true);
+            xhr.upload.onprogress = function(e) {
+                if (e.lengthComputable) {
+                    const percent = Math.round((e.loaded / e.total) * 100);
+                    document.getElementById(progressId).value = percent;
+                    document.getElementById(progressId+'-text').innerText = percent + '%';
+                }
+            };
+            xhr.onload = function() {
+                uploadProgress.removeChild(progressBar);
+                if (xhr.status === 200) {
+                    refreshFileList();
+                } else {
+                    alert('上传失败: ' + file.name);
+                }
+            };
+            const formData = new FormData();
+            formData.append('file', file);
+            xhr.send(formData);
+        }
+        function getFileThumb(fileName) {
+            const ext = fileName.split('.').pop().toLowerCase();
+            if (["png","jpg","jpeg","gif","bmp","webp","svg"].includes(ext)) {
+                return `/download/${encodeURIComponent(fileName)}`;
+            }
+            let svg = '';
+            if (ext === 'pdf') {
+                svg = `<svg width="64" height="64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="12" fill="#fbe9e7"/><text x="50%" y="54%" text-anchor="middle" font-size="24" fill="#d84315" font-family="Arial">PDF</text></svg>`;
+            } else if (["doc","docx"].includes(ext)) {
+                svg = `<svg width="64" height="64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="12" fill="#e3f2fd"/><text x="50%" y="54%" text-anchor="middle" font-size="24" fill="#1e88e5" font-family="Arial">W</text></svg>`;
+            } else if (["xls","xlsx"].includes(ext)) {
+                svg = `<svg width="64" height="64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="12" fill="#e8f5e9"/><text x="50%" y="54%" text-anchor="middle" font-size="24" fill="#4caf50" font-family="Arial">X</text></svg>`;
+            } else if (["ppt","pptx"].includes(ext)) {
+                svg = `<svg width="64" height="64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="12" fill="#fff3e0"/><text x="50%" y="54%" text-anchor="middle" font-size="24" fill="#ff9800" font-family="Arial">P</text></svg>`;
+            } else if (["zip","rar","7z","tar","gz"].includes(ext)) {
+                svg = `<svg width="64" height="64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="12" fill="#ede7f6"/><text x="50%" y="54%" text-anchor="middle" font-size="24" fill="#673ab7" font-family="Arial">ZIP</text></svg>`;
+            } else if (["txt","md","log"].includes(ext)) {
+                svg = `<svg width="64" height="64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="12" fill="#f5f5f5"/><text x="50%" y="54%" text-anchor="middle" font-size="24" fill="#9e9e9e" font-family="Arial">TXT</text></svg>`;
+            } else {
+                svg = `<svg width="64" height="64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="12" fill="#e0e7ef"/><text x="50%" y="54%" text-anchor="middle" font-size="24" fill="#777" font-family="Arial">📄</text></svg>`;
+            }
+            return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+        }
+        function refreshFileList() {
+            fetch('/files').then(r => r.json()).then(files => {
+                const desktop = document.getElementById('desktop');
+                desktop.innerHTML = '';
+                files.forEach((f, idx) => {
+                    const tile = document.createElement('div');
+                    tile.className = 'file-tile';
+                    tile.draggable = true;
+                    tile.style.left = '';
+                    tile.style.top = '';
+                    // 文件名安全显示
+                    const fileNameDiv = document.createElement('div');
+                    fileNameDiv.className = 'file-name';
+                    fileNameDiv.textContent = f;
+                    tile.innerHTML = `
+                        <img class="file-thumb" src="${getFileThumb(f)}" alt="thumb">
+                    `;
+                    tile.appendChild(fileNameDiv);
+                    const actionsDiv = document.createElement('div');
+                    actionsDiv.className = 'file-actions';
+                    const delBtn = document.createElement('button');
+                    delBtn.textContent = '删除';
+                    delBtn.onclick = (e) => { e.stopPropagation(); deleteFile(encodeURIComponent(f)); };
+                    actionsDiv.appendChild(delBtn);
+                    tile.appendChild(actionsDiv);
+                    tile.addEventListener('click', (e) => {
+                        if (!e.target.classList.contains('file-actions') && !e.target.closest('.file-actions')) {
+                            window.location.href = `/download/${encodeURIComponent(f)}`;
+                        }
+                    });
+                    tile.addEventListener('dragstart', (e) => {
+                        tile.classList.add('dragging');
+                        e.dataTransfer.setData('text/plain', idx);
+                    });
+                    tile.addEventListener('dragend', (e) => {
+                        tile.classList.remove('dragging');
+                    });
+                    desktop.appendChild(tile);
+                });
+                // 桌面拖动排序
+                let dragSrcIdx = null;
+                desktop.addEventListener('dragstart', (e) => {
+                    if (e.target.classList.contains('file-tile')) {
+                        dragSrcIdx = Array.from(desktop.children).indexOf(e.target);
+                    }
+                });
+                desktop.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    const dragging = document.querySelector('.file-tile.dragging');
+                    if (!dragging) return;
+                    const afterElement = getDragAfterElement(desktop, e.clientX, e.clientY);
+                    if (afterElement == null) {
+                        desktop.appendChild(dragging);
+                    } else {
+                        desktop.insertBefore(dragging, afterElement);
+                    }
+                });
+                function getDragAfterElement(container, x, y) {
+                    const draggableElements = [...container.querySelectorAll('.file-tile:not(.dragging)')];
+                    return draggableElements.reduce((closest, child) => {
+                        const box = child.getBoundingClientRect();
+                        const offset = y - box.top - box.height / 2;
+                        if (offset < 0 && offset > closest.offset) {
+                            return { offset: offset, element: child };
+                        } else {
+                            return closest;
+                        }
+                    }, { offset: Number.NEGATIVE_INFINITY }).element;
+                }
+            });
+        }
+        function deleteFile(filename) {
+            if (!confirm('确定要删除此文件吗？')) return;
+            fetch(`/delete/${filename}`, { method: 'POST' }).then(r => {
+                if (r.ok) {
+                    refreshFileList();
+                } else {
+                    alert('删除失败');
+                }
+            });
+        }
+        refreshFileList();
+    </script>
+</body>
+</html> 

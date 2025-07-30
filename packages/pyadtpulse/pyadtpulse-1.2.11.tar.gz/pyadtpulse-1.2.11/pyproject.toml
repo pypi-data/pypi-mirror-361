@@ -1,0 +1,43 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pyadtpulse"
+version = "1.2.11"
+description = "Python interface for ADT Pulse security systems"
+authors = [{ name = "Ryan Snodgrass" }]
+maintainers = [{ name = "Robert Lippmann" }]
+readme = "README.md"
+license = "Apache-2.0"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.12,<3.14"
+dependencies = [
+    "aiohttp>=3.12.14",
+    "aiohttp-fast-zlib[zlib-ng]>=0.3.0",
+    "lxml>=6.0.0",
+    "uvloop>=0.21.0",
+]
+
+[dependency-groups]
+dev = [
+    "aioresponses>=0.7.8",
+    "bandit[sarif,toml]>=1.8.6",
+    "build>=1.2.2.post1",
+    "freezegun>=1.5.2",
+    "pre-commit>=4.2.0",
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.0.0",
+    "pytest-isolate>=0.0.12",
+    "pytest-mock>=3.14.1",
+    "ruff>=0.12.3",
+    "twine>=6.1.0",
+    "typeguard>=4.4.4",
+]
+
+[tool.bandit]
+exclude_dirs = ["tests", ".venv"]

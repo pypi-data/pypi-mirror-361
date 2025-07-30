@@ -1,0 +1,45 @@
+[project]
+name = "dgraphrag"
+version = "0.0.1"
+description = "GraphRAG toolkit: ingestion → knowledge graph → retrieval-augmented generation, with pluggable graph adapters and retrievers."
+authors = [{ name = "Longtao Wu", email = "eustancewu@gmail.com" }]
+maintainers = [{ name = "Longtao Wu", email = "eustancewu@gmail.com" }]
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.9"
+dependencies = [
+    "networkx>=2.8",
+    "pydantic>=2.5"
+]
+keywords = ["graph", "rag", "knowledge-graph", "retrieval", "llm"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "License :: OSI Approved :: MIT License",
+    "Intended Audience :: Developers",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.urls]
+Homepage = "https://github.com/eust-w/dgraphrag"
+Repository = "https://github.com/eust-w/dgraphrag"
+Issues = "https://github.com/eust-w/dgraphrag/issues"
+
+[project.scripts]
+dgrag = "dgraphrag.cli:main"
+
+[project.optional-dependencies]
+neo4j = ["neo4j>=5.0"]
+arangodb = ["python-arango>=7.5"]
+tigergraph = ["pyTigerGraph>=1.0"]
+vector = ["faiss-cpu>=1.7"]
+
+dev = [
+    "pytest>=7.0",
+    "ruff>=0.4",
+    "black>=24.4"
+]
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"

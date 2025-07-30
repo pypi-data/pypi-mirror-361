@@ -1,0 +1,38 @@
+[project]
+name = "dicomdiff"
+version = "0.4.0"
+description = "A Python module that compares an original DICOM file with its deidentified counterpart and returns the differences between the two."
+authors = [
+    {name = "Karim",email = "115158216+karimdiabb@users.noreply.github.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pydicom (>=3.0.0,<4.0.0)",
+    "pytest (>=8.3.4,<9.0.0)",
+    "click (>=8.1.8,<9.0.0)",
+    "pandas (>=2.2.3,<3.0.0)",
+    "tabulate (>=0.9.0,<0.10.0)",
+    "tqdm (>=4.67.1,<5.0.0)"
+]
+
+[tool.poetry]
+packages = [{include = "dicomdiff"}]
+
+[tool.poetry.group.dev.dependencies]
+pytest-mock = "^3.14.0"
+coverage = "^7.6.12"
+pre-commit = "^4.1.0"
+black = "^25.1.0"
+flake8 = "^7.1.2"
+twine = "^6.1.0"
+dicomrake = {path = "/Users/karim/Desktop/Werk/dicomrake", python = ">=3.12,<4.0"}
+
+[tool.poetry.scripts]
+dicomdiff = "dicomdiff.cli:cli"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+

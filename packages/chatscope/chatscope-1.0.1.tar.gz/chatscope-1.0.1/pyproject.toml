@@ -1,0 +1,101 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chatscope"
+version = "1.0.1"
+authors = [
+    {name = "22wojciech", email = "plus4822@icloud.com"},
+]
+description = "Analyze and categorize ChatGPT conversation exports using OpenAI API"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Text Processing :: Linguistic",
+    "Topic :: Utilities",
+]
+keywords = ["chatgpt", "openai", "conversation", "analysis", "categorization", "nlp"]
+dependencies = [
+    "openai>=0.28.0,<1.0.0",
+    "python-dotenv>=0.19.0",
+    "requests>=2.25.0",
+]
+
+[project.optional-dependencies]
+plotting = [
+    "matplotlib>=3.5.0",
+]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov>=2.0",
+    "black>=21.0",
+    "flake8>=3.8",
+    "mypy>=0.800",
+    "matplotlib>=3.5.0",
+]
+all = [
+    "matplotlib>=3.5.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/22wojciech/chatscope"
+"Bug Reports" = "https://github.com/22wojciech/chatscope/issues"
+"Source" = "https://github.com/22wojciech/chatscope"
+"Documentation" = "https://github.com/22wojciech/chatscope#readme"
+
+[project.scripts]
+chatscope = "chatscope.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]  # list of folders that contain the packages (["src"] by default)
+include = ["chatscope*"]  # package names should match these glob patterns (["*"] by default)
+exclude = ["tests*"]  # exclude packages matching these glob patterns
+
+[tool.black]
+line-length = 100
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '''
+# A regex preceded by ^/ will apply only to files and directories
+# in the root of the project.
+^/setup.py
+'''
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q --strict-markers --strict-config"
+testpaths = [
+    "tests",
+]
+python_files = [
+    "test_*.py",
+    "*_test.py",
+]

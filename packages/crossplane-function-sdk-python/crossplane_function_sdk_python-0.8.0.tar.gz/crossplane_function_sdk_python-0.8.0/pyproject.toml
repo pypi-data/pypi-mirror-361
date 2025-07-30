@@ -1,0 +1,114 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "crossplane-function-sdk-python"
+description = 'The Python SDK for Crossplane composition functions'
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+keywords = []
+authors = [{ name = "Crossplane Maintainers", email = "info@crossplane.io" }]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.11",
+  "Typing :: Typed",
+]
+
+dependencies = [
+  "grpcio==1.73.1",
+  "grpcio-reflection==1.*",
+  "protobuf==6.31.1", # Must be compatible with grpcio-tools.
+  "pydantic==2.*",
+  "structlog==25.*",
+]
+
+dynamic = ["version"]
+
+[project.urls]
+Documentation = "https://github.com/crossplane/function-sdk-python#readme"
+Issues = "https://github.com/crossplane/function-sdk-python/issues"
+Source = "https://github.com/crossplane/function-sdk-python"
+
+[tool.hatch.version]
+path = "crossplane/function/__version__.py"
+validate-bump = false                       # Allow going from 0.0.0.dev0+x to 0.0.0.dev0+y.
+
+[tool.hatch.envs.default]
+type = "virtual"
+path = ".venv-default"
+dependencies = ["ipython==9.4.0"]
+
+[tool.hatch.envs.generate]
+type = "virtual"
+detached = true
+path = ".venv-generate"
+dependencies = [
+  "grpcio-tools==1.73.1",
+  "protobuf==6.31.1",
+]
+
+[tool.hatch.envs.generate.scripts]
+protoc = "python -m grpc_tools.protoc --proto_path=. --python_out=. --pyi_out=. --grpc_python_out=. crossplane/function/proto/v1beta1/run_function.proto crossplane/function/proto/v1/run_function.proto"
+
+[tool.hatch.envs.docs]
+type = "virtual"
+path = ".venv-docs"
+dependencies = ["pdoc"]
+
+[tool.hatch.envs.docs.scripts]
+generate = "pdoc -m google crossplane/function -o docs"
+
+[tool.hatch.build.targets.wheel]
+packages = ["crossplane"]
+
+# This special environment is used by hatch fmt.
+[tool.hatch.envs.hatch-static-analysis]
+dependencies = ["ruff==0.12.3"]
+config-path = "none"            # Disable Hatch's default Ruff config.
+
+[tool.ruff]
+target-version = "py311"
+exclude = ["crossplane/function/proto/*", "tests/testdata/*"]
+lint.select = [
+  "A",
+  "ARG",
+  "ASYNC",
+  "B",
+  "C",
+  "D",
+  "DTZ",
+  "E",
+  "EM",
+  "ERA",
+  "F",
+  "FBT",
+  "I",
+  "ICN",
+  "ISC",
+  "N",
+  "PLC",
+  "PLE",
+  "PLR",
+  "PLW",
+  "Q",
+  "RUF",
+  "S",
+  "T",
+  "TID",
+  "UP",
+  "W",
+  "YTT",
+]
+lint.ignore = ["ISC001"] # Ruff warns this is incompatible with ruff format.
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["D"] # Don't require docstrings for tests.
+
+[tool.ruff.lint.isort]
+known-first-party = ["crossplane"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"

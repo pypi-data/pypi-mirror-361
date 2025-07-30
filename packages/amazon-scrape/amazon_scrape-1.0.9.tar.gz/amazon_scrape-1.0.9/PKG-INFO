@@ -1,0 +1,144 @@
+Metadata-Version: 2.4
+Name: amazon_scrape
+Version: 1.0.9
+Summary: Scrape Amazon product data such as Product Name, Product Images, Number of Reviews, Price, Product URL, and ASIN.
+Home-page: https://finbarrs.eu
+Author: Finbarrs Oketunji
+Author-email: f@finbarrs.eu
+License: MIT
+Project-URL: Bug Tracker, https://github.com/0xnu/amazonproducts/issues
+Project-URL: Changes, https://github.com/0xnu/amazonproducts/blob/main/CHANGELOG.md
+Project-URL: Documentation, https://github.com/0xnu/amazonproducts/blob/main/README.md
+Project-URL: Source Code, https://github.com/0xnu/amazonproducts
+Keywords: amazon,products,ecommerce,price,reviews,ratings
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: Implementation :: PyPy
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*
+Description-Content-Type: text/x-rst
+License-File: LICENSE
+Requires-Dist: beautifulsoup4
+Requires-Dist: requests
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license
+Dynamic: license-file
+Dynamic: project-url
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+Amazon Products Scraper
+=======================
+
+.. image:: https://badge.fury.io/py/amazon-scrape.svg
+    :target: https://badge.fury.io/py/amazon-scrape
+    :alt: amazon-scrape Python Package Version
+
+Scrape Amazon product data such as Product Name, Product Images, Number of Reviews, Price, Product URL, and ASIN.
+
+Requirements
+------------
+
+Python 2.7 and later.
+
+
+Setup
+-----
+
+You can install this package by using the pip tool and installing:
+
+.. code-block:: bash
+
+	$ pip install amazon-scrape
+
+Or:
+
+.. code-block:: bash
+
+	$ easy_install amazon-scrape
+
+
+Scraper Help
+------------
+
+Execute this command `amazon_scraper --help` in the terminal.
+
+.. code-block:: text
+
+    usage: amazon_scraper [-h] [--locale LOCALE] [--keywords KEYWORDS] [--url URL] [--api-key PROXY_API_KEY] [--pages PAGES] [-r]
+
+    optional arguments:
+    -h, --help            show this help message and exit
+    --locale LOCALE       Amazon locale (e.g., "com", "co.uk", "de", etc.)
+    --keywords KEYWORDS   Search keywords
+    --url URL             Amazon URL
+    --api-key       Scraper API Key
+    --pages PAGES         Number of pages to scrape
+    -r, --review          Scrape reviews
+
+
+Usage Example
+-------------
+
+.. code-block:: python
+
+    # Specify locale, keywords, API key, and number of pages to scrape:
+    amazon_scraper --locale com --keywords "laptop" --api-key "your_api_key" --pages 10
+
+    ## Specify only keywords and API key (will default to "co.uk" locale and 20 pages):
+    amazon_scraper --keywords "iphone" --api-key "your_api_key"
+
+    ## Specify a direct Amazon URL and API key (will default to "co.uk" locale and 20 pages):
+    amazon_scraper --url "https://www.amazon.de/s?k=iphone&crid=1OHYY6U6OGCK5&sprefix=ipho%2Caps%2C335&ref=nb_sb_noss_2" --api-key "your_api_key"
+
+    ## Specify locale and Amazon URL (will default to 20 pages):
+    amazon_scraper --locale de --url "https://www.amazon.de/s?k=iphone&crid=1OHYY6U6OGCK5&sprefix=ipho%2Caps%2C335&ref=nb_sb_noss_2" --api-key "your_api_key"
+
+    ## Specify review to scrape product(s) reviews:
+    amazon_scraper --keywords "watches" --api-key "your_api_key" --review
+
+
+Create Scraper API Account
+--------------------------
+
+Sign up for a Scraper API `user account`_.
+
+.. _user account: https://www.scraperapi.com/?fp_ref=finbarrs11
+
+
+License
+-------
+
+This project is licensed under the `MIT License`_.  
+
+.. _MIT License: https://github.com/0xnu/amazonproducts/blob/main/LICENSE
+
+
+Copyright
+---------
+
+Copyright |copy| 2023 - 2025 `Finbarrs Oketunji`_. All Rights Reserved.
+
+.. |copy| unicode:: 0xA9 .. copyright sign
+.. _Finbarrs Oketunji: https://finbarrs.eu

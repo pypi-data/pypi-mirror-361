@@ -1,0 +1,21 @@
+# Phase 5a: AI-Based Toxicity Detection Filter Configuration
+# This configuration uses OpenAI for high-accuracy toxicity detection
+
+guardrails:
+  - name: "ai_toxicity_detection"
+    type: "ai_toxicity_detection"
+    enabled: true
+    api_key: "${OPENAI_API_KEY}"
+    confidence_threshold: 0.7
+    on_error: "warn"  # Recommended: warn to see when AI unavailable
+
+# Configuration Options:
+# - api_key: OpenAI API key (can use environment variable ${OPENAI_API_KEY})
+# - confidence_threshold: Minimum confidence to block content (0.0 to 1.0)
+# - on_error: Action when AI fails (block, allow, warn)
+#   - block: Fail hard for safety when AI unavailable
+#   - warn: Allow content with prominent warning
+#   - allow: Allow content with minimal logging
+# 
+# Note: No automatic fallback - use simple_toxicity_detection for non-AI alternative
+# Model is automatically configured from src/core/configs/models.yaml (uses gpt-4.1-nano) 

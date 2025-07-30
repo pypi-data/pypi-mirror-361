@@ -1,0 +1,78 @@
+Metadata-Version: 2.4
+Name: monacoreport
+Version: 0.0.3
+Summary: Race report package
+Author-email: Oleksandr Bohatyi <alexbogplay@gmail.com>
+License-Expression: MIT
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: license-file
+
+# monacoreport
+
+Package for displaying the rating of racers.
+
+## Installation
+
+Use the package manager [pip](https://pip.pypa.io/en/stable/) to install countonlyonechar.
+
+```bash
+pip install monacoreport
+```
+
+## Usage
+
+```python
+from monacoreport import build_report, print_report
+
+valid_result, invalid_result = build_report('folder_path')
+print_report(valid_result, invalid_result)
+```
+* Read data from start.log, end.log and abbreviations.txt inside the <folder_path>
+
+* Build a lap time report
+
+* Print the top 15 racers and the rest after a separator
+
+start.log or end.log
+```python
+DRR2018-05-24_12:04:04.396
+SVF2018-05-24_12:16:05.164
+LHM2018-05-24_12:19:50.198
+```
+
+abbreviations.txt
+
+```python
+DRR_Daniel Ricciardo_RED BULL RACING TAG HEUER
+SVF_Sebastian Vettel_FERRARI
+LHM_Lewis Hamilton_MERCEDES
+```
+---
+
+```commandline
+# CLI
+monacoreport --files <folder_path>
+```
+--files: path to the folder containing:
+
+* start.log
+* end.log
+* abbreviations.txt
+
+Optional flags:
+
+--asc: sort from fastest to slowest (default)
+
+--desc: sort from slowest to fastest
+```commandline
+# CLI
+monacoreport --files <folder_path> --driver 'name'
+```
+* Shows statistic about driver
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)

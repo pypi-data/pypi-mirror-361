@@ -1,0 +1,59 @@
+[tool.poetry]
+name = "ww_edit_objs"
+version = "2.9.2"
+description = ""
+authors = ["haoyu.zhou <haoyu.zhou@mihoyo.com>"]
+packages = [
+    { include = "ww_edit_objs", from = ".." },
+]
+exclude = [
+    ".idea",
+    ".vscode",
+    "gui",
+    "ci",
+    "test",
+    "temp",
+    "pyproject.toml",
+]
+keywords = ["pubgrp.auditor", "pubgrp.flow"]
+
+[tool.poetry.dependencies]
+python = ">=3.11,<3.12"
+# <MIATECH>
+miautil = "*"
+miawwise = "*"
+# <3RD-PARTY>
+
+
+[tool.poetry.group.dev.dependencies]
+dev_build_service = {path = "../dev_build_service", develop = true}
+miadevops = {path = "../_devops", develop = true}
+miautil = {path = "../_util", develop = true}
+miawwise = {path = "../miawwise", develop = true}# add 3rd-party deps with local source paths below
+# but DO NOT commit to git
+# <3RD-PARTY>
+
+
+[tool.poetry.scripts]
+ww_edit_objs = "ww_edit_objs.src.ww_edit_objs_cli:main"
+
+
+[tool.pytest.ini_options]
+testpaths = [
+    "test"
+]
+pythonpath = [
+    ".."
+]
+
+
+[[tool.poetry.source]]
+name = "miatech_pypi"
+url = "http://mia-store.mihoyo.com:6060/"
+default = true
+secondary = false
+
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

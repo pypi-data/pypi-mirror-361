@@ -1,0 +1,42 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "batchata"
+version = "0.2.2"
+description = "Batch processing for Anthropic's Claude API with structured output"
+readme = "README.md"
+requires-python = ">=3.12"
+license = {text = "MIT"}
+authors = [
+    {name = "Agam More"},
+]
+homepage = "https://github.com/agamm/batchata"
+repository = "https://github.com/agamm/batchata"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "anthropic>=0.57.1",
+    "python-dotenv>=1.1.1",
+    "tokencost>=0.1.24",
+]
+
+[project.scripts]
+batchata-example = "examples.spam_detection:main"
+batchata-pdf-example = "examples.pdf_extraction:main"
+
+[dependency-groups]
+dev = [
+    "pytest-cov>=6.2.1",
+    "pytest>=8.4.1",
+    "pytest-xdist>=3.6.1",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]

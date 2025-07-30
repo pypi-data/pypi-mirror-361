@@ -1,0 +1,57 @@
+function toggleTraces(recordId) {
+    const elements = document.querySelectorAll('.trace-' + recordId);
+    elements.forEach(el => {
+        el.style.display = el.style.display === 'none' ? 'table-row' : 'none';
+    });
+}
+
+function toggleCode(id) {
+    const element = document.getElementById('code-' + id);
+    const toggle = document.getElementById('toggle-code-' + id);
+    if (element.style.display === 'none' || element.style.display === '') {
+        element.style.display = 'block';
+        toggle.classList.add('open');
+    } else {
+        element.style.display = 'none';
+        toggle.classList.remove('open');
+    }
+}
+
+function toggleUpdates(id) {
+    const element = document.getElementById('update-' + id);
+    const toggle = document.getElementById('toggle-update-' + id);
+    if (element.style.display === 'none' || element.style.display === '') {
+        element.style.display = 'block';
+        toggle.classList.add('open');
+    } else {
+        element.style.display = 'none';
+        toggle.classList.remove('open');
+    }
+}
+
+function openImage(id) {
+    const fullscreen = document.getElementById('fullscreen-' + id);
+    if (fullscreen) {
+        fullscreen.style.display = 'block';
+    }
+}
+
+function closeImage(id) {
+    const fullscreen = document.getElementById('fullscreen-' + id);
+    if (fullscreen) {
+        fullscreen.style.display = 'none';
+    }
+}
+
+function togglePractice(practiceId) {
+    const section = document.getElementById('practice-section-' + practiceId);
+    const header = document.getElementById('practice-header-' + practiceId);
+
+    if (section.classList.contains('collapsed')) {
+        section.classList.remove('collapsed');
+        header.textContent = header.textContent.replace('▶', '▼');
+    } else {
+        section.classList.add('collapsed');
+        header.textContent = header.textContent.replace('▼', '▶');
+    }
+}

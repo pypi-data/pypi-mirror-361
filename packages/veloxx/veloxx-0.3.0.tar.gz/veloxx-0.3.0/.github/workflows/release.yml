@@ -1,0 +1,66 @@
+name: Release
+
+on:
+  push:
+    tags: [ 'v*' ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Validate Version
+        run: |
+          TAG_VERSION="${{ github.ref_name }}"
+          TAG_VERSION="${TAG_VERSION#v}"
+          CARGO_VERSION=$(grep "^version" Cargo.toml | head -1 | sed 's/version = "\(.*\)"/\1/')
+          
+          if [ "$CARGO_VERSION" = "$TAG_VERSION" ]; then
+            echo "✅ Versions match: $TAG_VERSION"
+          else
+            echo "❌ Version mismatch: Cargo.toml=$CARGO_VERSION, Tag=$TAG_VERSION"
+            exit 1
+          fi
+
+      - name: Run Tests
+        run: |
+          cargo test --verbose
+          cargo test --doc --verbose
+
+      - name: Build Release
+        run: cargo build --release --verbose
+
+      - name: Ensure Clean Workspace
+        run: |
+          if ! git diff --quiet || ! git diff --cached --quiet; then
+            echo "❌ Uncommitted changes present. Aborting publish."
+            git status
+            exit 1
+          fi
+      - name: Publish to Crates.io
+        run: cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        if: success()
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            Release ${{ github.ref_name }}
+            
+            See [CHANGELOG.md](CHANGELOG.md) for details.
+          draft: false
+          prerelease: false

@@ -1,0 +1,73 @@
+name: Essential CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    name: Test Suite
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@1.88.0
+        with:
+          components: rustfmt, clippy
+
+      - name: Cache Dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Check Formatting
+        run: cargo fmt --all -- --check
+
+      - name: Install fontconfig native dependency
+        run: sudo apt-get update && sudo apt-get install -y libfontconfig1-dev
+      - name: Lint with Clippy
+        run: |
+          echo "Running clippy with full output..."
+          cargo clippy --version
+          echo "Checking workspace configuration..."
+          cargo metadata --format-version 1 | grep -E '"workspace_root"|"resolver"' || true
+          echo "Running clippy with workspace lint configuration..."
+          cargo clippy --all-targets --all-features --verbose -- -D warnings -A clippy::uninlined-format-args
+
+      - name: Run Tests
+        run: cargo test --verbose
+
+      - name: Test Documentation
+        run: cargo test --doc --verbose
+
+      - name: Build Release
+        run: cargo build --release --verbose
+
+  security:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@1.88.0
+
+      - name: Install cargo-audit
+        run: cargo install cargo-audit
+
+      - name: Security Audit
+        run: cargo audit --ignore RUSTSEC-2023-0071 --ignore RUSTSEC-2024-0384 --ignore RUSTSEC-2024-0436

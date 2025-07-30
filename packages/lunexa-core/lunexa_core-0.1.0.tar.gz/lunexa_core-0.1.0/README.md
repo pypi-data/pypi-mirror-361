@@ -1,0 +1,114 @@
+# Lunexa Core
+
+> Umbrella CLI & shared utilities for all Lunexa projects
+
+[![CI](https://github.com/Lunexa-AI/lunexa-core/workflows/CI/badge.svg)](https://github.com/Lunexa-AI/lunexa-core/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+A modern Python monorepo scaffold with plugin architecture, FastAPI integration, and comprehensive development tooling.
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Python 3.9+
+- [Poetry](https://python-poetry.org/docs/#installation)
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/Lunexa-AI/lunexa-core.git
+cd lunexa-core
+
+# Install dependencies
+poetry install --with dev
+
+# Test the CLI
+poetry run lunexa --help
+```
+
+### Basic Usage
+
+```bash
+# Show version
+poetry run lunexa version
+
+# Show project info
+poetry run lunexa info
+
+# Start API server
+poetry run lunexa api serve
+```
+
+## 🐳 Docker
+
+```bash
+# Build and run with Docker
+docker build -t lunexa-core:latest .
+docker run lunexa-core:latest --help
+```
+
+## 🛠️ Development
+
+### Setup Development Environment
+
+```bash
+# Install dependencies and pre-commit hooks
+make dev-setup
+
+# Run quick checks
+make check
+
+# Run full CI simulation
+make ci
+```
+
+### Common Commands
+
+```bash
+# Code quality
+make format      # Format code
+make lint        # Run linting
+make type-check  # Type checking
+make test        # Run tests
+
+# Docker
+make docker-build  # Build Docker image
+make docker-test   # Test Docker functionality
+
+# Version management
+make bump-patch    # Bump patch version
+make bump-minor    # Bump minor version
+make bump-major    # Bump major version
+```
+
+## 📚 Documentation
+
+- **[Development Guide](docs/README.md)** - Detailed development setup and workflows
+- **[API Documentation](docs/API.md)** - FastAPI plugin documentation
+- **[Testing Guide](TESTING.md)** - Comprehensive testing instructions
+
+## 🏗️ Project Structure
+
+```
+lunexa-core/
+├── src/lunexa/           # Core CLI and utilities
+├── plugins/api/          # FastAPI plugin
+├── tests/               # Test suite
+├── docs/                # Documentation
+├── examples/            # Usage examples
+└── .github/            # CI/CD workflows
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Make your changes and run: `make ci`
+4. Commit your changes: `git commit -m 'Add amazing feature'`
+5. Push to the branch: `git push origin feature/amazing-feature`
+6. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

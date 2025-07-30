@@ -1,0 +1,50 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "brave-deepseek-book-search"
+version = "1.0.0"
+description = "Intelligent book search using Brave Search API + DeepSeek LLM"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Brave-DeepSeek Team", email = "team@example.com"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9", 
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Internet :: WWW/HTTP :: Indexing/Search",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "requests>=2.25.0",
+    "pydantic>=1.8.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0.0",
+    "black>=21.0.0",
+    "flake8>=3.8.0",
+    "mypy>=0.800"
+]
+
+[project.scripts]
+book-search = "brave_deepseek_book_search.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/example/brave-deepseek-book-search"
+Documentation = "https://github.com/example/brave-deepseek-book-search#readme"
+Repository = "https://github.com/example/brave-deepseek-book-search.git"
+Issues = "https://github.com/example/brave-deepseek-book-search/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["brave_deepseek_book_search"]

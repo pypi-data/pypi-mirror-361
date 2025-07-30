@@ -1,0 +1,40 @@
+[project]
+name = 'omniblack.hatch'
+version = '0.0.4.post5'
+description = 'Library that helps package omniblack packages.'
+readme='./README.md'
+requires-python='>=3.12'
+classifiers = [
+    'Development Status :: 3 - Alpha',
+    'Intended Audience :: Developers',
+    'Framework :: Hatch',
+]
+
+dependencies=[
+    "hatchling~=1.21",
+    "msgspec~=0.18",
+    "ruamel.yaml~=0.18",
+]
+
+license="Apache-2.0"
+license-files=['./LICENSE.txt']
+
+
+[project.urls]
+Homepage = "https://gitlab.com/terryp/terry/-/tree/next/tooling/hatch"
+Repository = "https://gitlab.com/terryp/terry.git"
+
+[[project.authors]]
+name = "Terry Patterson"
+email = "Terryp@wegrok.net"
+[tool.hatch.build.targets.wheel]
+packages = ["src/omniblack"]
+
+[project.entry-points.hatch]
+extensions = "omniblack.hatch"
+
+[build-system]
+requires=[
+    "hatchling ~= 1.21",
+]
+build-backend = "hatchling.build"

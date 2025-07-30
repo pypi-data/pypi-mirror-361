@@ -1,0 +1,107 @@
+
+Pseudo Random List Generator (PRLGEN) v2.0
+==========================================
+
+**Motivation & Aim**
+--------------------
+Experimental psychologists and linguistics researchers require unbiased, high-entropy stimulus lists for experiments involving human language production. The human brain is highly sensitive to patterns and adapts quickly, which can introduce bias and affect response times in experimental results. PRLGEN maximizes entropy in stimulus presentation, resetting participant expectations and minimizing statistical bias by ensuring that items of the same group or category do not appear consecutively beyond a controlled threshold.
+
+This tool is designed to:
+- Randomize stimulus lists for psycholinguistic and cognitive experiments
+- Avoid consecutive repetitions of the same experimental condition (unless allowed)
+- Automatically determine the minimal feasible repetition threshold if the requested constraint is impossible
+- Integrate seamlessly with Python-based experiment platforms like PsychoPy
+
+**Features**
+-----------
+- Command-line and library usage
+- Professional, robust error handling and feasibility checks
+- Returns both the randomized list and the minimal repetition value used
+- Optimized for speed and memory, suitable for large input lists
+
+**Installation**
+---------------
+Install via pip (after packaging):
+```
+pip install prlgen
+```
+
+**Usage**
+--------
+Command line:
+```
+prlgen -f input.csv -t 0 -c 1 -k 1 -n output -o 1
+```
+Arguments:
+- `-f`, `--file`: Input CSV file
+- `-t`, `--trial`: Trial ID column index (default: 0)
+- `-c`, `--cond`: Experimental condition column index (default: 1)
+- `-k`, `--repetition`: Max allowed consecutive repetitions (default: 1)
+- `-n`, `--name`: Base name for output files
+- `-o`, `--outnum`: Number of lists to generate
+
+If the requested repetition constraint is impossible, PRLGEN will automatically increase the allowed consecutive repetitions to the minimal feasible value and report this value in the output.
+
+**Library Usage**
+----------------
+```python
+from prlgen import create_random_list
+output_list, min_k = create_random_list(input_list, cond_col, trial_col, k)
+# output_list is the randomized list
+# min_k is the minimal feasible repetition value used
+```
+
+**Integration Example: PsychoPy**
+---------------------------------
+See `examples/example_1.py` for a ready-to-use integration with PsychoPy.
+
+**Documentation & Proof of Correctness**
+----------------------------------------
+Full API documentation is available in the `docs/` folder. The mathematical proof of correctness is provided in the `proof/` folder (LaTeX and PDF, CC-BY license).
+
+**License**
+-----------
+GPL v3.0 for code, CC-BY for proof documents.
+
+**Example code is available** in the examples folder to show how to add it to your PsychoPy
+project. The output list is ready to be used in your main presentation
+loop. It won't change the column order or touch any row content. It will
+shuffle the order of the items in the list to match the pseudo random
+criteria.
+
+The **module interface** (check the example and comments in the example code) allows the user
+to set the parameters:
+
+- The input list, as a *list of list* in Python ``[[list], [list], ...]``. Usually it is parsed from an input *CSV* file.
+- The column index of the list with unique **trial id**, or *trial number*. By *default*, the value is the first column or column **zero**.
+- The column index that stores the **experimental condition** code. It has to be different than the *trial id* index.
+- The number of consecutive stimuli of the same condition that can appear in the output list. By *default*, the value is **one**.
+
+This last parameter can be set above one. It may be desirable when the input list is
+populated with different *fillers* as experimental conditions and they
+don't match the same number of items as the other conditions.
+
+The module assumes **by default** that **the trial number column** is
+the **first column** of the list and the desired **repetition is 1**
+(one), that is, you don't want more than 1 trial of the same condition
+being presented consecutively.
+
+**The module** will *check* if the number of items in each experimental
+condition are **enough** to build a pseudo random list with the desired
+*repetition parameter*. It will trigger an error and **stop your script if
+the list is impossible to build** and it will inform you about the
+problem. Furthermore, an incorrect trial number column, i.e., not unique
+values in each row, an incorrect experimental condition column, or zero or negative
+values for the repetition, will trigger an error and stop the script.
+
+The code is released as GPL v3.0 to allow it to be integrated with
+PsychoPy.
+
+A **proof of correctness** of the algorithm is available as a Latex document
+in the proof folder. Thus, it is possible to implement the algorithm in any other
+programing language with enough expression power. The tests code implements the function
+described in the proof document under the correctness paragraph for *k consecutive elements*.
+Any new implementation should also validate the correctness using the same function
+in the target language.
+
+The Latex document in the proof folder is under **Creative Commons Attribution Licence, CC-BY**.

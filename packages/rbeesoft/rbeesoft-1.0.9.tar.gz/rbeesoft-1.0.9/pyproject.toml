@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "rbeesoft"
+version = "1.0.9"
+description = "A package repository with template components and functions"
+authors = ["Ralph Brecheisen <ralph.brecheisen@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [
+    { include = "rbeesoft", from = "." },
+]
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.12"
+
+[tool.poetry.scripts]
+rbeesoft = "rbeesoft.app:main"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.4.1"
+
+[tool.pytest.ini_options]
+addopts = "-s"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

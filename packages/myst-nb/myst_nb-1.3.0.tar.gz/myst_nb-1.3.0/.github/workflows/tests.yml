@@ -1,0 +1,134 @@
+name: continuous-integration
+
+on:
+  push:
+    branches: [master]
+    tags:
+      - 'v*'
+  pull_request:
+  schedule:
+    # run every Monday at 5am UTC
+    - cron: '0 5 * * 1'
+  workflow_dispatch:
+
+jobs:
+
+  tests:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+        sphinx: [""]  # Newest Sphinx (any)
+        myst-parser: [""]  # Newest MyST Parser (any)
+        include:
+          # Just check the other platforms once
+          - os: windows-latest
+            python-version: "3.12"
+            sphinx: "~=8.0"
+            myst-parser: "~=4.0"
+            pillow: "==11.0.0"
+          - os: macos-latest
+            python-version: "3.12"
+            sphinx: "~=8.0"
+            myst-parser: "~=4.0"
+            pillow: "==11.0.0"
+          - os: ubuntu-latest
+            python-version: "3.12"
+            sphinx: "~=8.0"
+            myst-parser: "~=4.0"
+            pillow: "==11.0.0"
+          # Oldest known-compatible dependencies
+          - os: ubuntu-latest
+            python-version: "3.9"
+            sphinx: "==5.0.0"
+            myst-parser: "==1.0.0"
+            pillow: "==11.0.0"
+          # Mid-range dependencies
+          - os: ubuntu-latest
+            python-version: "3.11"
+            sphinx: "==7.0.0"
+            myst-parser: "==3.0.0"
+            pillow: "==11.0.0"
+          # Newest known-compatible dependencies
+          - os: ubuntu-latest
+            python-version: "3.12"
+            sphinx: "==8.0.2"
+            myst-parser: "==4.0.0"
+            pillow: "==11.0.0"
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+        allow-prereleases: true
+        cache: pip
+    - name: Install myst-nb with Sphinx ${{ matrix.sphinx }}
+      shell: bash
+      run: |
+        pip install --upgrade "Sphinx${{ matrix.sphinx }}" "myst-parser${{ matrix.myst-parser }}" "pillow${{ matrix.pillow }}" -e .[testing]
+        pip freeze
+
+    - name: Run pytest
+      run: pytest --durations=10
+
+  coverage:
+    needs: [tests]
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+        cache: pip
+    - name: Install dependencies
+      run: |
+        pip install -e .[testing]
+        pip freeze
+
+    - name: Run pytest
+      run: pytest --durations=10 --cov=myst_nb --cov-report=xml --cov-report=term-missing
+
+    - name: Create cov
+      run: coverage xml
+      # for some reason the tests/conftest.py::check_nbs fixture breaks pytest-cov's cov-report outputting
+      # this is why we run `coverage xml` afterwards (required by codecov)
+
+    # TEMPORARY FIX: Disable codecov until we can get it working again
+    - name: Upload to Codecov
+      uses: codecov/codecov-action@v5
+      if: false
+      with:
+        name: myst-nb-pytests
+        flags: pytests
+        files: ./coverage.xml
+
+  publish:
+
+    name: Publish to PyPi
+    needs: [tests]
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"
+    - name: install flit
+      run: |
+        pip install flit~=3.4
+    - name: Build and publish
+      run: |
+        flit publish
+      env:
+        FLIT_USERNAME: __token__
+        FLIT_PASSWORD: ${{ secrets.PYPI_KEY }}

@@ -1,0 +1,136 @@
+Metadata-Version: 2.4
+Name: pypi-alias
+Version: 2.0.0
+Summary: A small utility to make alias distributions on PyPI.
+Author-email: Ionel Cristian Mărieș <contact@ionelmc.ro>
+License-Expression: BSD-2-Clause
+Project-URL: Sources, https://github.com/ionelmc/pypi-alias
+Project-URL: Changelog, https://github.com/ionelmc/pypi-alias/blob/master/CHANGELOG.rst
+Project-URL: Issue Tracker, https://github.com/ionelmc/pypi-alias/issues
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: Unix
+Classifier: Operating System :: POSIX
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Programming Language :: Python :: Implementation :: PyPy
+Classifier: Topic :: Utilities
+Requires-Python: >=3.9
+Description-Content-Type: text/x-rst
+License-File: LICENSE
+Requires-Dist: build
+Requires-Dist: pkginfo
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: license-file
+
+========
+Overview
+========
+
+
+
+A small utility to make alias distributions on PyPI.
+
+It will create an "empty" package with a different name (the "alias") that depends on the package in your current working directory.
+
+* Free software: BSD 2-Clause License
+
+Installation
+============
+
+::
+
+    pip install pypi-alias
+
+You can also install the in-development version with::
+
+    pip install https://github.com/ionelmc/pypi-alias/archive/master.zip
+
+Usage
+=====
+
+You can use ``pypi-alias`` with a distribution file (a ``.whl`` file or a sdist) or with a path, as long as it has a ``pyproject.toml``
+with build configuration in it.
+
+Example, if say, you have a ``foobar`` package, and you want to make an alias with name ``python-foobar``, assuming your in the checkout
+path::
+
+    pypi-alias python-foobar
+
+You can specify a version::
+
+    pypi-alias python-foobar --alias-version=1.0
+
+You can use a dist file::
+
+    pypi-alias python-foobar --alias-version=1.0 dist/foobar-1.2.3.tar.gz
+
+And you can also add some build options for the resulting alias package (example: only build sdist in a different path)::
+
+    pypi-alias python-foobar --alias-version=1.0 dist/foobar-1.2.3.tar.gz -- --dist --outdir=aliased-dist
+
+The resulting files are in ``dist\``, assuming you haven't used ``--outdir``, you can upload them with twine::
+
+    twine upload dist\python-foobar*
+
+Development
+===========
+
+To run all the tests run::
+
+    tox
+
+Note, to combine the coverage data from all the tox environments run:
+
+.. list-table::
+    :widths: 10 90
+    :stub-columns: 1
+
+    - - Windows
+      - ::
+
+            set PYTEST_ADDOPTS=--cov-append
+            tox
+
+    - - Other
+      - ::
+
+            PYTEST_ADDOPTS=--cov-append tox
+
+
+Changelog
+=========
+
+2.0.0 (2025-07-13)
+------------------
+
+* Now build/pkginfo are used to get package metadata. This means ``pyproject.toml`` projects are supported.
+* Dropped support for Python 3.8 or older.
+
+1.0.0 (2021-04-08)
+------------------
+
+* Added support for Python 3.
+  Contributed by Emil Stenström in `#5 <https://github.com/ionelmc/pypi-alias/pull/5>`_.
+* Dropped support for Python 2.
+* Switched to argparse and added the ``--version`` and ``--dirty`` arguments.
+* Added some light CI/testing.
+
+0.2.0 (2015-06-18)
+------------------
+
+* Fix regression in ``__main__``.
+
+0.1.0 (2015-06-18)
+------------------
+
+* First release on PyPI.

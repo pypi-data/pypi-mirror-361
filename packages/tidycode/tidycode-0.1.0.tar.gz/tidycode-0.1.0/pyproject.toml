@@ -1,0 +1,86 @@
+[project]
+name = "tidycode"
+version = "0.1.0"
+description = "Kit minimal pour automatiser le lint, format, type-checking, changelog et hooks dans vos projets Python"
+authors = [
+    {name = "Ephraïm SEDDOR",email = "seddorephraim7@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.10,<4.0"
+
+dependencies = [
+    "typer[all] (>=0.16.0,<0.17.0)",
+    "questionary (>=2.1.0,<3.0.0)",
+    "tomlkit (>=0.13.3,<0.14.0)",
+    "ruamel-yaml (>=0.18.14,<0.19.0)"
+]
+
+[tool.poetry]
+packages = [{include = "tidycode", from = "src"}]
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^4.2.0"
+pytest = "^8.4.1"
+pytest-mock = "^3.14.1"
+commitizen = "^4.8.3"
+black = "^25.1.0"
+ruff = "^0.12.3"
+isort = "^6.0.1"
+mypy = "^1.16.1"
+pytest-cov = "^6.2.1"
+
+[tool.poetry.scripts]
+tidycode = "tidycode.cli.main:main"
+tidy = "tidycode.cli.main:main"
+
+
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "0.1.0"
+tag_format = "v$version"
+
+[tool.black]
+line-length = 88
+target-version = ["py38"]
+skip-string-normalization = false
+preview = true
+exclude = """
+/(
+    \\.git
+  | \\.venv
+  | build
+  | dist
+)/
+"""
+
+[tool.ruff]
+line-length = 88
+target-version = "py38"
+exclude = ["migrations", ".venv", "venv", "env", ".env", "dist", "build"]
+
+[tool."ruff.lint"]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.mypy]
+python_version = "3.8"
+strict = true
+ignore_missing_imports = true
+disallow_untyped_defs = false
+check_untyped_defs = true
+no_implicit_optional = true
+warn_unused_ignores = true
+warn_return_any = true
+warn_redundant_casts = true
+warn_unused_configs = true
+show_error_codes = true
+pretty = true
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

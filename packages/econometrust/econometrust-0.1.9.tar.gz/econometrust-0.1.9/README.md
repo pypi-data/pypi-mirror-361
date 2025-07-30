@@ -1,0 +1,335 @@
+# Econometrust 🚀
+
+High-performance econometric regression library written in Rust with Python bindings, delivering blazing-fast OLS, GLS, WLS and IV implementations with comprehensive diagnostic statistics.
+
+[![License](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/)
+[![Rust](https://img.shields.io/badge/rust-stable-orange.svg)](https://www.rust-lang.org/)
+
+## ✨ Features
+
+- **🏎️ Blazing Fast**: Rust-powered performance with zero-copy numpy integration
+- **📊 Comprehensive Diagnostics**: Full suite of econometric tests and statistics
+- **🔧 Easy to Use**: Familiar scikit-learn-style API
+- **📈 Professional Output**: Detailed regression summaries with interpretive notes
+- **🛡️ Robust**: Handles edge cases and memory-efficient operations
+
+### Supported Models
+- **OLS (Ordinary Least Squares)**: Classic linear regression with optional robust standard errors
+- **GLS (Generalized Least Squares)**: Handles heteroskedasticity and autocorrelation
+- **WLS (Weighted Least Squares)**: Handles heteroskedastic errors with known variance structure
+- **IV (Instrumental Variables)**: Addresses endogeneity using instrumental variables (exactly identified models only)
+
+### Diagnostic Statistics
+- **Durbin-Watson Test**: Detect autocorrelation in residuals
+- **Jarque-Bera Test**: Test for normality of residuals
+- **Omnibus Test**: Alternative normality test
+- **Skewness & Kurtosis**: Distribution shape measures
+- **Condition Number**: Multicollinearity detection
+- **R-squared & Adjusted R-squared**: Model fit measures
+- **F-statistic**: Overall model significance
+
+## 🚀 Quick Start
+
+### Installation
+
+```bash
+pip install econometrust
+```
+
+### Basic Usage
+
+```python
+import numpy as np
+from econometrust import OLS, GLS, WLS, IV
+
+# Generate sample data
+X = np.random.randn(100, 3)
+y = X @ [2.0, 1.5, -0.8] + np.random.normal(0, 0.5, 100)
+
+# Fit OLS model
+model = OLS(fit_intercept=True, robust=False)
+model.fit(X, y)
+
+# Get comprehensive summary
+print(model.summary())
+
+# Access individual results
+print(f"Coefficients: {model.coefficients}")
+print(f"R-squared: {model.r_squared}")
+print(f"Durbin-Watson: {model.durbin_watson}")
+```
+
+### Advanced Example with Diagnostics
+
+```python
+import numpy as np
+from econometrust import OLS
+
+# Create data with potential issues
+np.random.seed(42)
+n = 100
+X = np.random.randn(n, 3)
+
+# Add some autocorrelation to demonstrate diagnostics
+errors = np.zeros(n)
+errors[0] = np.random.normal(0, 0.5)
+for i in range(1, n):
+    errors[i] = 0.6 * errors[i-1] + np.random.normal(0, 0.3)
+
+y = X @ [1.5, -2.0, 0.8] + errors
+
+# Fit model
+model = OLS(fit_intercept=True, robust=True)
+model.fit(X, y)
+
+# Get detailed diagnostic summary
+summary = model.summary()
+print(summary)
+
+# The summary includes:
+# - Coefficient estimates with standard errors and t-statistics
+# - Model fit statistics (R², Adjusted R², F-statistic)
+# - Diagnostic tests (Durbin-Watson, Jarque-Bera, Omnibus)
+# - Distribution measures (Skewness, Kurtosis)
+# - Multicollinearity indicator (Condition Number)
+# - Interpretive notes for significant diagnostic findings
+```
+
+## 📊 Sample Output
+
+```
+====================================
+           OLS Regression Results
+====================================
+
+Dependent Variable: y              No. Observations: 100
+Model: OLS                         Degrees of Freedom: 96
+Method: Least Squares              F-statistic: 156.42
+Date: 2024-01-15 10:30:00          Prob (F-statistic): 1.23e-45
+                                   R-squared: 0.830
+                                   Adj. R-squared: 0.825
+
+====================================
+             Coefficients
+====================================
+Variable    Coef      Std Err    t-stat    P>|t|    [0.025     0.975]
+--------------------------------------------------------------------
+const       0.0234    0.0891     0.262     0.794    -0.1536    0.2004
+x1          1.4987    0.0934    16.046     0.000     1.3131    1.6843
+x2         -1.9876    0.0912   -21.786     0.000    -2.1688   -1.8064
+x3          0.7899    0.0888     8.896     0.000     0.6135    0.9663
+
+====================================
+         Diagnostic Statistics
+====================================
+Durbin-Watson:           1.234 (Positive autocorrelation detected)
+Jarque-Bera:            5.678 (p=0.058)
+Omnibus:                4.321 (p=0.115)
+Skewness:               0.456
+Kurtosis:               3.234
+Condition Number:       12.34
+
+====================================
+              Notes
+====================================
+- Positive autocorrelation detected (DW = 1.234 < 1.5)
+- Consider using robust standard errors or GLS
+```
+
+## 🔧 API Reference
+
+### OLS Class
+
+```python
+class OLS:
+    def __init__(self, fit_intercept=True, robust=False)
+    def fit(self, X, y)
+    def predict(self, X)
+    def summary()
+    
+    # Properties
+    .coefficients       # Coefficient estimates
+    .intercept         # Intercept term
+    .residuals         # Model residuals
+    .fitted_values     # Predicted values
+    .r_squared         # R-squared value
+    .adjusted_r_squared # Adjusted R-squared
+    .f_statistic       # F-statistic
+    .durbin_watson     # Durbin-Watson statistic
+    .jarque_bera       # Jarque-Bera test statistic
+    .omnibus          # Omnibus test statistic
+    .skewness         # Residual skewness
+    .kurtosis         # Residual kurtosis
+    .condition_number  # Design matrix condition number
+```
+
+### GLS Class
+
+```python
+class GLS:
+    def __init__(self, fit_intercept=True)
+    def fit(self, X, y, sigma)  # sigma: covariance matrix
+    def predict(self, X)
+    def summary()
+    
+    # Same properties as OLS
+```
+
+### WLS Class
+
+```python
+class WLS:
+    def __init__(self, fit_intercept=True)
+    def fit(self, X, y, weights)  # weights: sample weights
+    def predict(self, X)
+    def summary()
+    
+    # Same properties as OLS, plus:
+    .weights          # Sample weights used for fitting
+```
+
+### IV Class
+
+```python
+class IV:
+    def __init__(self, fit_intercept=True)
+    def fit(self, instruments, regressors, targets)  # exactly identified only
+    def predict(self, regressors)
+    def summary()
+    
+    # Properties
+    .coefficients       # Coefficient estimates
+    .intercept         # Intercept term
+    .residuals         # Model residuals
+    .r_squared         # R-squared value (can be negative for IV)
+    .mse              # Mean squared error
+    .instruments      # Instrumental variables used
+    .regressors       # Regressors used for fitting
+    .covariance_matrix # Coefficient covariance matrix
+    .standard_errors() # Standard errors of coefficients
+    .t_statistics()   # T-statistics
+    .p_values()       # P-values
+    .confidence_intervals() # Confidence intervals
+```
+
+### WLS Example
+
+```python
+import numpy as np
+from econometrust import WLS, OLS
+
+# Generate data with heteroscedastic errors
+np.random.seed(42)
+n_samples = 100
+X = np.random.randn(n_samples, 2)
+
+# Error variance increases with X[:, 0]
+error_variance = 0.5 + 2 * np.abs(X[:, 0])
+errors = np.random.normal(0, np.sqrt(error_variance))
+y = 2.0 + X @ [1.5, -0.8] + errors
+
+# Create weights (inverse of variance for optimal efficiency)
+weights = 1.0 / error_variance
+
+# Compare OLS (inefficient) vs WLS (efficient)
+ols = OLS(fit_intercept=True)
+ols.fit(X, y)
+
+wls = WLS(fit_intercept=True)
+wls.fit(X, y, weights)
+
+print(f"OLS R²: {ols.r_squared:.4f}")
+print(f"WLS R²: {wls.r_squared:.4f}")  # Should be higher
+print(f"OLS MSE: {ols.mse:.4f}")
+print(f"WLS MSE: {wls.mse:.4f}")      # Should be lower
+
+# WLS provides more accurate coefficient estimates 
+# when heteroscedasticity is properly modeled
+```
+
+### IV (Instrumental Variables) Example
+
+```python
+import numpy as np
+from econometrust import IV, OLS
+
+# Generate data with endogeneity
+np.random.seed(42)
+n_samples = 200
+
+# Create instruments (must be uncorrelated with error term)
+z1 = np.random.randn(n_samples)  # First instrument
+z2 = np.random.randn(n_samples)  # Second instrument
+instruments = np.column_stack([z1, z2])
+
+# Create error term
+error = np.random.randn(n_samples) * 0.5
+
+# Create endogenous regressors (correlated with error)
+x1 = z1 + 0.3 * error + np.random.randn(n_samples) * 0.3  # Endogenous
+x2 = z2 + 0.1 * np.random.randn(n_samples)  # Exogenous instrument-like
+regressors = np.column_stack([x1, x2])
+
+# True coefficients
+true_beta = [1.5, -0.8]
+y = 2.0 + regressors @ true_beta + error
+
+# Compare OLS (biased due to endogeneity) vs IV (consistent)
+ols = OLS(fit_intercept=True)
+ols.fit(regressors, y)
+
+# IV estimator (exactly identified: 2 instruments for 2 regressors)
+iv = IV(fit_intercept=True)
+iv.fit(instruments, regressors, y)
+
+print("=== OLS Results (Biased due to endogeneity) ===")
+print(f"Coefficients: {ols.coefficients}")
+print(f"R-squared: {ols.r_squared:.4f}")
+
+print("\n=== IV Results (Consistent estimates) ===")
+print(f"Coefficients: {iv.coefficients}")
+print(f"R-squared: {iv.r_squared:.4f}")
+print(f"True coefficients: {true_beta}")
+
+# IV handles endogeneity but requires:
+# 1. Strong instruments (correlated with regressors)
+# 2. Valid instruments (uncorrelated with error term)
+# 3. Exact identification (# instruments = # regressors)
+
+print(iv.summary())
+```
+
+**Important Notes about IV Estimation:**
+
+- **Exactly Identified Only**: This IV implementation requires the number of instruments to equal the number of regressors
+- **Instrument Validity**: Instruments must be correlated with the endogenous regressors but uncorrelated with the error term
+- **Higher Variance**: IV estimates typically have higher variance than OLS, requiring larger sample sizes
+- **For Overidentified Models**: Use Two-Stage Least Squares (TSLS) when you have more instruments than regressors (planned for future release)
+
+## 🏆 Performance
+
+Econometrust leverages Rust's performance while maintaining Python's ease of use:
+
+- **Memory Efficient**: Zero-copy operations with numpy arrays
+- **Fast Computations**: Optimized linear algebra operations
+- **Parallel Processing**: Multi-threaded where beneficial
+- **Robust Numerics**: Handles edge cases gracefully
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+
+This project is licensed under both MIT and Apache-2.0 licenses.
+
+## 🔗 Links
+
+- **Repository**: [https://github.com/wdeligt/econometrust](https://github.com/wdeligt/econometrust)
+- **Documentation**: [https://github.com/wdeligt/econometrust#readme](https://github.com/wdeligt/econometrust#readme)
+- **Issues**: [https://github.com/wdeligt/econometrust/issues](https://github.com/wdeligt/econometrust/issues)
+
+---
+
+*Built with ❤️ using Rust and PyO3*

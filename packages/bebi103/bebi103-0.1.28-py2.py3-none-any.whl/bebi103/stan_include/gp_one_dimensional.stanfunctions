@@ -1,0 +1,335 @@
+/*
+  These functions are for GPs with univariate x. The functions 
+  gp_posterior_mstar and gp_posterior_sigmastar_cholesky are general.
+  The remaining functions are useful for computing derivatives of
+  GPs that use exponentiated quadratic (a.k.a. squared exponential or 
+  radial basis function), Matern 3/2, and Matern 5/2 kernels.
+ */
+
+/**
+  * Return posterior m* for a model with a Normal likelihood and GP
+  * prior for a given Cholesky decomposition, Ly, of the matrix Ky, 
+  * and K*.
+  *
+  * @param y y-values of data
+  * @param Ly Cholesky decomposition of the matrix Ly
+  * @param Kstar Matrix K*
+  * @return Posterior m*
+  */
+vector gp_posterior_mstar(vector y, matrix Ly, matrix Kstar) {
+  // Get sizes
+  int N = size(y);
+  int Nstar = cols(Kstar);
+
+  // Compute xi = inv(Ky) . y, which is solution xi to Ky . xi = y.
+  vector[N] z = mdivide_left_tri_low(Ly, y);
+  vector[N] xi = mdivide_right_tri_low(z', Ly)';
+
+  // Compute mean vector mstar
+  vector[Nstar] mstar = Kstar' * xi;
+
+  return mstar;
+}
+
+
+/** 
+  * Return Cholesky decomposition of posterior Σ* for a model with a 
+  * Normal likelihood and GP prior.
+  *
+  * @param y y-values of data
+  * @param Ly Cholesky decomposition of the matrix Ly
+  * @param Kstar Matrix K*
+  * @param Kstarstar Matrix K**
+  * @param delta Small value to add to the diagonal of Σ* to ensure
+  *              numerical positive definiteness
+  * @return Cholesky decomposition of posterior Σ*
+  */
+matrix gp_posterior_sigmastar_cholesky(
+    vector y, 
+    matrix Ly, 
+    matrix Kstar, 
+    matrix Kstarstar,
+    real delta) {
+
+  // Get sizes
+  int N = size(y);
+  int Nstar = cols(Kstar);
+
+  // Compute Xi = inv(Ky) . Kstar, which is the solution Xi to Ky . Xi = Kstar.
+  matrix[N, Nstar] Z = mdivide_left_tri_low(Ly, Kstar);
+  matrix[N, Nstar] Xi = mdivide_right_tri_low(Z', Ly)';
+
+  // Compute Sigma_star (plus a small number of the diagonal to ensure pos. def.)
+  matrix[Nstar, Nstar] Sigmastar = Kstarstar - Kstar' * Xi 
+                                  + diag_matrix(rep_vector(delta, Nstar));
+
+  // Compute and return Cholesky decomposition
+  matrix[Nstar, Nstar] Lstar = cholesky_decompose(Sigmastar);
+
+  return Lstar;
+}
+
+
+  /**
+   * Return exponentiated quadratic (a.k.a. squared exponential, or SE) kernel 
+   * differentiated by the first variable.
+   *
+   * @param x1 Value of first variable
+   * @param x2 Value of second variable
+   * @param alpha α hyperparameter of SE kernel
+   * @param rho ρ hyperparameter of SE kernel
+   * @return Partial first derivative of SE kernel with respect to the
+   *         first variable
+   */
+  real d1_exp_quad_kernel(real x1, real x2, real alpha, real rho) {
+     real x_diff = x1 - x2;
+
+     return -(alpha / rho)^2 * x_diff * exp(-x_diff^2 / 2.0 / rho^2);
+  }
+
+
+/**
+  * Return mixed second derivative of exponentiated quadratic 
+  * (a.k.a. squared exponential, or SE) kernel
+  *
+  * @param x1 Value of first variable
+  * @param x2 Value of second variable
+  * @param alpha α hyperparameter of SE kernel
+  * @param rho ρ hyperparameter of SE kernel
+  * @return Mixed second derivative of squared exponential (SE) kernel
+  */
+real d1_d2_exp_quad_kernel(real x1, real x2, real alpha, real rho) {
+    real rho2 = rho^2;
+    real term1 = x1 - x2 + rho;
+    real term2 = x2 - x1 + rho;
+
+    return (alpha / rho2)^2 * term1 * term2 * exp(-(x1 - x2)^2 / 2.0 / rho2);
+}
+
+  /**
+   * Return Matern 3/2 kernel differentiated by the first
+   * variable.
+   *
+   * @param x1 Value of first variable
+   * @param x2 Value of second variable
+   * @param alpha α hyperparameter of Matern kernel
+   * @param rho ρ hyperparameter of Matern kernel
+   * @return Partial first derivative of Matern 3/2 kernel with respect
+   * to the first variable
+   */
+   real d1_matern32_kernel(real x1, real x2, real alpha, real rho) {
+    real x_diff = x1 - x2;
+
+    return -3.0 * (alpha / rho)^2 * x_diff * exp(-sqrt(3.0 * x_diff^2 / rho^2));
+ }
+
+
+ /**
+  * Return mixed second derivative of Matern 3/2 kernel
+  *
+  * @param x1 Value of first variable
+  * @param x2 Value of second variable
+  * @param alpha α hyperparameter of Matern kernel
+  * @param rho ρ hyperparameter of Matern kernel
+  * @return Mixed second derivative of Matern 3/2 kernel
+  */
+real d1_d2_matern32_kernel(real x1, real x2, real alpha, real rho) {
+  real exp_arg = sqrt(3.0 * ((x1 - x2) / rho)^2);
+
+  return 3.0 * (alpha / rho)^2 * (1.0 - exp_arg) * exp(-exp_arg);
+}
+
+
+/**
+   * Return Matern 5/2 kernel differentiated by the first
+   * variable.
+   *
+   * @param x1 Value of first variable
+   * @param x2 Value of second variable
+   * @param alpha α hyperparameter of Matern kernel
+   * @param rho ρ hyperparameter of Matern kernel
+   * @return Partial first derivative of Matern 5/2 kernel with respect
+   * to the first variable
+   */
+   real d1_matern52_kernel(real x1, real x2, real alpha, real rho) {
+    real x_diff = x1 - x2;
+    real exp_arg = sqrt(5 * (x_diff / rho)^2);
+
+    return -5.0 * (alpha / rho)^2 / 3.0 * x_diff * (1.0 + exp_arg) * exp(-exp_arg);
+ }
+
+
+ /**
+  * Return mixed second derivative of Matern 5/2 kernel
+  *
+  * @param x1 Value of first variable
+  * @param x2 Value of second variable
+  * @param alpha α hyperparameter of Matern kernel
+  * @param rho ρ hyperparameter of Matern kernel
+  * @return Mixed second derivative of Matern 5/2 kernel
+  */
+real d1_d2_matern52_kernel(real x1, real x2, real alpha, real rho) {
+  real x_diff = x1 - x2;
+  real x_diff2 = x_diff^2;
+  real rho2 = rho^2;
+  real exp_arg = sqrt(5 * x_diff^2 / rho2);
+
+  return 5.0 * (alpha / rho2)^2 / 3.0 * ((1.0 + exp_arg) * rho2 - 5.0 * x_diff2) * exp(-exp_arg);
+}
+
+
+/**
+  * Return first derivative of the covariance matrix of the exponentiated quadratic
+  * (a.k.a. squared exponential, or SE) kernel with respect to the first variable.
+  *
+  * @param x1 Value of first variable
+  * @param x2 Value of second variable
+  * @param alpha α hyperparameter of SE kernel
+  * @param rho ρ hyperparameter of SE kernel
+  * @return First derivative of the covariance matrix of the squared
+  * exponential kernel with respect to the first variable.
+  */
+matrix d1_cov_exp_quad(array[] real x1, array[] real x2, real alpha, real rho) {
+  int m = size(x1);
+  int n = size(x2);
+  matrix[m, n] d1_K;
+
+  for (i in 1:m) {
+    for (j in 1:n) {
+      d1_K[i, j] = d1_exp_quad_kernel(x1[i], x2[j], alpha, rho);
+    }
+  }
+
+  return d1_K;
+}
+
+
+/**
+  * Return mixed second derivative of the covariance matrix of the 
+  * exponentiated quadratic (a.k.a. squared exponential, or SE) kernel.
+  *
+  * @param x1 Value of first variable
+  * @param x2 Value of second variable
+  * @param alpha α hyperparameter of SE kernel
+  * @param rho ρ hyperparameter of SE kernel
+  * @return Mixed second derivative of the covariance matrix of the 
+  * squared exponential kernel.
+  */
+matrix d1_d2_cov_exp_quad(array[] real x1, array[] real x2, real alpha, real rho) {
+  int m = size(x1);
+  int n = size(x2);
+  matrix[m, n] d1_d2_K;
+
+  for (i in 1:m) {
+    for (j in 1:n) {
+      d1_d2_K[i, j] = d1_d2_exp_quad_kernel(x1[i], x2[j], alpha, rho);
+    }
+  }
+
+  return d1_d2_K;
+}
+
+
+/**
+  * Return first derivative of the covariance matrix of the Matern
+  * kernel with nu = 3/2 with respect to the first variable.
+  *
+  * @param x1 Value of first variable
+  * @param x2 Value of second variable
+  * @param alpha α hyperparameter of Matern 3/2 kernel
+  * @param rho ρ hyperparameter of Matern 3/2 kernel
+  * @return First derivative of the covariance matrix of the Matern 3/2
+  * kernel with respect to the first variable.
+  */
+  matrix d1_cov_matern32(array[] real x1, array[] real x2, real alpha, real rho) {
+    int m = size(x1);
+    int n = size(x2);
+    matrix[m, n] d1_K;
+  
+    for (i in 1:m) {
+      for (j in 1:n) {
+        d1_K[i, j] = d1_matern32_kernel(x1[i], x2[j], alpha, rho);
+      }
+    }
+  
+    return d1_K;
+  }
+
+
+/**
+  * Return mixed second derivative of the covariance matrix of the Matern
+  * kernel with nu = 3/2 with respect to the first variable.
+  *
+  * @param x1 Value of first variable
+  * @param x2 Value of second variable
+  * @param alpha α hyperparameter of Matern 3/2 kernel
+  * @param rho ρ hyperparameter of Matern 3/2 kernel
+  * @return Mixed second derivative of the covariance matrix of the 
+  * Matern 3/2 kernel.
+  */
+  matrix d1_d2_cov_matern32(array[] real x1, array[] real x2, real alpha, real rho) {
+    int m = size(x1);
+    int n = size(x2);
+    matrix[m, n] d1_d2_K;
+  
+    for (i in 1:m) {
+      for (j in 1:n) {
+        d1_d2_K[i, j] = d1_d2_matern32_kernel(x1[i], x2[j], alpha, rho);
+      }
+    }
+  
+    return d1_d2_K;
+  }
+
+
+/**
+  * Return first derivative of the covariance matrix of the Matern
+  * kernel with nu = 5/2 with respect to the first variable.
+  *
+  * @param x1 Value of first variable
+  * @param x2 Value of second variable
+  * @param alpha α hyperparameter of Matern 5/2 kernel
+  * @param rho ρ hyperparameter of Matern 5/2 kernel
+  * @return First derivative of the covariance matrix of the Matern 3/2
+  * kernel with respect to the first variable.
+  */
+  matrix d1_cov_matern52(array[] real x1, array[] real x2, real alpha, real rho) {
+    int m = size(x1);
+    int n = size(x2);
+    matrix[m, n] d1_K;
+  
+    for (i in 1:m) {
+      for (j in 1:n) {
+        d1_K[i, j] = d1_matern52_kernel(x1[i], x2[j], alpha, rho);
+      }
+    }
+  
+    return d1_K;
+  }
+
+
+/**
+  * Return mixed second derivative of the covariance matrix of the Matern
+  * kernel with nu = 5/2 with respect to the first variable.
+  *
+  * @param x1 Value of first variable
+  * @param x2 Value of second variable
+  * @param alpha α hyperparameter of Matern 5/2 kernel
+  * @param rho ρ hyperparameter of Matern 5/2 kernel
+  * @return Mixed second derivative of the covariance matrix of the 
+  * Matern 5/2 kernel.
+  */
+  matrix d1_d2_cov_matern52(array[] real x1, array[] real x2, real alpha, real rho) {
+    int m = size(x1);
+    int n = size(x2);
+    matrix[m, n] d1_d2_K;
+  
+    for (i in 1:m) {
+      for (j in 1:n) {
+        d1_d2_K[i, j] = d1_d2_matern52_kernel(x1[i], x2[j], alpha, rho);
+      }
+    }
+  
+    return d1_d2_K;
+  }
+  

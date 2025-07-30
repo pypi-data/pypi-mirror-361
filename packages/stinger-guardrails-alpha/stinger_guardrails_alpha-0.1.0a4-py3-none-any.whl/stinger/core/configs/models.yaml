@@ -1,0 +1,40 @@
+version: "1.0"
+
+models:
+  default: "gpt-4.1-nano"  # Always use gpt-4.1-nano, NOT gpt-4o-mini
+  
+  guardrails:
+    content_moderation: "gpt-4.1-nano"
+    prompt_injection: "gpt-4.1-nano"
+    pii_detection: "gpt-4.1-nano"
+    toxicity_detection: "gpt-4.1-nano"
+    code_generation: "gpt-4.1-nano"
+  
+  settings:
+    temperature: 0.1
+    max_tokens: 500
+    timeout: 30
+
+pipeline:
+  input:
+    - name: toxicity_check
+      type: simple_toxicity_detection
+      enabled: true
+      confidence_threshold: 0.7
+      categories: [hate_speech, harassment, threats]
+      on_error: block
+    
+    - name: pii_check
+      type: simple_pii_detection
+      enabled: true
+      confidence_threshold: 0.8
+      categories: [credit_card, ssn, email]
+      on_error: block
+  
+  output:
+    - name: code_generation_check
+      type: simple_code_generation
+      enabled: true
+      confidence_threshold: 0.6
+      categories: [programming_keywords, code_blocks]
+      on_error: block 

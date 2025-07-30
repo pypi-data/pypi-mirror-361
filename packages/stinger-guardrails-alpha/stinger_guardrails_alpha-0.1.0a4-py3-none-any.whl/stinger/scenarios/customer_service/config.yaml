@@ -1,0 +1,66 @@
+version: "1.0"
+pipeline:
+  input:
+    - name: "length_check"
+      type: "length_filter"
+      enabled: true
+      min_length: 0
+      max_length: 10000
+      on_error: "block"
+    
+    - name: "toxic_language"
+      type: "keyword_block"
+      enabled: true
+      keyword: "idiot"
+      on_error: "block"
+    
+    - name: "stupid_check"
+      type: "keyword_block"
+      enabled: true
+      keyword: "stupid"
+      on_error: "block"
+    
+    - name: "useless_check"
+      type: "keyword_block"
+      enabled: true
+      keyword: "useless"
+      on_error: "block"
+    
+    - name: "garbage_check"
+      type: "keyword_block"
+      enabled: true
+      keyword: "garbage"
+      on_error: "block"
+    
+    - name: "worst_check"
+      type: "keyword_block"
+      enabled: true
+      keyword: "worst"
+      on_error: "block"
+    
+    - name: "hate_check"
+      type: "keyword_block"
+      enabled: true
+      keyword: "hate"
+      on_error: "block"
+    
+    - name: "incompetent_check"
+      type: "keyword_block"
+      enabled: true
+      keyword: "incompetent"
+      on_error: "block"
+    
+    - name: "shut_up_check"
+      type: "keyword_block"
+      enabled: true
+      keyword: "shut up"
+      on_error: "block"
+    
+    - name: "profanity_check"
+      type: "regex_filter"
+      enabled: true
+      patterns: [
+        "\\b(shit|hell|damn|fuck|bitch|ass)\\b"
+      ]
+      action: "block"
+      on_error: "block" 

@@ -1,0 +1,19 @@
+[package]
+name = "ckmeans_py"
+version = "0.2.10"
+edition = "2024"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "ckmeans"
+crate-type = ["cdylib"]
+
+[dependencies]
+ckmeans = "1.2.0"
+ndarray = "0.16.1"
+numpy = "0.25.0"
+pyo3 = { version = "0.25.1", features = ["abi3", "abi3-py310"] }
+
+[profile.release]
+lto = true
+codegen-units = 1

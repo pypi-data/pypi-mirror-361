@@ -1,0 +1,86 @@
+[project]
+name = "git-notes-db"
+version = "0.1.17"
+description = "Store and access structured data in git-notes"
+readme = "README.md"
+requires-python = ">=3.13"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Chris Scutcher", email = "chris@scutcher.uk" },
+]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: Public Domain",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Version Control",
+]
+keywords = ["git", "notes", "cli", "json", "jq"]
+dependencies = [
+    "attrs>=25.3.0",
+    "gitpython>=3.1.44",
+    "jq>=1.9.1",
+    "more-itertools>=10.7.0",
+    "pydantic>=2.11.7",
+    "rich>=14.0.0",
+]
+
+[project.urls]
+"Homepage" = "https://gitlab.com/cscutcher-public/git-notes-db"
+"Repository" = "https://gitlab.com/cscutcher-public/git-notes-db.git"
+"Homepage (Mirror)" = "https://github.com/cscutcher/git-notes-db"
+"Repository (Mirror)" = "https://github.com/cscutcher/git-notes-db.git"
+
+[project.scripts]
+git-notes-db = "git_notes_db:cli.main"
+
+[tool.uv]
+package = true
+
+[tool.commitizen]
+name = "cz_gitmoji"
+tag_format = "$version"
+version_scheme = "pep440"
+version_provider = "uv"
+update_changelog_on_bump = true
+# TODO: Remove once stable
+major_version_zero = true
+gpg_sign = true
+annotated_tag = true
+pre_bump_hooks = [
+    "scripts/cz-pre-bump.sh"
+]
+bump_message = "🔖 bump: version $current_version → $new_version"
+
+[dependency-groups]
+dev = [
+    "basedpyright>=1.29.5",
+    "commitizen>=4.8.3",
+    "cz-conventional-gitmoji>=0.7.0",
+    "ipython>=9.4.0",
+    "mypy>=1.16.1",
+    "nox>=2025.5.1",
+    "pdbpp>=0.11.6",
+    "pytest>=8.4.1",
+    "ruff>=0.12.2",
+]
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.format]
+docstring-code-format = true
+preview = true
+quote-style = "preserve"
+
+[tool.ruff.lint.isort]
+lines-after-imports = 2
+lines-between-types = 1
+order-by-type = true
+section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
+force-single-line = true
+
+
+[tool.basedpyright]
+ allowedUntypedLibraries = ["git"]

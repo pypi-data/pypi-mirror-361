@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Lint with flake8
+        run: flake8 erdo/ --exclude=erdo/_generated/ --max-line-length=120 --ignore=E501,W503,E203,E704
+
+      - name: Check formatting with black
+        run: black --check erdo/
+
+      - name: Check import sorting with isort
+        run: isort --check-only erdo/
+
+      - name: Type check with mypy
+        run: mypy erdo/
+
+      - name: Test with pytest
+        run: pytest
+
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install build dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build
+
+      - name: Test package build
+        run: python -m build
+
+      - name: Test package installation
+        run: |
+          pip install dist/*.whl
+          python -c "import erdo; print('Package installed successfully')"

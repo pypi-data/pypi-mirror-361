@@ -1,0 +1,45 @@
+[package]
+name = "pyxirr"
+version = "0.10.7"
+authors = ["Anexen"]
+edition = "2021"
+description = "Rust-powered collection of financial functions for Python."
+readme = "README.md"
+homepage = "https://github.com/Anexen/pyxirr"
+license = "Unlicense"
+keywords = [
+    "python",
+    "fast",
+    "financial",
+    "xirr",
+    "cashflow",
+    "day count convention",
+    "PME",
+]
+include = [
+    "src/**",
+    "docs/_inline/**",
+    "Cargo.toml",
+    "pyproject.toml",
+    "LICENSE",
+]
+
+[lib]
+name = "pyxirr"
+crate-type = ["rlib", "cdylib"]
+doctest = false
+
+[dependencies]
+pyo3 = "0.20"
+numpy = "0.20"
+time = { version = "0.3", features = ["parsing", "macros"] }
+ndarray = "0.15"
+# num-complex = "0.4"
+
+[dev-dependencies]
+assert_approx_eq = "1.1"
+rstest = { version = "0.18.2", default-features = false }
+pyo3 = { version = "0.20", features = ["auto-initialize"]}
+
+[features]
+nonumpy = []

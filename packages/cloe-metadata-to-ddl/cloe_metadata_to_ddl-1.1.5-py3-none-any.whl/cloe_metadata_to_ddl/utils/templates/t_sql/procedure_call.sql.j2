@@ -1,0 +1,4 @@
+EXEC [cloe_dwh].[{{ procedure_name }}]
+{%- for parameter_name, parameter_value in parameters.items() -%}
+{{ '@' ~ parameter_name ~ "=" }}{{ escape_character }}{{ parameter_value }}{{ escape_character }}{{ ", " if not loop.last else ""}}
+{%- endfor %};

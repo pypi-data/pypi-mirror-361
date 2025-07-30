@@ -1,0 +1,34 @@
+CREATE OR REPLACE PROCEDURE "cloe_dwh"."{{ procedure_name }}"(
+{%- if use_monitoring is defined and use_monitoring %}"QUERY_TAG" VARCHAR(16777216){% endif %}
+{%- for parameter_name, parameter_type in parameters.items() %}{{ ", " if loop.first and use_monitoring is defined and use_monitoring else ""}}{{ parameter_name }} {{ parameter_type }}{{ ", " if not loop.last else ""}}{% endfor %})
+RETURNS VARCHAR
+LANGUAGE JAVASCRIPT
+EXECUTE AS CALLER
+AS
+$$
+    sql_commands = [];
+    {%- if use_monitoring is defined and use_monitoring %}
+    var sql_command_query_tag = `ALTER SESSION SET QUERY_TAG = '` + QUERY_TAG +  `'`;
+    sql_commands.push(sql_command_query_tag);
+    {%- endif %}
+    {%- for query in queries %}
+    var sql_command_{{ loop.index }} = `{{ query }}`;
+    sql_commands.push(sql_command_{{ loop.index }});
+    {% endfor %}
+    {%- if is_transaction is defined and is_transaction %}
+    {%- raw %}
+    snowflake.execute( {sqlText: "BEGIN TRANSACTION"} );
+    {%- endraw %}
+    {%- endif %}
+    {%- raw %}
+    sql_commands.forEach(function (item, index) {
+        snowflake.execute( {sqlText: item} );
+    });
+    {%- endraw %}
+    {%- if is_transaction is defined and is_transaction %}
+    {%- raw %}
+    snowflake.execute( {sqlText: "COMMIT"} );
+    {%- endraw %}
+    {%- endif %}
+    return "true"
+$$;

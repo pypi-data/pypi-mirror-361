@@ -1,0 +1,4 @@
+CALL "cloe_dwh"."{{ procedure_name }}"(
+{%- for parameter_value in parameters.values() -%}
+{{ escape_character }}{{ parameter_value }}{{ escape_character }}{{ ", " if not loop.last else ""}}
+{%- endfor %});

@@ -1,0 +1,488 @@
+:root {
+  /* Light theme defaults */
+  --background-color: #f5f5f7;
+  --text-color: #333;
+  --border-color: #e0e0e0;
+  --card-bg-color: #fff;
+  --description-bg: #f8f9fa;
+  --overlay-bg: rgba(255, 255, 255, 0.8);
+  --error-bg: rgba(220, 53, 69, 0.1);
+  --hover-bg: rgba(0, 0, 0, 0.05);
+  --calendar-today-bg: rgba(0, 123, 255, 0.1);
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --badge-bg: #f0f0f0;
+  --badge-text: #333;
+  --primary-color: #5E6AD2;
+  --text-secondary: #6b7280;
+  --todo-color: #f59e0b;
+  --in-progress-color: #3b82f6;
+  --done-color: #10b981;
+}
+
+[data-theme='dark'] {
+  /* Dark theme overrides with industry-standard colors */
+  --background-color: #1e1e2e; /* Deeper blue-gray background */
+  --text-color: #f8f8f2;      /* Crisp white-ish text for better contrast */
+  --border-color: #565a6e;    /* Visible but not harsh borders */
+  --card-bg-color: #282a36;   /* Slightly lighter than background for cards */
+  --description-bg: #313244;  /* Slightly elevated for description areas */
+  --overlay-bg: rgba(26, 27, 38, 0.8); /* Semi-transparent overlay */
+  --error-bg: rgba(255, 85, 85, 0.15); /* Subtle red for errors */
+  --hover-bg: rgba(248, 248, 242, 0.05); /* Very subtle hover highlight */
+  --calendar-today-bg: rgba(189, 147, 249, 0.15); /* Subtle highlight for today */
+  --shadow-color: rgba(0, 0, 0, 0.4); /* Less harsh shadows */
+  --badge-bg: #44475a;       /* Visible but not distracting badges */
+  --badge-text: #f8f8f2;     /* High contrast for badge text */
+  --primary-color: #6E79E2;
+  --text-secondary: #b0b3b8;
+  --todo-color: #f59e0b;
+  --in-progress-color: #3b82f6;
+  --done-color: #10b981;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  line-height: 1.5;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100vh;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.logo {
+  display: flex;
+  align-items: baseline;
+}
+
+.logo h1 {
+  font-weight: 700;
+  font-size: 1.8rem;
+  color: var(--primary-color);
+  margin-right: 0.5rem;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.filters {
+  display: flex;
+  gap: 1rem;
+}
+
+select {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background-color: var(--card-bg-color);
+  font-size: 0.9rem;
+  outline: none;
+  cursor: pointer;
+}
+
+.calendar-container {
+  background-color: var(--card-bg-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.fc .fc-toolbar-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.fc .fc-button-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.fc .fc-button-primary:hover {
+  background-color: var(--hover-bg);
+  border-color: var(--hover-color);
+}
+
+/* Handle calendar dark mode */
+[data-theme='dark'] .fc .fc-button-primary {
+  background-color: var(--card-bg-color);
+  border-color: var(--border-color);
+  color: var(--text-color);
+}
+
+[data-theme='dark'] .fc .fc-button-primary:hover {
+  background-color: var(--hover-bg);
+  border-color: var(--border-color);
+}
+
+/* Fix date text colors in dark mode */
+[data-theme='dark'] .fc-daygrid-day-number {
+  color: #f8f8f2 !important; /* Light text for better visibility */
+}
+
+[data-theme='dark'] .fc-col-header-cell-cushion {
+  color: #f8f8f2 !important; /* Light text for day names */
+}
+
+[data-theme='dark'] .fc-daygrid-day.fc-day-today {
+  background-color: rgba(189, 147, 249, 0.2) !important; /* Slightly more visible today highlight */
+}
+
+[data-theme='dark'] .fc-daygrid-day.fc-day-other .fc-daygrid-day-number {
+  color: #b0b3b8 !important; /* Slightly dimmer for days from other months */
+}
+
+/* Fix list view date text colors in dark mode */
+[data-theme='dark'] .fc-list-day-cushion {
+  background-color: #313244 !important;
+}
+
+[data-theme='dark'] .fc-list-day-text,
+[data-theme='dark'] .fc-list-day-side-text {
+  color: #f8f8f2 !important;
+}
+
+[data-theme='dark'] .fc-list-table td {
+  border-color: #565a6e !important;
+}
+
+[data-theme='dark'] .fc-list-event-time {
+  color: #b0b3b8 !important;
+}
+
+[data-theme='dark'] .fc-list-event-title {
+  color: #f8f8f2 !important;
+}
+
+[data-theme='dark'] .fc-list-event:hover td {
+  background-color: #44475a !important;
+}
+
+[data-theme='dark'] .fc-list-empty-cushion {
+  color: #b0b3b8 !important;
+}
+
+.fc .fc-event {
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+/* Dark mode overrides for FullCalendar */
+/* Dark mode styles for FullCalendar */
+[data-theme='dark'] .fc-theme-bootstrap5 {
+  --fc-border-color: var(--border-color);
+  --fc-page-bg-color: var(--card-bg-color);
+  --fc-neutral-bg-color: var(--background-color);
+  --fc-list-event-hover-bg-color: var(--card-bg-color);
+  --fc-today-bg-color: rgba(110, 121, 226, 0.1);
+}
+
+[data-theme='dark'] .fc .fc-col-header-cell-cushion,
+[data-theme='dark'] .fc .fc-daygrid-day-number,
+[data-theme='dark'] .fc .fc-daygrid-day-top,
+[data-theme='dark'] .fc .fc-toolbar-title,
+[data-theme='dark'] .fc .fc-timegrid-axis-cushion,
+[data-theme='dark'] .fc .fc-timegrid-slot-label-cushion,
+[data-theme='dark'] .fc .fc-list-day-cushion {
+  color: var(--text-color);
+}
+
+[data-theme='dark'] .fc .fc-day-today {
+  background-color: rgba(110, 121, 226, 0.1) !important;
+}
+
+[data-theme='dark'] .fc-col-header,
+[data-theme='dark'] .fc-scrollgrid,
+[data-theme='dark'] .fc-theme-bootstrap5 td, 
+[data-theme='dark'] .fc-theme-bootstrap5 th {
+  border-color: var(--border-color);
+}
+
+[data-theme='dark'] .calendar-container {
+  background-color: var(--card-bg-color);
+}
+
+[data-theme='dark'] select,
+[data-theme='dark'] .form-select {
+  background-color: var(--card-bg-color);
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+/* Issue details panel */
+/* Issue details panel - simplified approach */
+/* Dark mode styles for Bootstrap offcanvas */
+[data-theme="dark"] .offcanvas {
+  background-color: var(--card-bg-color);
+  color: var(--text-color);
+  border-color: var(--dark-border-color);
+}
+
+[data-theme="dark"] .offcanvas-header {
+  border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+[data-theme="dark"] .issue-description {
+  background-color: var(--description-bg);
+  color: var(--text-color);
+}
+
+/* Light mode issue description */
+.issue-description {
+  background-color: #f8f9fa;
+  border-radius: 0.375rem;
+}
+
+/* Make sure offcanvas has a reasonable width */
+.offcanvas-end {
+  width: 350px !important;
+}
+
+@media (max-width: 576px) {
+  .offcanvas-end {
+    width: 100% !important;
+  }
+}
+
+#issue-details .card-body {
+  background-color: var(--card-bg-color);
+}
+
+#issue-details .card-header,
+#issue-details .card-footer {
+  background-color: var(--card-bg-color);
+  border-color: var(--border-color);
+}
+
+#issue-details .issue-description {
+  background-color: var(--description-bg);
+}
+
+[data-theme='dark'] #issue-details {
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme='dark'] #issue-details .issue-assignee {
+  background-color: var(--border-color);
+  color: var(--text-color);
+}
+
+.issue-details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.issue-details-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  flex-grow: 1;
+  padding-right: 1rem;
+}
+
+#close-details {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+
+.issue-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.issue-team, .issue-state, .issue-assignee, .issue-label {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  display: inline-block;
+  margin-right: 0.25rem;
+}
+
+.issue-team {
+  background-color: #e0e7ff;
+  color: #4338ca;
+}
+
+.issue-state {
+  background-color: #e0f2fe;
+  color: #0284c7;
+}
+
+.issue-assignee {
+  background-color: #f3f4f6;
+  color: #4b5563;
+}
+
+.issue-labels {
+  margin: 1rem 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.issue-label {
+  border-radius: 12px;
+  font-size: 0.75rem;
+}
+
+.issue-description {
+  background-color: var(--description-bg);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+  color: var(--text-color);
+}
+
+.issue-details-footer {
+  border-top: 1px solid var(--border-color);
+  padding-top: 1.5rem;
+}
+
+.button {
+  display: inline-block;
+  padding: 0.75rem 1.25rem;
+  background-color: var(--primary-color);
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.button:hover {
+  background-color: var(--hover-color);
+}
+
+#loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--overlay-bg);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+/* Dark mode for the no-due-date list */
+[data-theme='dark'] #no-due-date-list {
+  background-color: var(--card-bg-color);
+  color: var(--text-color);
+}
+
+[data-theme='dark'] #no-due-date-list .list-group-item {
+  background-color: var(--card-bg-color);
+  border-color: var(--border-color);
+  color: var(--text-color);
+}
+
+[data-theme='dark'] #no-due-date-list .text-muted {
+  color: var(--text-secondary) !important;
+}
+
+/* Dark mode for the loading overlay text */
+[data-theme='dark'] #loading-overlay .bg-white {
+  background-color: var(--card-bg-color) !important;
+  color: var(--text-color);
+}
+
+/* Dark mode for error overlay */
+[data-theme='dark'] #error-message .bg-white {
+  background-color: var(--card-bg-color) !important;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(94, 106, 210, 0.3);
+  border-radius: 50%;
+  border-top: 4px solid var(--primary-color);
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+#error-message {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--error-overlay-bg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3000;
+}
+
+.error-content {
+  background-color: var(--card-bg-color);
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 400px;
+  text-align: center;
+  color: var(--text-color);
+}
+
+.error-content h3 {
+  color: #dc2626;
+  margin-bottom: 1rem;
+}
+
+#close-error {
+  padding: 0.5rem 1rem;
+  background-color: #6b7280;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  margin-top: 1rem;
+  cursor: pointer;
+}
+
+.hidden {
+  display: none !important;
+}

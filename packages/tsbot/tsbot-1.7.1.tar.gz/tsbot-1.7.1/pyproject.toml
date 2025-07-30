@@ -1,0 +1,70 @@
+[project]
+name = "tsbot"
+version = "1.7.1"
+authors = [{ name = "jykob" }]
+description = "Asynchronous Python framework to build TeamSpeak 3 Server Query bots"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Framework :: AsyncIO",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+]
+dependencies = [
+    "asyncssh >= 2.17.0",
+    "tsformatter >= 0.2.1",
+    "typing_extensions >= 4.13.1",
+]
+license = { file = "LICENSE" }
+urls = { repository = "https://github.com/jykob/tsbot", documentation = "https://tsbot.readthedocs.io/" }
+
+
+[project.optional-dependencies]
+dev = [
+    "ruff >= 0.4.4",
+    "pyright >= 1.1.362",
+    "sphinx-autobuild >= 2024.4.16",
+    "python-dotenv >= 1.0.1",
+]
+tests = ["pytest == 8.3.3", "pytest-asyncio == 0.24.0"]
+docs = ["sphinx >= 7.3.7", "myst-parser >= 2.0.0", "sphinx_rtd_theme >= 2.0.0"]
+
+
+[build-system]
+requires = ["setuptools >= 69.5.1", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+[tool.setuptools]
+packages = { find = { include = ["tsbot*"] } }
+package-data = { tsbot = ["py.typed"] }
+
+
+[tool.pyright]
+typeCheckingMode = "strict"
+
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["D", "E", "F", "I", "N", "UP", "ANN", "SIM", "RUF", "ASYNC"]
+ignore = ["D1", "D212", "D203", "D401", "E501", "ANN401", "ANN1"]
+
+[tool.ruff.lint.isort]
+required-imports = ["from __future__ import annotations"]
+
+[tool.ruff.lint.per-file-ignores]
+"examples/**/*" = ["ASYNC230", "ANN201"]
+"tests/**/*" = ["ANN2", "ASYNC110"]
+"docs/**/*" = ["ANN2"]
+"docs/conf.py" = ["I002"]
+"__init__.py" = ["I002"]
+
+
+[tool.pytest]
+ini_options = { asyncio_default_fixture_loop_scope = "function" }

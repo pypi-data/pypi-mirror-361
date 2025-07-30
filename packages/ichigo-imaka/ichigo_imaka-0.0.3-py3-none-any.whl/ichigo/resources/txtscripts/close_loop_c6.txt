@@ -1,0 +1,15 @@
+# Closes the loop with the controller c6.
+_FNAMECLOSE = "hokulea_c6_c"
+_FNAMEOPEN = "hokulea_c6_c_open"
+
+[rtc] $ iload ~/asm/imaka/scripts/ssc_modalfrf_c6
+[rtc] $ csclient set.dmservo.type 2
+[nuc] sharpcap_capture_sequence(_FNAMECLOSE, n_frames=4000, t=8)
+[ehu] save_aocbs_autoidx(3)
+
+
+# Open loop data
+[rtc] set_loop_pid(0, 1, 0)
+[ehu] set_open_loop_average()
+[nuc] sharpcap_capture_sequence(_FNAMEOPEN, n_frames=4000, t=8)
+[ehu] save_aocbs_autoidx(3)

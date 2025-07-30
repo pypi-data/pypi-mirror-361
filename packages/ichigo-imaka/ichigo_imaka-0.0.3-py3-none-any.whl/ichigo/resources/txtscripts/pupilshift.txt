@@ -1,0 +1,23 @@
+# Closed and open loop data for Brianna
+_FNAMECLOSE = "pupil_shift_0_close"
+_FNAMEOPEN1 = "pupil_shift_0_open_before"
+_FNAMEOPEN2 = "pupil_shift_0_open_after"
+
+[py] print_color("Starting sequence. Take pupil images now...", "cyan")
+
+# Open loop data before
+[rtc] set_loop_pid(0, 1, 0.99)
+[ehu]
+[nuc] sharpcap_capture_sequence(_FNAMEOPEN1, n_frames=2000, t=8)
+[ehu] save_aocbs_autoidx(3)
+
+# Closed loop data
+[rtc] set_loop_pid(0.2, 1, 0)
+[nuc] sharpcap_capture_sequence(_FNAMECLOSE, n_frames=4000, t=8)
+[ehu] save_aocbs_autoidx(3)
+
+# Open loop data after
+[rtc] set_loop_pid(0, 1, 0.99)
+[ehu]
+[nuc] sharpcap_capture_sequence(_FNAMEOPEN2, n_frames=2000, t=8)
+[ehu] save_aocbs_autoidx(3)

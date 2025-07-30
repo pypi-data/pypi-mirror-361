@@ -1,0 +1,67 @@
+name: CICD PyPI
+
+on:
+  push:
+    # trigger the workflow on tag creation, e.g. git tag v0.1.0 && git push origin --tags
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      id-token: write
+
+    # if: False
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # ensures tags and history for setuptools_scm
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Set up venv
+        run: uv venv --python 3.12
+
+      - name: Install dependencies
+        run: uv sync --all-groups
+
+      - name: Run tests
+        run: uv run pytest --cov=src/
+
+      - name: Build package
+        run: uv build
+
+      #      - name: Publish to TestPyPI
+      #        run: uv publish -r https://test.pypi.org/legacy/ -t ${{ secrets.TEST_PYPI_TOKEN }}
+
+      - name: Publish package
+        run: uv publish -t ${{ secrets.PYPI_TOKEN }}
+
+      # todo: Publish to ghcr.io
+
+#      # why install setuptools-scm here?
+#      - name: Get version
+#        id: get_version
+#        run: |
+#          uv pip list
+#          # python -m pip install setuptools_scm
+#          # VERSION=$(python -c 'from setuptools_scm import get_version; print(get_version())')
+#          VERSION=$(.venv/bin/python3.12 -c 'from setuptools_scm import get_version; print(get_version())')
+#          echo $VERSION
+#          echo "version=$VERSION" >> $GITHUB_OUTPUT
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub Release
+        run: |
+          python -m pip install setuptools_scm
+          VERSION=$(python -c 'from setuptools_scm import get_version; print(get_version())')
+          gh release create "v$VERSION" --generate-notes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

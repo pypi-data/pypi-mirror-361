@@ -1,0 +1,76 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tapl-lang"
+dynamic = ["version"]
+description = 'Tapl Language'
+readme = "README.md"
+requires-python = ">=3.12"
+license = {text = "Apache-2.0 WITH LLVM-exception"}
+keywords = []
+authors = [
+  { name = "Orti Bazar", email = "orti.bazar@gmail.com" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+  "approvaltests",
+]
+
+[project.urls]
+Documentation = "https://github.com/tapl-org/tapl#readme"
+Issues = "https://github.com/tapl-org/tapl/issues"
+Source = "https://github.com/tapl-org/tapl"
+
+[project.scripts]
+tapl = "tapl_lang.cli.main:main"
+
+[tool.ruff]
+extend-exclude = ["**/goldens/*.py"]
+
+[tool.ruff.lint]
+ignore = [
+  "TRY003", # Avoid specifying long messages outside the exception class.
+  "EM101",  # Exception must not use a string literal, assign to variable first.
+  "EM102",  # Exception must not use an f-string literal, assign to variable first.
+  "SIM108", # Use a ternary operator instead of an if statement.
+]  # Temporarily ignore these lints
+
+[tool.ruff.format]
+quote-style = "single"
+
+[tool.hatch.version]
+path = "src/tapl_lang/__about__.py"
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/tapl_lang tests --exclude 'goldens/'}"
+
+[tool.coverage.run]
+source_pkgs = ["tapl_lang", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/tapl_lang/__about__.py",
+]
+
+[tool.coverage.paths]
+tapl_lang = ["src/tapl_lang", "*/tapl-lang/src/tapl_lang"]
+tests = ["tests", "*/tapl-lang/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]

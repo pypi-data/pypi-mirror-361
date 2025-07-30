@@ -1,0 +1,115 @@
+Metadata-Version: 2.1
+Name: kn-sock
+Version: 0.2.4
+Summary: A simplified socket programming toolkit for Python
+Home-page: https://github.com/KhagendraN/kn-sock
+Author: Khagendra Neupane
+Author-email: nkhagendra1@gmail.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: opencv-python
+Requires-Dist: numpy
+Requires-Dist: pyaudio
+Requires-Dist: ffmpeg-python
+
+# kn-sock
+
+![PyPI version](https://img.shields.io/pypi/v/kn-sock)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/kn-sock)](https://pypi.org/project/kn-sock/)
+[![GitHub Stars](https://img.shields.io/github/stars/KhagendraN/kn-sock?style=social)](https://github.com/KhagendraN/kn-sock/stargazers)
+[![Docs](https://img.shields.io/badge/docs-online-blue)](https://kn-sock.khagendraneupane.com.np)
+
+A simplified socket programming toolkit for Python.
+
+---
+
+## 🚀 Features
+
+- TCP/UDP Messaging (sync and async)
+- JSON over sockets
+- File transfer over TCP
+- Threaded server support
+- CLI for quick socket actions
+- Decorators and utility functions
+
+---
+
+## 💡 Use Cases
+
+- Build custom TCP/UDP servers quickly  
+- Transfer files between machines  
+- Send structured (JSON) data across a network  
+- Stream live video and audio to multiple clients (via Python or CLI)  
+- Share or execute code snippets over a network  
+- Create automated socket-based test environments  
+- Use CLI for local or remote debugging and diagnostics  
+
+---
+
+## 📦 Installation
+
+```bash
+pip install kn-sock
+```
+
+---
+
+## 🔧 Quick Example
+
+```python
+from kn_sock import send_tcp_message
+
+send_tcp_message("localhost", 8080, "Hello, World!")
+```
+
+---
+
+## 📚 Documentation
+
+Full documentation is available at [kn-sock Documentation](https://kn-sock.khagendraneupane.com.np).
+
+---
+
+## 🤝 Contributing
+
+Have ideas or found bugs? Open an issue or submit a pull request!
+
+If you're new:
+
+- See the contributing [guide](CONTRIBUTING.md)
+- Or just start with a ⭐ star :)
+
+---
+
+## 🧾 License
+
+This project is licensed under the MIT [License](LICENSE).
+
+---
+
+## 4fa Live Video/Audio Streaming (Multi-Video Selection)
+
+You can stream one or more video files (with audio) to multiple clients. The server will offer a list of available videos, and the client can select which to play.
+
+### Start the server with multiple videos:
+
+```bash
+python examples/server_live.py video1.mp4 video2.mp4 8000 8001 8010
+```
+
+### Start the client:
+
+```bash
+python examples/client_live.py 127.0.0.1 8000 8001 8010
+```
+
+If multiple videos are available, the client will be prompted to select one.
+
+- **Adaptive Bitrate:** The server adjusts video quality per client based on buffer feedback.
+- **Robust Audio/Video Sync:** The protocol ensures smooth playback and resynchronization.
+
+See `examples/server_live.py` and `examples/client_live.py` for more details.

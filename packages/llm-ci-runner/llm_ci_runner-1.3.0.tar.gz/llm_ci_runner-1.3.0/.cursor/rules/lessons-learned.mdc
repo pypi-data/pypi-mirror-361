@@ -1,0 +1,155 @@
+*This lessons-learned file serves as a critical knowledge base for capturing and preventing mistakes. During development, document any reusable solutions, bug fixes, or important patterns using the format: Category: Issue → Solution → Impact. Entries must be categorized by priority (Critical/Important/Enhancement) and include clear problem statements, solutions, prevention steps, and code examples. Only update upon user request with "lesson" trigger word. Focus on high-impact, reusable lessons that improve code quality, prevent common errors, and establish best practices. Cross-reference with .cursor\memories.md for context.*
+
+# Lessons Learned
+
+*Note: This file is updated only upon user request and focuses on capturing important, reusable lessons learned during development. Each entry follows format: Priority: Category → Issue: [Problem] → Fix: [Solution] → Why: [Impact]. Use grep/automated tools to verify changes and prevent regressions.*
+
+## Component Development
+
+**Important**: Template Engine Unification Strategy
+→ Issue: Supporting both Handlebars and Jinja2 without breaking compatibility.
+→ Solution: Implement unified load_template() with file extension-based detection (.hbs, .jinja, .j2), separate loader functions, keep existing signatures.
+→ Impact: Enables multi-engine support, backward compatibility, and easy future extension.
+
+## Component Development  
+  
+**Important**: Template Engine Unification Strategy    
+→ Issue: Supporting both Handlebars and Jinja2 without breaking compatibility.    
+→ Solution: Implement unified load_template() with file extension-based detection (.hbs, .jinja, .j2), separate loader functions, keep existing signatures.    
+→ Impact: Enables multi-engine support, backward compatibility, and easy future extension.  
+  
+**Important**: Template Rendering Function Unification    
+→ Issue: Need uniform rendering function for diverse template engines.    
+→ Solution: Unified render_template() handling both template types using isinstance(), with consistent error reporting.    
+→ Impact: Simplifies maintenance, supports extensibility, and provides consistent UX.  
+  
+**Enhancement**: Template Engine Feature Parity    
+→ Issue: Jinja2 has advanced features not present in Handlebars.    
+→ Solution: Produce thorough Jinja2 examples showing filters, loops, and comparisons; document feature differences.    
+→ Impact: Enables informed engine choice and showcases capabilities.  
+  
+**Important**: Dynamic Pydantic Model Creation    
+→ Issue: Need runtime JSON schema enforcement.    
+→ Solution: Use pydantic.create_model() with mapping from JSON schema to fields.    
+→ Impact: Enables token-level constraint enforcement, ensuring true compliance.  
+  
+**Critical**: Code Smell — Reinvented JSON Schema Parsing    
+→ Issue: Manual schema-to-model conversion is maintenance-heavy, incomplete.    
+→ Solution: Replace with dedicated json-schema-to-pydantic library and inheritance.    
+→ Impact: Reduces 150+ lines of code, improves robustness, and prevents duplicate work.  
+  
+## Schema Enforcement  
+  
+**Critical**: ChatHistory Integration with Kernel    
+→ Issue: Using {{$chat_history}} as template variable fails if passed separately.    
+→ Solution: Use service.get_chat_message_contents() with chat_history param directly, not via template.    
+→ Impact: Prevents errors; approach is critical for structured output.  
+  
+**Critical**: Semantic Kernel Response Extraction    
+→ Issue: Extraction logic broke due to multiple result types (list, FunctionResult.value).    
+→ Solution: Add robust handling for both types using isinstance/checks.    
+→ Impact: Reliable for production; avoids hidden integration bugs.  
+  
+**Important**: JSON Schema Field Type Mapping    
+→ Issue: JSON schema constraints (enum, ranges, lengths) not mapped fully to Pydantic.    
+→ Solution: Central mapping function ensuring all validation rules applied when generating fields.    
+→ Impact: Maintains schema integrity and catches errors early.  
+  
+**Enhancement**: Structured Output Enforcement    
+→ Issue: JSON mode lacks validation.    
+→ Solution: Set settings.response_format = KernelBaseModel for 100% schema compliance.    
+→ Impact: No more invalid API output, aligns with Azure OpenAI and CI/CD best practices.  
+  
+## Testing Infrastructure and Practices  
+  
+**Critical**: Mocking Pydantic Models    
+→ Issue: Mocking KernelBaseModel subclasses with Mock causes metaclass errors.    
+→ Solution: Use concrete Pydantic classes in fixtures.    
+→ Impact: Eliminates class conflicts, stabilizes schema tests.  
+  
+**Important**: Realistic Mocking Strategy    
+→ Issue: Fake mocks don’t capture real API response shape.    
+→ Solution: Generate mocks from real API data, including nested/usage fields.    
+→ Impact: Closer to prod behavior, better early bug detection.  
+  
+**Important**: Systematic Test Failure Resolution    
+→ Issue: Many test failures are overwhelming.    
+→ Solution: Categorize by complexity and tackle easy → hard.    
+→ Impact: Efficiently attains 100% pass rate and lessens cognitive load.  
+  
+**Important**: Test Architecture Design    
+→ Issue: Monolithic test files impede scaling/maintenance.    
+→ Solution: Split into unit (heavy mocks), integration (minimal mocks), and acceptance (real API) tests.    
+→ Impact: Obtain speed, coverage, realism—reflects industry best practices.  
+  
+**Enhancement**: Exception Handling Alignment in Tests    
+→ Issue: Tests assume wrong error types/messages.    
+→ Solution: Base assertions on real exceptions/messages thrown.    
+→ Impact: Less brittle, matches production logic.  
+  
+## Acceptance Test and Template Refactoring  
+  
+**Critical**: Custom Monolithic AcceptanceTestFramework    
+→ Issue: 600+ line ad hoc class; hard to maintain, violates pytest/industry practices.    
+→ Solution: Refactor to pytest-based, with fixtures (llm_ci_runner, temp_files, llm_judge, etc.), and use Rich for output.    
+→ Impact: Easier to extend, standard tooling, reduces boilerplate.  
+  
+**Important**: Anti-Pattern — Regex for LLM-as-Judge Parsing    
+→ Issue: Using regex for judging output is fragile and fails on format changes.    
+→ Solution: Use structured (JSON schema) outputs from LLM.    
+→ Impact: Eliminates parse errors, makes validation type-safe/reliable.  
+  
+**Important**: Test Extensibility    
+→ Issue: Adding tests requires lots of custom boilerplate/knowledge.    
+→ Solution: Encapsulate setup/execution in shared pytest fixtures so new tests need ~20 lines.    
+→ Impact: Encourages more/consistent tests, easier collaboration.  
+  
+**Enhancement**: Rich Formatting in Test Output    
+→ Issue: Print statements are hard to read/scan.    
+→ Solution: Implement Rich (tables, panels, colors) for judgment and debugging feedback.    
+→ Impact: Faster debugging, visually appealing.  
+  
+**Enhancement**: Pytest Parametrization for Efficiency    
+→ Issue: Many-variant test cases led to duplicated code.    
+→ Solution: Use @pytest.mark.parametrize to DRY out scenario-based tests.    
+→ Impact: Less test code, easier additions, higher scenario coverage.  
+  
+  
+## YAML & Template Execution  
+  
+**Critical**: response_format Not Supported in Execution Settings YAML    
+→ Issue: YAML-based Handlebars templates can’t enforce schema at YAML level (response_format param ignored).    
+→ Solution: Merge YAML template config (temperature, etc) with programmatic settings.response_format in code.    
+→ Impact: Enforces schema, preserves template authors’ intent; critical architectural constraint.  
+  
+**Important**: Handlebars Template Output Pipeline    
+→ Issue: Rendered Handlebars templates need conversion to ChatHistory for existing flow.    
+→ Solution: Wrap as ChatMessageContent and supply to service.get_chat_message_contents().    
+→ Impact: Avoids need to rearchitect core flow.  
+  
+**Important**: Template Variable Validation    
+→ Issue: Missing variables during rendering cause cryptic errors.    
+→ Solution: Validate config for required vars vs. provided input; raise early, clear errors.    
+→ Impact: Surfaces issues before runtime.  
+  
+**Enhancement**: Merging Execution Settings    
+→ Issue: Need to merge YAML-provided settings (temperature, etc.) with programmatic enforcement (schema).    
+→ Solution: Extract, merge, then apply both kinds of settings before execution.    
+→ Impact: Honors template parameters and maintains validation.  
+  
+**Important**: Generic LLM-as-Judge Evaluation Architecture    
+→ Issue: Acceptance tests had hard-coupled evaluation logic requiring specific criteria for each example type, making system brittle and hard to extend.    
+→ Solution: Implement generic_llm_judge fixture that evaluates any example based on input, schema, and output characteristics, generates criteria dynamically using example type detection (template vs JSON, schema presence, name patterns), and creates TestGenericExampleEvaluation class demonstrating completely abstract approach.    
+→ Impact: Eliminates need for specific evaluation logic per example type, makes system extensible for new example types without code changes, and provides consistent quality assessment across all examples.  
+  
+Testing: Template Integration → Issue: Template-based flows (Jinja2, Handlebars) were not covered by integration tests, risking silent regressions. → Solution: Added integration tests for both template types using real example data, schema validation, and realistic LLM mocks. → Impact: Template workflows are now regression-proof, extensible, and validated end-to-end.
+
+Component Development: Mocking Patterns → Issue: Incorrect mock signatures (e.g., setup_azure_service) caused test failures and confusion. → Solution: Always match the real function signature in mocks, and use a stable test data folder for integration scenarios. → Impact: Integration tests are robust to refactors and directory changes, and failures are easier to debug.
+
+Testing Infrastructure and Practices: Anti-Pattern - Test Helper Classes in Production Code → Issue: MockAzureChatCompletion class in production code violated separation of concerns and made real HTTP requests despite "test mode". → Solution: Removed test helper class from production, implemented proper pytest mocking using respx for HTTP-level mocking, refactored integration tests to call main() directly instead of subprocess. → Impact: Tests now properly mock external dependencies without polluting production code, follow pytest best practices, and provide better error isolation.
+
+Testing Infrastructure and Practices: Mocking Across Process Boundaries → Issue: respx and pytest mocking don't work across subprocess boundaries. CLI tests that run via subprocess can't access the pytest fixtures that provide mocked HTTP responses. → Solution: Separate test strategies by scope: (1) CLI interface tests via subprocess expect authentication failures (exit code 1) but validate argument parsing, file handling, and CLI-specific behavior, (2) Business logic tests call main() directly with proper respx mocking for successful execution paths. → Impact: CLI tests properly validate command-line interface without needing mocked services. Business logic tests validate full execution with proper mocking. Clear separation of concerns between interface and logic testing.
+
+**Critical**: Systematic Test Failure Resolution After Modularization → Issue: Large-scale refactoring (single-file to modular structure) caused 7+ test failures across multiple categories (API patterns, mock paths, error messages), creating overwhelming debugging scenario requiring systematic approach. → Solution: (1) **Replace vs Fix Strategy**: When original working tests exist, replace broken tests with proven patterns rather than attempting to fix incorrect implementations, (2) **Phase-Based Resolution**: Fix import/module errors first, then API pattern mismatches, then exception handling, finally individual test logic, (3) **Mock Path Mapping**: Create systematic mapping from single-file paths (llm_ci_runner.X) to modular paths (llm_ci_runner.module.X), (4) **Incremental Validation**: Test after each phase to prevent cascade failures, (5) **Zero-Risk Principle**: Use battle-tested original code patterns throughout. → Impact: Successfully transformed 7 failing tests to 113/113 passing (100% success) while preserving all original functionality and test coverage. Methodology is reusable for any large-scale architectural refactoring. Key insight: Test failures often indicate refactoring mistakes in the implementation, not broken original logic.  
+  
+  

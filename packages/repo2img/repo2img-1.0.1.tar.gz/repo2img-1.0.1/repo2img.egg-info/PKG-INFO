@@ -1,0 +1,56 @@
+Metadata-Version: 2.4
+Name: repo2img
+Version: 1.0.1
+Summary: A high-performance CLI tool to convert a code repository into a single, compressed, and encrypted image and back.
+Author-email: Your Name <you@example.com>
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: Topic :: System :: Archiving :: Compression
+Classifier: Topic :: Utilities
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: Pillow
+Requires-Dist: numpy
+Requires-Dist: cryptography
+Requires-Dist: zstandard
+
+# repo2img (CLI)
+A Python tool to encode and decode full code repositories into a single PNG image. Supports optional AES-256 encryption.
+
+##  Features
+- Encode full folders into a single .png file
+- Decode image back into original repo (exact structure)
+- Optional AES-256 encryption using password
+- Offline CLI utility
+
+##  Installation
+```bash
+pip install -r requirements.txt
+```
+
+##  Encode
+```bash
+python main.py encode --path ./my_repo --out repo.png --encrypt --password mypass
+```
+
+##  Decode
+```bash
+python main.py decode --path repo.png --out ./restored_repo --password mypass
+```
+
+##  Project Structure
+- cli/: CLI argument handlers
+- core/: core logic (archive, crypto, encode/decode)
+- utils/: helpers for I/O, hashing
+- main.py: CLI entrypoint
+
+##  Encryption
+- AES-256-GCM (with salt + password-derived key)
+- Ensure password is kept safe to recover the repo
+
+##  Notes
+- Max repo size supported ~12GB (based on PNG pixel limits)
+- All encoding is lossless and fully reversible
+- Output image is not meant to be human-viewable

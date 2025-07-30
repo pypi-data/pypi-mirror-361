@@ -1,0 +1,74 @@
+Metadata-Version: 2.4
+Name: xhs-auto-mcp
+Version: 0.1.0
+Summary: 小红书自动化工具mcp服务器，提供小红书内容发布及交互功能
+Author: fancybooi999
+License-Expression: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+Requires-Dist: curl-cffi>=0.10.0
+Requires-Dist: mcp[cli]>=1.6.0
+Requires-Dist: fastmcp>=2.10.4
+Requires-Dist: pyexecjs>=1.5.1
+Requires-Dist: requests>=2.32.3
+Requires-Dist: selenium>=4.34.2
+Requires-Dist: loguru>=0.7.2
+Requires-Dist: python-dotenv>=1.1.1
+Requires-Dist: fastapi>=0.110.0
+Requires-Dist: uvicorn>=0.34.2
+Provides-Extra: dev
+Requires-Dist: build>=1.2.2.post1; extra == "dev"
+Requires-Dist: setuptools>=45; extra == "dev"
+Requires-Dist: twine>=6.1.0; extra == "dev"
+
+# 自动化小红书MCP服务器
+
+
+
+
+## 快速开始
+
+### 1. 环境
+ * node
+ * python 3.12
+ * uv (pip install uv)
+
+### 2. 安装依赖
+```sh
+
+git clone https://github.com/fancyboi999/xhs-auto-mcp.git
+
+cd xhs-auto-mcp
+uv venv
+source .venv/bin/activate
+uv pip install -e .
+
+```
+
+### 3. 获取小红书的cookie
+[打开web小红书](https://www.xiaohongshu.com/explore)
+登录后，获取cookie，将cookie配置到第4步的 XHS_COOKIE 环境变量中
+![cookie](https://raw.githubusercontent.com/jobsonlook/xhs-mcp/master/docs/cookie.png)
+
+### 4. 配置mcp server
+
+```json
+{
+    "mcpServers": {
+        "xhs-auto-mcp": {
+            "command": "uvx",
+            "args":["xhs-auto-mcp", "--transport", "stdio"]
+            "env": {
+                "XHS_COOKIE": "xxxx",
+                "JSON_PATH": "your_token_save_path"
+            }
+        }
+    }
+}
+```
+
+## 免责声明
+本项目仅用于学习交流，禁止用于其他用途，任何涉及商业盈利目的均不得使用，否则风险自负。

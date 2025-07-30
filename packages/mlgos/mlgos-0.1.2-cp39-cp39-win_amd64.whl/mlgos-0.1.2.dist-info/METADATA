@@ -1,0 +1,64 @@
+Metadata-Version: 2.2
+Name: mlgos
+Version: 0.1.2
+Summary: A C++ linear regression extension using pybind11
+Author-Email: SIV RAAM KRISHNAN K V <sivraamkrishnankv@gmail.com>
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+
+# mlgos
+
+A C++ Linear Regression library with Python bindings using pybind11.
+
+## Overview
+
+`mlgos` is a lightweight, high-performance linear regression implementation in C++.  
+It exposes a Python interface via pybind11, enabling seamless integration with Python workflows.  
+This library serves as a foundation to build and add more machine learning models in C++ with Python bindings.
+
+## Features
+
+- Fit linear regression models to data
+- Get slope and intercept coefficients
+- Predict values for new inputs
+- Easily extendable for additional models
+
+## Installation
+
+Build from source using CMake and Visual Studio (Windows):
+
+```bash
+git clone https://github.com/yourusername/mlgos.git
+cd mlgos
+mkdir build
+cd build
+cmake .. -G "Visual Studio 17 2022" -A x64 -DCMAKE_BUILD_TYPE=Release
+cmake --build . --config Release
+```
+The compiled Python extension will be available as a .pyd file inside the build/Release directory.
+
+## Usage
+
+```python
+import mlgos
+
+model = mlgos.LinearRegression()
+X = [1, 2, 3, 4, 5]
+y = [2, 4, 6, 8, 10]
+
+model.fit(X, y)
+print("Slope:", model.get_slope())
+print("Intercept:", model.get_intercept())
+
+predictions = model.predict([6, 7])
+print("Predictions:", predictions)
+```
+## Testing
+
+To test the Linear Regression model, run the test script:
+
+```bash
+python test_linear_regression.py
+```
+
+If you want, I can help you add sample test script content or anything else!

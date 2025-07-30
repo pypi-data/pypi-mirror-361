@@ -1,0 +1,53 @@
+@cmd(rule: "gawk [FLAG]* [--] [ARGUMENT]")
+pub class gawk {
+    @argument
+    input: str[]
+
+    // Annotate program execution.
+    @flag(alias: ["--debug"])
+    debug: bool
+
+    // Add the script to the commands to be executed.
+    @flag(alias: ["-e", "--expression"])
+    expression_script: str
+
+    // Add the contents of script-file to the commands to be executed.
+    @flag(alias: ["-f", "--file"])
+    script_file: str
+
+    // Follow symlinks when processing in place.
+    @flag(alias: ["--follow-symlinks"])
+    follow_symlinks: bool
+
+    // Edit files in place (makes backup if SUFFIX supplied).
+    @flag(alias: ["-i", "--in-place"])
+    in_place: str | bool
+
+    // Specify the desired line-wrap length for the `l' command.
+    @flag(alias: ["-l", "--line-length"])
+    line_length: num
+
+    // Disable all GNU extensions (for POSIX compatibility).
+    @flag(alias: ["--posix"])
+    posix: bool
+
+    // Use extended regular expressions in the script.
+    @flag(alias: ["-E", "-r", "--regexp-extended"])
+    regexp_extended: bool
+
+    // Consider files as separate rather than as a single continuous stream.
+    @flag(alias: ["-s", "--separate"])
+    separate: bool
+
+    // Operate in sandbox mode (disable e/r/w commands).
+    @flag(alias: ["--sandbox"])
+    sandbox: bool
+
+    // Load minimal amounts of data from the input files and flush the output buffers more often.
+    @flag(alias: ["-u", "--unbuffered"])
+    unbuffered: bool
+
+    // Separate lines by NUL characters.
+    @flag(alias: ["-z", "--null-data"])
+    null_data: bool
+}

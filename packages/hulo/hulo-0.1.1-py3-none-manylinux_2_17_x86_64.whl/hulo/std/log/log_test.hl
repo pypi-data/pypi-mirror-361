@@ -1,0 +1,16 @@
+import "log"
+import "time"
+
+fn test_log() {
+    log.debug!("test comptime log")
+    log.with_field!.("time", time.now()).info("Hello World!")
+    log.with_error!(error::runtime).fatal("error happen")
+}
+
+fn test_logger() {
+    comptime {
+        let l = log.Logger()
+        $l.with_field()
+    }
+    log.info! "thank you for using hulo!"
+}

@@ -1,0 +1,38 @@
+import "io"
+
+pub comptime class RegExp {
+    /// 查找第一个匹配项
+    fn find(in: str) -> str
+
+    /// 查找第一个匹配的字节位置
+    fn find_index(text: str) -> (num, num)
+
+    /// 查找所有匹配项
+    fn find_all(in: str) -> str[]
+
+    /// 提取第一个捕获组
+    fn find_submatch(text: str) -> str[]
+    
+    /// 提取所有捕获组
+    fn find_all_submatch(text: str, n: num = -1) -> str[][]
+
+    /// 替换所有匹配项
+    fn replace_all(text: str, repl: str) -> str
+    
+    /// 使用函数替换
+    fn replace_all_func(text: str, repl: (str) -> str) -> str
+
+    fn match(in: str | io.Reader) -> bool
+
+    /// 按正则分割字符串
+    fn split(text: str, n: num = -1) -> str[]
+
+    /// 返回原始模式字符串
+    fn pattern() -> str
+
+    /// 返回子表达式数量
+    fn num_subexp() -> num
+    
+    /// 获取捕获组名称
+    fn subexp_names() -> str[]
+}

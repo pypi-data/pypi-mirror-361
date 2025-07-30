@@ -1,0 +1,27 @@
+pub comptime class list<T> {
+    fn len() -> num
+    fn is_empty() -> bool
+    fn reserve() -> T[]
+
+    operator #() -> num
+
+    fn get(index: num) throws -> T
+    operator [](index: num) throws -> T
+    fn first() -> T
+    fn last() -> T
+
+    fn add(item: T)
+    fn add(items: T[])
+    fn pop() -> T
+    fn insert(index: num, item: T) throws
+    fn remove(index: T) throws
+    fn clear()
+
+    operator []=(index: num, item: T) throws
+
+    fn foreach(f: (item: T, index: num))
+    fn map<U>(f: (item: T) -> U) -> list<U>
+    fn filter(f: (item: T) -> bool) -> list<T>
+
+    fn to_Str() -> str
+}

@@ -1,0 +1,140 @@
+import * from "type"
+
+/** 
+ * Displays a prompt in a dialog box, waits for the user to input text or click a button, and returns the contents of the text box.
+ *
+ * Example:
+ * ```hulo
+ * let input = InputBox("Enter your name") 
+ * MsgBox("You entered: " + input)
+ * ```
+ */
+declare fn InputBox(
+    // The maximum length of prompt is approximately 1024 characters, depending on the width of the characters used. If prompt consists of more than one line, you can separate the lines using a carriage return character (Chr(13)), a linefeed character (Chr(10)), or carriage return–linefeed character combination (Chr(13) & Chr(10)) between each line.
+    prompt: str, 
+    // String expression displayed in the title bar of the dialog box. If you omit title, the application name is placed in the title bar.
+    title?: str, 
+    // String expression displayed in the text box as the default response if no other input is provided. If you omit default, the text box is displayed empty.
+    default?: str, 
+    // Numeric expression that specifies, in twips, the horizontal distance of the left edge of the dialog box from the left edge of the screen. If xpos is omitted, the dialog box is horizontally centered.
+    xpos?: num, 
+    // Numeric expression that specifies, in twips, the vertical distance of the upper edge of the dialog box from the top of the screen. If ypos is omitted, the dialog box is vertically positioned approximately one-third of the way down the screen.
+    ypos?: num, 
+    // String expression that identifies the Help file to use to provide context-sensitive Help for the dialog box. If helpfile is provided, context must also be provided.
+    helpfile?: str, 
+    // Numeric expression that identifies the Help context number assigned by the Help author to the appropriate Help topic. If context is provided, helpfile must also be provided.
+    context?: num) -> any;
+
+type vbButton = Byte
+
+type vbMsgBoxResult = Byte
+
+/// MsgBox Constants
+declare {
+    // Display OK button only.
+    const vbOKOnly: vbButton = 0
+
+    // Display OK and Cancel buttons.
+    const vbOKCancel: vbButton = 1
+
+    // Display Abort, Retry, and Ignore buttons.
+    const vbAbortRetryIgnore: vbButton = 2
+
+    // Display Yes, No, and Cancel buttons.
+    const vbYesNoCancel: vbButton = 3
+
+    // Display Yes and No buttons.
+    const vbYesNo: vbButton = 4
+
+    // Display Retry and Cancel buttons.
+    const vbRetryCancel: vbButton = 5
+
+    // Display Critical Message icon.
+    const vbCritical: vbButton = 16
+
+    // Display Warning Query icon.
+    const vbQuestion: vbButton = 32
+
+    // Display Warning Message icon.
+    const vbExclamation: vbButton = 48
+
+    // Display Information Message icon.
+    const vbInformation: vbButton = 64
+
+    // First button is default.
+    const vbDefaultButton1: vbButton = 0
+
+    // Second button is default.
+    const vbDefaultButton2: vbButton = 256
+
+    // Third button is default.
+    const vbDefaultButton3: vbButton = 512
+
+    // Fourth button is default.
+    const vbDefaultButton4: vbButton = 768
+
+    // Application modal; the user must respond to the message box before continuing work in the current application.
+    const vbApplicationModal: vbButton = 0
+
+    // System modal; all applications are suspended until the user responds to the message box.
+    const vbSystemModal: vbButton = 4096
+
+    const vbOK: vbMsgBoxResult = 1
+
+    const vbCancel: vbMsgBoxResult = 2
+
+    const vbAbort: vbMsgBoxResult = 3
+
+    const vbRetry: vbMsgBoxResult = 4
+
+    const vbIgnore: vbMsgBoxResult = 5
+
+    const vbYes: vbMsgBoxResult = 6
+
+    const vbNo: vbMsgBoxResult = 7
+}
+
+/**
+ * Displays a message in a dialog box, waits for the user to click a button, and returns a value indicating which button the user clicked.
+ *
+ * When both helpfile and context are provided, the user can press F1 to view the Help topic corresponding to the context.
+ * If the dialog box displays a Cancel button, pressing the ESC key has the same effect as clicking Cancel. 
+ * If the dialog box contains a Help button, context-sensitive Help is provided for the dialog box.
+ * However, no value is returned until one of the other buttons is clicked.
+ * When the MsgBox function is used with Microsoft Internet Explorer, the title of any dialog presented always contains "VBScript:" to differentiate it from standard system dialogs.
+ *
+ * The following example uses the MsgBox function to display a message box and return a value describing which button was clicked:
+ * ```hulo
+ * MsgBox("Hello World!", 65, "MsgBox Example")
+ * ```
+ */
+declare fn MsgBox(
+    /**
+     * String expression displayed as the message in the dialog box.
+     * The maximum length of prompt is approximately 1024 characters, depending on the width of the characters used.
+     * If prompt consists of more than one line, you can separate the lines using a carriage return character (Chr(13)), 
+     * a linefeed character (Chr(10)), or carriage return–linefeed character combination (Chr(13) & Chr(10)) between each line.
+     */
+    prompt: str, 
+    /**
+     * Numeric expression that is the sum of values specifying the number and type of buttons to display, the icon style to use, 
+     * the identity of the default button, and the modality of the message box. 
+     * See Settings section for values. If omitted, the default value for buttons is 0.
+     */
+    buttons: num = $vbOKOnly,
+    /**
+     * String expression displayed in the title bar of the dialog box. If you omit title, the application name is placed in the title bar.
+     */
+    title?: str,
+    /**
+     * 	String expression that identifies the Help file to use to provide context-sensitive Help for the dialog box. If helpfile is provided, context must also be provided. Not available on 16-bit platforms.
+     */
+    helpfile?: str,
+    /**
+     * Numeric expression that identifies the Help context number assigned by the Help author to the appropriate Help topic. 
+     * If context is provided, helpfile must also be provided. Not available on 16-bit platforms.
+     */
+    context?: num) -> vbMsgBoxResult;
+
+// Returns a picture object. Available only on 32-bit platforms.
+declare fn LoadPicture(picturename: String) -> object

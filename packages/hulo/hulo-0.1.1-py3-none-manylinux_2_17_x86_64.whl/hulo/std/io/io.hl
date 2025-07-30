@@ -1,0 +1,31 @@
+declare comptime fn echo(...args: any[])
+
+declare comptime fn print(...arg: any[])
+
+declare comptime fn printf(...arg: any[])
+
+declare comptime fn println(...arg: any[])
+
+declare comptime fn scan(msg: str?) -> str
+
+trait Reader {
+    read() throws -> (buf: str, n: num)
+}
+
+trait Writer {
+    write(buf: str) throws -> num
+}
+
+trait Closer {
+    close() throws
+}
+
+trait Seeker {
+    seek(offset: num) throws -> num 
+}
+
+declare comptime fn copy(dst: Writer, src: Reader) throws -> num
+
+declare comptime fn read_all(r: Reader) throws -> str
+
+declare comptime fn write_string(w: Writer, str: str) throws -> num

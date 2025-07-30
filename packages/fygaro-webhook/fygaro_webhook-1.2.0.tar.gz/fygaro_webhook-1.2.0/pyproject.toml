@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fygaro-webhook"
+version = "1.2.0"
+description = "Webhook signature verification for Fygaro"
+dynamic = ["readme"]
+authors = [{ name = "Fygaro", email = "support@fygaro.com" }]
+license = { file = "LICENSE" }
+requires-python = ">=3.8"
+keywords = ["fygaro", "webhook", "signature"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage   = "https://fygaro.com"
+
+[tool.setuptools.dynamic]
+readme = { file = ["README.md", "CHANGELOG.md"], content-type = "text/markdown" }
+
+[tool.setuptools]
+packages = { find = { where = ["src"], namespaces = true } }

@@ -1,0 +1,601 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generating counterfactual explanations without access to training data &mdash; DiCE 0.12 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f949d3d"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Advanced options to customize Counterfactual Explanations" href="DiCE_with_advanced_options.html" />
+    <link rel="prev" title="Generating counterfactual explanations with any ML model" href="DiCE_model_agnostic_CFs.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            DiCE
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../readme.html">Diverse Counterfactual Explanations (DiCE) for ML</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="DiCE_getting_started.html">Quick introduction to generating counterfactual explanations using DiCE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DiCE_feature_importances.html">Estimating local and global feature importance scores using DiCE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DiCE_multiclass_classification_and_regression.html">Generating counterfactuals for multi-class classification and regression models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DiCE_multiclass_classification_and_regression.html#Regression">Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DiCE_model_agnostic_CFs.html">Generating counterfactual explanations with any ML model</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Generating counterfactual explanations without access to training data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Defining-meta-data">Defining meta data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Explaining-pre-trained-sklearn-models">Explaining pre-trained sklearn models</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Generate-diverse-counterfactuals">Generate diverse counterfactuals</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Explaining-pre-trained-deep-learning-models">Explaining pre-trained deep learning models</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">Generate diverse counterfactuals</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="DiCE_with_advanced_options.html">Advanced options to customize Counterfactual Explanations</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Package:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dice_ml.html">dice_ml package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DiCE</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="nb_index.html">&lt;no title&gt;</a></li>
+      <li class="breadcrumb-item active">Generating counterfactual explanations without access to training data</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/notebooks/DiCE_with_private_data.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Generating-counterfactual-explanations-without-access-to-training-data">
+<h1>Generating counterfactual explanations without access to training data<a class="headerlink" href="#Generating-counterfactual-explanations-without-access-to-training-data" title="Link to this heading"></a></h1>
+<p>If only the trained model is available but not the training data, DiCE can still be used to generate counterfactual explanations. Below we show an example where DiCE uses only basic metadata about each feature used in the ML model.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># import DiCE</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">dice_ml</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dice_ml.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">helpers</span>  <span class="c1"># helper functions</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">load_ext</span> autoreload
+<span class="o">%</span><span class="k">autoreload</span> 2
+</pre></div>
+</div>
+</div>
+<section id="Defining-meta-data">
+<h2>Defining meta data<a class="headerlink" href="#Defining-meta-data" title="Link to this heading"></a></h2>
+<p>We simulate “adult” income dataset from UCI Machine Learning Repository (<a class="reference external" href="https://archive.ics.uci.edu/ml/datasets/adult">https://archive.ics.uci.edu/ml/datasets/adult</a>) by providing only meta information about the data: range is provided for continuous features and categories are provided for categorical features. Please note for Python&lt;=3.6, “features” parameter should be provided as an OrderedDict in the same order that was used to train the ML model.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">dice_ml</span><span class="o">.</span><span class="n">Data</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span>
+                           <span class="s1">&#39;workclass&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Government&#39;</span><span class="p">,</span> <span class="s1">&#39;Other/Unknown&#39;</span><span class="p">,</span> <span class="s1">&#39;Private&#39;</span><span class="p">,</span> <span class="s1">&#39;Self-Employed&#39;</span><span class="p">],</span>
+                           <span class="s1">&#39;education&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Assoc&#39;</span><span class="p">,</span> <span class="s1">&#39;Bachelors&#39;</span><span class="p">,</span> <span class="s1">&#39;Doctorate&#39;</span><span class="p">,</span> <span class="s1">&#39;HS-grad&#39;</span><span class="p">,</span> <span class="s1">&#39;Masters&#39;</span><span class="p">,</span>
+                                         <span class="s1">&#39;Prof-school&#39;</span><span class="p">,</span> <span class="s1">&#39;School&#39;</span><span class="p">,</span> <span class="s1">&#39;Some-college&#39;</span><span class="p">],</span>
+                           <span class="s1">&#39;marital_status&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Divorced&#39;</span><span class="p">,</span> <span class="s1">&#39;Married&#39;</span><span class="p">,</span> <span class="s1">&#39;Separated&#39;</span><span class="p">,</span> <span class="s1">&#39;Single&#39;</span><span class="p">,</span> <span class="s1">&#39;Widowed&#39;</span><span class="p">],</span>
+                           <span class="s1">&#39;occupation&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Blue-Collar&#39;</span><span class="p">,</span> <span class="s1">&#39;Other/Unknown&#39;</span><span class="p">,</span> <span class="s1">&#39;Professional&#39;</span><span class="p">,</span> <span class="s1">&#39;Sales&#39;</span><span class="p">,</span> <span class="s1">&#39;Service&#39;</span><span class="p">,</span> <span class="s1">&#39;White-Collar&#39;</span><span class="p">],</span>
+                           <span class="s1">&#39;race&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Other&#39;</span><span class="p">,</span> <span class="s1">&#39;White&#39;</span><span class="p">],</span>
+                           <span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Female&#39;</span><span class="p">,</span> <span class="s1">&#39;Male&#39;</span><span class="p">],</span>
+                           <span class="s1">&#39;hours_per_week&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">99</span><span class="p">]},</span>
+                 <span class="n">outcome_name</span><span class="o">=</span><span class="s1">&#39;income&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<section id="Explaining-pre-trained-sklearn-models">
+<h3>Explaining pre-trained sklearn models<a class="headerlink" href="#Explaining-pre-trained-sklearn-models" title="Link to this heading"></a></h3>
+<p>We first explain a RandomForest model that has been pre-trained on the Adult dataset.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">backend</span> <span class="o">=</span> <span class="s1">&#39;sklearn&#39;</span>
+<span class="n">sk_modelpath</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">get_adult_income_modelpath</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>  <span class="c1"># pretrained model</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">dice_ml</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">model_path</span><span class="o">=</span><span class="n">sk_modelpath</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>The next two steps are the same as when using DiCE with training data. We specify the <code class="docutils literal notranslate"><span class="pre">random</span></code> algorithm and provide an input query instance.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># initiate DiCE</span>
+<span class="n">exp</span> <span class="o">=</span> <span class="n">dice_ml</span><span class="o">.</span><span class="n">Dice</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;genetic&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/amshar/python-envs/vpy39/lib/python3.9/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator OneHotEncoder from version 1.1.1 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+/home/amshar/python-envs/vpy39/lib/python3.9/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator Pipeline from version 1.1.1 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+/home/amshar/python-envs/vpy39/lib/python3.9/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator OneHotEncoder from version 1.1.1 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+/home/amshar/python-envs/vpy39/lib/python3.9/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator Pipeline from version 1.1.1 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+/home/amshar/python-envs/vpy39/lib/python3.9/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator ColumnTransformer from version 1.1.1 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+/home/amshar/python-envs/vpy39/lib/python3.9/site-packages/sklearn/base.py:380: InconsistentVersionWarning: Trying to unpickle estimator DecisionTreeClassifier from version 1.1.1 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">ValueError</span>                                Traceback (most recent call last)
+Cell <span class="ansi-green-fg">In[5], line 2</span>
+<span class="ansi-green-intense-fg ansi-bold">      1</span> <span style="color: rgb(95,135,135)"># initiate DiCE</span>
+<span class="ansi-green-fg">----&gt; 2</span> exp <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">dice_ml</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">Dice</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">d</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">m</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">method</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">&#34;</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">genetic</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">&#34;</span><span class="ansi-yellow-bg">)</span>
+
+File <span class="ansi-green-fg">/mnt/c/Users/amshar/code/dice/dice_ml/dice.py:22</span>, in <span class="ansi-cyan-fg">Dice.__init__</span><span class="ansi-blue-fg">(self, data_interface, model_interface, method, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">     15</span> <span class="ansi-bold" style="color: rgb(0,135,0)">def</span><span style="color: rgb(188,188,188)"> </span><span style="color: rgb(0,0,255)">__init__</span>(<span style="color: rgb(0,135,0)">self</span>, data_interface, model_interface, method<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(175,0,0)">&#34;</span><span style="color: rgb(175,0,0)">random</span><span style="color: rgb(175,0,0)">&#34;</span>,  <span style="color: rgb(98,98,98)">*</span><span style="color: rgb(98,98,98)">*</span>kwargs):
+<span class="ansi-green-intense-fg ansi-bold">     16</span> <span style="color: rgb(188,188,188)">    </span><span style="color: rgb(175,0,0)">&#34;&#34;&#34;Init method</span>
+<span class="ansi-green-intense-fg ansi-bold">     17</span>
+<span class="ansi-green-intense-fg ansi-bold">     18</span> <span style="color: rgb(175,0,0)">    :param data_interface: an interface to access data related params.</span>
+<span class="ansi-green-intense-fg ansi-bold">     19</span> <span style="color: rgb(175,0,0)">    :param model_interface: an interface to access the output or gradients of a trained ML model.</span>
+<span class="ansi-green-intense-fg ansi-bold">     20</span> <span style="color: rgb(175,0,0)">    :param method: Name of the method to use for generating counterfactuals</span>
+<span class="ansi-green-intense-fg ansi-bold">     21</span> <span style="color: rgb(175,0,0)">    &#34;&#34;&#34;</span>
+<span class="ansi-green-fg">---&gt; 22</span>     <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">decide_implementation_type</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">data_interface</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">model_interface</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">method</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">*</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">*</span><span class="ansi-yellow-bg">kwargs</span><span class="ansi-yellow-bg">)</span>
+
+File <span class="ansi-green-fg">/mnt/c/Users/amshar/code/dice/dice_ml/dice.py:32</span>, in <span class="ansi-cyan-fg">Dice.decide_implementation_type</span><span class="ansi-blue-fg">(self, data_interface, model_interface, method, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">     28</span>         <span class="ansi-bold" style="color: rgb(0,135,0)">raise</span> UserConfigValidationException(
+<span class="ansi-green-intense-fg ansi-bold">     29</span>             <span style="color: rgb(175,0,0)">&#39;</span><span style="color: rgb(175,0,0)">Private data interface is not supported with kdtree explainer</span><span style="color: rgb(175,0,0)">&#39;</span>
+<span class="ansi-green-intense-fg ansi-bold">     30</span>             <span style="color: rgb(175,0,0)">&#39;</span><span style="color: rgb(175,0,0)"> since kdtree explainer needs access to entire training data</span><span style="color: rgb(175,0,0)">&#39;</span>)
+<span class="ansi-green-intense-fg ansi-bold">     31</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span><span style="color: rgb(0,0,135)">__class__</span> <span style="color: rgb(98,98,98)">=</span> decide(model_interface, method)
+<span class="ansi-green-fg">---&gt; 32</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg" style="color: rgb(0,0,255)">__init__</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">data_interface</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">model_interface</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">*</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">*</span><span class="ansi-yellow-bg">kwargs</span><span class="ansi-yellow-bg">)</span>
+
+File <span class="ansi-green-fg">/mnt/c/Users/amshar/code/dice/dice_ml/explainer_interfaces/dice_genetic.py:26</span>, in <span class="ansi-cyan-fg">DiceGenetic.__init__</span><span class="ansi-blue-fg">(self, data_interface, model_interface)</span>
+<span class="ansi-green-intense-fg ansi-bold">     20</span> <span class="ansi-bold" style="color: rgb(0,135,0)">def</span><span style="color: rgb(188,188,188)"> </span><span style="color: rgb(0,0,255)">__init__</span>(<span style="color: rgb(0,135,0)">self</span>, data_interface, model_interface):
+<span class="ansi-green-intense-fg ansi-bold">     21</span> <span style="color: rgb(188,188,188)">    </span><span style="color: rgb(175,0,0)">&#34;&#34;&#34;Init method</span>
+<span class="ansi-green-intense-fg ansi-bold">     22</span>
+<span class="ansi-green-intense-fg ansi-bold">     23</span> <span style="color: rgb(175,0,0)">    :param data_interface: an interface class to access data related params.</span>
+<span class="ansi-green-intense-fg ansi-bold">     24</span> <span style="color: rgb(175,0,0)">    :param model_interface: an interface class to access trained ML model.</span>
+<span class="ansi-green-intense-fg ansi-bold">     25</span> <span style="color: rgb(175,0,0)">    &#34;&#34;&#34;</span>
+<span class="ansi-green-fg">---&gt; 26</span>     <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">super</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">)</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg" style="color: rgb(0,0,255)">__init__</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">data_interface</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">model_interface</span><span class="ansi-yellow-bg">)</span>  <span style="color: rgb(95,135,135)"># initiating data related parameters</span>
+<span class="ansi-green-intense-fg ansi-bold">     27</span>     <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>num_output_nodes <span style="color: rgb(98,98,98)">=</span> <span class="ansi-bold" style="color: rgb(0,135,0)">None</span>
+<span class="ansi-green-intense-fg ansi-bold">     29</span>     <span style="color: rgb(95,135,135)"># variables required to generate CFs - see generate_counterfactuals() for more info</span>
+
+File <span class="ansi-green-fg">/mnt/c/Users/amshar/code/dice/dice_ml/explainer_interfaces/explainer_base.py:33</span>, in <span class="ansi-cyan-fg">ExplainerBase.__init__</span><span class="ansi-blue-fg">(self, data_interface, model_interface)</span>
+<span class="ansi-green-intense-fg ansi-bold">     30</span> <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> model_interface <span class="ansi-bold" style="color: rgb(175,0,255)">is</span> <span class="ansi-bold" style="color: rgb(175,0,255)">not</span> <span class="ansi-bold" style="color: rgb(0,135,0)">None</span>:
+<span class="ansi-green-intense-fg ansi-bold">     31</span>     <span style="color: rgb(95,135,135)"># self.data_interface.create_ohe_params()</span>
+<span class="ansi-green-intense-fg ansi-bold">     32</span>     <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>model <span style="color: rgb(98,98,98)">=</span> model_interface
+<span class="ansi-green-fg">---&gt; 33</span>     <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">model</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">load_model</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">)</span>  <span style="color: rgb(95,135,135)"># loading pickled trained model if applicable</span>
+<span class="ansi-green-intense-fg ansi-bold">     34</span>     <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>model<span style="color: rgb(98,98,98)">.</span>transformer<span style="color: rgb(98,98,98)">.</span>feed_data_params(data_interface)
+<span class="ansi-green-intense-fg ansi-bold">     35</span>     <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>model<span style="color: rgb(98,98,98)">.</span>transformer<span style="color: rgb(98,98,98)">.</span>initialize_transform_func()
+
+File <span class="ansi-green-fg">/mnt/c/Users/amshar/code/dice/dice_ml/model_interfaces/base_model.py:43</span>, in <span class="ansi-cyan-fg">BaseModel.load_model</span><span class="ansi-blue-fg">(self)</span>
+<span class="ansi-green-intense-fg ansi-bold">     41</span> <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>model_path <span style="color: rgb(98,98,98)">!=</span> <span style="color: rgb(175,0,0)">&#39;</span><span style="color: rgb(175,0,0)">&#39;</span>:
+<span class="ansi-green-intense-fg ansi-bold">     42</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">with</span> <span style="color: rgb(0,135,0)">open</span>(<span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>model_path, <span style="color: rgb(175,0,0)">&#39;</span><span style="color: rgb(175,0,0)">rb</span><span style="color: rgb(175,0,0)">&#39;</span>) <span class="ansi-bold" style="color: rgb(0,135,0)">as</span> filehandle:
+<span class="ansi-green-fg">---&gt; 43</span>         <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>model <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">pickle</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">load</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">filehandle</span><span class="ansi-yellow-bg">)</span>
+
+File <span class="ansi-green-fg">_tree.pyx:848</span>, in <span class="ansi-cyan-fg">sklearn.tree._tree.Tree.__setstate__</span><span class="ansi-blue-fg">()</span>
+
+File <span class="ansi-green-fg">_tree.pyx:1554</span>, in <span class="ansi-cyan-fg">sklearn.tree._tree._check_node_ndarray</span><span class="ansi-blue-fg">()</span>
+
+<span class="ansi-red-fg">ValueError</span>: node array from the pickle has an incompatible dtype:
+- expected: {&#39;names&#39;: [&#39;left_child&#39;, &#39;right_child&#39;, &#39;feature&#39;, &#39;threshold&#39;, &#39;impurity&#39;, &#39;n_node_samples&#39;, &#39;weighted_n_node_samples&#39;, &#39;missing_go_to_left&#39;], &#39;formats&#39;: [&#39;&lt;i8&#39;, &#39;&lt;i8&#39;, &#39;&lt;i8&#39;, &#39;&lt;f8&#39;, &#39;&lt;f8&#39;, &#39;&lt;i8&#39;, &#39;&lt;f8&#39;, &#39;u1&#39;], &#39;offsets&#39;: [0, 8, 16, 24, 32, 40, 48, 56], &#39;itemsize&#39;: 64}
+- got     : [(&#39;left_child&#39;, &#39;&lt;i8&#39;), (&#39;right_child&#39;, &#39;&lt;i8&#39;), (&#39;feature&#39;, &#39;&lt;i8&#39;), (&#39;threshold&#39;, &#39;&lt;f8&#39;), (&#39;impurity&#39;, &#39;&lt;f8&#39;), (&#39;n_node_samples&#39;, &#39;&lt;i8&#39;), (&#39;weighted_n_node_samples&#39;, &#39;&lt;f8&#39;)]
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># query instance in the form of a dictionary; keys: feature name, values: feature value</span>
+<span class="n">query_instance</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">22</span><span class="p">,</span>
+                               <span class="s1">&#39;workclass&#39;</span><span class="p">:</span> <span class="s1">&#39;Private&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;education&#39;</span><span class="p">:</span> <span class="s1">&#39;HS-grad&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;marital_status&#39;</span><span class="p">:</span> <span class="s1">&#39;Single&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;occupation&#39;</span><span class="p">:</span> <span class="s1">&#39;Service&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;race&#39;</span><span class="p">:</span> <span class="s1">&#39;White&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="s1">&#39;Female&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;hours_per_week&#39;</span><span class="p">:</span> <span class="mi">45</span><span class="p">},</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="Generate-diverse-counterfactuals">
+<h2>Generate diverse counterfactuals<a class="headerlink" href="#Generate-diverse-counterfactuals" title="Link to this heading"></a></h2>
+<p>The initialization needs to be provided as <code class="docutils literal notranslate"><span class="pre">random</span></code> since the default <code class="docutils literal notranslate"><span class="pre">kdtree</span></code> is not supported for private data.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># generate counterfactuals</span>
+<span class="n">dice_exp</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">generate_counterfactuals</span><span class="p">(</span><span class="n">query_instance</span><span class="p">,</span> <span class="n">total_CFs</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">desired_class</span><span class="o">=</span><span class="s2">&quot;opposite&quot;</span><span class="p">,</span>
+                                        <span class="n">initialization</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">)</span>
+<span class="c1"># visualize the results</span>
+<span class="n">dice_exp</span><span class="o">.</span><span class="n">visualize_as_dataframe</span><span class="p">(</span><span class="n">show_only_changes</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+Cell <span class="ansi-green-fg">In[7], line 2</span>
+<span class="ansi-green-intense-fg ansi-bold">      1</span> <span style="color: rgb(95,135,135)"># generate counterfactuals</span>
+<span class="ansi-green-fg">----&gt; 2</span> dice_exp <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">exp</span><span style="color: rgb(98,98,98)">.</span>generate_counterfactuals(query_instance, total_CFs<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">4</span>, desired_class<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(175,0,0)">&#34;</span><span style="color: rgb(175,0,0)">opposite</span><span style="color: rgb(175,0,0)">&#34;</span>,
+<span class="ansi-green-intense-fg ansi-bold">      3</span>                                         initialization<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(175,0,0)">&#34;</span><span style="color: rgb(175,0,0)">random</span><span style="color: rgb(175,0,0)">&#34;</span>)
+<span class="ansi-green-intense-fg ansi-bold">      4</span> <span style="color: rgb(95,135,135)"># visualize the results</span>
+<span class="ansi-green-intense-fg ansi-bold">      5</span> dice_exp<span style="color: rgb(98,98,98)">.</span>visualize_as_dataframe(show_only_changes<span style="color: rgb(98,98,98)">=</span><span class="ansi-bold" style="color: rgb(0,135,0)">True</span>)
+
+<span class="ansi-red-fg">NameError</span>: name &#39;exp&#39; is not defined
+</pre></div></div>
+</div>
+<section id="Explaining-pre-trained-deep-learning-models">
+<h3>Explaining pre-trained deep learning models<a class="headerlink" href="#Explaining-pre-trained-deep-learning-models" title="Link to this heading"></a></h3>
+<p>We can also use a trained model based on tensorflow or pytorch. Below, we use a trained ML model which produces high accuracy on test datasets, comparable to other popular baselines. This sample trained model comes in-built with our package.</p>
+<p>The variable <em>backend</em> below indicates the implementation type of DiCE we want to use. We use TensorFlow 2 in the notebooks with backend=’TF2’. You can set backend to ‘TF1’ or ‘PYT’ to use DiCE with TensorFlow 1.x or with PyTorch respectively. We want to note that the time required to find counterfactuals with Tensorflow 2.x’s eager style of execution is significantly greater than that with TensorFlow 1.x’s graph execution.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">tensorflow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tf</span>  <span class="c1"># noqa</span>
+
+<span class="n">backend</span> <span class="o">=</span> <span class="s1">&#39;TF&#39;</span> <span class="o">+</span> <span class="n">tf</span><span class="o">.</span><span class="n">__version__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># TF2</span>
+<span class="n">ML_modelpath</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">get_adult_income_modelpath</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">dice_ml</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">model_path</span><span class="o">=</span><span class="n">ML_modelpath</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="s2">&quot;ohe-min-max&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+2025-07-13 22:29:32.541757: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-07-13 22:29:32.576855: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:467] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1752425972.608549    2887 cuda_dnn.cc:8579] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+E0000 00:00:1752425972.618909    2887 cuda_blas.cc:1407] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+W0000 00:00:1752425972.650886    2887 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.
+W0000 00:00:1752425972.650923    2887 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.
+W0000 00:00:1752425972.650926    2887 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.
+W0000 00:00:1752425972.650928    2887 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.
+2025-07-13 22:29:32.660577: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># initiate DiCE</span>
+<span class="n">exp</span> <span class="o">=</span> <span class="n">dice_ml</span><span class="o">.</span><span class="n">Dice</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;gradient&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/amshar/python-envs/vpy39/lib/python3.9/site-packages/keras/src/layers/core/dense.py:93: UserWarning: Do not pass an `input_shape`/`input_dim` argument to a layer. When using Sequential models, prefer using an `Input(shape)` object as the first layer in the model instead.
+  super().__init__(activity_regularizer=activity_regularizer, **kwargs)
+2025-07-13 22:29:36.778031: E external/local_xla/xla/stream_executor/cuda/cuda_platform.cc:51] failed call to cuInit: INTERNAL: CUDA error: Failed call to cuInit: UNKNOWN ERROR (303)
+/home/amshar/python-envs/vpy39/lib/python3.9/site-packages/keras/src/optimizers/base_optimizer.py:86: UserWarning: Argument `decay` is no longer supported and will be ignored.
+  warnings.warn(
+WARNING:absl:Compiled the loaded model, but the compiled metrics have yet to be built. `model.compile_metrics` will be empty until you train or evaluate the model.
+WARNING:absl:Error in loading the saved optimizer state. As a result, your model is starting with a freshly initialized optimizer.
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># query instance in the form of a dictionary; keys: feature name, values: feature value</span>
+<span class="n">query_instance</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">22</span><span class="p">,</span>
+                               <span class="s1">&#39;workclass&#39;</span><span class="p">:</span> <span class="s1">&#39;Private&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;education&#39;</span><span class="p">:</span> <span class="s1">&#39;HS-grad&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;marital_status&#39;</span><span class="p">:</span> <span class="s1">&#39;Single&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;occupation&#39;</span><span class="p">:</span> <span class="s1">&#39;Service&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;race&#39;</span><span class="p">:</span> <span class="s1">&#39;White&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="s1">&#39;Female&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;hours_per_week&#39;</span><span class="p">:</span> <span class="mi">45</span><span class="p">},</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="id1">
+<h2>Generate diverse counterfactuals<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># generate counterfactuals</span>
+<span class="n">dice_exp</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">generate_counterfactuals</span><span class="p">(</span><span class="n">query_instance</span><span class="p">,</span> <span class="n">total_CFs</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">desired_class</span><span class="o">=</span><span class="s2">&quot;opposite&quot;</span><span class="p">)</span>
+<span class="c1"># visualize the results</span>
+<span class="n">dice_exp</span><span class="o">.</span><span class="n">visualize_as_dataframe</span><span class="p">(</span><span class="n">show_only_changes</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+100%|█████████████████████████████████████████████████████████████████████████████████████| 1/1 [01:10&lt;00:00, 70.75s/it]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Diverse Counterfactuals found! total time taken: 01 min 10 sec
+Query instance (original outcome : 0.01899999938905239)
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+      <th>workclass</th>
+      <th>education</th>
+      <th>marital_status</th>
+      <th>occupation</th>
+      <th>race</th>
+      <th>gender</th>
+      <th>hours_per_week</th>
+      <th>income</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>22</td>
+      <td>Private</td>
+      <td>HS-grad</td>
+      <td>Single</td>
+      <td>Service</td>
+      <td>White</td>
+      <td>Female</td>
+      <td>45</td>
+      <td>0.019</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+Diverse Counterfactual set without sparsity correction since only metadata about each  feature is available (new outcome: 1.0
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+      <th>workclass</th>
+      <th>education</th>
+      <th>marital_status</th>
+      <th>occupation</th>
+      <th>race</th>
+      <th>gender</th>
+      <th>hours_per_week</th>
+      <th>income</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>60</td>
+      <td>Self-Employed</td>
+      <td>Prof-school</td>
+      <td>Married</td>
+      <td>Professional</td>
+      <td>-</td>
+      <td>-</td>
+      <td>43</td>
+      <td>0.911</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>38</td>
+      <td>Other/Unknown</td>
+      <td>Assoc</td>
+      <td>Married</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>55</td>
+      <td>0.74</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>90</td>
+      <td>-</td>
+      <td>Doctorate</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>99</td>
+      <td>0.755</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>70</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>White-Collar</td>
+      <td>Other</td>
+      <td>Male</td>
+      <td>73</td>
+      <td>0.525</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p><strong>Note on weighing different features:</strong> When the training data is available, by default, the distance between two values of a continuous feature is scaled by the inverse median absolute deviation (MAD) of the feature using the training data. This is done to capture the relative prevalence of observing a continuous feature at a particular value, as discussed in <a class="reference external" href="https://arxiv.org/pdf/1905.07697.pdf">our paper</a>. However, when there is no access to the training data, as in the above case, no
+scaling is done and hence all features are weighted equally in the normalized form. As a result, the counterfactuals generated above are different from those in <a class="reference internal" href="DiCE_getting_started.html"><span class="doc">DiCE_getting_started</span></a> notebook where the training data was available. Nonetheless, you can manually provide the scaling constants through a parameter <em>feature_weights</em> to the <em>generate_counterfactuals()</em> method as shown in this <a class="reference internal" href="DiCE_with_advanced_options.html"><span class="doc">advanced notebook</span></a>, or you can provide
+the MADs directly to the data interface <em>dice_ml.Data</em> if you know them.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="DiCE_model_agnostic_CFs.html" class="btn btn-neutral float-left" title="Generating counterfactual explanations with any ML model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="DiCE_with_advanced_options.html" class="btn btn-neutral float-right" title="Advanced options to customize Counterfactual Explanations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Ramaravind, Amit, Chenhao.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,66 @@
+Metadata-Version: 2.4
+Name: miniworlds
+Version: 3.1.0.1
+Summary: Create 2D worlds and Games
+Home-page: https://github.com/asbl/miniworlds
+Download-URL: https://github.com/asbl/miniworlds
+Author: Andreas Siebel
+Author-email: andreas.siebel@it-teaching.de
+License: OSI Approved :: MIT License
+Keywords: games,education,mini-worlds,pygame
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Education
+Classifier: Topic :: Education
+Description-Content-Type: text/markdown
+License-File: LICENSE.txt
+Requires-Dist: pygame-ce
+Requires-Dist: numpy
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: download-url
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: summary
+
+miniworlds
+---------
+
+miniworlds allows you to create 2D mini worlds and games. 
+
+It is a 2D engine inspired by greenfoot and gamegrid based on pygame.
+
+### Examples
+
+Two actors that can be controlled with the keyworld.
+
+```python
+from miniworlds import World, Actor
+
+world = World()
+world.add_background("images/grass.jpg")
+player = Actor((90,90))
+player.add_costume("images/player.png")
+player.costume.orientation = -90 
+@player.register
+def on_key_down_w(self):
+    player.y = player.y - 1
+   
+player2 = Actor((180,180))
+player2.add_costume("images/player.png")
+player2.costume.orientation = -90 
+@player2.register
+def on_key_pressed_s(self):
+    player2.y = player2.y - 1
+    
+world.run()
+```
+
+[Two Actors](examples_twoactors.png)

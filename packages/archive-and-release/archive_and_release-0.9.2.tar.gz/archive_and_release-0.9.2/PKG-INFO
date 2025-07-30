@@ -1,0 +1,42 @@
+Metadata-Version: 2.4
+Name: archive-and-release
+Version: 0.9.2
+Summary: "A cli archiving bunch of files (e.g. bash scripts), from a git repository made up of a number of (public/private) sub modules, and optionally tagging it and creating a github release for it with the resulting archive."
+Home-page: https://github.com/EbaseServices/cloud-release-builder
+Author: Dan East
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: GitPython
+Requires-Dist: PyGithub
+Requires-Dist: python-dotenv
+Provides-Extra: test
+Requires-Dist: pytest; extra == "test"
+Dynamic: license-file
+
+# script-release-builder
+
+Todo!
+
+
+Builds a frontend or backend release
+
+
+
+Commands:
+Full options/help:
+python -m releaser.release -h
+
+Command options/help:
+python -m releaser.release <cmd> -h
+
+To build a release file:
+python -m releaser.release build_frontend
+python -m releaser.release build_backend
+python -m releaser.release build --repo "https://github.com/<repository_owner>/<repository_name>" --branch main --repo_target_dir "<clone_target_dir>" --release_target_dir "<created_release_target_dir>" --release_file_name "<created_release_file_name>"
+
+
+To build, create a tag and create a release:
+python -m releaser.release release_frontend --tag_version "<tag_version>" --tag_description "<tag_description>"
+python -m releaser.release release_backend --tag_version "<tag_version>" --tag_description "<tag_description>" --release_version "<release_version>" --release_description "<release_description>"
+python -m releaser.release release --repo "https://github.com/<repository_owner>/<repository_name>" --branch main --repo_target_dir "<clone_target_dir>" --release_target_dir "<created_release_target_dir>" --release_file_name "<created_release_file_name>" --tag_version "<tag_version>" --tag_description "<tag_description>"

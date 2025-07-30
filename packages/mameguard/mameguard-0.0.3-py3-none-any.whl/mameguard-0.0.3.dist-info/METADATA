@@ -1,0 +1,166 @@
+Metadata-Version: 2.4
+Name: mameguard
+Version: 0.0.3
+Summary: A MAME ROM auditing tool
+Author-email: Dimitris Zlatanidis <dslackw@gmail.com>
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Development Status :: 3 - Alpha
+Classifier: Topic :: Games/Entertainment :: Arcade
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: Natural Language :: English
+Classifier: Topic :: Utilities
+License-File: LICENSE
+Project-URL: Changelog, https://github.com/dslackw/mameguard/blob/main/CHANGELOG.md
+Project-URL: Documentation, https://github.com/dslackw/mameguard/blob/main/README.md
+Project-URL: Homepage, https://github.com/dslackw/mameguard
+Project-URL: Repository, https://github.com/dslackw/mameguard.git
+
+![mameguard Logo](images/mameguard.png)
+
+# mameguard - A MAME ROM Auditing Tool
+
+## 1. Introduction
+
+mameguard is a command-line interface (CLI) tool designed to help MAME enthusiasts audit their ROM collections against MAME DAT files. It allows you to quickly identify which of your ROM sets are complete, partial, missing, or contain mismatched ROMs according to a specified DAT file.
+
+This tool focuses on providing clear audit reports and does not perform ROM rebuilding or fixing operations (unlike tools like ClrMAMEPro).
+
+## 2. Features
+
+- **DAT File Parsing**: Reads and understands MAME DAT (XML) files (Logiqx DTD compliant).
+- **ROM Folder Scanning**: Scans a specified directory for MAME ROM ZIP files and calculates essential hashes (CRC32, SHA1) for individual ROMs within.
+- **Comprehensive Auditing**: Compares your scanned ROMs against the DAT file to determine the status of each game set:
+  - **Complete**: All required ROMs are present and match the DAT.
+  - **Partial**: The ROM set ZIP exists, but some ROMs are missing or mismatched.
+  - **Missing**: The entire ROM set ZIP file is not found.
+- **Detailed Reporting**: Provides both a summary and a detailed breakdown of game statuses.
+- **Flexible Output**: Generate reports in human-readable text format or machine-readable JSON.
+- **Output Filtering**: Filter detailed reports to show only complete, partial, missing, or mismatched sets.
+- **Verbose Mode**: Display progress messages during execution.
+
+## 3. Installation and Setup
+
+### Prerequisites
+- Python 3.9 or higher.
+
+### Install mameguard
+You can install it with:
+```bash
+pip install mameguard
+```
+This will make the `mameguard` command available in your system's PATH.
+
+## 4. Usage
+
+mameguard is a command-line tool with subcommands.
+
+### General Command Structure
+```bash
+mameguard <command> [arguments]
+```
+
+To see general help:
+```bash
+mameguard --help
+```
+
+### `audit` Command
+Performs a full audit of your ROMs against a DAT file.
+
+#### Syntax
+```bash
+mameguard audit <DAT_PATH> <ROMS_FOLDER_PATH> [OPTIONS]
+```
+
+#### Arguments
+- `<DAT_PATH>`: Path to the MAME DAT file (e.g., "MAME 0.277.dat").
+- `<ROMS_FOLDER_PATH>`: Path to your MAME ROMs folder (e.g., "/home/user/mame_roms/"). You can use `.` for the current directory.
+
+#### Options
+- `--output-format {text, json}`:
+  - `text` (default): Human-readable summary in console.
+  - `json`: Detailed JSON output to console or `--output-file`.
+- `--output-file <PATH>`: Path to save the report (e.g., "audit_report.json"). If not specified, output goes to console.
+- `--show-status {all, complete, partial, missing, mismatched}`: Filter games by audit status (default: all).
+  - `all`: Show all games.
+  - `complete`: Show only complete sets.
+  - `partial`: Show only partial sets.
+  - `missing`: Show only missing sets.
+  - `mismatched`: Show only sets with mismatched ROMs (ROMs found, but hashes/size don't match DAT).
+- `-v, --verbose`: Show verbose output during scanning and auditing.
+
+#### Examples
+- Perform a standard audit and print to console:
+  ```bash
+  mameguard audit "MAME 0.277.dat" "/path/to/your/roms/"
+  ```
+- Audit and save the report as JSON to a file:
+  ```bash
+  mameguard audit "MAME 0.277.dat" "/path/to/your/roms/" --output-format json --output-file my_audit.json
+  ```
+- Show only partial sets in the detailed report:
+  ```bash
+  mameguard audit "MAME 0.277.dat" "/path/to/your/roms/" --show-status partial
+  ```
+- Audit with verbose output:
+  ```bash
+  mameguard audit "MAME 0.277.dat" "/path/to/your/roms/" -v
+  ```
+
+### `scan` Command
+Scans a ROM folder and outputs details of found ROMs. Useful for debugging or getting a raw list of what's on disk.
+
+#### Syntax
+```bash
+mameguard scan <ROMS_FOLDER_PATH> [OPTIONS]
+```
+
+#### Arguments
+- `<ROMS_FOLDER_PATH>`: Path to your MAME ROMs folder.
+
+#### Options
+- `--output-json <PATH>`: Path to save the scanned ROMs as a JSON file.
+- `-v, --verbose`: Show verbose output during scanning.
+
+#### Examples
+- Scan ROMs and print JSON to console:
+  ```bash
+  mameguard scan "/path/to/your/roms/"
+  ```
+- Scan ROMs and save JSON to a file:
+  ```bash
+  mameguard scan "/path/to/your/roms/" --output-json scanned_roms_on_disk.json
+  ```
+
+## 5. Project Structure
+```
+.
+├── CHANGELOG.md
+├── LICENSE
+├── README.md
+├── images
+│   └── mameguard.png
+├── mameguard
+│   ├── __init__.py
+│   ├── cli.py
+│   ├── libaudit.py
+│   ├── libdat.py
+│   ├── libroms.py
+│   └── version.py
+├── pyproject.toml
+└── setup.cfg
+```
+
+mameguard is an excellent tool for quickly assessing your ROM collection's status and can be a valuable part of your MAME setup, especially if you prefer command-line workflows or need to integrate auditing into scripts.
+
+## 6. License
+
+This project is open-source. Please refer to the `LICENSE` file in the root directory for details.
+
+## 7. Contributing and Support
+
+For bug reports, feature requests, or contributions, please visit the project's GitHub repository (if applicable) or contact the author.

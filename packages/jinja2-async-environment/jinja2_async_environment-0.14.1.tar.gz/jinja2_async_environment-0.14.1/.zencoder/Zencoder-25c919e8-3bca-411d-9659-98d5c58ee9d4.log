@@ -1,0 +1,529 @@
+cd /Users/les/Projects/jinja2-async-environment && pdm run pytest
+direnv: loading ~/Projects/jinja2-async-environment/.envrc                      
+direnv: export +PDM_ACTIVE ~PATH
+(jinja2-async-environment) [jinja2-async-environment] cd /Users/les/Projects/jinja2-async-environment && pdm run pytest
+============================= test session starts ==============================
+platform darwin -- Python 3.13.3, pytest-8.3.5, pluggy-1.5.0
+rootdir: /Users/les/Projects/jinja2-async-environment
+configfile: pyproject.toml
+testpaths: tests, jinja2_async_environment
+plugins: anyio-4.9.0, timeout-2.4.0, asyncio-0.26.0, mock-3.14.0, cov-6.1.1
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 96 items                                                                                                                                                    
+
+tests/test_bccache.py ...                                                                                                                                       [  3%]
+tests/test_choice_loader.py .......F                                                                                                                            [ 11%]
+tests/test_compiler.py .............                                                                                                                            [ 25%]
+tests/test_dict_loader.py .....F.                                                                                                                               [ 32%]
+tests/test_environment.py .......................                                                                                                               [ 56%]
+tests/test_function_loader.py ......F.                                                                                                                          [ 64%]
+tests/test_loaders.py .....                                                                                                                                     [ 69%]
+tests/test_package_loader.py ..FF.F.F.F                                                                                                                         [ 80%]
+tests/test_redis_bccache.py ............                                                                                                                        [ 92%]
+tests/test_template_rendering.py FFFFFFF                                                                                                                        [100%]
+
+============================================================================== FAILURES ===============================================================================
+________________________________________________________________ TestAsyncChoiceLoader.test_load_async ________________________________________________________________
+
+self = <tests.test_choice_loader.TestAsyncChoiceLoader object at 0x10811f150>
+choice_loader = <jinja2_async_environment.loaders.AsyncChoiceLoader object at 0x1083456a0>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10821f4d0>
+
+    @pytest.mark.asyncio
+    async def test_load_async(
+        self, choice_loader: AsyncChoiceLoader, environment: AsyncEnvironment
+    ) -> None:
+>       template = await choice_loader.load_async(environment, "index.html")
+
+tests/test_choice_loader.py:136: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+jinja2_async_environment/loaders.py:85: in load_async
+    code = environment.compile(source_str, name)
+.venv/lib/python3.13/site-packages/jinja2/environment.py:764: in compile
+    source = self._generate(source, name, filename, defer_init=defer_init)
+jinja2_async_environment/environment.py:44: in _generate
+    return generator.generate(source_obj)
+jinja2_async_environment/compiler.py:67: in generate
+    self.pull_locals(node.find_all(nodes.Scope))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.compiler.AsyncCodeGenerator object at 0x1082d46e0>, nodes = <generator object Node.find_all at 0x1083149e0>
+
+    def pull_locals(self, nodes: t.Any) -> None:
+        """Pull local variables from the given nodes."""
+>       super().pull_locals(nodes)
+E       AttributeError: 'super' object has no attribute 'pull_locals'
+
+jinja2_async_environment/compiler.py:46: AttributeError
+_________________________________________________________________ TestAsyncDictLoader.test_load_async _________________________________________________________________
+
+self = <tests.test_dict_loader.TestAsyncDictLoader object at 0x108211590>, loader = <jinja2_async_environment.loaders.AsyncDictLoader object at 0x1082569f0>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x1081eafd0>
+
+    @pytest.mark.asyncio
+    async def test_load_async(
+        self, loader: AsyncDictLoader, environment: AsyncEnvironment
+    ) -> None:
+>       template = await loader.load_async(environment, "index.html")
+
+tests/test_dict_loader.py:75: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+jinja2_async_environment/loaders.py:85: in load_async
+    code = environment.compile(source_str, name)
+.venv/lib/python3.13/site-packages/jinja2/environment.py:764: in compile
+    source = self._generate(source, name, filename, defer_init=defer_init)
+jinja2_async_environment/environment.py:44: in _generate
+    return generator.generate(source_obj)
+jinja2_async_environment/compiler.py:67: in generate
+    self.pull_locals(node.find_all(nodes.Scope))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.compiler.AsyncCodeGenerator object at 0x1081ea710>, nodes = <generator object Node.find_all at 0x1081ed0e0>
+
+    def pull_locals(self, nodes: t.Any) -> None:
+        """Pull local variables from the given nodes."""
+>       super().pull_locals(nodes)
+E       AttributeError: 'super' object has no attribute 'pull_locals'
+
+jinja2_async_environment/compiler.py:46: AttributeError
+_______________________________________________________________ TestAsyncFunctionLoader.test_load_async _______________________________________________________________
+
+self = <tests.test_function_loader.TestAsyncFunctionLoader object at 0x108212360>
+sync_loader = <jinja2_async_environment.loaders.AsyncFunctionLoader object at 0x108347020>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x1081eb610>
+
+    @pytest.mark.asyncio
+    async def test_load_async(
+        self, sync_loader: AsyncFunctionLoader, environment: AsyncEnvironment
+    ) -> None:
+>       template = await sync_loader.load_async(environment, "index.html")
+
+tests/test_function_loader.py:147: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+jinja2_async_environment/loaders.py:85: in load_async
+    code = environment.compile(source_str, name)
+.venv/lib/python3.13/site-packages/jinja2/environment.py:764: in compile
+    source = self._generate(source, name, filename, defer_init=defer_init)
+jinja2_async_environment/environment.py:44: in _generate
+    return generator.generate(source_obj)
+jinja2_async_environment/compiler.py:67: in generate
+    self.pull_locals(node.find_all(nodes.Scope))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.compiler.AsyncCodeGenerator object at 0x108420a50>, nodes = <generator object Node.find_all at 0x108315700>
+
+    def pull_locals(self, nodes: t.Any) -> None:
+        """Pull local variables from the given nodes."""
+>       super().pull_locals(nodes)
+E       AttributeError: 'super' object has no attribute 'pull_locals'
+
+jinja2_async_environment/compiler.py:46: AttributeError
+______________________________________________________ TestAsyncPackageLoader.test_init_template_root_not_found _______________________________________________________
+
+self = <tests.test_package_loader.TestAsyncPackageLoader object at 0x108228e90>, mock_import_module = <MagicMock id='4432163712'>
+
+    def test_init_template_root_not_found(self, mock_import_module: MagicMock) -> None:
+        mock_spec = MagicMock()
+        mock_spec.loader = MagicMock()
+        mock_spec.submodule_search_locations = []
+        mock_spec.origin = None
+        with (
+            patch("importlib.util.find_spec", return_value=mock_spec),
+            patch("jinja2_async_environment.loaders.import_module", mock_import_module),
+        ):
+>           with pytest.raises(
+                ValueError,
+                match="was not installed in a way that PackageLoader understands",
+            ):
+E           Failed: DID NOT RAISE <class 'ValueError'>
+
+tests/test_package_loader.py:108: Failed
+______________________________________________________________ TestAsyncPackageLoader.test_init_success _______________________________________________________________
+
+self = <tests.test_package_loader.TestAsyncPackageLoader object at 0x108228fc0>
+package_loader = <jinja2_async_environment.loaders.AsyncPackageLoader object at 0x10822ad70>
+
+    def test_init_success(self, package_loader: AsyncPackageLoader) -> None:
+        assert package_loader.package_name == "test_package"
+        assert package_loader.package_path == AsyncPath("templates")
+        assert package_loader.encoding == "utf-8"
+>       assert package_loader._archive is None
+E       AssertionError: assert <MagicMock name='mock().loader.archive' id='4432159344'> is None
+E        +  where <MagicMock name='mock().loader.archive' id='4432159344'> = <jinja2_async_environment.loaders.AsyncPackageLoader object at 0x10822ad70>._archive
+
+tests/test_package_loader.py:122: AssertionError
+________________________________________________________ TestAsyncPackageLoader.test_get_source_async_success _________________________________________________________
+
+self = <tests.test_package_loader.TestAsyncPackageLoader object at 0x108212470>
+package_loader = <jinja2_async_environment.loaders.AsyncPackageLoader object at 0x1084544d0>
+
+    @pytest.mark.asyncio
+    async def test_get_source_async_success(
+        self, package_loader: AsyncPackageLoader
+    ) -> None:
+        with patch.object(
+            package_loader._loader,
+            "get_data",
+            return_value=b"<h1>Template content</h1>",
+        ):
+>           source, filename, uptodate = await package_loader.get_source_async(
+                "template.html"
+            )
+
+tests/test_package_loader.py:144: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.loaders.AsyncPackageLoader object at 0x1084544d0>, template = 'template.html'
+
+    async def get_source_async(self, template: str | AsyncPath) -> SourceType:
+        template_path: AsyncPath = (
+            AsyncPath(template) if isinstance(template, str) else template
+        )
+        path = self._template_root / template_path
+        if self._archive:
+            if not await path.is_file():
+>               raise TemplateNotFound(path.name)
+E               jinja2.exceptions.TemplateNotFound: template.html
+
+jinja2_async_environment/loaders.py:216: TemplateNotFound
+______________________________________________________ TestAsyncPackageLoader.test_list_templates_async_regular _______________________________________________________
+
+self = <tests.test_package_loader.TestAsyncPackageLoader object at 0x10826c250>
+package_loader = <jinja2_async_environment.loaders.AsyncPackageLoader object at 0x10838d9d0>
+
+    @pytest.mark.asyncio
+    async def test_list_templates_async_regular(
+        self, package_loader: AsyncPackageLoader
+    ) -> None:
+        with patch("anyio.Path.rglob") as mock_rglob:
+            mock_rglob.return_value.__aiter__.return_value = [
+                AsyncPath("/path/to/package/templates/template1.html"),
+                AsyncPath("/path/to/package/templates/template2.html"),
+                AsyncPath("/path/to/package/templates/subdir/template3.html"),
+            ]
+            templates = await package_loader.list_templates_async()
+>           assert len(templates) == 3
+E           assert 0 == 3
+E            +  where 0 = len([])
+
+tests/test_package_loader.py:213: AssertionError
+____________________________________________________ TestAsyncPackageLoader.test_list_templates_async_zip_no_files ____________________________________________________
+
+self = <tests.test_package_loader.TestAsyncPackageLoader object at 0x10823c9b0>, mock_find_spec = <MagicMock id='4435738112'>
+mock_import_module = <MagicMock id='4435732064'>
+
+    @pytest.mark.asyncio
+    async def test_list_templates_async_zip_no_files(
+        self, mock_find_spec: MagicMock, mock_import_module: MagicMock
+    ) -> None:
+        mock_zipimporter = MagicMock()
+        mock_zipimporter.archive = "/path/to/archive.zip"
+    
+        mock_spec = MagicMock()
+        mock_spec.loader = mock_zipimporter
+        mock_spec.submodule_search_locations = ["/path/to/package"]
+    
+        # Create a mock path that will be used as the template root
+        mock_path = AsyncPath("/path/to/package/templates")
+    
+        with (
+            patch("importlib.util.find_spec", return_value=mock_spec),
+            patch("jinja2_async_environment.loaders.import_module", mock_import_module),
+            patch("anyio.Path.is_file", return_value=True),
+            patch.object(AsyncPath, "is_dir", return_value=True),
+            patch("anyio.Path.__truediv__", return_value=mock_path),
+        ):
+            loader = AsyncPackageLoader(
+                "test_package",
+                AsyncPath("/templates"),
+                package_path=AsyncPath("templates"),
+            )
+    
+>           with pytest.raises(TypeError, match="does not have the required metadata"):
+E           Failed: DID NOT RAISE <class 'TypeError'>
+
+tests/test_package_loader.py:282: Failed
+__________________________________________________________ TestTemplateRendering.test_render_simple_template __________________________________________________________
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x1081e9950>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x108422210>
+
+    @pytest.mark.asyncio
+    async def test_render_simple_template(self, environment: AsyncEnvironment) -> None:
+>       template = await environment.get_template_async("simple.html")
+
+tests/test_template_rendering.py:51: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+jinja2_async_environment/environment.py:114: in get_template_async
+    return await self._load_template_async(name, globals)
+jinja2_async_environment/environment.py:180: in _load_template_async
+    return await self._get_template_async(name, globals)
+jinja2_async_environment/environment.py:207: in _get_template_async
+    template = await self.loader.load_async(self, name, self.make_globals(globals))
+jinja2_async_environment/loaders.py:85: in load_async
+    code = environment.compile(source_str, name)
+.venv/lib/python3.13/site-packages/jinja2/environment.py:764: in compile
+    source = self._generate(source, name, filename, defer_init=defer_init)
+jinja2_async_environment/environment.py:44: in _generate
+    return generator.generate(source_obj)
+jinja2_async_environment/compiler.py:67: in generate
+    self.pull_locals(node.find_all(nodes.Scope))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.compiler.AsyncCodeGenerator object at 0x108421810>, nodes = <generator object Node.find_all at 0x1083a7220>
+
+    def pull_locals(self, nodes: t.Any) -> None:
+        """Pull local variables from the given nodes."""
+>       super().pull_locals(nodes)
+E       AttributeError: 'super' object has no attribute 'pull_locals'
+
+jinja2_async_environment/compiler.py:46: AttributeError
+_____________________________________________________ TestTemplateRendering.test_render_template_with_inheritance _____________________________________________________
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x1081e9810>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x108421f90>
+
+    @pytest.mark.asyncio
+    async def test_render_template_with_inheritance(
+        self, environment: AsyncEnvironment
+    ) -> None:
+>       template = await environment.get_template_async("child.html")
+
+tests/test_template_rendering.py:60: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+jinja2_async_environment/environment.py:114: in get_template_async
+    return await self._load_template_async(name, globals)
+jinja2_async_environment/environment.py:180: in _load_template_async
+    return await self._get_template_async(name, globals)
+jinja2_async_environment/environment.py:207: in _get_template_async
+    template = await self.loader.load_async(self, name, self.make_globals(globals))
+jinja2_async_environment/loaders.py:85: in load_async
+    code = environment.compile(source_str, name)
+.venv/lib/python3.13/site-packages/jinja2/environment.py:764: in compile
+    source = self._generate(source, name, filename, defer_init=defer_init)
+jinja2_async_environment/environment.py:44: in _generate
+    return generator.generate(source_obj)
+jinja2_async_environment/compiler.py:67: in generate
+    self.pull_locals(node.find_all(nodes.Scope))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.compiler.AsyncCodeGenerator object at 0x108422c10>, nodes = <generator object Node.find_all at 0x1083a7e60>
+
+    def pull_locals(self, nodes: t.Any) -> None:
+        """Pull local variables from the given nodes."""
+>       super().pull_locals(nodes)
+E       AttributeError: 'super' object has no attribute 'pull_locals'
+
+jinja2_async_environment/compiler.py:46: AttributeError
+_______________________________________________________ TestTemplateRendering.test_render_template_with_include _______________________________________________________
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x108229480>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x1084225d0>
+
+    @pytest.mark.asyncio
+    async def test_render_template_with_include(
+        self, environment: AsyncEnvironment
+    ) -> None:
+>       template = await environment.get_template_async("include.html")
+
+tests/test_template_rendering.py:71: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+jinja2_async_environment/environment.py:114: in get_template_async
+    return await self._load_template_async(name, globals)
+jinja2_async_environment/environment.py:180: in _load_template_async
+    return await self._get_template_async(name, globals)
+jinja2_async_environment/environment.py:207: in _get_template_async
+    template = await self.loader.load_async(self, name, self.make_globals(globals))
+jinja2_async_environment/loaders.py:85: in load_async
+    code = environment.compile(source_str, name)
+.venv/lib/python3.13/site-packages/jinja2/environment.py:764: in compile
+    source = self._generate(source, name, filename, defer_init=defer_init)
+jinja2_async_environment/environment.py:44: in _generate
+    return generator.generate(source_obj)
+jinja2_async_environment/compiler.py:67: in generate
+    self.pull_locals(node.find_all(nodes.Scope))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.compiler.AsyncCodeGenerator object at 0x108422490>, nodes = <generator object Node.find_all at 0x1083160a0>
+
+    def pull_locals(self, nodes: t.Any) -> None:
+        """Pull local variables from the given nodes."""
+>       super().pull_locals(nodes)
+E       AttributeError: 'super' object has no attribute 'pull_locals'
+
+jinja2_async_environment/compiler.py:46: AttributeError
+____________________________________________________________ TestTemplateRendering.test_render_async_block ____________________________________________________________
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x1082295b0>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x108421e50>
+
+    @pytest.mark.asyncio
+    async def test_render_async_block(self, environment: AsyncEnvironment) -> None:
+>       template = await environment.get_template_async("async_block.html")
+
+tests/test_template_rendering.py:78: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+jinja2_async_environment/environment.py:114: in get_template_async
+    return await self._load_template_async(name, globals)
+jinja2_async_environment/environment.py:180: in _load_template_async
+    return await self._get_template_async(name, globals)
+jinja2_async_environment/environment.py:207: in _get_template_async
+    template = await self.loader.load_async(self, name, self.make_globals(globals))
+jinja2_async_environment/loaders.py:85: in load_async
+    code = environment.compile(source_str, name)
+.venv/lib/python3.13/site-packages/jinja2/environment.py:764: in compile
+    source = self._generate(source, name, filename, defer_init=defer_init)
+jinja2_async_environment/environment.py:44: in _generate
+    return generator.generate(source_obj)
+jinja2_async_environment/compiler.py:67: in generate
+    self.pull_locals(node.find_all(nodes.Scope))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.compiler.AsyncCodeGenerator object at 0x108421d10>, nodes = <generator object Node.find_all at 0x108600040>
+
+    def pull_locals(self, nodes: t.Any) -> None:
+        """Pull local variables from the given nodes."""
+>       super().pull_locals(nodes)
+E       AttributeError: 'super' object has no attribute 'pull_locals'
+
+jinja2_async_environment/compiler.py:46: AttributeError
+___________________________________________________________ TestTemplateRendering.test_render_async_include ___________________________________________________________
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x10831c170>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x1084220d0>
+
+    @pytest.mark.asyncio
+    async def test_render_async_include(self, environment: AsyncEnvironment) -> None:
+>       template = await environment.get_template_async("async_include.html")
+
+tests/test_template_rendering.py:90: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+jinja2_async_environment/environment.py:114: in get_template_async
+    return await self._load_template_async(name, globals)
+jinja2_async_environment/environment.py:180: in _load_template_async
+    return await self._get_template_async(name, globals)
+jinja2_async_environment/environment.py:207: in _get_template_async
+    template = await self.loader.load_async(self, name, self.make_globals(globals))
+jinja2_async_environment/loaders.py:85: in load_async
+    code = environment.compile(source_str, name)
+.venv/lib/python3.13/site-packages/jinja2/environment.py:764: in compile
+    source = self._generate(source, name, filename, defer_init=defer_init)
+jinja2_async_environment/environment.py:44: in _generate
+    return generator.generate(source_obj)
+jinja2_async_environment/compiler.py:67: in generate
+    self.pull_locals(node.find_all(nodes.Scope))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.compiler.AsyncCodeGenerator object at 0x108423610>, nodes = <generator object Node.find_all at 0x108601380>
+
+    def pull_locals(self, nodes: t.Any) -> None:
+        """Pull local variables from the given nodes."""
+>       super().pull_locals(nodes)
+E       AttributeError: 'super' object has no attribute 'pull_locals'
+
+jinja2_async_environment/compiler.py:46: AttributeError
+___________________________________________________________ TestTemplateRendering.test_render_async_extends ___________________________________________________________
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x108213460>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x108423250>
+
+    @pytest.mark.asyncio
+    async def test_render_async_extends(self, environment: AsyncEnvironment) -> None:
+>       template = await environment.get_template_async("async_extends.html")
+
+tests/test_template_rendering.py:102: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+jinja2_async_environment/environment.py:114: in get_template_async
+    return await self._load_template_async(name, globals)
+jinja2_async_environment/environment.py:180: in _load_template_async
+    return await self._get_template_async(name, globals)
+jinja2_async_environment/environment.py:207: in _get_template_async
+    template = await self.loader.load_async(self, name, self.make_globals(globals))
+jinja2_async_environment/loaders.py:85: in load_async
+    code = environment.compile(source_str, name)
+.venv/lib/python3.13/site-packages/jinja2/environment.py:764: in compile
+    source = self._generate(source, name, filename, defer_init=defer_init)
+jinja2_async_environment/environment.py:44: in _generate
+    return generator.generate(source_obj)
+jinja2_async_environment/compiler.py:67: in generate
+    self.pull_locals(node.find_all(nodes.Scope))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.compiler.AsyncCodeGenerator object at 0x108423750>, nodes = <generator object Node.find_all at 0x1083a6960>
+
+    def pull_locals(self, nodes: t.Any) -> None:
+        """Pull local variables from the given nodes."""
+>       super().pull_locals(nodes)
+E       AttributeError: 'super' object has no attribute 'pull_locals'
+
+jinja2_async_environment/compiler.py:46: AttributeError
+_____________________________________________________ TestTemplateRendering.test_performance_with_large_template ______________________________________________________
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x108213570>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x108422fd0>
+
+    @pytest.mark.asyncio
+    async def test_performance_with_large_template(
+        self, environment: AsyncEnvironment
+    ) -> None:
+        large_template = "{% for i in range(1000) %}{{ i }}{% endfor %}"
+    
+        environment.loader.mapping["large.html"] = large_template  # type: ignore
+    
+>       template = await environment.get_template_async("large.html")
+
+tests/test_template_rendering.py:120: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+jinja2_async_environment/environment.py:114: in get_template_async
+    return await self._load_template_async(name, globals)
+jinja2_async_environment/environment.py:180: in _load_template_async
+    return await self._get_template_async(name, globals)
+jinja2_async_environment/environment.py:207: in _get_template_async
+    template = await self.loader.load_async(self, name, self.make_globals(globals))
+jinja2_async_environment/loaders.py:85: in load_async
+    code = environment.compile(source_str, name)
+.venv/lib/python3.13/site-packages/jinja2/environment.py:764: in compile
+    source = self._generate(source, name, filename, defer_init=defer_init)
+jinja2_async_environment/environment.py:44: in _generate
+    return generator.generate(source_obj)
+jinja2_async_environment/compiler.py:67: in generate
+    self.pull_locals(node.find_all(nodes.Scope))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.compiler.AsyncCodeGenerator object at 0x1084225d0>, nodes = <generator object Node.find_all at 0x1086017e0>
+
+    def pull_locals(self, nodes: t.Any) -> None:
+        """Pull local variables from the given nodes."""
+>       super().pull_locals(nodes)
+E       AttributeError: 'super' object has no attribute 'pull_locals'
+
+jinja2_async_environment/compiler.py:46: AttributeError
+=========================================================================== tests coverage ============================================================================
+__________________________________________________________ coverage: platform darwin, python 3.13.3-final-0 ___________________________________________________________
+
+Name                                      Stmts   Miss  Cover
+-------------------------------------------------------------
+jinja2_async_environment/bccache.py          45      0   100%
+jinja2_async_environment/compiler.py        184     62    66%
+jinja2_async_environment/environment.py     115     21    82%
+jinja2_async_environment/loaders.py         218     61    72%
+-------------------------------------------------------------
+TOTAL                                       562    144    74%
+======================================================================= short test summary info =======================================================================
+FAILED tests/test_choice_loader.py::TestAsyncChoiceLoader::test_load_async - AttributeError: 'super' object has no attribute 'pull_locals'
+FAILED tests/test_dict_loader.py::TestAsyncDictLoader::test_load_async - AttributeError: 'super' object has no attribute 'pull_locals'
+FAILED tests/test_function_loader.py::TestAsyncFunctionLoader::test_load_async - AttributeError: 'super' object has no attribute 'pull_locals'
+FAILED tests/test_package_loader.py::TestAsyncPackageLoader::test_init_template_root_not_found - Failed: DID NOT RAISE <class 'ValueError'>
+FAILED tests/test_package_loader.py::TestAsyncPackageLoader::test_init_success - AssertionError: assert <MagicMock name='mock().loader.archive' id='4432159344'> is None
+FAILED tests/test_package_loader.py::TestAsyncPackageLoader::test_get_source_async_success - jinja2.exceptions.TemplateNotFound: template.html
+FAILED tests/test_package_loader.py::TestAsyncPackageLoader::test_list_templates_async_regular - assert 0 == 3
+FAILED tests/test_package_loader.py::TestAsyncPackageLoader::test_list_templates_async_zip_no_files - Failed: DID NOT RAISE <class 'TypeError'>
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_render_simple_template - AttributeError: 'super' object has no attribute 'pull_locals'
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_render_template_with_inheritance - AttributeError: 'super' object has no attribute 'pull_locals'
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_render_template_with_include - AttributeError: 'super' object has no attribute 'pull_locals'
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_render_async_block - AttributeError: 'super' object has no attribute 'pull_locals'
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_render_async_include - AttributeError: 'super' object has no attribute 'pull_locals'
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_render_async_extends - AttributeError: 'super' object has no attribute 'pull_locals'
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_performance_with_large_template - AttributeError: 'super' object has no attribute 'pull_locals'
+==================================================================== 15 failed, 81 passed in 3.04s ====================================================================
+(jinja2-async-environment) [jinja2-async-environment]                                                                                                        main  ✭ ✱

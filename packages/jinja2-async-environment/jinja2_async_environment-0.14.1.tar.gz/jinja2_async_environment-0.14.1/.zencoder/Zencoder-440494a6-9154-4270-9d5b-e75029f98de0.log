@@ -1,0 +1,169 @@
+[1m========================================================================= test session starts =========================================================================[0m
+platform darwin -- Python 3.13.5, pytest-8.4.0, pluggy-1.6.0 -- /Users/les/Projects/jinja2-async-environment/.venv/bin/python
+cachedir: .pytest_cache
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /Users/les/Projects/jinja2-async-environment
+configfile: pyproject.toml
+plugins: xdist-3.7.0, anyio-4.9.0, timeout-2.4.0, cov-6.2.1, mock-3.14.1, benchmark-5.1.0, asyncio-1.0.0
+timeout: 300.0s
+timeout method: thread
+timeout func_only: False
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0m[1mcollecting 10 items                                                                                                                                                   [0m[1mcollected 10 items                                                                                                                                                    [0m
+
+tests/test_loaders_coverage.py::test_async_filesystem_loader_error_handling [32mPASSED[0m[32m                                                                              [ 10%][0m
+tests/test_loaders_coverage.py::test_async_package_loader_error_handling [31mFAILED[0m[31m                                                                                 [ 20%][0m
+tests/test_loaders_coverage.py::test_async_choice_loader_error_handling [32mPASSED[0m[31m                                                                                  [ 30%][0m
+tests/test_loaders_coverage.py::test_async_function_loader_error_handling [32mPASSED[0m[31m                                                                                [ 40%][0m
+tests/test_loaders_coverage.py::test_async_dict_loader_error_handling [32mPASSED[0m[31m                                                                                    [ 50%][0m
+tests/test_loaders_coverage.py::test_async_filesystem_loader_with_encoding [31mFAILED[0m[31m                                                                               [ 60%][0m
+tests/test_loaders_coverage.py::test_async_package_loader_with_encoding [31mFAILED[0m[31m                                                                                  [ 70%][0m
+tests/test_loaders_coverage.py::test_async_choice_loader_with_multiple_loaders [32mPASSED[0m[31m                                                                           [ 80%][0m
+tests/test_loaders_coverage.py::test_async_function_loader_with_uptodate [32mPASSED[0m[31m                                                                                 [ 90%][0m
+tests/test_loaders_coverage.py::test_async_dict_loader_with_prefix [32mPASSED[0m[31m                                                                                       [100%][0m[31m[1m
+ERROR: Coverage failure: total of 33 is less than fail-under=42
+[0m
+
+============================================================================== FAILURES ===============================================================================
+[31m[1m______________________________________________________________ test_async_package_loader_error_handling _______________________________________________________________[0m
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_async_package_loader_error_handling[39;49;00m() -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test error handling in AsyncPackageLoader."""[39;49;00m[90m[39;49;00m
+        [90m# Test with a non-existent package[39;49;00m[90m[39;49;00m
+        [94mwith[39;49;00m pytest.raises(PackageSpecNotFound):[90m[39;49;00m
+>           AsyncPackageLoader([33m"[39;49;00m[33mnon_existent_package[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mtemplates[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+
+[1m[31mtests/test_loaders_coverage.py[0m:65: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31mjinja2_async_environment/loaders.py[0m:203: in __init__
+    [0m[96mself[39;49;00m._loader, spec = [96mself[39;49;00m._initialize_loader(package_name)[90m[39;49;00m
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mjinja2_async_environment/loaders.py[0m:210: in _initialize_loader
+    [0mimport_module(package_name)[90m[39;49;00m
+[1m[31m/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/importlib/__init__.py[0m:88: in import_module
+    [0m[94mreturn[39;49;00m _bootstrap._gcd_import(name[level:], package, level)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m<frozen importlib._bootstrap>[0m:1387: in _gcd_import
+    [0m[04m[91m?[39;49;00m[04m[91m?[39;49;00m[04m[91m?[39;49;00m[90m[39;49;00m
+[1m[31m<frozen importlib._bootstrap>[0m:1360: in _find_and_load
+    [0m[04m[91m?[39;49;00m[04m[91m?[39;49;00m[04m[91m?[39;49;00m[90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+name = 'non_existent_package', import_ = <function _gcd_import at 0x107a3c4a0>
+
+>   [0m[04m[91m?[39;49;00m[04m[91m?[39;49;00m[04m[91m?[39;49;00m[90m[39;49;00m
+[1m[31mE   ModuleNotFoundError: No module named 'non_existent_package'[0m
+
+[1m[31m<frozen importlib._bootstrap>[0m:1324: ModuleNotFoundError
+[31m[1m_____________________________________________________________ test_async_filesystem_loader_with_encoding ______________________________________________________________[0m
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_async_filesystem_loader_with_encoding[39;49;00m() -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test AsyncFileSystemLoader with different encodings."""[39;49;00m[90m[39;49;00m
+        [94mwith[39;49;00m patch([33m"[39;49;00m[33manyio.Path.open[39;49;00m[33m"[39;49;00m) [94mas[39;49;00m mock_open:[90m[39;49;00m
+            [90m# Mock the file content[39;49;00m[90m[39;49;00m
+            mock_file = AsyncMock()[90m[39;49;00m
+            mock_file.[92m__aenter__[39;49;00m.return_value.read.return_value = [33m"[39;49;00m[33mtemplate content[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+            mock_open.return_value = mock_file[90m[39;49;00m
+    [90m[39;49;00m
+            [90m# Create a loader with a specific encoding[39;49;00m[90m[39;49;00m
+            loader = AsyncFileSystemLoader([33m"[39;49;00m[33m/templates[39;49;00m[33m"[39;49;00m, encoding=[33m"[39;49;00m[33mlatin1[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+            [90m# Test get_source_async[39;49;00m[90m[39;49;00m
+>           source, name, _ = [94mawait[39;49;00m loader.get_source_async(AsyncEnvironment(), [33m"[39;49;00m[33mtemplate.html[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_loaders_coverage.py[0m:129: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.loaders.AsyncFileSystemLoader object at 0x10a6f96d0>
+environment_or_template = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10a6f9810>, template = 'template.html'
+
+    [0m[94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mget_source_async[39;49;00m([90m[39;49;00m
+        [96mself[39;49;00m,[90m[39;49;00m
+        environment_or_template: AsyncEnvironment | [96mstr[39;49;00m | AsyncPath,[90m[39;49;00m
+        template: [96mstr[39;49;00m | AsyncPath | [94mNone[39;49;00m = [94mNone[39;49;00m[90m[39;49;00m
+    ) -> SourceType:[90m[39;49;00m
+        [90m# Handle both calling patterns[39;49;00m[90m[39;49;00m
+        actual_template: [96mstr[39;49;00m | AsyncPath[90m[39;49;00m
+        [94mif[39;49;00m [96misinstance[39;49;00m(environment_or_template, AsyncEnvironment):[90m[39;49;00m
+            [94mif[39;49;00m template [95mis[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+                [94mraise[39;49;00m [96mValueError[39;49;00m([33m"[39;49;00m[33mTemplate parameter is required when environment is provided[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+            actual_template = template[90m[39;49;00m
+        [94melse[39;49;00m:[90m[39;49;00m
+            actual_template = environment_or_template[90m[39;49;00m
+    [90m[39;49;00m
+        template_path: AsyncPath = ([90m[39;49;00m
+            AsyncPath(actual_template) [94mif[39;49;00m [96misinstance[39;49;00m(actual_template, [96mstr[39;49;00m) [94melse[39;49;00m actual_template[90m[39;49;00m
+        )[90m[39;49;00m
+        path: AsyncPath | [94mNone[39;49;00m = [94mNone[39;49;00m[90m[39;49;00m
+        [94mfor[39;49;00m sp [95min[39;49;00m [96mself[39;49;00m.searchpath:[90m[39;49;00m
+            candidate = sp / template_path[90m[39;49;00m
+            [94mif[39;49;00m [94mawait[39;49;00m candidate.is_file():[90m[39;49;00m
+                path = candidate[90m[39;49;00m
+                [94mbreak[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m path [95mis[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+>           [94mraise[39;49;00m TemplateNotFound(template_path.name)[90m[39;49;00m
+[1m[31mE           jinja2.exceptions.TemplateNotFound: template.html[0m
+
+[1m[31mjinja2_async_environment/loaders.py[0m:157: TemplateNotFound
+[31m[1m_______________________________________________________________ test_async_package_loader_with_encoding _______________________________________________________________[0m
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_async_package_loader_with_encoding[39;49;00m() -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test AsyncPackageLoader with different encodings."""[39;49;00m[90m[39;49;00m
+        [90m# Mock the importlib.util.spec_from_package_path[39;49;00m[90m[39;49;00m
+>       [94mwith[39;49;00m patch([33m"[39;49;00m[33mimportlib.util.spec_from_package_path[39;49;00m[33m"[39;49;00m) [94mas[39;49;00m mock_spec:[90m[39;49;00m
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_loaders_coverage.py[0m:140: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31m/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py[0m:1497: in __enter__
+    [0moriginal, local = [96mself[39;49;00m.get_original()[90m[39;49;00m
+                      ^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x10a2a9710>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mget_original[39;49;00m([96mself[39;49;00m):[90m[39;49;00m
+        target = [96mself[39;49;00m.getter()[90m[39;49;00m
+        name = [96mself[39;49;00m.attribute[90m[39;49;00m
+    [90m[39;49;00m
+        original = DEFAULT[90m[39;49;00m
+        local = [94mFalse[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [94mtry[39;49;00m:[90m[39;49;00m
+            original = target.[91m__dict__[39;49;00m[name][90m[39;49;00m
+        [94mexcept[39;49;00m ([96mAttributeError[39;49;00m, [96mKeyError[39;49;00m):[90m[39;49;00m
+            original = [96mgetattr[39;49;00m(target, name, DEFAULT)[90m[39;49;00m
+        [94melse[39;49;00m:[90m[39;49;00m
+            local = [94mTrue[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [94mif[39;49;00m name [95min[39;49;00m _builtins [95mand[39;49;00m [96misinstance[39;49;00m(target, ModuleType):[90m[39;49;00m
+            [96mself[39;49;00m.create = [94mTrue[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [94mif[39;49;00m [95mnot[39;49;00m [96mself[39;49;00m.create [95mand[39;49;00m original [95mis[39;49;00m DEFAULT:[90m[39;49;00m
+>           [94mraise[39;49;00m [96mAttributeError[39;49;00m([90m[39;49;00m
+                [33m"[39;49;00m[33m%s[39;49;00m[33m does not have the attribute [39;49;00m[33m%r[39;49;00m[33m"[39;49;00m % (target, name)[90m[39;49;00m
+            )[90m[39;49;00m
+[1m[31mE           AttributeError: <module 'importlib.util' (frozen)> does not have the attribute 'spec_from_package_path'[0m
+
+[1m[31m/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py[0m:1467: AttributeError
+=========================================================================== tests coverage ============================================================================
+__________________________________________________________ coverage: platform darwin, python 3.13.5-final-0 ___________________________________________________________
+
+Name                                      Stmts   Miss  Cover
+-------------------------------------------------------------
+jinja2_async_environment/bccache.py          45     20    56%
+jinja2_async_environment/compiler.py        237    199    16%
+jinja2_async_environment/environment.py     115     80    30%
+jinja2_async_environment/loaders.py         320    183    43%
+-------------------------------------------------------------
+TOTAL                                       717    482    33%
+[31m[1mFAIL Required test coverage of 42% not reached. Total coverage: 32.78%
+[0m[36m[1m======================================================================= short test summary info =======================================================================[0m
+[31mFAILED[0m tests/test_loaders_coverage.py::[1mtest_async_package_loader_error_handling[0m - ModuleNotFoundError: No module named 'non_existent_package'
+[31mFAILED[0m tests/test_loaders_coverage.py::[1mtest_async_filesystem_loader_with_encoding[0m - jinja2.exceptions.TemplateNotFound: template.html
+[31mFAILED[0m tests/test_loaders_coverage.py::[1mtest_async_package_loader_with_encoding[0m - AttributeError: <module 'importlib.util' (frozen)> does not have the attribute 'spec_from_package_path'
+[31m===================================================================== [31m[1m3 failed[0m, [32m7 passed[0m[31m in 2.03s[0m[31m =====================================================================[0m

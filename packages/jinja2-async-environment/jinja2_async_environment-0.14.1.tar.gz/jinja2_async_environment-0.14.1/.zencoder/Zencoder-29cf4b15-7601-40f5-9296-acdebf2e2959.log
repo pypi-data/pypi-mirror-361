@@ -1,0 +1,75 @@
+cd /Users/les/Projects/jinja2-async-environment && pdm run pytest tests/test_package_loader.py::TestAsyncPackageLoader::test_get_source_async_with_archive -v
+direnv: loading ~/Projects/jinja2-async-environment/.envrc                      
+direnv: export +PDM_ACTIVE ~PATH
+(jinja2-async-environment) [jinja2-async-environment] cd /Users/les/Projects/jinja2-async-environment && pdm run pytest tests/test_package_loader.py::TestAsyncPackageLoader::test_get_source_async_with_archive -v
+========================================================================= test session starts =========================================================================
+platform darwin -- Python 3.13.3, pytest-8.3.5, pluggy-1.5.0 -- /Users/les/Projects/jinja2-async-environment/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/les/Projects/jinja2-async-environment
+configfile: pyproject.toml
+plugins: anyio-4.9.0, timeout-2.4.0, asyncio-0.26.0, mock-3.14.0, cov-6.1.1
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 1 item                                                                                                                                                      
+
+tests/test_package_loader.py::TestAsyncPackageLoader::test_get_source_async_with_archive FAILED                                                                 [100%]
+
+============================================================================== FAILURES ===============================================================================
+______________________________________________________ TestAsyncPackageLoader.test_get_source_async_with_archive ______________________________________________________
+
+self = <tests.test_package_loader.TestAsyncPackageLoader object at 0x1055b1480>, mock_find_spec = <MagicMock id='4385245568'>
+mock_import_module = <MagicMock id='4385245904'>
+
+    @pytest.mark.asyncio
+    async def test_get_source_async_with_archive(
+        self, mock_find_spec: MagicMock, mock_import_module: MagicMock
+    ) -> None:
+        mock_zipimporter = MagicMock()
+        mock_zipimporter.archive = "/path/to/archive.zip"
+    
+        mock_spec = MagicMock()
+        mock_spec.loader = mock_zipimporter
+        mock_spec.submodule_search_locations = ["/path/to/package"]
+    
+        mock_path = AsyncPath("/path/to/package/templates")
+    
+        with (
+            patch("importlib.util.find_spec", return_value=mock_spec),
+            patch("jinja2_async_environment.loaders.import_module", mock_import_module),
+            patch("anyio.Path.is_file", return_value=True),
+            patch("anyio.Path.read_bytes", return_value=b"<h1>Zip template</h1>"),
+            patch("anyio.Path.stat", return_value=MagicMock(st_mtime=12345)),
+            patch("anyio.Path.__truediv__", return_value=mock_path),
+            patch(
+                "pathlib.Path.__truediv__", return_value=MagicMock(is_dir=lambda: True)
+            ),
+            patch("zipimport.zipimporter", return_value=mock_zipimporter),
+        ):
+            loader = AsyncPackageLoader(
+                "test_package",
+                AsyncPath("/templates"),
+                package_path=AsyncPath("templates"),
+            )
+    
+            source, filename, uptodate = await loader.get_source_async("template.html")
+            assert source == "<h1>Zip template</h1>"
+>           assert filename.endswith("template.html")
+E           AssertionError: assert False
+E            +  where False = <built-in method endswith of str object at 0x10566c4e0>('template.html')
+E            +    where <built-in method endswith of str object at 0x10566c4e0> = '/path/to/package/templates'.endswith
+
+tests/test_package_loader.py:184: AssertionError
+=========================================================================== tests coverage ============================================================================
+__________________________________________________________ coverage: platform darwin, python 3.13.3-final-0 ___________________________________________________________
+
+Name                                      Stmts   Miss  Cover
+-------------------------------------------------------------
+jinja2_async_environment/bccache.py          45     20    56%
+jinja2_async_environment/compiler.py        183    148    19%
+jinja2_async_environment/environment.py      86     56    35%
+jinja2_async_environment/loaders.py         211    124    41%
+-------------------------------------------------------------
+TOTAL                                       525    348    34%
+======================================================================= short test summary info =======================================================================
+FAILED tests/test_package_loader.py::TestAsyncPackageLoader::test_get_source_async_with_archive - AssertionError: assert False
+========================================================================== 1 failed in 0.52s ==========================================================================
+(jinja2-async-environment) [jinja2-async-environment]                                                                                                        main  ✭ ✱

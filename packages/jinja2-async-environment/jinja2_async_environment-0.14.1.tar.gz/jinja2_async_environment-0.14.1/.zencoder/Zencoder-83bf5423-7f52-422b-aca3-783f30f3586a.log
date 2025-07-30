@@ -1,0 +1,176 @@
+[1m========================================================================= test session starts =========================================================================[0m
+platform darwin -- Python 3.13.5, pytest-8.4.0, pluggy-1.6.0 -- /Users/les/Projects/jinja2-async-environment/.venv/bin/python
+cachedir: .pytest_cache
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /Users/les/Projects/jinja2-async-environment
+configfile: pyproject.toml
+plugins: xdist-3.7.0, anyio-4.9.0, timeout-2.4.0, cov-6.2.1, mock-3.14.1, benchmark-5.1.0, asyncio-1.0.0
+timeout: 300.0s
+timeout method: thread
+timeout func_only: False
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0m[1mcollected 3 items                                                                                                                                                     [0m
+
+tests/test_environment_additional.py::test_select_template_async_with_template_object [31mFAILED[0m[31m                                                                    [ 33%][0m
+tests/test_environment_additional.py::test_get_or_select_template_async_with_template_object [31mFAILED[0m[31m                                                             [ 66%][0m
+tests/test_environment_additional.py::test_load_template_async_with_template_object [31mFAILED[0m[31m                                                                      [100%][0m[31m[1m
+ERROR: Coverage failure: total of 23 is less than fail-under=42
+[0m
+
+============================================================================== FAILURES ===============================================================================
+[31m[1m___________________________________________________________ test_select_template_async_with_template_object ___________________________________________________________[0m
+
+async_env = <jinja2_async_environment.environment.AsyncEnvironment object at 0x109cc23c0>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_select_template_async_with_template_object[39;49;00m(async_env: AsyncEnvironment) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test select_template_async with a Template object."""[39;49;00m[90m[39;49;00m
+        [90m# Create a Template object[39;49;00m[90m[39;49;00m
+        template = MagicMock()[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Call select_template_async with the Template object[39;49;00m[90m[39;49;00m
+>       result = [94mawait[39;49;00m async_env.select_template_async([template])[90m[39;49;00m
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_environment_additional.py[0m:106: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.environment.AsyncEnvironment object at 0x109cc23c0>, names = [<MagicMock id='4459344768'>], parent = None, globals = None
+
+    [0m[37m@internalcode[39;49;00m[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mselect_template_async[39;49;00m([90m[39;49;00m
+        [96mself[39;49;00m,[90m[39;49;00m
+        names: t.Iterable[[96mstr[39;49;00m | Template],[90m[39;49;00m
+        parent: [96mstr[39;49;00m | [94mNone[39;49;00m = [94mNone[39;49;00m,[90m[39;49;00m
+        [96mglobals[39;49;00m: t.MutableMapping[[96mstr[39;49;00m, t.Any] | [94mNone[39;49;00m = [94mNone[39;49;00m,[90m[39;49;00m
+    ) -> Template:[90m[39;49;00m
+        [94mif[39;49;00m [96misinstance[39;49;00m(names, Undefined):[90m[39;49;00m
+            names._fail_with_undefined_error()[90m[39;49;00m
+        [94mif[39;49;00m [95mnot[39;49;00m names:[90m[39;49;00m
+            [94mraise[39;49;00m TemplatesNotFound([90m[39;49;00m
+                message=[33m"[39;49;00m[33mTried to select from an empty list of templates.[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+            )[90m[39;49;00m
+        names_list = [][90m[39;49;00m
+        [94mfor[39;49;00m name [95min[39;49;00m names:[90m[39;49;00m
+            [94mif[39;49;00m [96misinstance[39;49;00m(name, Template):[90m[39;49;00m
+                [90m# Return the template object directly[39;49;00m[90m[39;49;00m
+                [94mreturn[39;49;00m name[90m[39;49;00m
+            [94mif[39;49;00m parent [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+                name = [96mself[39;49;00m.join_path([96mstr[39;49;00m(name), parent)[90m[39;49;00m
+            [94mtry[39;49;00m:[90m[39;49;00m
+                [94mreturn[39;49;00m [94mawait[39;49;00m [96mself[39;49;00m._load_template_async(name, [96mglobals[39;49;00m)[90m[39;49;00m
+            [94mexcept[39;49;00m (TemplateNotFound, UndefinedError):[90m[39;49;00m
+                names_list.append([96mstr[39;49;00m(name))[90m[39;49;00m
+>       [94mraise[39;49;00m TemplatesNotFound(names_list)[90m[39;49;00m
+[1m[31mE       jinja2.exceptions.TemplatesNotFound: none of the templates given were found: <MagicMock id='4459344768'>[0m
+
+[1m[31mjinja2_async_environment/environment.py[0m:141: TemplatesNotFound
+[31m[1m_______________________________________________________ test_get_or_select_template_async_with_template_object ________________________________________________________[0m
+
+async_env = <jinja2_async_environment.environment.AsyncEnvironment object at 0x109ca6ad0>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_get_or_select_template_async_with_template_object[39;49;00m(async_env: AsyncEnvironment) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test get_or_select_template_async with a Template object."""[39;49;00m[90m[39;49;00m
+        [90m# Create a Template object[39;49;00m[90m[39;49;00m
+        template = MagicMock()[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Call get_or_select_template_async with the Template object[39;49;00m[90m[39;49;00m
+>       result = [94mawait[39;49;00m async_env.get_or_select_template_async(template)[90m[39;49;00m
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_environment_additional.py[0m:154: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31mjinja2_async_environment/environment.py[0m:163: in get_or_select_template_async
+    [0m[94mreturn[39;49;00m [94mawait[39;49;00m [96mself[39;49;00m.select_template_async(template_name_or_list, parent, [96mglobals[39;49;00m)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.environment.AsyncEnvironment object at 0x109ca6ad0>, names = <MagicMock id='4460808912'>, parent = None, globals = None
+
+    [0m[37m@internalcode[39;49;00m[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mselect_template_async[39;49;00m([90m[39;49;00m
+        [96mself[39;49;00m,[90m[39;49;00m
+        names: t.Iterable[[96mstr[39;49;00m | Template],[90m[39;49;00m
+        parent: [96mstr[39;49;00m | [94mNone[39;49;00m = [94mNone[39;49;00m,[90m[39;49;00m
+        [96mglobals[39;49;00m: t.MutableMapping[[96mstr[39;49;00m, t.Any] | [94mNone[39;49;00m = [94mNone[39;49;00m,[90m[39;49;00m
+    ) -> Template:[90m[39;49;00m
+        [94mif[39;49;00m [96misinstance[39;49;00m(names, Undefined):[90m[39;49;00m
+            names._fail_with_undefined_error()[90m[39;49;00m
+        [94mif[39;49;00m [95mnot[39;49;00m names:[90m[39;49;00m
+            [94mraise[39;49;00m TemplatesNotFound([90m[39;49;00m
+                message=[33m"[39;49;00m[33mTried to select from an empty list of templates.[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+            )[90m[39;49;00m
+        names_list = [][90m[39;49;00m
+        [94mfor[39;49;00m name [95min[39;49;00m names:[90m[39;49;00m
+            [94mif[39;49;00m [96misinstance[39;49;00m(name, Template):[90m[39;49;00m
+                [90m# Return the template object directly[39;49;00m[90m[39;49;00m
+                [94mreturn[39;49;00m name[90m[39;49;00m
+            [94mif[39;49;00m parent [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+                name = [96mself[39;49;00m.join_path([96mstr[39;49;00m(name), parent)[90m[39;49;00m
+            [94mtry[39;49;00m:[90m[39;49;00m
+                [94mreturn[39;49;00m [94mawait[39;49;00m [96mself[39;49;00m._load_template_async(name, [96mglobals[39;49;00m)[90m[39;49;00m
+            [94mexcept[39;49;00m (TemplateNotFound, UndefinedError):[90m[39;49;00m
+                names_list.append([96mstr[39;49;00m(name))[90m[39;49;00m
+>       [94mraise[39;49;00m TemplatesNotFound(names_list)[90m[39;49;00m
+[1m[31mE       jinja2.exceptions.TemplatesNotFound: none of the templates given were found:[0m
+
+[1m[31mjinja2_async_environment/environment.py[0m:141: TemplatesNotFound
+[31m[1m____________________________________________________________ test_load_template_async_with_template_object ____________________________________________________________[0m
+
+async_env = <jinja2_async_environment.environment.AsyncEnvironment object at 0x109e3c050>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_load_template_async_with_template_object[39;49;00m(async_env: AsyncEnvironment) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test _load_template_async with a Template object."""[39;49;00m[90m[39;49;00m
+        [90m# Create a Template object[39;49;00m[90m[39;49;00m
+        template = MagicMock()[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Call _load_template_async with the Template object[39;49;00m[90m[39;49;00m
+>       result = [94mawait[39;49;00m async_env._load_template_async(template, [94mNone[39;49;00m)[90m[39;49;00m
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_environment_additional.py[0m:185: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.environment.AsyncEnvironment object at 0x109e3c050>, name = <MagicMock id='4460809920'>, globals = None
+
+    [0m[37m@internalcode[39;49;00m[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92m_load_template_async[39;49;00m([90m[39;49;00m
+        [96mself[39;49;00m,[90m[39;49;00m
+        name: [96mstr[39;49;00m | Template | t.Iterable[[96mstr[39;49;00m | Template],[90m[39;49;00m
+        [96mglobals[39;49;00m: t.MutableMapping[[96mstr[39;49;00m, t.Any] | [94mNone[39;49;00m,[90m[39;49;00m
+    ) -> Template:[90m[39;49;00m
+        [94mif[39;49;00m [96misinstance[39;49;00m(name, Template):[90m[39;49;00m
+            [94mreturn[39;49;00m name[90m[39;49;00m
+        [94mif[39;49;00m [96misinstance[39;49;00m(name, [96mstr[39;49;00m):[90m[39;49;00m
+            [94mreturn[39;49;00m [94mawait[39;49;00m [96mself[39;49;00m._get_template_async(name, [96mglobals[39;49;00m)[90m[39;49;00m
+        names_list = [][90m[39;49;00m
+        [94mfor[39;49;00m template_name [95min[39;49;00m name:[90m[39;49;00m
+            [94mif[39;49;00m [96misinstance[39;49;00m(template_name, Template):[90m[39;49;00m
+                [94mreturn[39;49;00m template_name[90m[39;49;00m
+            [94mtry[39;49;00m:[90m[39;49;00m
+                [94mreturn[39;49;00m [94mawait[39;49;00m [96mself[39;49;00m._get_template_async([96mstr[39;49;00m(template_name), [96mglobals[39;49;00m)[90m[39;49;00m
+            [94mexcept[39;49;00m TemplateNotFound:[90m[39;49;00m
+                names_list.append([96mstr[39;49;00m(template_name))[90m[39;49;00m
+>       [94mraise[39;49;00m TemplatesNotFound(names_list)[90m[39;49;00m
+[1m[31mE       jinja2.exceptions.TemplatesNotFound: none of the templates given were found:[0m
+
+[1m[31mjinja2_async_environment/environment.py[0m:183: TemplatesNotFound
+=========================================================================== tests coverage ============================================================================
+__________________________________________________________ coverage: platform darwin, python 3.13.5-final-0 ___________________________________________________________
+
+Name                                      Stmts   Miss  Cover
+-------------------------------------------------------------
+jinja2_async_environment/bccache.py          56     29    48%
+jinja2_async_environment/compiler.py        393    334    15%
+jinja2_async_environment/environment.py     122     68    44%
+jinja2_async_environment/loaders.py         320    252    21%
+-------------------------------------------------------------
+TOTAL                                       891    683    23%
+[31m[1mFAIL Required test coverage of 42% not reached. Total coverage: 23.34%
+[0m[36m[1m======================================================================= short test summary info =======================================================================[0m
+[31mFAILED[0m tests/test_environment_additional.py::[1mtest_select_template_async_with_template_object[0m - jinja2.exceptions.TemplatesNotFound: none of the templates given were found: <MagicMock id='4459344768'>
+[31mFAILED[0m tests/test_environment_additional.py::[1mtest_get_or_select_template_async_with_template_object[0m - jinja2.exceptions.TemplatesNotFound: none of the templates given were found:
+[31mFAILED[0m tests/test_environment_additional.py::[1mtest_load_template_async_with_template_object[0m - jinja2.exceptions.TemplatesNotFound: none of the templates given were found:
+[31m========================================================================== [31m[1m3 failed[0m[31m in 0.63s[0m[31m ==========================================================================[0m

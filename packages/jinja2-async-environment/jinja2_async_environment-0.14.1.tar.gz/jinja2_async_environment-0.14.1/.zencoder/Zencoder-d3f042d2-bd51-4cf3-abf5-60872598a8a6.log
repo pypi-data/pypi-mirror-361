@@ -1,0 +1,395 @@
+[1m========================================================================= test session starts =========================================================================[0m
+platform darwin -- Python 3.13.5, pytest-8.4.0, pluggy-1.6.0 -- /Users/les/Projects/jinja2-async-environment/.venv/bin/python
+cachedir: .pytest_cache
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /Users/les/Projects/jinja2-async-environment
+configfile: pyproject.toml
+plugins: xdist-3.7.0, anyio-4.9.0, timeout-2.4.0, cov-6.2.1, mock-3.14.1, benchmark-5.1.0, asyncio-1.0.0
+timeout: 300.0s
+timeout method: thread
+timeout func_only: False
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0m[1mcollected 30 items                                                                                                                                                    [0m
+
+tests/test_async_environment.py::TestAsyncEnvironmentBasics::test_init [32mPASSED[0m[32m                                                                                   [  3%][0m
+tests/test_async_environment.py::TestAsyncEnvironmentBasics::test_generate [32mPASSED[0m[32m                                                                               [  6%][0m
+tests/test_async_environment.py::TestAsyncEnvironmentBasics::test_compile_normal [32mPASSED[0m[32m                                                                         [ 10%][0m
+tests/test_async_environment.py::TestAsyncEnvironmentBasics::test_compile_with_syntax_error [32mPASSED[0m[32m                                                              [ 13%][0m
+tests/test_async_environment.py::TestAsyncEnvironmentBasics::test_compile_with_async_code [31mFAILED[0m[31m                                                                [ 16%][0m
+tests/test_async_environment.py::TestAsyncEnvironmentBasics::test_compile_with_yield_from_replacement [31mFAILED[0m[31m                                                    [ 20%][0m
+tests/test_async_environment.py::TestAsyncYieldFrom::test_async_yield_from_with_async_generator [32mPASSED[0m[31m                                                          [ 23%][0m
+tests/test_async_environment.py::TestAsyncYieldFrom::test_async_yield_from_with_regular_generator [32mPASSED[0m[31m                                                        [ 26%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_template_not_implemented [32mPASSED[0m[31m                                                             [ 30%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_select_template_not_implemented [32mPASSED[0m[31m                                                          [ 33%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_or_select_template_not_implemented [32mPASSED[0m[31m                                                   [ 36%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_template_async_with_template_object [31mFAILED[0m[31m                                                  [ 40%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_template_async_with_parent [32mPASSED[0m[31m                                                           [ 43%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_template_async_with_globals [32mPASSED[0m[31m                                                          [ 46%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_select_template_async_with_empty_list [32mPASSED[0m[31m                                                    [ 50%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_select_template_async_with_undefined [32mPASSED[0m[31m                                                     [ 53%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_select_template_async_with_template_object [31mFAILED[0m[31m                                               [ 56%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_select_template_async_with_parent [32mPASSED[0m[31m                                                        [ 60%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_select_template_async_not_found [32mPASSED[0m[31m                                                          [ 63%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_or_select_template_async_with_string [32mPASSED[0m[31m                                                 [ 66%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_or_select_template_async_with_template_object [31mFAILED[0m[31m                                        [ 70%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_or_select_template_async_with_list [32mPASSED[0m[31m                                                   [ 73%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_load_template_async_with_template_object [31mFAILED[0m[31m                                                 [ 76%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_load_template_async_with_string [32mPASSED[0m[31m                                                          [ 80%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_load_template_async_with_iterable [32mPASSED[0m[31m                                                        [ 83%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_load_template_async_with_iterable_all_not_found [32mPASSED[0m[31m                                          [ 86%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_template_no_loader [32mPASSED[0m[31m                                                                   [ 90%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_template_with_cache_hit [32mPASSED[0m[31m                                                              [ 93%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_template_with_cache_hit_and_globals [32mPASSED[0m[31m                                                  [ 96%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_template_with_cache_miss [32mPASSED[0m[31m                                                             [100%][0m[31m[1m
+ERROR: Coverage failure: total of 33 is less than fail-under=42
+[0m
+
+============================================================================== FAILURES ===============================================================================
+[31m[1m_______________________________________________________ TestAsyncEnvironmentBasics.test_compile_with_async_code _______________________________________________________[0m
+
+self = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10fa57250>
+source = '\nasync def test():\n    async for event in self._async_yield_from(context.blocks\n    ', filename = 'test.py'
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92m_compile[39;49;00m([96mself[39;49;00m, source: [96mstr[39;49;00m, filename: [96mstr[39;49;00m) -> t.Any:[90m[39;49;00m
+        [94mtry[39;49;00m:[90m[39;49;00m
+>           [94mreturn[39;49;00m [96mcompile[39;49;00m(source, filename, [33m"[39;49;00m[33mexec[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE             File "test.py", line 3[0m
+[1m[31mE           SyntaxError: 'yield from' inside async function[0m
+
+[1m[31mjinja2_async_environment/environment.py[0m:49: SyntaxError
+
+[33mDuring handling of the above exception, another exception occurred:[0m
+
+self = <tests.test_async_environment.TestAsyncEnvironmentBasics object at 0x10fa2fad0>
+async_env = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10fa57250>
+
+    [0m    [94mdef[39;49;00m[90m [39;49;00m[92mtest_compile_with_async_code[39;49;00m([96mself[39;49;00m, async_env: AsyncEnvironment) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m        [39;49;00m[33m"""Test the _compile method with async code."""[39;49;00m[90m[39;49;00m
+            [90m# Test compilation with SyntaxError and async code[39;49;00m[90m[39;49;00m
+            source = [33m"""[39;49;00m[33m[39;49;00m
+    [33masync def test():[39;49;00m[33m[39;49;00m
+    [33m    yield from context.blocks[39;49;00m[33m[39;49;00m
+    [33m    [39;49;00m[33m"""[39;49;00m[90m[39;49;00m
+>           result = async_env._compile(source, [33m"[39;49;00m[33mtest.py[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_async_environment.py[0m:71: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10fa57250>
+source = '\nasync def test():\n    async for event in self._async_yield_from(context.blocks\n    ', filename = 'test.py'
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92m_compile[39;49;00m([96mself[39;49;00m, source: [96mstr[39;49;00m, filename: [96mstr[39;49;00m) -> t.Any:[90m[39;49;00m
+        [94mtry[39;49;00m:[90m[39;49;00m
+            [94mreturn[39;49;00m [96mcompile[39;49;00m(source, filename, [33m"[39;49;00m[33mexec[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        [94mexcept[39;49;00m [96mSyntaxError[39;49;00m:[90m[39;49;00m
+            [94mif[39;49;00m [33m"[39;49;00m[33myield from[39;49;00m[33m"[39;49;00m [95min[39;49;00m source [95mand[39;49;00m [33m"[39;49;00m[33masync def[39;49;00m[33m"[39;49;00m [95min[39;49;00m source:[90m[39;49;00m
+                source = source.replace([33m"[39;49;00m[33myield from[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33masync for event in[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                source = source.replace([90m[39;49;00m
+                    [33m"[39;49;00m[33masync for event in context.blocks[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                    [33m"[39;49;00m[33masync for event in self._async_yield_from(context.blocks[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                )[90m[39;49;00m
+    [90m[39;49;00m
+                source = source.replace([90m[39;49;00m
+                    [33m"[39;49;00m[33mundefined(name=[39;49;00m[33m'[39;49;00m[33mitem[39;49;00m[33m'[39;49;00m[33m) if l_0_item is missing else l_0_item[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                    [33m"[39;49;00m[33mitem[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                )[90m[39;49;00m
+                source = source.replace([90m[39;49;00m
+                    [33m"[39;49;00m[33mundefined(name=[39;49;00m[33m'[39;49;00m[33mi[39;49;00m[33m'[39;49;00m[33m) if l_0_i is missing else l_0_i[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mi[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+                )[90m[39;49;00m
+                source = source.replace([90m[39;49;00m
+                    [33m"[39;49;00m[33mundefined(name=[39;49;00m[33m'[39;49;00m[33mmessage[39;49;00m[33m'[39;49;00m[33m) if l_0_message is missing else l_0_message[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                    [33m"[39;49;00m[33mmessage[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                )[90m[39;49;00m
+                source = source.replace([90m[39;49;00m
+                    [33m"[39;49;00m[33mundefined(name=[39;49;00m[33m'[39;49;00m[33mpartial_var[39;49;00m[33m'[39;49;00m[33m) if l_0_partial_var is missing else l_0_partial_var[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                    [33m"[39;49;00m[33mpartial_var[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                )[90m[39;49;00m
+    [90m[39;49;00m
+>               [94mreturn[39;49;00m [96mcompile[39;49;00m(source, filename, [33m"[39;49;00m[33mexec[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE                 File "test.py", line 3[0m
+[1m[31mE                   async for event in self._async_yield_from(context.blocks[0m
+[1m[31mE                                                            ^[0m
+[1m[31mE               SyntaxError: '(' was never closed[0m
+
+[1m[31mjinja2_async_environment/environment.py[0m:74: SyntaxError
+[31m[1m_________________________________________________ TestAsyncEnvironmentBasics.test_compile_with_yield_from_replacement _________________________________________________[0m
+
+self = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10fa57c50>
+source = "\nasync def test():\n    async for event in self._async_yield_from(context.blocks['item']\n    item\n    i\n    message\n    partial_var\n    "
+filename = 'test.py'
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92m_compile[39;49;00m([96mself[39;49;00m, source: [96mstr[39;49;00m, filename: [96mstr[39;49;00m) -> t.Any:[90m[39;49;00m
+        [94mtry[39;49;00m:[90m[39;49;00m
+>           [94mreturn[39;49;00m [96mcompile[39;49;00m(source, filename, [33m"[39;49;00m[33mexec[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE             File "test.py", line 3[0m
+[1m[31mE           SyntaxError: 'yield from' inside async function[0m
+
+[1m[31mjinja2_async_environment/environment.py[0m:49: SyntaxError
+
+[33mDuring handling of the above exception, another exception occurred:[0m
+
+self = <tests.test_async_environment.TestAsyncEnvironmentBasics object at 0x10fa65f20>
+async_env = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10fa57c50>
+
+    [0m    [94mdef[39;49;00m[90m [39;49;00m[92mtest_compile_with_yield_from_replacement[39;49;00m([96mself[39;49;00m, async_env: AsyncEnvironment) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m        [39;49;00m[33m"""Test the _compile method with yield from replacement."""[39;49;00m[90m[39;49;00m
+            [90m# Test compilation with yield from replacement[39;49;00m[90m[39;49;00m
+            source = [33m"""[39;49;00m[33m[39;49;00m
+    [33masync def test():[39;49;00m[33m[39;49;00m
+    [33m    yield from context.blocks[[39;49;00m[33m'[39;49;00m[33mitem[39;49;00m[33m'[39;49;00m[33m][39;49;00m[33m[39;49;00m
+    [33m    undefined(name=[39;49;00m[33m'[39;49;00m[33mitem[39;49;00m[33m'[39;49;00m[33m) if l_0_item is missing else l_0_item[39;49;00m[33m[39;49;00m
+    [33m    undefined(name=[39;49;00m[33m'[39;49;00m[33mi[39;49;00m[33m'[39;49;00m[33m) if l_0_i is missing else l_0_i[39;49;00m[33m[39;49;00m
+    [33m    undefined(name=[39;49;00m[33m'[39;49;00m[33mmessage[39;49;00m[33m'[39;49;00m[33m) if l_0_message is missing else l_0_message[39;49;00m[33m[39;49;00m
+    [33m    undefined(name=[39;49;00m[33m'[39;49;00m[33mpartial_var[39;49;00m[33m'[39;49;00m[33m) if l_0_partial_var is missing else l_0_partial_var[39;49;00m[33m[39;49;00m
+    [33m    [39;49;00m[33m"""[39;49;00m[90m[39;49;00m
+>           result = async_env._compile(source, [33m"[39;49;00m[33mtest.py[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_async_environment.py[0m:88: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10fa57c50>
+source = "\nasync def test():\n    async for event in self._async_yield_from(context.blocks['item']\n    item\n    i\n    message\n    partial_var\n    "
+filename = 'test.py'
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92m_compile[39;49;00m([96mself[39;49;00m, source: [96mstr[39;49;00m, filename: [96mstr[39;49;00m) -> t.Any:[90m[39;49;00m
+        [94mtry[39;49;00m:[90m[39;49;00m
+            [94mreturn[39;49;00m [96mcompile[39;49;00m(source, filename, [33m"[39;49;00m[33mexec[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        [94mexcept[39;49;00m [96mSyntaxError[39;49;00m:[90m[39;49;00m
+            [94mif[39;49;00m [33m"[39;49;00m[33myield from[39;49;00m[33m"[39;49;00m [95min[39;49;00m source [95mand[39;49;00m [33m"[39;49;00m[33masync def[39;49;00m[33m"[39;49;00m [95min[39;49;00m source:[90m[39;49;00m
+                source = source.replace([33m"[39;49;00m[33myield from[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33masync for event in[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                source = source.replace([90m[39;49;00m
+                    [33m"[39;49;00m[33masync for event in context.blocks[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                    [33m"[39;49;00m[33masync for event in self._async_yield_from(context.blocks[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                )[90m[39;49;00m
+    [90m[39;49;00m
+                source = source.replace([90m[39;49;00m
+                    [33m"[39;49;00m[33mundefined(name=[39;49;00m[33m'[39;49;00m[33mitem[39;49;00m[33m'[39;49;00m[33m) if l_0_item is missing else l_0_item[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                    [33m"[39;49;00m[33mitem[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                )[90m[39;49;00m
+                source = source.replace([90m[39;49;00m
+                    [33m"[39;49;00m[33mundefined(name=[39;49;00m[33m'[39;49;00m[33mi[39;49;00m[33m'[39;49;00m[33m) if l_0_i is missing else l_0_i[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mi[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+                )[90m[39;49;00m
+                source = source.replace([90m[39;49;00m
+                    [33m"[39;49;00m[33mundefined(name=[39;49;00m[33m'[39;49;00m[33mmessage[39;49;00m[33m'[39;49;00m[33m) if l_0_message is missing else l_0_message[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                    [33m"[39;49;00m[33mmessage[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                )[90m[39;49;00m
+                source = source.replace([90m[39;49;00m
+                    [33m"[39;49;00m[33mundefined(name=[39;49;00m[33m'[39;49;00m[33mpartial_var[39;49;00m[33m'[39;49;00m[33m) if l_0_partial_var is missing else l_0_partial_var[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                    [33m"[39;49;00m[33mpartial_var[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                )[90m[39;49;00m
+    [90m[39;49;00m
+>               [94mreturn[39;49;00m [96mcompile[39;49;00m(source, filename, [33m"[39;49;00m[33mexec[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE                 File "test.py", line 3[0m
+[1m[31mE                   async for event in self._async_yield_from(context.blocks['item'][0m
+[1m[31mE                                                            ^[0m
+[1m[31mE               SyntaxError: '(' was never closed[0m
+
+[1m[31mjinja2_async_environment/environment.py[0m:74: SyntaxError
+[31m[1m________________________________________________ TestAsyncTemplateLoading.test_get_template_async_with_template_object ________________________________________________[0m
+
+self = <tests.test_async_environment.TestAsyncTemplateLoading object at 0x10fa42fd0>
+async_env = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10fc14190>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_get_template_async_with_template_object[39;49;00m([96mself[39;49;00m, async_env: AsyncEnvironment) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test get_template_async with a Template object."""[39;49;00m[90m[39;49;00m
+        [90m# Create a mock Template[39;49;00m[90m[39;49;00m
+        template = MagicMock()[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Call get_template_async with the Template[39;49;00m[90m[39;49;00m
+>       result = [94mawait[39;49;00m async_env.get_template_async(template)[90m[39;49;00m
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_async_environment.py[0m:159: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31mjinja2_async_environment/environment.py[0m:106: in get_template_async
+    [0m[94mreturn[39;49;00m [94mawait[39;49;00m [96mself[39;49;00m._load_template_async(name, [96mglobals[39;49;00m)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10fc14190>, name = <MagicMock id='4558899584'>, globals = None
+
+    [0m[37m@internalcode[39;49;00m[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92m_load_template_async[39;49;00m([90m[39;49;00m
+        [96mself[39;49;00m,[90m[39;49;00m
+        name: [96mstr[39;49;00m | Template | t.Iterable[[96mstr[39;49;00m | Template],[90m[39;49;00m
+        [96mglobals[39;49;00m: t.MutableMapping[[96mstr[39;49;00m, t.Any] | [94mNone[39;49;00m,[90m[39;49;00m
+    ) -> Template:[90m[39;49;00m
+        [94mif[39;49;00m [96misinstance[39;49;00m(name, Template):[90m[39;49;00m
+            [94mreturn[39;49;00m name[90m[39;49;00m
+        [94mif[39;49;00m [96misinstance[39;49;00m(name, [96mstr[39;49;00m):[90m[39;49;00m
+            [94mreturn[39;49;00m [94mawait[39;49;00m [96mself[39;49;00m._get_template_async(name, [96mglobals[39;49;00m)[90m[39;49;00m
+        names_list = [][90m[39;49;00m
+        [94mfor[39;49;00m template_name [95min[39;49;00m name:[90m[39;49;00m
+            [94mif[39;49;00m [96misinstance[39;49;00m(template_name, Template):[90m[39;49;00m
+                [94mreturn[39;49;00m template_name[90m[39;49;00m
+            [94mwith[39;49;00m suppress(TemplateNotFound):[90m[39;49;00m
+                [94mreturn[39;49;00m [94mawait[39;49;00m [96mself[39;49;00m._get_template_async([96mstr[39;49;00m(template_name), [96mglobals[39;49;00m)[90m[39;49;00m
+            names_list.append([96mstr[39;49;00m(template_name))[90m[39;49;00m
+>       [94mraise[39;49;00m TemplatesNotFound(names_list)[90m[39;49;00m
+[1m[31mE       jinja2.exceptions.TemplatesNotFound: none of the templates given were found:[0m
+
+[1m[31mjinja2_async_environment/environment.py[0m:180: TemplatesNotFound
+[31m[1m______________________________________________ TestAsyncTemplateLoading.test_select_template_async_with_template_object _______________________________________________[0m
+
+self = <tests.test_async_environment.TestAsyncTemplateLoading object at 0x10fa4af50>
+async_env = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10fc14cd0>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_select_template_async_with_template_object[39;49;00m([96mself[39;49;00m, async_env: AsyncEnvironment) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test select_template_async with a Template object."""[39;49;00m[90m[39;49;00m
+        [90m# Create a mock Template[39;49;00m[90m[39;49;00m
+        template = MagicMock()[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Call select_template_async with the Template[39;49;00m[90m[39;49;00m
+>       result = [94mawait[39;49;00m async_env.select_template_async([template])[90m[39;49;00m
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_async_environment.py[0m:214: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10fc14cd0>, names = [<MagicMock id='4558903616'>], parent = None, globals = None
+
+    [0m[37m@internalcode[39;49;00m[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mselect_template_async[39;49;00m([90m[39;49;00m
+        [96mself[39;49;00m,[90m[39;49;00m
+        names: t.Iterable[[96mstr[39;49;00m | Template],[90m[39;49;00m
+        parent: [96mstr[39;49;00m | [94mNone[39;49;00m = [94mNone[39;49;00m,[90m[39;49;00m
+        [96mglobals[39;49;00m: t.MutableMapping[[96mstr[39;49;00m, t.Any] | [94mNone[39;49;00m = [94mNone[39;49;00m,[90m[39;49;00m
+    ) -> Template:[90m[39;49;00m
+        [94mif[39;49;00m [96misinstance[39;49;00m(names, Undefined):[90m[39;49;00m
+            names._fail_with_undefined_error()[90m[39;49;00m
+        [94mif[39;49;00m [95mnot[39;49;00m names:[90m[39;49;00m
+            [94mraise[39;49;00m TemplatesNotFound([90m[39;49;00m
+                message=[33m"[39;49;00m[33mTried to select from an empty list of templates.[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+            )[90m[39;49;00m
+        names_list = [][90m[39;49;00m
+        [94mfor[39;49;00m name [95min[39;49;00m names:[90m[39;49;00m
+            [94mif[39;49;00m [96misinstance[39;49;00m(name, Template):[90m[39;49;00m
+                [94mreturn[39;49;00m name[90m[39;49;00m
+            [94mif[39;49;00m parent [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+                name = [96mself[39;49;00m.join_path([96mstr[39;49;00m(name), parent)[90m[39;49;00m
+            [94mwith[39;49;00m suppress(TemplateNotFound, UndefinedError):[90m[39;49;00m
+                [94mreturn[39;49;00m [94mawait[39;49;00m [96mself[39;49;00m._load_template_async(name, [96mglobals[39;49;00m)[90m[39;49;00m
+            names_list.append([96mstr[39;49;00m(name))[90m[39;49;00m
+>       [94mraise[39;49;00m TemplatesNotFound(names_list)[90m[39;49;00m
+[1m[31mE       jinja2.exceptions.TemplatesNotFound: none of the templates given were found: <MagicMock id='4558903616'>[0m
+
+[1m[31mjinja2_async_environment/environment.py[0m:139: TemplatesNotFound
+[31m[1m___________________________________________ TestAsyncTemplateLoading.test_get_or_select_template_async_with_template_object ___________________________________________[0m
+
+self = <tests.test_async_environment.TestAsyncTemplateLoading object at 0x10fadf4d0>
+async_env = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10fa57250>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_get_or_select_template_async_with_template_object[39;49;00m([96mself[39;49;00m, async_env: AsyncEnvironment) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test get_or_select_template_async with a Template object."""[39;49;00m[90m[39;49;00m
+        [90m# Create a mock Template[39;49;00m[90m[39;49;00m
+        template = MagicMock()[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Call get_or_select_template_async with the Template[39;49;00m[90m[39;49;00m
+>       result = [94mawait[39;49;00m async_env.get_or_select_template_async(template)[90m[39;49;00m
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_async_environment.py[0m:262: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31mjinja2_async_environment/environment.py[0m:161: in get_or_select_template_async
+    [0m[94mreturn[39;49;00m [94mawait[39;49;00m [96mself[39;49;00m.select_template_async(template_name_or_list, parent, [96mglobals[39;49;00m)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10fa57250>, names = <MagicMock id='4558904624'>, parent = None, globals = None
+
+    [0m[37m@internalcode[39;49;00m[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mselect_template_async[39;49;00m([90m[39;49;00m
+        [96mself[39;49;00m,[90m[39;49;00m
+        names: t.Iterable[[96mstr[39;49;00m | Template],[90m[39;49;00m
+        parent: [96mstr[39;49;00m | [94mNone[39;49;00m = [94mNone[39;49;00m,[90m[39;49;00m
+        [96mglobals[39;49;00m: t.MutableMapping[[96mstr[39;49;00m, t.Any] | [94mNone[39;49;00m = [94mNone[39;49;00m,[90m[39;49;00m
+    ) -> Template:[90m[39;49;00m
+        [94mif[39;49;00m [96misinstance[39;49;00m(names, Undefined):[90m[39;49;00m
+            names._fail_with_undefined_error()[90m[39;49;00m
+        [94mif[39;49;00m [95mnot[39;49;00m names:[90m[39;49;00m
+            [94mraise[39;49;00m TemplatesNotFound([90m[39;49;00m
+                message=[33m"[39;49;00m[33mTried to select from an empty list of templates.[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+            )[90m[39;49;00m
+        names_list = [][90m[39;49;00m
+        [94mfor[39;49;00m name [95min[39;49;00m names:[90m[39;49;00m
+            [94mif[39;49;00m [96misinstance[39;49;00m(name, Template):[90m[39;49;00m
+                [94mreturn[39;49;00m name[90m[39;49;00m
+            [94mif[39;49;00m parent [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+                name = [96mself[39;49;00m.join_path([96mstr[39;49;00m(name), parent)[90m[39;49;00m
+            [94mwith[39;49;00m suppress(TemplateNotFound, UndefinedError):[90m[39;49;00m
+                [94mreturn[39;49;00m [94mawait[39;49;00m [96mself[39;49;00m._load_template_async(name, [96mglobals[39;49;00m)[90m[39;49;00m
+            names_list.append([96mstr[39;49;00m(name))[90m[39;49;00m
+>       [94mraise[39;49;00m TemplatesNotFound(names_list)[90m[39;49;00m
+[1m[31mE       jinja2.exceptions.TemplatesNotFound: none of the templates given were found:[0m
+
+[1m[31mjinja2_async_environment/environment.py[0m:139: TemplatesNotFound
+[31m[1m_______________________________________________ TestAsyncTemplateLoading.test_load_template_async_with_template_object ________________________________________________[0m
+
+self = <tests.test_async_environment.TestAsyncTemplateLoading object at 0x10fa6d790>
+async_env = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10fa56fd0>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_load_template_async_with_template_object[39;49;00m([96mself[39;49;00m, async_env: AsyncEnvironment) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test _load_template_async with a Template object."""[39;49;00m[90m[39;49;00m
+        [90m# Create a mock Template[39;49;00m[90m[39;49;00m
+        template = MagicMock()[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Call _load_template_async with the Template[39;49;00m[90m[39;49;00m
+>       result = [94mawait[39;49;00m async_env._load_template_async(template, [94mNone[39;49;00m)[90m[39;49;00m
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_async_environment.py[0m:288: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10fa56fd0>, name = <MagicMock id='4558901936'>, globals = None
+
+    [0m[37m@internalcode[39;49;00m[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92m_load_template_async[39;49;00m([90m[39;49;00m
+        [96mself[39;49;00m,[90m[39;49;00m
+        name: [96mstr[39;49;00m | Template | t.Iterable[[96mstr[39;49;00m | Template],[90m[39;49;00m
+        [96mglobals[39;49;00m: t.MutableMapping[[96mstr[39;49;00m, t.Any] | [94mNone[39;49;00m,[90m[39;49;00m
+    ) -> Template:[90m[39;49;00m
+        [94mif[39;49;00m [96misinstance[39;49;00m(name, Template):[90m[39;49;00m
+            [94mreturn[39;49;00m name[90m[39;49;00m
+        [94mif[39;49;00m [96misinstance[39;49;00m(name, [96mstr[39;49;00m):[90m[39;49;00m
+            [94mreturn[39;49;00m [94mawait[39;49;00m [96mself[39;49;00m._get_template_async(name, [96mglobals[39;49;00m)[90m[39;49;00m
+        names_list = [][90m[39;49;00m
+        [94mfor[39;49;00m template_name [95min[39;49;00m name:[90m[39;49;00m
+            [94mif[39;49;00m [96misinstance[39;49;00m(template_name, Template):[90m[39;49;00m
+                [94mreturn[39;49;00m template_name[90m[39;49;00m
+            [94mwith[39;49;00m suppress(TemplateNotFound):[90m[39;49;00m
+                [94mreturn[39;49;00m [94mawait[39;49;00m [96mself[39;49;00m._get_template_async([96mstr[39;49;00m(template_name), [96mglobals[39;49;00m)[90m[39;49;00m
+            names_list.append([96mstr[39;49;00m(template_name))[90m[39;49;00m
+>       [94mraise[39;49;00m TemplatesNotFound(names_list)[90m[39;49;00m
+[1m[31mE       jinja2.exceptions.TemplatesNotFound: none of the templates given were found:[0m
+
+[1m[31mjinja2_async_environment/environment.py[0m:180: TemplatesNotFound
+=========================================================================== tests coverage ============================================================================
+__________________________________________________________ coverage: platform darwin, python 3.13.5-final-0 ___________________________________________________________
+
+Name                                      Stmts   Miss  Cover
+-------------------------------------------------------------
+jinja2_async_environment/bccache.py          45     20    56%
+jinja2_async_environment/compiler.py        237    199    16%
+jinja2_async_environment/environment.py     115      7    94%
+jinja2_async_environment/loaders.py         320    252    21%
+-------------------------------------------------------------
+TOTAL                                       717    478    33%
+[31m[1mFAIL Required test coverage of 42% not reached. Total coverage: 33.33%
+[0m[36m[1m======================================================================= short test summary info =======================================================================[0m
+[31mFAILED[0m tests/test_async_environment.py::[1mTestAsyncEnvironmentBasics::test_compile_with_async_code[0m -   File "test.py", line 3
+[31mFAILED[0m tests/test_async_environment.py::[1mTestAsyncEnvironmentBasics::test_compile_with_yield_from_replacement[0m -   File "test.py", line 3
+[31mFAILED[0m tests/test_async_environment.py::[1mTestAsyncTemplateLoading::test_get_template_async_with_template_object[0m - jinja2.exceptions.TemplatesNotFound: none of the templates given were found:
+[31mFAILED[0m tests/test_async_environment.py::[1mTestAsyncTemplateLoading::test_select_template_async_with_template_object[0m - jinja2.exceptions.TemplatesNotFound: none of the templates given were found: <MagicMock id='4558903616'>
+[31mFAILED[0m tests/test_async_environment.py::[1mTestAsyncTemplateLoading::test_get_or_select_template_async_with_template_object[0m - jinja2.exceptions.TemplatesNotFound: none of the templates given were found:
+[31mFAILED[0m tests/test_async_environment.py::[1mTestAsyncTemplateLoading::test_load_template_async_with_template_object[0m - jinja2.exceptions.TemplatesNotFound: none of the templates given were found:
+[31m==================================================================== [31m[1m6 failed[0m, [32m24 passed[0m[31m in 1.28s[0m[31m =====================================================================[0m

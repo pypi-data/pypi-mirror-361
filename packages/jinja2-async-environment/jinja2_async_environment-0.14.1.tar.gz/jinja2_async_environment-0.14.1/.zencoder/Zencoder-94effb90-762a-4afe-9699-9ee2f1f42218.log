@@ -1,0 +1,48 @@
+cd /Users/les/Projects/jinja2-async-environment && .venv/bin/pytest tests/test_template_rendering.py::TestTemplateRendering::test_render_simple_template -v
+direnv: loading ~/Projects/jinja2-async-environment/.envrc                      
+direnv: export +PDM_ACTIVE ~PATH
+(jinja2-async-environment) [jinja2-async-environment] cd /Users/les/Projects/jinja2-async-environment && .venv/bin/pytest tests/test_template_rendering.py::TestTemplateRendering::test_render_simple_template -v
+============================= test session starts ==============================
+platform darwin -- Python 3.13.3, pytest-8.3.5, pluggy-1.5.0 -- /Users/les/Projects/jinja2-async-environment/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/les/Projects/jinja2-async-environment
+configfile: pyproject.toml
+plugins: anyio-4.9.0, timeout-2.4.0, asyncio-0.26.0, mock-3.14.0, cov-6.1.1
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 1 item                                                               
+
+tests/test_template_rendering.py::TestTemplateRendering::test_render_simple_template FAILED [100%]
+
+=================================== FAILURES ===================================
+______________ TestTemplateRendering.test_render_simple_template _______________
+
+self = <tests.test_template_rendering.TestTemplateRendering object at 0x10a3ab750>
+environment = <jinja2_async_environment.environment.AsyncEnvironment object at 0x10a4a4590>
+
+    @pytest.mark.asyncio
+    async def test_render_simple_template(self, environment: AsyncEnvironment) -> None:
+        template = await environment.get_template_async("simple.html")
+        context = template.new_context({"name": "World"})
+        rendered = await render_template(template.root_render_func, context)
+>       assert rendered == "<h1>Hello, World!</h1>"
+E       AssertionError: assert '<h1>Hello, simple.html!</h1>' == '<h1>Hello, World!</h1>'
+E         
+E         - <h1>Hello, World!</h1>
+E         + <h1>Hello, simple.html!</h1>
+
+tests/test_template_rendering.py:68: AssertionError
+================================ tests coverage ================================
+_______________ coverage: platform darwin, python 3.13.3-final-0 _______________
+
+Name                                      Stmts   Miss  Cover
+-------------------------------------------------------------
+jinja2_async_environment/bccache.py          45     20    56%
+jinja2_async_environment/compiler.py        237    169    29%
+jinja2_async_environment/environment.py     113     55    51%
+jinja2_async_environment/loaders.py         218    142    35%
+-------------------------------------------------------------
+TOTAL                                       613    386    37%
+=========================== short test summary info ============================
+FAILED tests/test_template_rendering.py::TestTemplateRendering::test_render_simple_template - AssertionError: assert '<h1>Hello, simple.html!</h1>' == '<h1>Hello, World!...
+============================== 1 failed in 0.48s ===============================
+(jinja2-async-environment) [jinja2-async-environment]                 main  ✭ ✱

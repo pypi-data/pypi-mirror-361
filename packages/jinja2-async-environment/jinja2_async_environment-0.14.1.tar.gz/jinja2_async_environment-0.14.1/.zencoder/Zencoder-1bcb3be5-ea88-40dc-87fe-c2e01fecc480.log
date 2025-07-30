@@ -1,0 +1,126 @@
+[1m========================================================================= test session starts =========================================================================[0m
+platform darwin -- Python 3.13.5, pytest-8.4.0, pluggy-1.6.0 -- /Users/les/Projects/jinja2-async-environment/.venv/bin/python
+cachedir: .pytest_cache
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /Users/les/Projects/jinja2-async-environment
+configfile: pyproject.toml
+plugins: xdist-3.7.0, anyio-4.9.0, timeout-2.4.0, cov-6.2.1, mock-3.14.1, benchmark-5.1.0, asyncio-1.0.0
+timeout: 300.0s
+timeout method: thread
+timeout func_only: False
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0m[1mcollecting 6 items                                                                                                                                                    [0m[1mcollected 30 items                                                                                                                                                    [0m
+
+tests/test_async_environment.py::TestAsyncEnvironmentBasics::test_init [32mPASSED[0m[32m                                                                                   [  3%][0m
+tests/test_async_environment.py::TestAsyncEnvironmentBasics::test_generate [32mPASSED[0m[32m                                                                               [  6%][0m
+tests/test_async_environment.py::TestAsyncEnvironmentBasics::test_compile_normal [32mPASSED[0m[32m                                                                         [ 10%][0m
+tests/test_async_environment.py::TestAsyncEnvironmentBasics::test_compile_with_syntax_error [32mPASSED[0m[32m                                                              [ 13%][0m
+tests/test_async_environment.py::TestAsyncEnvironmentBasics::test_compile_with_async_code [32mPASSED[0m[32m                                                                [ 16%][0m
+tests/test_async_environment.py::TestAsyncEnvironmentBasics::test_compile_with_yield_from_replacement [31mFAILED[0m[31m                                                    [ 20%][0m
+tests/test_async_environment.py::TestAsyncYieldFrom::test_async_yield_from_with_async_generator [32mPASSED[0m[31m                                                          [ 23%][0m
+tests/test_async_environment.py::TestAsyncYieldFrom::test_async_yield_from_with_regular_generator [32mPASSED[0m[31m                                                        [ 26%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_template_not_implemented [32mPASSED[0m[31m                                                             [ 30%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_select_template_not_implemented [32mPASSED[0m[31m                                                          [ 33%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_or_select_template_not_implemented [32mPASSED[0m[31m                                                   [ 36%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_template_async_with_template_object [32mPASSED[0m[31m                                                  [ 40%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_template_async_with_parent [32mPASSED[0m[31m                                                           [ 43%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_template_async_with_globals [32mPASSED[0m[31m                                                          [ 46%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_select_template_async_with_empty_list [32mPASSED[0m[31m                                                    [ 50%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_select_template_async_with_undefined [32mPASSED[0m[31m                                                     [ 53%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_select_template_async_with_template_object [32mPASSED[0m[31m                                               [ 56%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_select_template_async_with_parent [32mPASSED[0m[31m                                                        [ 60%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_select_template_async_not_found [32mPASSED[0m[31m                                                          [ 63%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_or_select_template_async_with_string [32mPASSED[0m[31m                                                 [ 66%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_or_select_template_async_with_template_object [32mPASSED[0m[31m                                        [ 70%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_or_select_template_async_with_list [32mPASSED[0m[31m                                                   [ 73%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_load_template_async_with_template_object [32mPASSED[0m[31m                                                 [ 76%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_load_template_async_with_string [32mPASSED[0m[31m                                                          [ 80%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_load_template_async_with_iterable [32mPASSED[0m[31m                                                        [ 83%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_load_template_async_with_iterable_all_not_found [32mPASSED[0m[31m                                          [ 86%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_template_no_loader [32mPASSED[0m[31m                                                                   [ 90%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_template_with_cache_hit [32mPASSED[0m[31m                                                              [ 93%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_template_with_cache_hit_and_globals [32mPASSED[0m[31m                                                  [ 96%][0m
+tests/test_async_environment.py::TestAsyncTemplateLoading::test_get_template_with_cache_miss [32mPASSED[0m[31m                                                             [100%][0m[31m[1m
+ERROR: Coverage failure: total of 34 is less than fail-under=42
+[0m
+
+============================================================================== FAILURES ===============================================================================
+[31m[1m_________________________________________________ TestAsyncEnvironmentBasics.test_compile_with_yield_from_replacement _________________________________________________[0m
+
+source = "\nasync def test():\n    yield from context.blocks['item']\n    undefined(name='item') if l_0_item is missing else l_...s missing else l_0_message\n    undefined(name='partial_var') if l_0_partial_var is missing else l_0_partial_var\n    "
+filename = 'test.py', mode = 'exec'
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mside_effect[39;49;00m(source, filename, mode):[90m[39;49;00m
+        [94mif[39;49;00m [33m"[39;49;00m[33myield from[39;49;00m[33m"[39;49;00m [95min[39;49;00m source [95mand[39;49;00m [33m"[39;49;00m[33masync def[39;49;00m[33m"[39;49;00m [95min[39;49;00m source:[90m[39;49;00m
+>           [94mraise[39;49;00m [96mSyntaxError[39;49;00m([33m"[39;49;00m[33m'[39;49;00m[33myield from[39;49;00m[33m'[39;49;00m[33m inside async function[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+[1m[31mE           SyntaxError: 'yield from' inside async function[0m
+
+[1m[31mtests/test_async_environment.py[0m:87: SyntaxError
+
+[33mDuring handling of the above exception, another exception occurred:[0m
+
+self = <tests.test_async_environment.TestAsyncEnvironmentBasics object at 0x105f0e140>
+async_env = <jinja2_async_environment.environment.AsyncEnvironment object at 0x105efafd0>
+
+    [0m    [94mdef[39;49;00m[90m [39;49;00m[92mtest_compile_with_yield_from_replacement[39;49;00m([96mself[39;49;00m, async_env: AsyncEnvironment) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m        [39;49;00m[33m"""Test the _compile method with yield from replacement."""[39;49;00m[90m[39;49;00m
+            [90m# Test compilation with yield from replacement[39;49;00m[90m[39;49;00m
+            [90m# We need to patch the compile function to simulate the SyntaxError and replacement[39;49;00m[90m[39;49;00m
+            [94mwith[39;49;00m patch([33m'[39;49;00m[33mbuiltins.compile[39;49;00m[33m'[39;49;00m) [94mas[39;49;00m mock_compile:[90m[39;49;00m
+                [90m# Set up the mock to raise SyntaxError on first call with specific source[39;49;00m[90m[39;49;00m
+                [94mdef[39;49;00m[90m [39;49;00m[92mside_effect[39;49;00m(source, filename, mode):[90m[39;49;00m
+                    [94mif[39;49;00m [33m"[39;49;00m[33myield from[39;49;00m[33m"[39;49;00m [95min[39;49;00m source [95mand[39;49;00m [33m"[39;49;00m[33masync def[39;49;00m[33m"[39;49;00m [95min[39;49;00m source:[90m[39;49;00m
+                        [94mraise[39;49;00m [96mSyntaxError[39;49;00m([33m"[39;49;00m[33m'[39;49;00m[33myield from[39;49;00m[33m'[39;49;00m[33m inside async function[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                    [94mreturn[39;49;00m [96mcompile[39;49;00m(source, filename, mode)[90m[39;49;00m
+    [90m[39;49;00m
+                mock_compile.side_effect = side_effect[90m[39;49;00m
+    [90m[39;49;00m
+                source = [33m"""[39;49;00m[33m[39;49;00m
+    [33masync def test():[39;49;00m[33m[39;49;00m
+    [33m    yield from context.blocks[[39;49;00m[33m'[39;49;00m[33mitem[39;49;00m[33m'[39;49;00m[33m][39;49;00m[33m[39;49;00m
+    [33m    undefined(name=[39;49;00m[33m'[39;49;00m[33mitem[39;49;00m[33m'[39;49;00m[33m) if l_0_item is missing else l_0_item[39;49;00m[33m[39;49;00m
+    [33m    undefined(name=[39;49;00m[33m'[39;49;00m[33mi[39;49;00m[33m'[39;49;00m[33m) if l_0_i is missing else l_0_i[39;49;00m[33m[39;49;00m
+    [33m    undefined(name=[39;49;00m[33m'[39;49;00m[33mmessage[39;49;00m[33m'[39;49;00m[33m) if l_0_message is missing else l_0_message[39;49;00m[33m[39;49;00m
+    [33m    undefined(name=[39;49;00m[33m'[39;49;00m[33mpartial_var[39;49;00m[33m'[39;49;00m[33m) if l_0_partial_var is missing else l_0_partial_var[39;49;00m[33m[39;49;00m
+    [33m    [39;49;00m[33m"""[39;49;00m[90m[39;49;00m
+                [90m# Call _compile with the source[39;49;00m[90m[39;49;00m
+>               result = async_env._compile(source, [33m"[39;49;00m[33mtest.py[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+
+[1m[31mtests/test_async_environment.py[0m:101: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31mjinja2_async_environment/environment.py[0m:74: in _compile
+    [0m[94mreturn[39;49;00m [96mcompile[39;49;00m(source, filename, [33m"[39;49;00m[33mexec[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py[0m:1169: in __call__
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m._mock_call(*args, **kwargs)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py[0m:1173: in _mock_call
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m._execute_mock_call(*args, **kwargs)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py[0m:1234: in _execute_mock_call
+    [0mresult = effect(*args, **kwargs)[90m[39;49;00m
+             ^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mtests/test_async_environment.py[0m:88: in side_effect
+    [0m[94mreturn[39;49;00m [96mcompile[39;49;00m(source, filename, mode)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31m/usr/local/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py[0m:1169: in __call__
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m._mock_call(*args, **kwargs)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE   RecursionError: maximum recursion depth exceeded[0m
+!!! Recursion detected (same locals & position)
+=========================================================================== tests coverage ============================================================================
+__________________________________________________________ coverage: platform darwin, python 3.13.5-final-0 ___________________________________________________________
+
+Name                                      Stmts   Miss  Cover
+-------------------------------------------------------------
+jinja2_async_environment/bccache.py          45     20    56%
+jinja2_async_environment/compiler.py        237    199    16%
+jinja2_async_environment/environment.py     115      3    97%
+jinja2_async_environment/loaders.py         320    252    21%
+-------------------------------------------------------------
+TOTAL                                       717    474    34%
+[31m[1mFAIL Required test coverage of 42% not reached. Total coverage: 33.89%
+[0m[36m[1m======================================================================= short test summary info =======================================================================[0m
+[31mFAILED[0m tests/test_async_environment.py::[1mTestAsyncEnvironmentBasics::test_compile_with_yield_from_replacement[0m - RecursionError: maximum recursion depth exceeded
+[31m==================================================================== [31m[1m1 failed[0m, [32m29 passed[0m[31m in 1.40s[0m[31m =====================================================================[0m
